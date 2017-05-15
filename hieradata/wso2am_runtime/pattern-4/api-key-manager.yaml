@@ -1,0 +1,52 @@
+# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+wso2::mgt_hostname: km.dev.wso2.org
+wso2::hostname: km.dev.wso2.org
+wso2::product_profile: api-key-manager
+
+wso2::registry_mounts:
+ wso2_config_db:
+   path: /_system/config
+   target_path: /_system/config
+   read_only: false
+   registry_root: /
+   enable_cache: true
+
+ wso2_gov_db:
+   path: /_system/governance
+   target_path: /_system/governance
+   read_only: false
+   registry_root: /
+   enable_cache: true
+
+# SSO Configuration
+wso2::sso_authentication:
+  enabled: false
+  login_page: /carbon/admin/login.jsp
+  service_provider_id: wso2am-km
+  sso_service_url: https://is.dev.wso2.org:9443/samlsso
+  consumer_service_url: https://km.dev.wso2.org:9443/acs
+
+wso2::enable_jms_connection_details: false
+wso2::enable_data_publisher: false
+
+wso2::remove_file_list:
+   -  "repository/deployment/server/jaggeryapps"
+   -  "repository/deployment/server/webapps/am#sample#calculator#v1.war"
+   -  "repository/deployment/server/webapps/am#sample#pizzashack#v1.war"
+   -  "repository/deployment/server/webapps/api#am#admin#v0.11.war"
+   -  "repository/deployment/server/webapps/api#am#publisher#v0.11.war"
+   -  "repository/deployment/server/webapps/api#am#store#v0.11.war"

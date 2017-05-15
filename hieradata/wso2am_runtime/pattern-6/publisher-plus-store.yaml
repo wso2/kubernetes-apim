@@ -1,0 +1,64 @@
+# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+wso2::mgt_hostname: am.dev.wso2.org
+wso2::hostname: am.dev.wso2.org
+wso2::product_profile: default
+
+wso2::template_list:
+  - repository/conf/jndi.properties
+
+wso2::registry_mounts:
+ wso2_config_db:
+   path: /_system/config
+   target_path: /_system/config
+   read_only: false
+   registry_root: /
+   enable_cache: true
+
+ wso2_gov_db:
+   path: /_system/governance
+   target_path: /_system/governance
+   read_only: false
+   registry_root: /
+   enable_cache: true
+
+#datasource configurations
+wso2::master_datasources:
+    wso2_am_stats_db:
+      name: WSO2AM_STATS_DB
+      description: The datasource is used for stats
+      driver_class_name: "%{hiera('wso2::datasources::mysql::driver_class_name')}"
+      url: jdbc:mysql://192.168.57.210:3306/statdb?autoReconnect=true
+      username: "%{hiera('wso2::datasources::mysql::username')}"
+      password: "%{hiera('wso2::datasources::mysql::password')}"
+      jndi_config: jdbc/WSO2AM_STATS_DB
+      max_active: "%{hiera('wso2::datasources::common::max_active')}"
+      max_wait: "%{hiera('wso2::datasources::common::max_wait')}"
+      test_on_borrow: "%{hiera('wso2::datasources::common::test_on_borrow')}"
+      default_auto_commit: "%{hiera('wso2::datasources::common::default_auto_commit')}"
+      validation_query: "%{hiera('wso2::datasources::mysql::validation_query')}"
+      validation_interval: "%{hiera('wso2::datasources::common::validation_interval')}"
+
+wso2::enable_thrift_server: false
+wso2::enable_advance_throttling: true
+wso2::enable_data_publisher: false
+wso2::enable_block_condition: false
+wso2::enable_jms_connection_details: false
+wso2::apply_publisher_specific_configurations: true
+wso2::apply_store_specific_configurations: true
+
+wso2::analytics:
+  enabled : true

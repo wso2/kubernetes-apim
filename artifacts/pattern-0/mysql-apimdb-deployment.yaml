@@ -1,0 +1,81 @@
+# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-apim-db
+  labels:
+    app: mysql-apim-db
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: mysql-apim-db
+    tier: mysql-apim-db
+  clusterIP: None
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-apim-db-claim
+  labels:
+    app: mysql-apim-db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mysql-apim-db
+  labels:
+    app: mysql-apim-db
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql-apim-db
+        tier: mysql-apim-db
+    spec:
+      containers:
+      - image: mysql:5.5
+        name: mysql-apim-db
+        env:
+        -
+          name: MYSQL_ROOT_PASSWORD
+          value: root
+        -
+          name: MYSQL_DATABASE
+          value: APIM_DB
+        -
+          name: MYSQL_USER
+          value: wso2carbon
+        -
+          name: MYSQL_PASSWORD
+          value: wso2carbon
+        ports:
+        - containerPort: 3306
+          name: mysql-apim-db
+        volumeMounts:
+        - name: mysql-apimdb-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-apimdb-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-apim-db-claim

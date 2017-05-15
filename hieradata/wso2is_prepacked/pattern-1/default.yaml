@@ -1,0 +1,295 @@
+# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+classes:
+  - wso2is_prepacked
+
+wso2::service_name: wso2is
+wso2::hostname: is.dev.wso2.org
+wso2::mgt_hostname: is.dev.wso2.org
+wso2::pack_filename: wso2is-5.3.0.zip
+wso2::enable_thrift_service: false
+
+wso2::template_list:
+  - repository/conf/identity/identity.xml
+  - repository/conf/identity/sso-idp-config.xml
+  - repository/conf/identity/application-authentication.xml
+  - repository/conf/identity/EndpointConfig.properties
+  - repository/conf/datasources/am-datasources.xml
+#  - repository/conf/datasources/bps-datasources.xml
+#  - repository/conf/datasources/metrics-datasources.xml
+#  - repository/conf/security/cipher-text.properties
+#  - repository/conf/security/cipher-tool.properties
+#  - bin/ciphertool.sh
+#  - password-tmp
+
+# Provide the server list for setting up sso
+#wso2::sso_service_providers:
+#    wso2esb:
+#      assertion_consumer_service_url: https://esb.dev.wso2.org:9443/acs
+#      default_assertion_consumer_service_url: https://esb.dev.wso2.org:9443/acs
+#    wso2as:
+#      assertion_consumer_service_url: https://as.dev.wso2.org:9443/acs
+#      default_assertion_consumer_service_url: https://as.dev.wso2.org:9443/acs
+
+# wso2::ports:
+#   proxyPort:
+#     http: 80
+#     https: 443
+wso2::key_store: wso2carbon.jks
+wso2::trust_store: client-truststore.jks
+
+wso2::file_list:
+#  - "repository/components/lib/%{hiera('wso2::datasources::mysql::connector_jar')}"
+  - "repository/resources/security/%{hiera('wso2::trust_store')}"
+  - "repository/resources/security/%{hiera('wso2::key_store')}"
+
+wso2::datasources::mysql::connector_jar: mysql-connector-java-5.1.39-bin.jar
+
+wso2::clustering:
+  enabled: false
+  local_member_host: "%{::ipaddress}"
+  local_member_port: 4000
+  domain: is.wso2.domain
+# WKA membership scheme
+  membership_scheme: wka
+  wka:
+    members:
+      -
+        hostname: 192.168.100.111
+        port: 4000
+      -
+        hostname: 192.168.100.112
+        port: 4000
+# AWS membership scheme
+#   membership_scheme: aws
+#   aws:
+#     access_key: access-key
+#     secret_key: secret-key
+#     security_group: security-group 
+#     host_header: host-header
+#     region: region
+#     tag_key: tag-key
+#     tag_value: tag-value
+
+wso2::registry_mounts:
+  wso2_config_db:
+    path: /_system/config
+    target_path: /_system/config
+    read_only: false
+    registry_root: /
+    enable_cache: true
+
+  wso2_gov_db:
+    path: /_system/governance
+    target_path: /_system/governance
+    read_only: false
+    registry_root: /
+    enable_cache: true
+
+wso2::usermgt_datasource: wso2_user_db
+wso2::is_datasource: wso2_am_db
+
+# SSO Configuration
+wso2::sso_authentication:
+  enabled: false
+  login_page: /carbon/admin/login.jsp
+  service_provider_id: wso2is
+  sso_service_url: https://is.dev.wso2.org:9443/samlsso
+  consumer_service_url: https://is.dev.wso2.org:9443/acs
+
+wso2::master_datasources:
+ wso2_config_db:
+   name: WSO2_CONFIG_DB
+   description: The datasource used for config registry
+   driver_class_name: "%{hiera('wso2::datasources::mysql::driver_class_name')}"
+   url: jdbc:mysql://192.168.57.210:3306/configdb?autoReconnect=true
+   username: "%{hiera('wso2::datasources::mysql::username')}"
+   password: "%{hiera('wso2::datasources::mysql::password')}"
+   jndi_config: jdbc/WSO2_CONFIG_DB
+   max_active: "%{hiera('wso2::datasources::common::max_active')}"
+   max_wait: "%{hiera('wso2::datasources::common::max_wait')}"
+   test_on_borrow: "%{hiera('wso2::datasources::common::test_on_borrow')}"
+   default_auto_commit: "%{hiera('wso2::datasources::common::default_auto_commit')}"
+   validation_query: "%{hiera('wso2::datasources::mysql::validation_query')}"
+   validation_interval: "%{hiera('wso2::datasources::common::validation_interval')}"
+
+ wso2_gov_db:
+   name: WSO2_GOV_DB
+   description: The datasource used for gov registry
+   driver_class_name: "%{hiera('wso2::datasources::mysql::driver_class_name')}"
+   url: jdbc:mysql://192.168.57.210:3306/govregdb?autoReconnect=true
+   username: "%{hiera('wso2::datasources::mysql::username')}"
+   password: "%{hiera('wso2::datasources::mysql::password')}"
+   jndi_config: jdbc/WSO2_GOV_DB
+   max_active: "%{hiera('wso2::datasources::common::max_active')}"
+   max_wait: "%{hiera('wso2::datasources::common::max_wait')}"
+   test_on_borrow: "%{hiera('wso2::datasources::common::test_on_borrow')}"
+   default_auto_commit: "%{hiera('wso2::datasources::common::default_auto_commit')}"
+   validation_query: "%{hiera('wso2::datasources::mysql::validation_query')}"
+   validation_interval: "%{hiera('wso2::datasources::common::validation_interval')}"
+
+ wso2_user_db:
+   name: WSO2_USER_DB
+   description: The datasource is used for user management and userstore
+   driver_class_name: "%{hiera('wso2::datasources::mysql::driver_class_name')}"
+   url: jdbc:mysql://192.168.57.210:3306/userdb?autoReconnect=true
+   username: "%{hiera('wso2::datasources::mysql::username')}"
+   password: "%{hiera('wso2::datasources::mysql::password')}"
+   jndi_config: jdbc/WSO2USER_DB
+   max_active: "%{hiera('wso2::datasources::common::max_active')}"
+   max_wait: "%{hiera('wso2::datasources::common::max_wait')}"
+   test_on_borrow: "%{hiera('wso2::datasources::common::test_on_borrow')}"
+   default_auto_commit: "%{hiera('wso2::datasources::common::default_auto_commit')}"
+   validation_query: "%{hiera('wso2::datasources::mysql::validation_query')}"
+   validation_interval: "%{hiera('wso2::datasources::common::validation_interval')}"
+
+#wso2::bps_datasources:
+#  bps_ds:
+#    name: BPS_DS
+#    description: The datasource used for bps
+#    driver_class_name: "%{hiera('wso2::datasources::mysql::driver_class_name')}"
+#    url: jdbc:mysql://192.168.100.1:3306/WSO2_CONFIG_DB?autoReconnect=true
+#    username: "%{hiera('wso2::datasources::mysql::username')}"
+#    password: "%{hiera('wso2::datasources::mysql::password')}"
+#    jndi_config: bpsds
+#    max_active: "%{hiera('wso2::datasources::common::max_active')}"
+#    max_idle: "%{hiera('wso2::datasources::common::max_idle')}"
+#    max_wait: "%{hiera('wso2::datasources::common::max_wait')}"
+#    test_on_borrow: "%{hiera('wso2::datasources::common::test_on_borrow')}"
+#    use_datasource_factory: "%{hiera('wso2::datasources::common::use_datasource_factory')}"
+#    default_auto_commit: "%{hiera('wso2::datasources::common::default_auto_commit')}"
+#    validation_query: "%{hiera('wso2::datasources::mysql::validation_query')}"
+#    validation_interval: "%{hiera('wso2::datasources::common::validation_interval')}"
+
+#wso2::metrics_datasources:
+#  metrics_ds:
+#    name: WSO2_METRICS_DB
+#    description: The default datasource used for WSO2 Carbon Metrics
+#    driver_class_name: "%{hiera('wso2::datasources::mysql::driver_class_name')}"
+#    url: jdbc:mysql://192.168.100.1:3306/WSO2_CONFIG_DB?autoReconnect=true
+#    username: "%{hiera('wso2::datasources::mysql::username')}"
+#    password: "%{hiera('wso2::datasources::mysql::password')}"
+#    jndi_config: jdbc/WSO2MetricsDB
+#    datasource: WSO2MetricsDB
+#    max_active: "%{hiera('wso2::datasources::common::max_active')}"
+#    max_wait: "%{hiera('wso2::datasources::common::max_wait')}"
+#    test_on_borrow: "%{hiera('wso2::datasources::common::test_on_borrow')}"
+#    default_auto_commit: "%{hiera('wso2::datasources::common::default_auto_commit')}"
+#    validation_query: "%{hiera('wso2::datasources::mysql::validation_query')}"
+#    validation_interval: "%{hiera('wso2::datasources::common::validation_interval')}"
+
+wso2::am_datasources:
+ wso2_am_db:
+    name: WSO2_AM_DB
+    description: The datasource used for API Manager database
+    driver_class_name: "%{hiera('wso2::datasources::mysql::driver_class_name')}"
+    url: jdbc:mysql://192.168.57.210:3306/apimgtdb?autoReconnect=true
+    username: "%{hiera('wso2::datasources::mysql::username')}"
+    password: "%{hiera('wso2::datasources::mysql::password')}"
+    jndi_config: jdbc/WSO2AM_DB
+    max_active: "%{hiera('wso2::datasources::common::max_active')}"
+    max_wait: "%{hiera('wso2::datasources::common::max_wait')}"
+    test_on_borrow: "%{hiera('wso2::datasources::common::test_on_borrow')}"
+    default_auto_commit: "%{hiera('wso2::datasources::common::default_auto_commit')}"
+    validation_query: "%{hiera('wso2::datasources::mysql::validation_query')}"
+    validation_interval: "%{hiera('wso2::datasources::common::validation_interval')}"
+
+wso2::hosts_mapping:
+  identity_server:
+    ip: 127.0.0.1
+    name: is.dev.wso2.org
+
+# Secure vault configuration
+#wso2::enable_secure_vault: true
+#wso2::secure_vault_configs:
+#  key_store_password:
+#    secret_alias: Carbon.Security.KeyStore.Password
+#    secret_alias_value: repository/conf/carbon.xml//Server/Security/KeyStore/Password,false
+#    password: "%{hiera('wso2::key_stores::key_store::password')}"
+#
+#  key_store_key_password:
+#    secret_alias: Carbon.Security.KeyStore.KeyPassword
+#    secret_alias_value: repository/conf/carbon.xml//Server/Security/KeyStore/KeyPassword,false
+#    password: "%{hiera('wso2::key_stores::key_store::key_password')}"
+#
+#  trust_store_password:
+#    secret_alias: Carbon.Security.TrustStore.Password
+#    secret_alias_value: repository/conf/carbon.xml//Server/Security/TrustStore/Password,false
+#    password: "%{hiera('wso2::key_stores::trust_store::password')}"
+#
+#  user_manager_admin_password:
+#    secret_alias: UserManager.AdminUser.Password
+#    secret_alias_value: repository/conf/user-mgt.xml//UserManager/Realm/Configuration/AdminUser/Password,false
+#    password: "%{hiera('wso2::super_admin::password')}"
+#
+#  wso2_carbon_db_password:
+#    secret_alias: Datasources.WSO2_CARBON_DB.Configuration.Password
+#    secret_alias_value: repository/conf/datasources/master-datasources.xml//datasources-configuration/datasources/datasource[name='WSO2_CARBON_DB']/definition[@type='RDBMS']/configuration/password,false
+#    password: "%{hiera('wso2::datasources::common::password')}"
+#
+#  connector_key_store_password:
+#    secret_alias: Server.Service.Connector.keystorePass
+#    secret_alias_value: repository/conf/tomcat/catalina-server.xml//Server/Service/Connector[@keystorePass],true
+#    password: "%{hiera('wso2::key_stores::connector_key_store::password')}"
+#
+#  bps_ds_db_password:
+#    secret_alias: Datasources.BPS_DS.Configuration.Password
+#    secret_alias_value: repository/conf/datasources/bps-datasources.xml//datasources-configuration/datasources/datasource[name='BPS_DS']/definition[@type='RDBMS']/configuration/password,false
+#    password: "%{hiera('wso2::datasources::common::password')}"
+#
+#  wso2_metrics_db_password:
+#    secret_alias: Datasources.WSO2_METRICS_DB.Configuration.Password
+#    secret_alias_value: repository/conf/datasources/metrics-datasources.xml//datasources-configuration/datasources/datasource[name='WSO2_METRICS_DB']/definition[@type='RDBMS']/configuration/password,false
+#    password: "%{hiera('wso2::datasources::common::password')}"
+#
+#  wso2_config_db_password:
+#    secret_alias: Datasources.WSO2_CONFIG_DB.Configuration.Password
+#    secret_alias_value: repository/conf/datasources/master-datasources.xml//datasources-configuration/datasources/datasource[name='WSO2_CONFIG_DB']/definition[@type='RDBMS']/configuration/password,false
+#    password: "%{hiera('wso2::datasources::mysql::password')}"
+#
+#  wso2_gov_db_password:
+#    secret_alias: Datasources.WSO2_GOV_DB.Configuration.Password
+#    secret_alias_value: repository/conf/datasources/master-datasources.xml//datasources-configuration/datasources/datasource[name='WSO2_GOV_DB']/definition[@type='RDBMS']/configuration/password,false
+#    password: "%{hiera('wso2::datasources::mysql::password')}"
+#
+#  wso2_user_db_password:
+#    secret_alias: Datasources.WSO2_USER_DB.Configuration.Password
+#    secret_alias_value: repository/conf/datasources/master-datasources.xml//datasources-configuration/datasources/datasource[name='WSO2_USER_DB']/definition[@type='RDBMS']/configuration/password,false
+#    password: "%{hiera('wso2::datasources::mysql::password')}"
+#
+#  wso2_am_db_password:
+#    secret_alias: Datasource.WSO2AM_DB.configuration.password
+#    secret_alias_value: repository/conf/datasources/am-datasources.xml//datasources-configuration/datasources/datasource[name='WSO2AM_DB']/definition[@type='RDBMS']/configuration/password,false
+#    password: "%{hiera('wso2::datasources::common::password')}"
+#
+#  xmpp_password:
+#    secret_alias: MultifactorAuthentication.XMPPSettings.XMPPConfig.XMPPPassword
+#    secret_alias_value: repository/conf/identity/identity.xml//MultifactorAuthentication/XMPPSettings/XMPPConfig/XMPPPassword,false
+#    password: wso2carbon
+#
+#  authenticator_config_trust_store_password:
+#    secret_alias: AuthenticatorConfig.TrustStore.Password
+#    secret_alias_value: repository/conf/identity/application-authentication.xml//ApplicationAuthentication/AuthenticatorConfigs/AuthenticatorConfig[@name='OpenIDAuthenticator']/Parameter[@name='TrustStorePassword'],false
+#    password: "%{hiera('wso2::key_stores::trust_store::password')}"
+#
+#  dep_sync_svn_password:
+#    secret_alias: Carbon.DeploymentSynchronizer.SvnPassword
+#    secret_alias_value: repository/conf/carbon.xml//Server/DeploymentSynchronizer/SvnPassword,true
+#    password: password
+#
+#  thrift_based_entitlement_config_key_store_password:
+#    secret_alias: ThirftBasedEntitlementConfig.KeyStore.Password
+#    secret_alias_value: repository/conf/identity/identity.xml//Server/EntitlementSettings/ThirftBasedEntitlementConfig/KeyStore/Password,false
+#    password: "%{hiera('wso2::key_stores::key_store::password')}"
