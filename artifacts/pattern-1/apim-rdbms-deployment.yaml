@@ -14,23 +14,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-govdb
+  name: apim-rdbms
   labels:
-    app: mysql-govdb
+    app: apim-rdbms
 spec:
   ports:
     - port: 3306
   selector:
-    app: mysql-govdb
-    tier: mysql-govdb
+    app: apim-rdbms
+    tier: apim-rdbms
   clusterIP: None
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-govdb-claim
+  name: apim-rdbms-volume-claim
   labels:
-    app: mysql-govdb
+    app: apim-rdbms
 spec:
   accessModes:
     - ReadWriteOnce
@@ -41,41 +41,32 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: mysql-govdb
+  name: apim-rdbms-deployment
   labels:
-    app: mysql-govdb
+    app: apim-rdbms
 spec:
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: mysql-govdb
-        tier: mysql-govdb
+        app: apim-rdbms
+        tier: apim-rdbms
     spec:
       containers:
-      - image: mysql:5.5
-        name: mysql-govdb
+      - image: apim-rdbms:2.1.0
+        name: apim-rdbms
         env:
-        -
-          name: MYSQL_ROOT_PASSWORD
-          value: root
-        -
-          name: MYSQL_DATABASE
-          value: WSO2_GOV_DB
-        -
-          name: MYSQL_USER
-          value: wso2carbon
-        -
-          name: MYSQL_PASSWORD
-          value: wso2carbon
+          -
+            name: MYSQL_ROOT_PASSWORD
+            value: root
         ports:
         - containerPort: 3306
-          name: mysql-govdb
+          name: apim-rdbms
         volumeMounts:
-        - name: mysql-govdb-persistent-storage
+        - name: apim-rdbms-persistent-storage
           mountPath: /var/lib/mysql
       volumes:
-      - name: mysql-govdb-persistent-storage
+      - name: apim-rdbms-persistent-storage
         persistentVolumeClaim:
-          claimName: mysql-govdb-claim
+          claimName: apim-rdbms-volume-claim

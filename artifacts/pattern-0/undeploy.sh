@@ -1,3 +1,3 @@
 #!/bin/bash
 
-kubectl delete deployments,services --all
+kubectl delete deployments,services,PersistentVolume --all

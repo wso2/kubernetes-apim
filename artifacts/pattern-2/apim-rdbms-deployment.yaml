@@ -14,23 +14,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-apim-db
+  name: apim-rdbms
   labels:
-    app: mysql-apim-db
+    app: apim-rdbms
 spec:
   ports:
     - port: 3306
   selector:
-    app: mysql-apim-db
-    tier: mysql-apim-db
+    app: apim-rdbms
+    tier: apim-rdbms
   clusterIP: None
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-apim-db-claim
+  name: apim-rdbms-volume-claim
   labels:
-    app: mysql-apim-db
+    app: apim-rdbms
 spec:
   accessModes:
     - ReadWriteOnce
@@ -41,41 +41,32 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: mysql-apim-db
+  name: apim-rdbms-deployment
   labels:
-    app: mysql-apim-db
+    app: apim-rdbms
 spec:
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: mysql-apim-db
-        tier: mysql-apim-db
+        app: apim-rdbms
+        tier: apim-rdbms
     spec:
       containers:
-      - image: mysql:5.5
-        name: mysql-apim-db
+      - image: us.gcr.io/steam-talent-167709/apim-rdbms:2.1.0
+        name: apim-rdbms
         env:
-        -
-          name: MYSQL_ROOT_PASSWORD
-          value: root
-        -
-          name: MYSQL_DATABASE
-          value: APIM_DB
-        -
-          name: MYSQL_USER
-          value: wso2carbon
-        -
-          name: MYSQL_PASSWORD
-          value: wso2carbon
+          -
+            name: MYSQL_ROOT_PASSWORD
+            value: root
         ports:
         - containerPort: 3306
-          name: mysql-apim-db
+          name: apim-rdbms
         volumeMounts:
-        - name: mysql-apimdb-persistent-storage
+        - name: apim-rdbms-persistent-storage
           mountPath: /var/lib/mysql
       volumes:
-      - name: mysql-apimdb-persistent-storage
+      - name: apim-rdbms-persistent-storage
         persistentVolumeClaim:
-          claimName: mysql-apim-db-claim
+          claimName: apim-rdbms-volume-claim

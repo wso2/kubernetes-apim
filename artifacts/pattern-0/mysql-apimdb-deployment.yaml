@@ -14,23 +14,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-apim-db
+  name: mysql-apimdb
   labels:
-    app: mysql-apim-db
+    app: mysql-apimdb
 spec:
   ports:
     - port: 3306
   selector:
-    app: mysql-apim-db
-    tier: mysql-apim-db
+    app: mysql-apimdb
+    tier: mysql-apimdb
   clusterIP: None
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-apim-db-claim
+  name: mysql-apimdb-claim
   labels:
-    app: mysql-apim-db
+    app: mysql-apimdb
 spec:
   accessModes:
     - ReadWriteOnce
@@ -41,21 +41,21 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: mysql-apim-db
+  name: mysql-apimdb
   labels:
-    app: mysql-apim-db
+    app: mysql-apimdb
 spec:
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: mysql-apim-db
-        tier: mysql-apim-db
+        app: mysql-apimdb
+        tier: mysql-apimdb
     spec:
       containers:
       - image: mysql:5.5
-        name: mysql-apim-db
+        name: mysql-apimdb
         env:
         -
           name: MYSQL_ROOT_PASSWORD
@@ -71,11 +71,11 @@ spec:
           value: wso2carbon
         ports:
         - containerPort: 3306
-          name: mysql-apim-db
+          name: mysql-apimdb
         volumeMounts:
         - name: mysql-apimdb-persistent-storage
           mountPath: /var/lib/mysql
       volumes:
       - name: mysql-apimdb-persistent-storage
         persistentVolumeClaim:
-          claimName: mysql-apim-db-claim
+          claimName: mysql-apimdb-claim
