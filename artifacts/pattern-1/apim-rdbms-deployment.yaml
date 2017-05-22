@@ -56,6 +56,7 @@ spec:
       containers:
       - image: apim-rdbms:2.1.0
         name: apim-rdbms
+        imagePullPolicy: Always
         env:
           -
             name: MYSQL_ROOT_PASSWORD

@@ -29,7 +29,7 @@ wso2::master_datasources:
     name: WSO2_MB_STORE_DB
     description: The datasource used for message broker database
     driver_class_name: "%{hiera('wso2::datasources::mysql::driver_class_name')}"
-    url: jdbc:mysql://192.168.57.210:3306/mbstoredb?autoReconnect=true
+    url: jdbc:mysql://apim-rdbms:3306/mbstoredb?autoReconnect=true
     username: "%{hiera('wso2::datasources::mysql::username')}"
     password: "%{hiera('wso2::datasources::mysql::password')}"
     jndi_config: WSO2MBStoreDB

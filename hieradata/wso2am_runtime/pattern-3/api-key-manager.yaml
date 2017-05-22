@@ -13,8 +13,8 @@
 # limitations under the License.
 
 ---
-wso2::mgt_hostname: km.dev.wso2.org
-wso2::hostname: km.dev.wso2.org
+wso2::mgt_hostname: wso2am-api-key-manager
+wso2::hostname: wso2am-api-key-manager
 wso2::product_profile: api-key-manager
 
 wso2::registry_mounts:
@@ -38,7 +38,7 @@ wso2::sso_authentication:
   login_page: /carbon/admin/login.jsp
   service_provider_id: wso2am-km
   sso_service_url: https://is.dev.wso2.org:9443/samlsso
-  consumer_service_url: https://km.dev.wso2.org:9443/acs
+  consumer_service_url: https://wso2am-api-key-manager:9443/acs
 
 wso2::enable_jms_connection_details: false
 wso2::enable_data_publisher: false

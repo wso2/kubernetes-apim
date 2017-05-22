@@ -26,12 +26,12 @@ spec:
       name: 'pass-through-http'
       port: 8280
       targetPort: 8280
-      nodePort: 32001
+      nodePort: 32006
     -
       name: 'pass-through-https'
       port: 8243
       targetPort: 8243
-      nodePort: 32002
+      nodePort: 32007
     -
       name: 'servlet-http'
       port: 9763
@@ -71,6 +71,7 @@ spec:
       containers:
       - image: us.gcr.io/steam-talent-167709/wso2am-kubernetes-pattern-2:2.1.0
         name: wso2am-pattern-2
+        imagePullPolicy: Always
         ports:
         -
           containerPort: 8280

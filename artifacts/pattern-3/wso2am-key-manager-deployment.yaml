@@ -14,71 +14,59 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2am-pattern-1
+  name: wso2am-api-key-manager
   labels:
-    app: wso2am-pattern-1
-    tier: wso2am-pattern-1
+    app: wso2am-api-key-manager
+    tier: wso2am-api-key-manager
 spec:
   type: NodePort
   ports:
     # ports that this service should serve on
     -
-      name: 'pass-through-http'
-      port: 8280
-      targetPort: 8280
-      nodePort: 32001
-    -
-      name: 'pass-through-https'
-      port: 8243
-      targetPort: 8243
-      nodePort: 32002
-    -
       name: 'servlet-http'
       port: 9763
       targetPort: 9763
-      nodePort: 32003
+      nodePort: 32001
     -
       name: 'servlet-https'
       port: 9443
       targetPort: 9443
-      nodePort: 32004
+      nodePort: 32002
     -
-      name: 'jms-tcp'
-      port: 5672
-      targetPort: 5672
-      nodePort: 32005
+      name: 'thrift-key-mgt'
+      port: 10397
+      targetPort: 10397
+      nodePort: 32003
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    app: wso2am-pattern-1
-    tier: wso2am-pattern-1
+    app: wso2am-api-key-manager
+    tier: wso2am-api-key-manager
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: wso2am-pattern-1
+  name: wso2am-api-key-manager
   labels:
-    app: wso2am-pattern-1
-    tier: wso2am-pattern-1
+    app: wso2am-api-key-manager
+    tier: wso2am-api-key-manager
 spec:
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: wso2am-pattern-1
-        tier: wso2am-pattern-1
+        app: wso2am-api-key-manager
+        tier: wso2am-api-key-manager
     spec:
       containers:
-      - image: wso2am-kubernetes-pattern-1:2.1.0
-        name: wso2am-pattern-1
+      - image: us.gcr.io/steam-talent-167709/wso2am-api-key-manager-kubernetes-pattern-3:2.1.0
+        name: wso2am-api-key-manager
         imagePullPolicy: Always
+        env:
+        -
+          name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION
+          value: "true"
         ports:
-        -
-          containerPort: 8280
-          protocol: "TCP"
-        -
-          containerPort: 8243
-          protocol: "TCP"
         -
           containerPort: 9763
           protocol: "TCP"
@@ -86,5 +74,5 @@ spec:
           containerPort: 9443
           protocol: "TCP"
         -
-          containerPort: 5672
+          containerPort: 10397
           protocol: "TCP"

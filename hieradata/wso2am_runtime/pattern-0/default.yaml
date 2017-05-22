@@ -36,13 +36,13 @@ wso2::template_list:
 #    https: 443
 
 wso2::service_name: wso2am
-wso2::hostname: localhost
-wso2::mgt_hostname: localhost
+wso2::hostname: wso2am-default
+wso2::mgt_hostname: wso2am-default
 wso2::product_profile: default
 wso2::pack_filename: wso2am-2.1.0.zip
 
 wso2::apim_traffic_manager:
-  host: localhost
+  host: wso2am-default
   port: 9443
   receiver_url_port: 9611
   auth_url_port: 9711
@@ -52,34 +52,34 @@ wso2::apim_traffic_manager:
 
 wso2::environments:
   apim_gateway_lan:
-    host: localhost
+    host: wso2am-default
     port: 9443
-    api_endpoint_host: am.dev.wso2.org
-    api_endpoint_port: 8280
-    secure_api_endpoint_port: 8243
+    api_endpoint_host: wso2am-default
+    api_endpoint_port: 32001
+    secure_api_endpoint_port: 32002
     api_token_revoke_endpoint_port: 8280
     secure_api_token_revoke_endpoint_port: 8243
     username: "%{hiera('wso2::super_admin::username')}"
     password: "%{hiera('wso2::super_admin::password')}"
 
 wso2::apim_keymanager:
-  host: localhost
+  host: wso2am-default
   port: 9443
   username: "%{hiera('wso2::super_admin::username')}"
   password: "%{hiera('wso2::super_admin::password')}"
 
 wso2::apim_store:
-  host: localhost
+  host: wso2am-default
   port: 9443
 
 wso2::apim_publisher:
-  host: localhost
+  host: wso2am-default
   port: 9443
 
-wso2::hosts_mapping:
-  api_manager:
-    ip: 127.0.0.1
-    name: localhost
+#wso2::hosts_mapping:
+#  api_manager:
+#    ip: 127.0.0.1
+#    name: localhost
 
 # Use H2 based wso2_am_db in a stand-alone setup. In a clustered setup this should point to a MySQL data source
 wso2::is_datasource: wso2_am_db
@@ -146,9 +146,9 @@ wso2::enable_data_publisher: true
 wso2::enable_block_condition: true
 wso2::enable_jms_connection_details: true
 wso2::disable_jms_event_parameters: false
-wso2::apply_publisher_specific_configurations: false
-wso2::apply_store_specific_configurations: false
-wso2::apply_gateway_specific_configurations: false
+wso2::apply_publisher_specific_configurations: true
+wso2::apply_store_specific_configurations: true
+wso2::apply_gateway_specific_configurations: true
 wso2::enable_log_analyzer: false
 wso2::key_store: wso2carbon.jks
 wso2::trust_store: client-truststore.jks

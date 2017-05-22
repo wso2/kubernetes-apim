@@ -55,8 +55,8 @@ wso2::environments:
     host: wso2am-pattern-2
     port: 9443
     api_endpoint_host: wso2am-pattern-2
-    api_endpoint_port: 8280
-    secure_api_endpoint_port: 8243
+    api_endpoint_port: 32006
+    secure_api_endpoint_port: 32007
     api_token_revoke_endpoint_port: 8280
     secure_api_token_revoke_endpoint_port: 8243
     username: "%{hiera('wso2::super_admin::username')}"
@@ -214,8 +214,8 @@ wso2::enable_data_publisher: true
 wso2::enable_block_condition: true
 wso2::enable_jms_connection_details: true
 wso2::disable_jms_event_parameters: false
-wso2::apply_publisher_specific_configurations: false
-wso2::apply_store_specific_configurations: false
+wso2::apply_publisher_specific_configurations: true
+wso2::apply_store_specific_configurations: true
 wso2::apply_gateway_specific_configurations: false
 wso2::enable_log_analyzer: true
 
@@ -246,20 +246,20 @@ wso2::datasources::mysql::connector_jar: mysql-connector-java-5.1.36-bin.jar
 
 wso2::analytics:
   enabled : true
-  server_host : wso2am-analytics-pattern-1
-  server_port : 7612
+  server_host : wso2am-analytics
+  server_port : 7611
   server_https_port : 9443
   server_username : admin
   server_password : admin
   skip_event_receiver_connection : false
 
-wso2::hosts_mapping:
+#wso2::hosts_mapping:
 #  apim_analytics_server:
 #    ip: 192.168.57.29
 #    name: analytics.dev.wso2.org
-  api_manager:
-    ip: 127.0.0.1
-    name: am.dev.wso2.org
+#  api_manager:
+#    ip: 127.0.0.1
+#    name: wso2am-pattern-2
 # Secure vault configuration
 #wso2::enable_secure_vault: true
 #wso2::secure_vault_configs:

@@ -53,8 +53,8 @@ wso2::environments:
     host: wso2am-patttern-1
     port: 9443
     api_endpoint_host: wso2am-patttern-1
-    api_endpoint_port: 8280
-    secure_api_endpoint_port: 8243
+    api_endpoint_port: 32001
+    secure_api_endpoint_port: 32002
     api_token_revoke_endpoint_port: 8280
     secure_api_token_revoke_endpoint_port: 8243
     username: "%{hiera('wso2::super_admin::username')}"

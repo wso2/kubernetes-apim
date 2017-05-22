@@ -27,19 +27,12 @@ wso2::clustering:
   enabled: true
   domain: gw.am.wso2.domain
   sub_domain: mgt
-  local_member_host: "%{::ipaddress}"
+  membership_scheme: kubernetes
   local_member_port: 4000
-# WKA membership scheme
-  membership_scheme: wka
-  membership_scheme: wka
-  wka:
-    members:
-      -
-        hostname: 192.168.57.216
-        port: 4000
-      -
-        hostname: 192.168.57.247
-        port: 4000
+  kubernetes:
+    kubernetes_namespace: default
+    kubernetes_services: wso2am-gateway-manager
+#    kubernetes_services: wso2am-gateway-manager,wso2am-gateway-worker
 
 #wso2::dep_sync:
 #  enabled: true

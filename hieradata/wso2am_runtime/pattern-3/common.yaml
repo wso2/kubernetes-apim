@@ -34,10 +34,10 @@ wso2::template_list:
 #    https: 443
 
 wso2::file_list:
-#  - "repository/components/lib/%{hiera('wso2::datasources::mysql::connector_jar')}"
+  - "repository/components/lib/%{hiera('wso2::datasources::mysql::connector_jar')}"
   - "repository/resources/security/%{hiera('wso2::key_store')}"
   - "repository/resources/security/%{hiera('wso2::trust_store')}"
-wso2::datasources::mysql::connector_jar: mysql-connector-java-5.1.39-bin.jar
+wso2::datasources::mysql::connector_jar: mysql-connector-java-5.1.36-bin.jar
 
 #wso2::cert_list:
 #  -
@@ -51,9 +51,9 @@ wso2::pack_filename: wso2am-2.1.0.zip
 
 wso2::analytics:
   enabled : false
-  server_host : analytics.dev.wso2.org
-  server_port : 7612
-  server_https_port : 9444
+  server_host : wso2am-analytics
+  server_port : 7611
+  server_https_port : 9443
   server_username : admin
   server_password : admin
   skip_event_receiver_connection : false
@@ -95,7 +95,7 @@ wso2::am_datasources:
       name: WSO2_AM_DB
       description: The datasource used for API Manager database
       driver_class_name: "%{hiera('wso2::datasources::mysql::driver_class_name')}"
-      url: jdbc:mysql://192.168.57.210:3306/apimgtdb?autoReconnect=true
+      url: jdbc:mysql://apim-rdbms:3306/apimgtdb?autoReconnect=true
       username: "%{hiera('wso2::datasources::mysql::username')}"
       password: "%{hiera('wso2::datasources::mysql::password')}"
       jndi_config: jdbc/WSO2AM_DB
@@ -111,7 +111,7 @@ wso2::master_datasources:
       name: WSO2_CONFIG_DB
       description: The datasource used for config registry
       driver_class_name: "%{hiera('wso2::datasources::mysql::driver_class_name')}"
-      url: jdbc:mysql://192.168.57.210:3306/configdb?autoReconnect=true
+      url: jdbc:mysql://apim-rdbms:3306/configdb?autoReconnect=true
       username: "%{hiera('wso2::datasources::mysql::username')}"
       password: "%{hiera('wso2::datasources::mysql::password')}"
       jndi_config: jdbc/WSO2_CONFIG_DB
@@ -126,7 +126,7 @@ wso2::master_datasources:
       name: WSO2_GOV_DB
       description: The datasource used for gov registry
       driver_class_name: "%{hiera('wso2::datasources::mysql::driver_class_name')}"
-      url: jdbc:mysql://192.168.57.210:3306/govregdb?autoReconnect=true
+      url: jdbc:mysql://apim-rdbms:3306/govregdb?autoReconnect=true
       username: "%{hiera('wso2::datasources::mysql::username')}"
       password: "%{hiera('wso2::datasources::mysql::password')}"
       jndi_config: jdbc/WSO2_GOV_DB
@@ -141,7 +141,7 @@ wso2::master_datasources:
       name: WSO2_USER_DB
       description: The datasource is used for user mangement and userstore
       driver_class_name: "%{hiera('wso2::datasources::mysql::driver_class_name')}"
-      url: jdbc:mysql://192.168.57.210:3306/userdb?autoReconnect=true
+      url: jdbc:mysql://apim-rdbms:3306/userdb?autoReconnect=true
       username: "%{hiera('wso2::datasources::mysql::username')}"
       password: "%{hiera('wso2::datasources::mysql::password')}"
       jndi_config: jdbc/WSO2_USER_DB

@@ -13,29 +13,25 @@
 # limitations under the License.
 
 ---
-wso2::mgt_hostname: pub.dev.wso2.org
-wso2::hostname: pub.dev.wso2.org
+wso2::mgt_hostname: wso2am-api-publisher
+wso2::hostname: wso2am-api-publisher
 wso2::product_profile: api-publisher
 
 wso2::template_list:
   - repository/conf/jndi.properties
 
+wso2::file_list:
+  - repository/components/dropins/kubernetes-membership-scheme-1.0.0-SNAPSHOT.jar
+
 wso2::clustering:
   enabled: true
   domain: pub.store.am.wso2.domain
   sub_domain: worker
-  local_member_host: "%{::ipaddress}"
+  membership_scheme: kubernetes
   local_member_port: 4000
-# WKA membership scheme
-  membership_scheme: wka
-  wka:
-    members:
-      -
-        hostname: 192.168.57.219
-        port: 4000
-      -
-        hostname: 192.168.57.21
-        port: 4000
+  kubernetes:
+    kubernetes_namespace: default
+    kubernetes_services: wso2am-api-publisher,wso2am-api-store
 # AWS membership scheme
 #   membership_scheme: aws
 #   aws:
@@ -68,7 +64,7 @@ wso2::sso_authentication:
   login_page: /carbon/admin/login.jsp
   service_provider_id: wso2am-pub
   sso_service_url: https://is.dev.wso2.org:9443/samlsso
-  consumer_service_url: https://pub.dev.wso2.org:9443/acs
+  consumer_service_url: https://wso2am-api-publisher:9443/acs
 
 #datasource configurations
 wso2::master_datasources:
@@ -76,7 +72,7 @@ wso2::master_datasources:
       name: WSO2AM_STATS_DB
       description: The datasource is used for stats
       driver_class_name: "%{hiera('wso2::datasources::mysql::driver_class_name')}"
-      url: jdbc:mysql://192.168.57.210:3306/statdb?autoReconnect=true
+      url: jdbc:mysql://apim-rdbms:3306/statdb?autoReconnect=true
       username: "%{hiera('wso2::datasources::mysql::username')}"
       password: "%{hiera('wso2::datasources::mysql::password')}"
       jndi_config: jdbc/WSO2AM_STATS_DB

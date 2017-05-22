@@ -34,7 +34,7 @@ wso2::file_list:
 wso2::datasources::mysql::connector_jar: mysql-connector-java-5.1.36-bin.jar
 
 wso2::ports:
-  offset: 1
+  offset: 0
 
 wso2::portal:
   hostname: analytics.dev.wso2.org
