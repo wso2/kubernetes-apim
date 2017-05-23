@@ -59,31 +59,31 @@ wso2::analytics:
   skip_event_receiver_connection : false
 
 
-wso2::hosts_mapping:
-  apim_keymanager:
-    ip: 192.168.57.186
-    name: km.dev.wso2.org
-  apim_store:
-    ip: 192.168.57.21
-    name: store.dev.wso2.org
-  apim_publisher:
-    ip: 192.168.57.219
-    name: pub.dev.wso2.org
-  apim_gateway:
-    ip: 192.168.57.216
-    name: mgt-gw.dev.wso2.org
-  apim_gateway_worker:
-    ip: 192.168.57.247
-    name: gw.dev.wso2.org
-  apim_traffic_manager:
-    ip: 192.168.57.35
-    name: tm.dev.wso2.org
-  svn:
-    ip: 192.168.100.1
-    name: svn.gw.am.dev.wso2.org
-  apim_analytics_server:
-    ip: 192.168.57.29
-    name: analytics.dev.wso2.org
+#wso2::hosts_mapping:
+#  apim_keymanager:
+#    ip: 192.168.57.186
+#    name: km.dev.wso2.org
+#  apim_store:
+#    ip: 192.168.57.21
+#    name: store.dev.wso2.org
+#  apim_publisher:
+#    ip: 192.168.57.219
+#    name: pub.dev.wso2.org
+#  apim_gateway:
+#    ip: 192.168.57.216
+#    name: mgt-gw.dev.wso2.org
+#  apim_gateway_worker:
+#    ip: 192.168.57.247
+#    name: gw.dev.wso2.org
+#  apim_traffic_manager:
+#    ip: 192.168.57.35
+#    name: tm.dev.wso2.org
+#  svn:
+#    ip: 192.168.100.1
+#    name: svn.gw.am.dev.wso2.org
+#  apim_analytics_server:
+#    ip: 192.168.57.29
+#    name: analytics.dev.wso2.org
 
 wso2::is_datasource: wso2_am_db
 wso2::am_datasource: wso2_am_db
@@ -201,18 +201,18 @@ wso2::enable_log_analyzer: false
 
 wso2::environments:
   apim_gateway_lan:
-    host: mgt-gw.dev.wso2.org
+    host: wso2am-gateway-manager
     port: 9443
-    api_endpoint_host: gw.dev.wso2.org
-    api_endpoint_port: 8280
-    secure_api_endpoint_port: 8243
+    api_endpoint_host: wso2am-gateway-worker
+    api_endpoint_port: 32014
+    secure_api_endpoint_port: 32015
     api_token_revoke_endpoint_port: 8280
     secure_api_token_revoke_endpoint_port: 8243
     username: "%{hiera('wso2::super_admin::username')}"
     password: "%{hiera('wso2::super_admin::password')}"
 
 wso2::apim_traffic_manager:
-  host: tm.dev.wso2.org
+  host: wso2am-traffic-manager
   port: 9443
   receiver_url_port: 9611
   auth_url_port: 9711
@@ -221,17 +221,17 @@ wso2::apim_traffic_manager:
   password: "%{hiera('wso2::super_admin::password')}"
 
 wso2::apim_keymanager:
-  host: km.dev.wso2.org
+  host: wso2am-key-manager
   port: 9443
   username: "%{hiera('wso2::super_admin::username')}"
   password: "%{hiera('wso2::super_admin::password')}"
 
 wso2::apim_store:
-  host: store.dev.wso2.org
+  host: wso2am-api-store
   port: 9443
 
 wso2::apim_publisher:
-  host: pub.dev.wso2.org
+  host: wso2am-api-publisher
   port: 9443
 
 # Secure vault configuration

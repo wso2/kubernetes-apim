@@ -13,8 +13,8 @@
 # limitations under the License.
 
 ---
-wso2::mgt_hostname: store.dev.wso2.org
-wso2::hostname: store.dev.wso2.org
+wso2::mgt_hostname: wso2am-api-store
+wso2::hostname: wso2am-api-store
 wso2::product_profile: api-store
 
 wso2::file_list:
@@ -79,18 +79,6 @@ wso2::master_datasources:
       default_auto_commit: "%{hiera('wso2::datasources::common::default_auto_commit')}"
       validation_query: "%{hiera('wso2::datasources::mysql::validation_query')}"
       validation_interval: "%{hiera('wso2::datasources::common::validation_interval')}"
-
-wso2::environments:
-  apim_gateway_lan:
-    host: wso2am-api-gateway-manager
-    port: 9443
-    api_endpoint_host: wso2am-api-gateway-worker
-    api_endpoint_port: 32006
-    secure_api_endpoint_port: 32007
-    api_token_revoke_endpoint_port: 8280
-    secure_api_token_revoke_endpoint_port: 8243
-    username: "%{hiera('wso2::super_admin::username')}"
-    password: "%{hiera('wso2::super_admin::password')}"
 
 wso2::enable_thrift_server: false
 wso2::enable_advance_throttling: true

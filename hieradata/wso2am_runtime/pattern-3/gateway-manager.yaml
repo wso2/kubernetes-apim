@@ -13,8 +13,8 @@
 # limitations under the License.
 
 ---
-wso2::mgt_hostname: mgt-gw.dev.wso2.org
-wso2::hostname: mgt-gw.dev.wso2.org
+wso2::mgt_hostname: wso2am-gateway-manager
+wso2::hostname: wso2am-gateway-manager
 wso2::product_profile: gateway-manager
 
 wso2::template_list:
@@ -22,6 +22,9 @@ wso2::template_list:
   - repository/deployment/server/synapse-configs/default/api/_RevokeAPI_.xml
   - repository/deployment/server/synapse-configs/default/api/_TokenAPI_.xml
   - repository/deployment/server/synapse-configs/default/api/_UserInfoAPI_.xml
+
+wso2::file_list:
+  - repository/components/dropins/kubernetes-membership-scheme-1.0.0-SNAPSHOT.jar
 
 wso2::clustering:
   enabled: true
@@ -31,8 +34,7 @@ wso2::clustering:
   local_member_port: 4000
   kubernetes:
     kubernetes_namespace: default
-    kubernetes_services: wso2am-gateway-manager
-#    kubernetes_services: wso2am-gateway-manager,wso2am-gateway-worker
+    kubernetes_services: wso2am-gateway-manager,wso2am-gateway-worker
 
 #wso2::dep_sync:
 #  enabled: true
