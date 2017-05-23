@@ -32,6 +32,11 @@ spec:
       port: 8243
       targetPort: 8243
       nodePort: 32013
+    -
+      name: 'servlet-https'
+      port: 9443
+      targetPort: 9443
+      nodePort: 32014
   # label keys and values that must match in order to receive traffic for this service
   selector:
     app: wso2am-gateway-manager
@@ -68,3 +73,13 @@ spec:
         -
           containerPort: 8243
           protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"
+        volumeMounts:
+        - name: apim-data-persistent-storage
+          mountPath: /mnt/wso2am-2.1.0/repository/deployment/server
+      volumes:
+      - name: apim-data-persistent-storage
+        persistentVolumeClaim:
+         claimName: apim-data-volume-claim

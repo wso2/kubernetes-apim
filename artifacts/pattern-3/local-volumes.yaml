@@ -30,7 +30,7 @@ kind: PersistentVolume
 metadata:
   name: local-pv-2
   labels:
-    type: local
+    type: local-apim
 spec:
   capacity:
     storage: 20Gi
@@ -52,3 +52,19 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: /tmp/data/pv-3
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-pv-2
+  labels:
+    app: local-pv-2
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  selector:
+    matchLabels:
+     type: local-apim
