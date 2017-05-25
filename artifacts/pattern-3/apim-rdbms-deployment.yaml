@@ -1,0 +1,76 @@
+# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+apiVersion: v1
+kind: Service
+metadata:
+  name: apim-rdbms
+  labels:
+    app: apim-rdbms
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: apim-rdbms
+    tier: apim-rdbms
+  clusterIP: None
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: apim-rdbms-volume-claim
+  labels:
+    app: apim-rdbms
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  selector:
+    matchLabels:
+     app: mysql
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: apim-rdbms-deployment
+  labels:
+    app: apim-rdbms
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: apim-rdbms
+        tier: apim-rdbms
+    spec:
+      containers:
+      - image: us.gcr.io/steam-talent-167709/apim-rdbms:2.1.0
+        name: apim-rdbms
+        imagePullPolicy: Always
+        env:
+          -
+            name: MYSQL_ROOT_PASSWORD
+            value: root
+        ports:
+        - containerPort: 3306
+          name: apim-rdbms
+        volumeMounts:
+        - name: apim-rdbms-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: apim-rdbms-persistent-storage
+        persistentVolumeClaim:
+          claimName: apim-rdbms-volume-claim

@@ -1,0 +1,106 @@
+# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+wso2::mgt_hostname: mgt-gw.dev.wso2.org
+wso2::hostname: mgt-gw.dev.wso2.org
+wso2::product_profile: gateway-manager
+
+wso2::template_list:
+  - repository/deployment/server/synapse-configs/default/api/_AuthorizeAPI_.xml
+  - repository/deployment/server/synapse-configs/default/api/_RevokeAPI_.xml
+  - repository/deployment/server/synapse-configs/default/api/_TokenAPI_.xml
+  - repository/deployment/server/synapse-configs/default/api/_UserInfoAPI_.xml
+
+wso2::clustering:
+  enabled: true
+  domain: gw.am.wso2.domain
+  sub_domain: mgt
+  local_member_host: "%{::ipaddress}"
+  local_member_port: 4000
+# WKA membership scheme
+  membership_scheme: wka
+  membership_scheme: wka
+  wka:
+    members:
+      -
+        hostname: 192.168.57.216
+        port: 4000
+      -
+        hostname: 192.168.57.247
+        port: 4000
+
+#wso2::dep_sync:
+#  enabled: true
+#  auto_checkout: true
+#  auto_commit: true
+#  repository_type: svn
+#  svn:
+#    url: https://svn.wso2.com/wso2/svn/people/samitha/depsyncrepo
+#    user: samitha@wso2.com
+#    password: password
+#    append_tenant_id: true
+
+wso2::registry_mounts:
+ wso2_config_db:
+   path: /_system/config
+   target_path: /_system/config
+   read_only: false
+   registry_root: /
+   enable_cache: true
+
+ wso2_gov_db:
+   path: /_system/governance
+   target_path: /_system/governance
+   read_only: false
+   registry_root: /
+   enable_cache: true
+
+# SSO Configuration
+wso2::sso_authentication:
+  enabled: false
+  login_page: /carbon/admin/login.jsp
+  service_provider_id: wso2am-gw
+  sso_service_url: https://is.dev.wso2.org:9443/samlsso
+  consumer_service_url: https://gw.dev.wso2.org:9443/acs
+
+#wso2::file_list:
+#   -  "repository/components/dropins/svnkit-all-1.8.7.wso2v1.jar"
+#   -  "repository/components/lib/trilead-ssh2-1.0.0-build215.jar"
+
+wso2::remove_file_list:
+   -  "repository/deployment/server/jaggeryapps"
+   -  "repository/deployment/server/webapps/am#sample#calculator#v1.war"
+   -  "repository/deployment/server/webapps/api#am#admin#v0.11.war"
+   -  "repository/deployment/server/webapps/api#am#publisher#v0.11.war"
+   -  "repository/deployment/server/webapps/api#am#store#v0.11.war"
+   -  "repository/deployment/server/webapps/authenticationendpoint.war"
+   -  "repository/deployment/server/webapps/client-registration#v0.11.war"
+   -  "repository/deployment/server/webapps/oauth2.war"
+   -  "repository/deployment/server/webapps/shindig.war"
+   -  "repository/deployment/server/webapps/throttle#data#v1.war"
+
+wso2::enable_thrift_server: false
+wso2::thrift_server_host: localhost
+wso2::key_validator_client_type: WSClient
+wso2::enable_advance_throttling: true
+wso2::enable_data_publisher: false
+wso2::enable_jms_connection_details: false
+wso2::disable_jms_event_parameters: true
+wso2::apply_gateway_specific_configurations: true
+
+#wso2::ports:
+#  proxyPort:
+#    http: 80
+#    https: 443

@@ -1,0 +1,246 @@
+# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+wso2::maintenance_mode: refresh
+wso2::install_mode: file_bucket
+wso2::patches_dir: repository/components/patches
+wso2::install_dir: "/mnt"
+wso2::user: wso2user
+wso2::group: wso2
+wso2::pack_dir: /mnt/packs
+wso2::carbon_home_symlink: "/mnt/%{::product_name}-%{::product_version}"
+wso2::pack_filename: "%{::product_name}-%{::product_version}.zip"
+wso2::pack_extracted_dir: "%{::product_name}-%{::product_version}"
+
+# Host mapping to be made in etc/hosts
+wso2::hosts_mapping:
+  localhost:
+    ip: 127.0.0.1
+    name: localhost
+  api_manager:
+    ip: 127.0.0.1
+    name: am.dev.wso2.org
+
+wso2::ipaddress: "%{::ipaddress}"
+wso2::fqdn: "%{::fqdn}"
+
+# System service name
+wso2::service_template: wso2base/wso2service.erb
+
+# Puppet template list to be populated
+wso2::template_list:
+  - repository/conf/carbon.xml
+  - repository/conf/user-mgt.xml
+  - repository/conf/registry.xml
+  - repository/conf/datasources/master-datasources.xml
+  - repository/conf/tomcat/catalina-server.xml
+  - repository/conf/axis2/axis2.xml
+  - repository/conf/security/authenticators.xml
+  - bin/wso2server.sh
+#  - repository/conf/security/cipher-text.properties
+#  - repository/conf/security/cipher-tool.properties
+#  - bin/ciphertool.sh
+#  - password-tmp
+
+# JVM settings
+wso2::jvm:
+  xms: 256m
+  xmx: 1024m
+  max_perm_size: 256m
+
+# Server ports configuration
+wso2::ports:
+  offset: 0
+
+# Hostname configuration
+wso2::hostname: "%{::clientcert}"
+wso2::mgt_hostname: "%{::clientcert}"
+
+# Clustering configuration
+wso2::worker_node: false
+wso2::clustering:
+  enabled: false
+  membership_scheme: wka
+  domain: wso2.carbon.domain
+  local_member_host: 127.0.0.1
+  local_member_port: 4000
+  sub_domain: worker
+  wka:
+     members:
+       -
+         hostname: 127.0.0.1
+         port: 4000
+  # multicast:
+  # kubernetes:
+  # ppaas:
+
+# Deployment synchronization configuration
+wso2::dep_sync:
+  enabled: false
+  auto_checkout: true
+  auto_commit: false
+  repository_type: svn
+  svn:
+     url: http://svnrepo.example.com/repos/
+     user: username
+     password: password
+     append_tenant_id: true
+
+# User management datasource defaults to local h2 db
+wso2::usermgt_datasource: wso2_carbon_db
+
+# Override this value if the Local registry space is mounted to a remote
+wso2::local_reg_datasource: wso2_carbon_db
+
+# WSO2 datasources
+wso2::master_datasources:
+  wso2_carbon_db:
+    name: WSO2_CARBON_DB
+    description: The datasource used for registry and user manager
+    driver_class_name: org.h2.Driver
+    url: jdbc:h2:repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000
+    username: "%{hiera('wso2::datasources::common::username')}"
+    password: "%{hiera('wso2::datasources::common::password')}"
+    jndi_config: jdbc/WSO2CarbonDB
+    max_active: "%{hiera('wso2::datasources::common::max_active')}"
+    max_wait: "%{hiera('wso2::datasources::common::max_wait')}"
+    test_on_borrow: "%{hiera('wso2::datasources::common::test_on_borrow')}"
+    default_auto_commit: "%{hiera('wso2::datasources::common::default_auto_commit')}"
+    validation_query: "%{hiera('wso2::datasources::h2::validation_query')}"
+    validation_interval: "%{hiera('wso2::datasources::common::validation_interval')}"
+#  wso2user_db:
+#    name: WSO2_USER_DB
+#    description: The datasource is used for user mangement and userstore
+#    driver_class_name: org.h2.Driver
+#    url: jdbc:h2:repository/database/WSO2CARBON_DB?autoReconnect=true
+#    username: "%{hiera('wso2::datasources::common::username')}"
+#    password: "%{hiera('wso2::datasources::common::password')}"
+#    jndi_config: jdbc/WSO2_USER_DB
+#    max_active: "%{hiera('wso2::datasources::common::max_active')}"
+#    max_wait: "%{hiera('wso2::datasources::common::max_wait')}"
+#    test_on_borrow: "%{hiera('wso2::datasources::common::test_on_borrow')}"
+#    default_auto_commit: "%{hiera('wso2::datasources::common::default_auto_commit')}"
+#    validation_query: "%{hiera('wso2::datasources::h2::validation_query')}"
+#    validation_interval: "%{hiera('wso2::datasources::common::validation_interval')}"
+
+# Common datasources configuration
+wso2::datasources::common::username: 'wso2carbon'
+wso2::datasources::common::password: 'wso2carbon'
+wso2::datasources::common::max_active: '50'
+wso2::datasources::common::max_idle: '20'
+wso2::datasources::common::max_wait: '60000'
+wso2::datasources::common::default_auto_commit: 'false'
+wso2::datasources::common::test_on_borrow: 'true'
+wso2::datasources::common::validation_interval: '30000'
+wso2::datasources::common::use_datasource_factory: 'false'
+
+# H2 datasources configuration
+wso2::datasources::h2::driver_class_name: 'org.h2.Driver'
+wso2::datasources::h2::validation_query: 'SELECT 1'
+
+# MySQL datasources configuration
+wso2::datasources::mysql::username: 'root'
+wso2::datasources::mysql::password: 'root'
+wso2::datasources::mysql::connector_jar: 'mysql-connector-java-5.1.36-bin.jar'
+wso2::datasources::mysql::driver_class_name: 'com.mysql.jdbc.Driver'
+wso2::datasources::mysql::validation_query: 'SELECT 1'
+
+# KeyStores
+wso2::key_stores:
+  # primary key store for the purpose of storing the keys for encrypting sensitive data
+  key_store:
+    location: 'repository/resources/security/wso2carbon.jks'
+    type: 'JKS'
+    password: "%{hiera('wso2::key_stores::key_store::password')}"
+    key_alias: 'wso2carbon'
+    key_password: "%{hiera('wso2::key_stores::key_store::key_password')}"
+  # Encrypt Decrypt Store will be used for encrypting and decrypting
+  registry_key_store:
+    location: 'repository/resources/security/wso2carbon.jks'
+    type: 'JKS'
+    password: "%{hiera('wso2::key_stores::registry_key_store::password')}"
+    key_alias: 'wso2carbon'
+    key_password: "%{hiera('wso2::key_stores::registry_key_store::key_password')}"
+  # key store for the purpose of storing the trusted certificates of public keys in keystores
+  trust_store:
+    location: 'repository/resources/security/client-truststore.jks'
+    type: 'JKS'
+    password: "%{hiera('wso2::key_stores::trust_store::password')}"
+  # keystore for authenticating the communication over SSL/TLS for Tomcat level connections
+  connector_key_store:
+    location: 'repository/resources/security/wso2carbon.jks'
+    password: "%{hiera('wso2::key_stores::connector_key_store::password')}"
+  user_trusted_rp_store:
+    location: 'repository/resources/security/userRP.jks'
+    type: 'JKS'
+    password: "%{hiera('wso2::key_stores::user_trusted_rp_store::password')}"
+    key_password: "%{hiera('wso2::key_stores::user_trusted_rp_store::key_password')}"
+
+# KeyStore passwords
+wso2::key_stores::key_store::password: 'wso2carbon'
+wso2::key_stores::key_store::key_password: 'wso2carbon'
+wso2::key_stores::registry_key_store::password: 'wso2carbon'
+wso2::key_stores::registry_key_store::key_password: 'wso2carbon'
+wso2::key_stores::trust_store::password: 'wso2carbon'
+wso2::key_stores::connector_key_store::password: 'wso2carbon'
+wso2::key_stores::user_trusted_rp_store::password: 'wso2carbon'
+wso2::key_stores::user_trusted_rp_store::key_password: 'wso2carbon'
+
+# Secure vault configuration
+wso2::enable_secure_vault: false
+
+wso2::sso_authentication:
+  enabled: false
+  login_page: /carbon/admin/login.jsp
+  service_provider_id: carbonServer
+  sso_service_url: https://localhost:9443/samlsso
+  consumer_service_url: https://localhost:9443/acs
+
+wso2::super_admin::username: 'admin'
+wso2::super_admin::password: 'admin'
+
+wso2::user_management:
+  admin_role: admin
+  admin_username: "%{hiera('wso2::super_admin::username')}"
+  admin_password: "%{hiera('wso2::super_admin::password')}"
+
+# class responsible for installing Java
+# Plugin any 3rd party class here as you wish
+java_class: wso2base::java
+
+# symlink to Java install directory
+java_home: /opt/java
+
+# Java preferences storage location
+java_prefs_system_root: "/home/%{hiera('wso2::user')}/.java"
+java_prefs_user_root: "/home/%{hiera('wso2::user')}/.java/.systemPrefs"
+
+# wso2base::java class automatic parameter lookup
+wso2base::java::java_install_dir: /mnt/jdk-8u112
+wso2base::java::java_source_file: jdk-8u112-linux-x64.tar.gz
+wso2base::java::wso2_user: "%{hiera('wso2::user')}"
+wso2base::java::wso2_group: "%{hiera('wso2::group')}"
+wso2base::java::java_home: /opt/java
+wso2base::java::prefs_system_root: "%{hiera('java_prefs_system_root')}"
+wso2base::java::prefs_user_root: "%{hiera('java_prefs_user_root')}"
+
+packages:
+  - zip
+  - unzip
+
+# setting a list of files to be removed from the pack. e.g:
+# wso2::remove_file_list:
+#   - "repository/deployment/server/synapse-configs/default/inbound-endpoints/WebSocketInboundEndpoint.xml"
+#   - "repository/deployment/server/synapse-configs/default/sequences/dispatchSeq.xml"
