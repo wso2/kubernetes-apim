@@ -17,9 +17,10 @@ metadata:
   name: local-pv-1
   labels:
     type: local
+    app: mysql
 spec:
   capacity:
-    storage: 20Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
@@ -30,10 +31,11 @@ kind: PersistentVolume
 metadata:
   name: local-pv-2
   labels:
-    type: local-apim
+    type: local
+    app: apim
 spec:
   capacity:
-    storage: 20Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
@@ -47,24 +49,8 @@ metadata:
     type: local
 spec:
   capacity:
-    storage: 20Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
     path: /tmp/data/pv-3
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: local-pv-2
-  labels:
-    app: local-pv-2
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
-  selector:
-    matchLabels:
-     type: local-apim

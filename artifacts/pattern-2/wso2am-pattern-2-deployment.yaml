@@ -69,7 +69,7 @@ spec:
         tier: wso2am-pattern-2
     spec:
       containers:
-      - image: us.gcr.io/steam-talent-167709/wso2am-kubernetes-pattern-2:2.1.0
+      - image: wso2am-kubernetes-pattern-2:2.1.0
         name: wso2am-pattern-2
         imagePullPolicy: Always
         ports:

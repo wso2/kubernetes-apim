@@ -36,7 +36,10 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 10Gi
+  selector:
+    matchLabels:
+     app: mysql
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment

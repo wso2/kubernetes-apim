@@ -54,7 +54,7 @@ spec:
         tier: wso2am-gateway-worker
     spec:
       containers:
-      - image: us.gcr.io/steam-talent-167709/wso2am-gateway-worker-kubernetes-pattern-3:2.1.0
+      - image: wso2am-gateway-worker-kubernetes-pattern-3:2.1.0
         name: wso2am-gateway-worker
         imagePullPolicy: Always
         env:
@@ -74,4 +74,4 @@ spec:
       volumes:
       - name: apim-data-persistent-storage
         persistentVolumeClaim:
-         claimName: apim-data-volume-claim
+         claimName: local-pv-2

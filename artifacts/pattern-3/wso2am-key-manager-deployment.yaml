@@ -59,7 +59,7 @@ spec:
         tier: wso2am-key-manager
     spec:
       containers:
-      - image: us.gcr.io/steam-talent-167709/wso2am-api-key-manager-kubernetes-pattern-3:2.1.0
+      - image: wso2am-api-key-manager-kubernetes-pattern-3:2.1.0
         name: wso2am-key-manager
         imagePullPolicy: Always
         env:

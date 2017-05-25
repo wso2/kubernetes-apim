@@ -64,7 +64,7 @@ spec:
         tier: wso2am-default
     spec:
       containers:
-      - image: wso2am-kubernetes:2.1.0
+      - image: wso2am-kubernetes-pattern-0:2.1.0
         name: wso2am-default
         imagePullPolicy: Always
         ports:
