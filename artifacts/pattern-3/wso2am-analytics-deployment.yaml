@@ -74,7 +74,7 @@ spec:
         tier: wso2am-analytics
     spec:
       containers:
-      - image: wso2am-analytics-kubernetes-pattern-1:2.1.0
+      - image: docker.wso2.com/wso2am-analytics-kubernetes-pattern-1:2.1.0
         name: wso2am-analytics
         imagePullPolicy: Always
         ports:

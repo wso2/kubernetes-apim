@@ -54,7 +54,7 @@ spec:
         tier: apim-rdbms
     spec:
       containers:
-      - image: apim-rdbms:2.1.0
+      - image: docker.wso2.com/apim-rdbms-kubernetes:2.1.0
         name: apim-rdbms
         imagePullPolicy: Always
         env:

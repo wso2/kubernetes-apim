@@ -57,7 +57,7 @@ spec:
         tier: apim-rdbms
     spec:
       containers:
-      - image: us.gcr.io/steam-talent-167709/apim-rdbms:2.1.0
+      - image: docker.wso2.com/apim-rdbms:2.1.0
         name: apim-rdbms
         imagePullPolicy: Always
         env:
