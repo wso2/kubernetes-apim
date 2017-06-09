@@ -54,7 +54,7 @@ spec:
         tier: wso2am-gateway-worker
     spec:
       containers:
-      - image: wso2am-gateway-worker-kubernetes-pattern-3:2.1.0
+      - image: docker.wso2.com/wso2am-gateway-worker-kubernetes-pattern-3:2.1.0
         name: wso2am-gateway-worker
         imagePullPolicy: Always
         env:
