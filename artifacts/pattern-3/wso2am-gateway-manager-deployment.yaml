@@ -75,7 +75,7 @@ spec:
         tier: wso2am-gateway-manager
     spec:
       containers:
-      - image: wso2am-gateway-manager-kubernetes-pattern-3:2.1.0
+      - image: docker.wso2.com/wso2am-gateway-manager-kubernetes-pattern-3:2.1.0
         name: wso2am-gateway-manager
         imagePullPolicy: Always
         env:

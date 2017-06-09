@@ -54,7 +54,7 @@ spec:
         tier: wso2am-api-store
     spec:
       containers:
-      - image: us.gcr.io/steam-talent-167709/wso2am-api-store-kubernetes-pattern-3:2.1.0
+      - image: docker.wso2.com/wso2am-api-store-kubernetes-pattern-3:2.1.0
         name: wso2am-api-store
         imagePullPolicy: Always
         env:
