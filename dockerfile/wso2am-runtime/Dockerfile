@@ -45,7 +45,7 @@ COPY scripts/*.sh /usr/local/bin/
 # Execute configuration script
 RUN bash /usr/local/bin/image-config.sh
 
-USER wso2user
+#USER wso2user
 WORKDIR /mnt
 
 # Expose transport ports
