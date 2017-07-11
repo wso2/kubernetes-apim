@@ -33,7 +33,7 @@ spec:
       volumes:
       - name: api-gateway-storage-volume
         persistentVolumeClaim:
-          claimName: api-gateway-storage
+          claimName: api-gateway-volume-claim
 
       containers:
       - image: wso2/wso2am-pattern-1-read-only:2.1.0
@@ -60,6 +60,12 @@ spec:
           protocol: "TCP"
         -
           containerPort: 9611
+          protocol: "TCP"
+        -
+          containerPort: 7711
+          protocol: "TCP"
+        -
+          containerPort: 7611
           protocol: "TCP"
 
         volumeMounts:

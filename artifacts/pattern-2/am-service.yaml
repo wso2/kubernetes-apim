@@ -47,4 +47,4 @@ spec:
   selector:
     app: wso2apim
     tier: wso2apim
-  sessionAffinity: ClientIP
+  clusterIP: None

@@ -1,4 +1,4 @@
-# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,54 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: v1
-kind: Service
-metadata:
-  name: wso2apim
-  labels:
-    app: wso2apim
-    tier: wso2apim
-spec:
-  type: NodePort
-  ports:
-    # ports that this service should serve on
-    -
-      name: 'pass-through-http'
-      port: 8280
-      targetPort: 8280
-      nodePort: 32006
-    -
-      name: 'pass-through-https'
-      port: 8243
-      targetPort: 8243
-      nodePort: 32007
-    -
-      name: 'servlet-http'
-      port: 9763
-      targetPort: 9763
-      nodePort: 32003
-    -
-      name: 'servlet-https'
-      port: 9443
-      targetPort: 9443
-      nodePort: 32004
-    -
-      name: 'jms-tcp'
-      port: 5672
-      targetPort: 5672
-      nodePort: 32005
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    app: wso2apim
-    tier: wso2apim
----
+
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: wso2apim
+  name: wso2apim-readonly
   labels:
     app: wso2apim
     tier: wso2apim
+    node: readonly
 spec:
   strategy:
     type: Recreate
@@ -67,6 +28,7 @@ spec:
       labels:
         app: wso2apim
         tier: wso2apim
+        node: readonly
     spec:
       volumes:
       - name: api-gateway-storage-volume
@@ -74,7 +36,7 @@ spec:
           claimName: api-gateway-storage
 
       containers:
-      - image: wso2/wso2am-pattern-1:2.1.0
+      - image: wso2/wso2am-pattern-1-read-only:2.1.0
         name: wso2apim
         imagePullPolicy: IfNotPresent
         ports:
@@ -93,6 +55,14 @@ spec:
         -
           containerPort: 5672
           protocol: "TCP"
+        -
+          containerPort: 9711
+          protocol: "TCP"
+        -
+          containerPort: 9611
+          protocol: "TCP"
+
         volumeMounts:
-          - mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
-            name: api-gateway-storage-volume
+        -
+          mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
+          name: api-gateway-storage-volume

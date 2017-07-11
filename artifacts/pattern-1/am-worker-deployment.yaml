@@ -15,33 +15,44 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: apim-rdbms-deployment
+  name: wso2apim
   labels:
-    app: apim-rdbms
+    app: wso2apim
+    tier: wso2apim
+    node: node2
 spec:
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: apim-rdbms
-        tier: apim-rdbms
+        app: wso2apim
+        tier: wso2apim
+        node: node2
     spec:
       containers:
-      - image: docker.wso2.com/apim-rdbms-kubernetes:2.1.0
-        name: apim-rdbms
-        imagePullPolicy: Always
-        env:
-          -
-            name: MYSQL_ROOT_PASSWORD
-            value: root
+      - image: wso2/wso2am-pattern-1:2.1.0
+        name: wso2apim
+        imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 3306
-          name: apim-rdbms
-        volumeMounts:
-        - name: apim-rdbms-persistent-storage
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: apim-rdbms-persistent-storage
-        persistentVolumeClaim:
-          claimName: apim-rdbms-volume-claim
+        -
+          containerPort: 8280
+          protocol: "TCP"
+        -
+          containerPort: 8243
+          protocol: "TCP"
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"
+        -
+          containerPort: 7611
+          protocol: "TCP"
+        -
+          containerPort: 7711
+          protocol: "TCP"
+        -
+          containerPort: 5672
+          protocol: "TCP"

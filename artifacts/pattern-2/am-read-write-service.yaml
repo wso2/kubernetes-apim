@@ -15,36 +15,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2apim
+  name: wso2apim-readwrite
   labels:
-    app: wso2apim
-    tier: wso2apim
+    node: readwrite
 spec:
-  type: NodePort
   ports:
     # ports that this service should serve on
-    -
-      name: 'pass-through-http'
-      port: 8280
-      targetPort: 8280
-      nodePort: 32001
-    -
-      name: 'pass-through-https'
-      port: 8243
-      targetPort: 8243
-      nodePort: 32002
-    -
-      name: 'servlet-http'
-      port: 9763
-      targetPort: 9763
-      nodePort: 32003
-    -
-      name: 'servlet-https'
-      port: 9443
-      targetPort: 9443
-      nodePort: 32004
+    - port: 5672
+    - port: 9711
+    - port: 9611
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    app: wso2apim
-    tier: wso2apim
-  sessionAffinity: ClientIP
+    node: readwrite

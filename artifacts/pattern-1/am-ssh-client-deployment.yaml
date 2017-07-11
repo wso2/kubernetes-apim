@@ -33,7 +33,7 @@ spec:
 
       containers:
       - image: wso2/ssh-client:latest
-        name: wso2apim-ssh-server
+        name: wso2apim-ssh-client
         imagePullPolicy: IfNotPresent
         ports:
         -

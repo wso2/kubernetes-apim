@@ -12,39 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: Service
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: wso2apim
   labels:
     app: wso2apim
     tier: wso2apim
 spec:
-  type: NodePort
-  ports:
-    # ports that this service should serve on
-    -
-      name: 'pass-through-http'
-      port: 8280
-      targetPort: 8280
-      nodePort: 32001
-    -
-      name: 'pass-through-https'
-      port: 8243
-      targetPort: 8243
-      nodePort: 32002
-    -
-      name: 'servlet-http'
-      port: 9763
-      targetPort: 9763
-      nodePort: 32003
-    -
-      name: 'servlet-https'
-      port: 9443
-      targetPort: 9443
-      nodePort: 32004
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    app: wso2apim
-    tier: wso2apim
-  sessionAffinity: ClientIP
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wso2apim
+        tier: wso2apim
+    spec:
+      containers:
+      - image: wso2am-kubernetes-pattern-1:2.1.0
+        name: wso2am-pattern-1
+        imagePullPolicy: Always
+        ports:
+        -
+          containerPort: 8280
+          protocol: "TCP"
+        -
+          containerPort: 8243
+          protocol: "TCP"
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"
+        -
+          containerPort: 5672
+          protocol: "TCP"

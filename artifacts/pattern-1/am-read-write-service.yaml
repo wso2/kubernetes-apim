@@ -21,9 +21,31 @@ metadata:
 spec:
   ports:
     # ports that this service should serve on
-    - port: 5672
-    - port: 9711
-    - port: 9611
+    -
+      name: "jms-tcp"
+      protocol: TCP
+      port: 5672
+    -
+      name: "binary-secure"
+      protocol: TCP
+      port: 9711
+    -
+      name: "binary"
+      protocol: TCP
+      port: 9611
+    -
+      name: "thrift-secure"
+      protocol: TCP
+      port: 7711
+    -
+      name: "thrift"
+      protocol: TCP
+      port: 7611
+    -
+      name: "ssh"
+      protocol: TCP
+      port: 22
   # label keys and values that must match in order to receive traffic for this service
   selector:
     node: readwrite
+  clusterIP: None

@@ -15,36 +15,28 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2apim
+  name: wso2apim-readonly
   labels:
-    app: wso2apim
-    tier: wso2apim
+    node: readonly
 spec:
   type: NodePort
   ports:
     # ports that this service should serve on
     -
-      name: 'pass-through-http'
-      port: 8280
-      targetPort: 8280
-      nodePort: 32001
+      name: 'jms-tcp'
+      port: 5672
+      targetPort: 5672
+      nodePort: 32005
     -
-      name: 'pass-through-https'
-      port: 8243
-      targetPort: 8243
-      nodePort: 32002
+      name: 'thrift-secure'
+      port: 7711
+      targetPort: 7711
+      nodePort: 32006
     -
-      name: 'servlet-http'
-      port: 9763
-      targetPort: 9763
-      nodePort: 32003
-    -
-      name: 'servlet-https'
-      port: 9443
-      targetPort: 9443
-      nodePort: 32004
+      name: 'thrift'
+      port: 7611
+      targetPort: 7611
+      nodePort: 32007
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    app: wso2apim
-    tier: wso2apim
-  sessionAffinity: ClientIP
+    node: readonly

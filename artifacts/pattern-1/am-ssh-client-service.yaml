@@ -15,9 +15,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2apim-ssh-server
+  name: wso2apim-ssh-client
   labels:
-    node: wso2apim-ssh-server
+    node: wso2apim-ssh-client
 spec:
   ports:
     # ports that this service should serve on
@@ -27,5 +27,5 @@ spec:
       port: 22
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    node: readonly
+    node: wso2apim-ssh-client
   clusterIP: None

@@ -11,33 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: v1
-kind: Service
-metadata:
-  name: apim-rdbms
-  labels:
-    app: apim-rdbms
-spec:
-  ports:
-    - port: 3306
-  selector:
-    app: apim-rdbms
-    tier: apim-rdbms
-  clusterIP: None
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: apim-rdbms-volume-claim
-  labels:
-    app: apim-rdbms
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
----
+
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
