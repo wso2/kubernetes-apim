@@ -1,4 +1,4 @@
-# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,13 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2am-pattern-1
+  name: wso2apim
   labels:
-    app: wso2am-pattern-1
-    tier: wso2am-pattern-1
+    app: wso2apim
+    tier: wso2apim
 spec:
   type: NodePort
   ports:
@@ -42,49 +43,8 @@ spec:
       port: 9443
       targetPort: 9443
       nodePort: 32004
-    -
-      name: 'jms-tcp'
-      port: 5672
-      targetPort: 5672
-      nodePort: 32005
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    app: wso2am-pattern-1
-    tier: wso2am-pattern-1
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: wso2am-pattern-1
-  labels:
-    app: wso2am-pattern-1
-    tier: wso2am-pattern-1
-spec:
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app: wso2am-pattern-1
-        tier: wso2am-pattern-1
-    spec:
-      containers:
-      - image: wso2am-kubernetes-pattern-1:2.1.0
-        name: wso2am-pattern-1
-        imagePullPolicy: Always
-        ports:
-        -
-          containerPort: 8280
-          protocol: "TCP"
-        -
-          containerPort: 8243
-          protocol: "TCP"
-        -
-          containerPort: 9763
-          protocol: "TCP"
-        -
-          containerPort: 9443
-          protocol: "TCP"
-        -
-          containerPort: 5672
-          protocol: "TCP"
+    app: wso2apim
+    tier: wso2apim
+  clusterIP: None
