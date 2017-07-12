@@ -17,7 +17,7 @@ kind: Deployment
 metadata:
   name: wso2apim-worker
   labels:
-    app: wso2apim
+    app: wso2apim-gw
     node: worker
 spec:
   strategy:
@@ -25,7 +25,7 @@ spec:
   template:
     metadata:
       labels:
-        app: wso2apim
+        app: wso2apim-gw
         node: worker
     spec:
       volumes:
@@ -34,7 +34,7 @@ spec:
           claimName: api-gateway-volume-claim
 
       containers:
-      - image: wso2/wso2am-pattern-1-read-only:2.1.0
+      - image: wso2/wso2am-pattern-2-gw-worker:2.1.0
         name: wso2apim
         imagePullPolicy: IfNotPresent
         ports:

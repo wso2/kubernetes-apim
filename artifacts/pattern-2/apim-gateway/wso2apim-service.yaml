@@ -17,7 +17,7 @@ kind: Service
 metadata:
   name: wso2apim-gw
   labels:
-    app: wso2apim
+    app: wso2apim-gw
 spec:
   type: NodePort
   ports:
@@ -44,5 +44,5 @@ spec:
       nodePort: 32006
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    app: wso2apim
+    app: wso2apim-gw
   sessionAffinity: ClientIP
