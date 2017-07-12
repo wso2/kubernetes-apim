@@ -22,6 +22,14 @@ spec:
   ports:
     # ports that this service should serve on
     -
+      name: "http"
+      protocol: TCP
+      port: 9763
+    -
+      name: "https"
+      protocol: TCP
+      port: 9443
+    -
       name: "jms-tcp"
       protocol: TCP
       port: 5672
