@@ -11,46 +11,36 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: v1
-kind: PersistentVolume
+
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
-  name: local-pv-1
+  name: wso2apim-km
   labels:
-    type: local
-    app: mysql
+    app: wso2apim-km
 spec:
-  capacity:
-    storage: 10Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: /tmp/data/pv-1
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: local-pv-2
-  labels:
-    type: local
-    app: apim
-spec:
-  capacity:
-    storage: 10Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: /tmp/data/pv-2
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: local-pv-3
-  labels:
-    type: local
-spec:
-  capacity:
-    storage: 10Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: /tmp/data/pv-3
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wso2apim-km
+    spec:
+      containers:
+      - image: wso2/wso2am-pattern-3-km:2.1.0
+        name: wso2apim-km
+        imagePullPolicy: IfNotPresent
+        ports:
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"
+        -
+          containerPort: 7611
+          protocol: "TCP"
+        -
+          containerPort: 7711
+          protocol: "TCP"

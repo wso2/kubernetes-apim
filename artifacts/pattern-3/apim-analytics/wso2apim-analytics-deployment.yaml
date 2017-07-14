@@ -29,7 +29,7 @@ spec:
         tier: wso2apim-analytics
     spec:
       containers:
-      - image: wso2/wso2am-analytics-pattern-1:2.1.0
+      - image: wso2/wso2am-pattern-1-analytics:2.1.0
         name: wso2apim-analytics
         imagePullPolicy: IfNotPresent
         ports:
