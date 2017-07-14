@@ -574,8 +574,8 @@
         <DataPublisher>
             <Enabled>true</Enabled>
             <Type>Binary</Type>
-            <ReceiverUrlGroup>{tcp://${carbon.local.ip}:${receiver.url.port}, tcp://wso2apim-pubstore-tm-km-2:9611}</ReceiverUrlGroup>
-            <AuthUrlGroup>{ssl://${carbon.local.ip}:${auth.url.port}, ssl://wso2apim-pubstore-tm-km-2:9711}</AuthUrlGroup>
+            <ReceiverUrlGroup>{tcp://${carbon.local.ip}:${receiver.url.port}, tcp://wso2apim-pubstore-tm-2:9611}</ReceiverUrlGroup>
+            <AuthUrlGroup>{ssl://${carbon.local.ip}:${auth.url.port}, ssl://wso2apim-pubstore-tm-2:9711}</AuthUrlGroup>
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
             <DataPublisherPool>
@@ -610,7 +610,7 @@
                 <transport.jms.DestinationType>topic</transport.jms.DestinationType>
                 <java.naming.factory.initial>org.wso2.andes.jndi.PropertiesFileInitialContextFactory</java.naming.factory.initial>
                 <!--connectionfactory.TopicConnectionFactory>amqp://${jms.username}:${jms.password}@clientid/carbon?brokerlist='${jms.url}'</connectionfactory.TopicConnectionFactory-->
-		<connectionfactory.TopicConnectionFactory>amqp://admin:admin@clientID/carbon?failover='roundrobin'%26cyclecount='2'%26brokerlist='tcp://localhost:5672?retries='5'%26connectdelay='50';tcp://wso2apim-pubstore-tm-km-2:5672?retries='5'%26connectdelay='50''</connectionfactory.TopicConnectionFactory>
+		<connectionfactory.TopicConnectionFactory>amqp://admin:admin@clientID/carbon?failover='roundrobin'%26cyclecount='2'%26brokerlist='tcp://localhost:5672?retries='5'%26connectdelay='50';tcp://wso2apim-pubstore-tm-2:5672?retries='5'%26connectdelay='50''</connectionfactory.TopicConnectionFactory>
             </JMSConnectionParameters>
             <JMSTaskManager>
                 <MinThreadPoolSize>20</MinThreadPoolSize>

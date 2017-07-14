@@ -264,7 +264,7 @@
              In distributed deployment we should configure this property in key manager node by pointing
              gateway https( /http, we recommend users to use 'https' endpoints for security purpose) url.
              Also please note that we should point gateway revoke service to key manager -->
-        <RevokeAPIURL>https://wso2apim-gw:9443/revoke</RevokeAPIURL>
+        <RevokeAPIURL>https://wso2apim-gw:8243/revoke</RevokeAPIURL>
         <!-- Whether to encrypt tokens when storing in the Database
         Note: If changing this value to true, change the value of <TokenPersistenceProcessor> to
         org.wso2.carbon.identity.oauth.tokenprocessor.EncryptionDecryptionPersistenceProcessor in the identity.xml -->
@@ -574,8 +574,8 @@
         <DataPublisher>
             <Enabled>true</Enabled>
             <Type>Binary</Type>
-            <ReceiverUrlGroup>{tcp://${carbon.local.ip}:${receiver.url.port}, tcp://wso2apim-pubstore-tm-km-2:9611}</ReceiverUrlGroup>
-            <AuthUrlGroup>{ssl://${carbon.local.ip}:${auth.url.port}, ssl://wso2apim-pubstore-tm-km-2:9711}</AuthUrlGroup>
+            <ReceiverUrlGroup>{tcp://wso2apim-pubstore-tm-1:9611, tcp://wso2apim-pubstore-tm-2:9611}</ReceiverUrlGroup>
+            <AuthUrlGroup>{ssl://wso2apim-pubstore-tm-1:9711, ssl://wso2apim-pubstore-tm-2:9711}</AuthUrlGroup>
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
             <DataPublisherPool>
@@ -610,7 +610,7 @@
                 <transport.jms.DestinationType>topic</transport.jms.DestinationType>
                 <java.naming.factory.initial>org.wso2.andes.jndi.PropertiesFileInitialContextFactory</java.naming.factory.initial>
                 <!--connectionfactory.TopicConnectionFactory>amqp://${jms.username}:${jms.password}@clientid/carbon?brokerlist='${jms.url}'</connectionfactory.TopicConnectionFactory-->
-		<connectionfactory.TopicConnectionFactory>amqp://admin:admin@clientID/carbon?failover='roundrobin'%26cyclecount='2'%26brokerlist='tcp://localhost:5672?retries='5'%26connectdelay='50';tcp://wso2apim-pubstore-tm-km-2:5672?retries='5'%26connectdelay='50''</connectionfactory.TopicConnectionFactory>
+		<connectionfactory.TopicConnectionFactory>amqp://admin:admin@clientID/carbon?failover='roundrobin'%26cyclecount='2'%26brokerlist='tcp://wso2apim-pubstore-tm-1:5672?retries='5'%26connectdelay='50';tcp://wso2apim-pubstore-tm-2:5672?retries='5'%26connectdelay='50''</connectionfactory.TopicConnectionFactory>
             </JMSConnectionParameters>
             <JMSTaskManager>
                 <MinThreadPoolSize>20</MinThreadPoolSize>
