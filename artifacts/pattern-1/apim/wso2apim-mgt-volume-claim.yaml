@@ -13,19 +13,14 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: Service
+kind: PersistentVolumeClaim
 metadata:
-  name: wso2apim-ssh-server
+  name: apim-mgt-volume-claim
   labels:
-    node: wso2apim-ssh-server
+    app: apim-gateway
 spec:
-  ports:
-    # ports that this service should serve on
-    -
-      name: "ssh"
-      protocol: TCP
-      port: 22
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    node: wso2apim-ssh-server
-  clusterIP: None
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

@@ -29,12 +29,13 @@ spec:
         node: manager-worker
     spec:
       volumes:
-      - name: api-gateway-storage-volume
+      - name: apim-mgt-storage-volume
         persistentVolumeClaim:
-          claimName: api-gateway-volume-claim
+          claimName: apim-mgt-volume-claim
 
       containers:
-      - image: wso2/wso2am-pattern-1-manager-worker:2.1.0
+      -
+        image: wso2/wso2am-pattern-1-manager-worker:2.1.0
         name: wso2apim
         imagePullPolicy: IfNotPresent
         ports:
@@ -72,4 +73,18 @@ spec:
         volumeMounts:
         -
           mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
-          name: api-gateway-storage-volume
+          name: apim-mgt-storage-volume
+
+      -
+        image: wso2/sshd:latest
+        name: wso2apim-sshd
+        imagePullPolicy: IfNotPresent
+        ports:
+        -
+          containerPort: 22
+          protocol: "TCP"
+
+        volumeMounts:
+        -
+          mountPath: "/home/wso2user/apim-artifacts"
+          name: apim-mgt-storage-volume
