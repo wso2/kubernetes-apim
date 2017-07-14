@@ -5,6 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ARG USER=wso2user
 ARG USER_ID=1000000000
 ARG USER_HOME=/home/wso2user
+ARG APIM_ARTIFACTS_LOCATION=${USER_HOME}/apim-artifacts
 
 RUN apt-get install -y --no-install-recommends --no-install-suggests \
         telnet \
@@ -29,11 +30,11 @@ RUN mkdir -p ${USER_HOME}/.ssh \
         && echo 'crontab -u ${USER} ${USER_HOME}/artifact-sync-cron' >> ${USER_HOME}/scripts/init.sh \
         && echo 'tailf ${USER_HOME}/cron/logs/artifact-sync-cron.log' >> ${USER_HOME}/scripts/init.sh \
         && chmod 0755 ${USER_HOME}/scripts/init.sh \
-	&& mkdir -p ${USER_HOME}/artifacts-repo \
+	&& mkdir -p ${APIM_ARTIFACTS_LOCATION}/ \
 	&& chown -R ${USER_ID} ${USER_HOME} \
         && chmod 0755 ${USER_HOME} \
         && chmod 0700 ${USER_HOME}/.ssh \
-        && chmod 0644 ${USER_HOME}/.ssh/id_rsa
+        && chmod 0600 ${USER_HOME}/.ssh/id_rsa
 
 #USER ${USER_ID}
 

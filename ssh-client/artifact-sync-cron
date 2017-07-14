@@ -1,2 +1,0 @@
-* * * * * rsync --delete -arve "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" wso2user@wso2apim-ssh-server:/home/wso2user/ /home/wso2user/artifacts-repo >> /home/wso2user/cron/logs/artifact-sync-cron.log 2>&1
-
