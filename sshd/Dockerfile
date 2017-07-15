@@ -26,9 +26,12 @@ COPY id_rsa.pub sshd_config ${USER_HOME}/
 
 RUN mkdir -p ${USER_HOME}/scripts \
         && echo '#!/bin/bash' > ${USER_HOME}/scripts/init.sh \
+	&& echo 'set -e' >> ${USER_HOME}/scripts/init.sh \
+	&& echo 'echo 'generating new server keys with ssh-keygen -A'' >> ${USER_HOME}/scripts/init.sh \
         && echo 'ssh-keygen -A' >> ${USER_HOME}/scripts/init.sh \
 	### useful for debugging ssh related issues
 	&& echo 'rsyslogd' >> ${USER_HOME}/scripts/init.sh \
+	&& echo 'echo 'starting sshd deamon'' >> ${USER_HOME}/scripts/init.sh \
         && echo '/usr/sbin/sshd -D' >> ${USER_HOME}/scripts/init.sh \
 	&& chmod 0755 ${USER_HOME}/scripts/init.sh \
 	# && chown -R ${USER} /etc/ssh \

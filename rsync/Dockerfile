@@ -26,7 +26,10 @@ RUN mkdir -p ${USER_HOME}/.ssh \
 	&& touch ${USER_HOME}/cron/logs/artifact-sync-cron.log \
         && mkdir -p ${USER_HOME}/scripts/ \
         && echo '#!/bin/bash' > ${USER_HOME}/scripts/init.sh \
+	&& echo 'set -e' >> ${USER_HOME}/scripts/init.sh \
+	&& echo 'echo 'starting cron deamon'' >> ${USER_HOME}/scripts/init.sh \
         && echo 'cron' >> ${USER_HOME}/scripts/init.sh \
+	&& echo 'echo 'scheduling artifact sync cron job'' >> ${USER_HOME}/scripts/init.sh \
         && echo 'crontab -u ${USER} ${USER_HOME}/artifact-sync-cron' >> ${USER_HOME}/scripts/init.sh \
         && echo 'tailf ${USER_HOME}/cron/logs/artifact-sync-cron.log' >> ${USER_HOME}/scripts/init.sh \
         && chmod 0755 ${USER_HOME}/scripts/init.sh \

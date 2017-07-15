@@ -1,2 +1,2 @@
-* * * * * rsync --delete -arve "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" wso2user@wso2apim-manager-worker:/home/wso2user/apim-artifacts/ /home/wso2user/apim-artifacts/ >> /home/wso2user/cron/logs/artifact-sync-cron.log 2>&1
+*/2 * * * * rsync --delete -arve "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" wso2user@wso2apim-manager-worker:/home/wso2user/apim-artifacts/ /home/wso2user/apim-artifacts/ >> /home/wso2user/cron/logs/artifact-sync-cron.log 2>&1
 
