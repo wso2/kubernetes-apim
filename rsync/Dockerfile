@@ -18,22 +18,24 @@ RUN useradd --system --uid ${USER_ID} --gid 0 --create-home --home-dir ${USER_HO
 
 EXPOSE 22
 
-COPY id_rsa artifact-sync-cron ${USER_HOME}/
+COPY id_rsa artifact-sync-cron init.sh ${USER_HOME}/
 
 RUN mkdir -p ${USER_HOME}/.ssh \
         && mv ${USER_HOME}/id_rsa ${USER_HOME}/.ssh/ \
 	&& mkdir -p ${USER_HOME}/cron/logs/ \
 	&& touch ${USER_HOME}/cron/logs/artifact-sync-cron.log \
         && mkdir -p ${USER_HOME}/scripts/ \
-        && echo '#!/bin/bash' > ${USER_HOME}/scripts/init.sh \
-	&& echo 'set -e' >> ${USER_HOME}/scripts/init.sh \
-	&& echo 'echo 'starting cron deamon'' >> ${USER_HOME}/scripts/init.sh \
-        && echo 'cron' >> ${USER_HOME}/scripts/init.sh \
-	&& echo 'echo 'scheduling artifact sync cron job'' >> ${USER_HOME}/scripts/init.sh \
-        && echo 'crontab -u ${USER} ${USER_HOME}/artifact-sync-cron' >> ${USER_HOME}/scripts/init.sh \
-        && echo 'tailf ${USER_HOME}/cron/logs/artifact-sync-cron.log' >> ${USER_HOME}/scripts/init.sh \
+#        && echo '#!/bin/bash' > ${USER_HOME}/scripts/init.sh \
+#	 && echo 'set -e' >> ${USER_HOME}/scripts/init.sh \
+#	 && echo 'echo 'starting cron deamon'' >> ${USER_HOME}/scripts/init.sh \
+#        && echo 'cron' >> ${USER_HOME}/scripts/init.sh \
+#	 && echo 'echo 'scheduling artifact sync cron job'' >> ${USER_HOME}/scripts/init.sh \
+#        && echo 'crontab -u ${USER} ${USER_HOME}/artifact-sync-cron' >> ${USER_HOME}/scripts/init.sh \
+#        && echo 'tailf ${USER_HOME}/cron/logs/artifact-sync-cron.log' >> ${USER_HOME}/scripts/init.sh \
+	&& cat  ${USER_HOME}/init.sh > ${USER_HOME}/scripts/init.sh \
         && chmod 0755 ${USER_HOME}/scripts/init.sh \
 	&& mkdir -p ${APIM_ARTIFACTS_LOCATION}/ \
+	&& chmod 0774 ${APIM_ARTIFACTS_LOCATION}/ \
 	&& chown -R ${USER_ID} ${USER_HOME} \
         && chmod 0755 ${USER_HOME} \
         && chmod 0700 ${USER_HOME}/.ssh \

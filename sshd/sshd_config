@@ -21,7 +21,7 @@ ServerKeyBits 1024
 
 # Logging
 SyslogFacility AUTH
-LogLevel VERBOSE
+LogLevel INFO
 
 # Authentication:
 LoginGraceTime 120
