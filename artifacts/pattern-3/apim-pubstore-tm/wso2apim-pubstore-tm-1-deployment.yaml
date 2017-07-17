@@ -29,9 +29,9 @@ spec:
         node: pubstore-tm-1
     spec:
       volumes:
-      - name: api-tm-storage-volume
+      - name: apim-tm1-storage-volume
         persistentVolumeClaim:
-          claimName: api-tm-volume-claim
+          claimName: apim-tm1-volume-claim
 
       containers:
       - image: wso2/wso2am-pattern-3-apim-pubstore-tm-1:2.1.0
@@ -72,4 +72,18 @@ spec:
         volumeMounts:
         -
           mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
-          name: api-tm-storage-volume
+          name: apim-tm1-storage-volume
+
+      -
+        image: wso2/sshd:latest
+        name: wso2apim-sshd
+        imagePullPolicy: IfNotPresent
+        ports:
+        -
+          containerPort: 22
+          protocol: "TCP"
+
+        volumeMounts:
+        -
+          mountPath: "/home/wso2user/apim-artifacts"
+          name: apim-tm1-storage-volume

@@ -45,6 +45,14 @@ spec:
       name: "ssh"
       protocol: TCP
       port: 22
+    -
+      name: "http"
+      protocol: TCP
+      port: 9763
+    -
+      name: "https"
+      protocol: TCP
+      port: 9443
   # label keys and values that must match in order to receive traffic for this service
   selector:
     node: pubstore-tm-km-1

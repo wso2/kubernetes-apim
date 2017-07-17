@@ -15,9 +15,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: api-gateway-volume-claim
+  name: apim-tm1-volume-claim
   labels:
-    app: apim-gateway
+    app: apim-tm1
 spec:
   accessModes:
     - ReadWriteMany
