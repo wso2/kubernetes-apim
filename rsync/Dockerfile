@@ -25,13 +25,6 @@ RUN mkdir -p ${USER_HOME}/.ssh \
 	&& mkdir -p ${USER_HOME}/cron/logs/ \
 	&& touch ${USER_HOME}/cron/logs/artifact-sync-cron.log \
         && mkdir -p ${USER_HOME}/scripts/ \
-#        && echo '#!/bin/bash' > ${USER_HOME}/scripts/init.sh \
-#	 && echo 'set -e' >> ${USER_HOME}/scripts/init.sh \
-#	 && echo 'echo 'starting cron deamon'' >> ${USER_HOME}/scripts/init.sh \
-#        && echo 'cron' >> ${USER_HOME}/scripts/init.sh \
-#	 && echo 'echo 'scheduling artifact sync cron job'' >> ${USER_HOME}/scripts/init.sh \
-#        && echo 'crontab -u ${USER} ${USER_HOME}/artifact-sync-cron' >> ${USER_HOME}/scripts/init.sh \
-#        && echo 'tailf ${USER_HOME}/cron/logs/artifact-sync-cron.log' >> ${USER_HOME}/scripts/init.sh \
 	&& cat  ${USER_HOME}/init.sh > ${USER_HOME}/scripts/init.sh \
         && chmod 0755 ${USER_HOME}/scripts/init.sh \
 	&& mkdir -p ${APIM_ARTIFACTS_LOCATION}/ \
@@ -41,10 +34,7 @@ RUN mkdir -p ${USER_HOME}/.ssh \
         && chmod 0700 ${USER_HOME}/.ssh \
         && chmod 0600 ${USER_HOME}/.ssh/id_rsa
 
-#USER ${USER_ID}
-
 WORKDIR ${USER_HOME}
 ENV USER_HOME=${USER_HOME} USER=${USER} 
 
-#CMD exec cron && tailf ${USER_HOME}/cron/logs/artifact-sync-cron.log 
 CMD exec ${USER_HOME}/scripts/init.sh
