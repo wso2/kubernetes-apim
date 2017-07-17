@@ -1,0 +1,9 @@
+FROM wso2/rsync:latest
+
+ARG USER=wso2user
+ARG USER_HOME=/home/wso2user
+
+# copy the artifact-sync-cron with the correct hostname
+COPY artifact-sync-cron ${USER_HOME}/
+ 
+RUN chown ${USER} ${USER_HOME}/artifact-sync-cron 
