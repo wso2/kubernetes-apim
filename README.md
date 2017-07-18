@@ -1,1 +1,1 @@
-# kubernetes-artifacts-apim
+# kubernetes-artifacts-apim v3.0.0
