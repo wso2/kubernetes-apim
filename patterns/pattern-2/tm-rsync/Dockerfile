@@ -1,4 +1,4 @@
-FROM wso2/rsync:latest
+FROM wso2/rsync:1.0.0
 
 ARG USER=wso2user
 ARG USER_HOME=/home/wso2user
