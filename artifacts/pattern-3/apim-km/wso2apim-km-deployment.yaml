@@ -28,7 +28,7 @@ spec:
         app: wso2apim-km
     spec:
       containers:
-      - image: wso2/wso2am-pattern-3-km:2.1.0
+      - image: wso2/wso2am-km-pattern-3:2.1.0
         name: wso2apim-km
         imagePullPolicy: IfNotPresent
         ports:
