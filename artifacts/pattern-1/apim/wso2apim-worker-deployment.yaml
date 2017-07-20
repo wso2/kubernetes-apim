@@ -19,6 +19,7 @@ metadata:
   labels:
     app: wso2apim
     node: worker
+    pattern: wso2apim-pattern-1
 spec:
   strategy:
     type: Recreate
@@ -27,6 +28,7 @@ spec:
       labels:
         app: wso2apim
         node: worker
+        pattern: wso2apim-pattern-1
     spec:
       volumes:
       - name: apim-worker-storage-volume

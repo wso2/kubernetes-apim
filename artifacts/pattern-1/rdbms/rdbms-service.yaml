@@ -18,10 +18,12 @@ metadata:
   name: apim-rdbms
   labels:
     app: apim-rdbms
+    pattern: wso2apim-pattern-1
 spec:
   ports:
     - port: 3306
   selector:
     app: apim-rdbms
     tier: apim-rdbms
+    pattern: wso2apim-pattern-1
   clusterIP: None

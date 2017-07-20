@@ -18,6 +18,7 @@ metadata:
   name: apim-rdbms-volume-claim
   labels:
     app: apim-rdbms
+    pattern: wso2apim-pattern-1
 spec:
   accessModes:
     - ReadWriteOnce

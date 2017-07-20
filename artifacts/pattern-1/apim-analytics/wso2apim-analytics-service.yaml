@@ -19,6 +19,7 @@ metadata:
   labels:
     app: wso2apim-analytics
     tier: wso2apim-analytics
+    pattern: wso2apim-pattern-1
 spec:
   type: NodePort
   ports:
@@ -47,3 +48,4 @@ spec:
   selector:
     app: wso2apim-analytics
     tier: wso2apim-analytics
+    pattern: wso2apim-pattern-1
