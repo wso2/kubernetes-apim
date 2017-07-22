@@ -4,7 +4,7 @@ ARG USER=wso2user
 
 COPY carbon/ /home/${USER}/tmp/carbon/
 COPY artifacts/mysql-connector-java-5.1.34-bin.jar \
-        /home/${USER}/wso2am-analytics-2.1.0/repository/components/lib/
+	/home/${USER}/wso2am-analytics-2.1.0/repository/components/lib/
 
 USER root
 RUN chown -R wso2user /home/${USER}/
