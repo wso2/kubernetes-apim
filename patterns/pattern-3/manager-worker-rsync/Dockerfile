@@ -5,5 +5,7 @@ ARG USER_HOME=/home/wso2user
 
 # copy the artifact-sync-cron with the correct hostname
 COPY artifact-sync-cron ${USER_HOME}/
- 
-RUN chown ${USER} ${USER_HOME}/artifact-sync-cron 
+
+USER root
+RUN chown ${USER} ${USER_HOME}/artifact-sync-cron
+USER ${USER} 
