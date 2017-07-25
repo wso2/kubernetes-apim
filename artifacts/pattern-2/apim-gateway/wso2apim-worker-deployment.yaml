@@ -60,8 +60,12 @@ spec:
           name: apim-worker-storage-volume
 
       -
-        image: wso2/wso2am-gw-rsync-pattern-2:2.1.0
+        image: wso2/rsync:1.0.0
         name: wso2apim-rsync
+        env:
+          -
+            name: REMOTE_HOST
+            value: "wso2apim-manager-worker"
         imagePullPolicy: IfNotPresent
         ports:
         -

@@ -72,8 +72,12 @@ spec:
           name: apim-tm2-storage-volume
 
       -
-        image: wso2/wso2am-tm-rsync-pattern-3:2.1.0
+        image: wso2/rsync:1.0.0
         name: wso2apim-rsync
+        env:
+          -
+            name: REMOTE_HOST
+            value: "wso2apim-pubstore-tm-1"
         imagePullPolicy: IfNotPresent
         ports:
         -

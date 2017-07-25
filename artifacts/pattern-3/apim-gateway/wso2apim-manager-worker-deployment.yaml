@@ -65,7 +65,7 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         -
-          containerPort: 22
+          containerPort: 8022
           protocol: "TCP"
 
         volumeMounts:

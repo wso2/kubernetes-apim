@@ -53,7 +53,7 @@ spec:
     -
       name: "ssh"
       protocol: TCP
-      port: 22
+      port: 8022
   # label keys and values that must match in order to receive traffic for this service
   selector:
     node: manager-worker
