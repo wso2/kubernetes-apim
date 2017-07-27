@@ -47,3 +47,4 @@ spec:
         -
           containerPort: 7712
           protocol: "TCP"
+      serviceAccountName: "wso2svcacct"

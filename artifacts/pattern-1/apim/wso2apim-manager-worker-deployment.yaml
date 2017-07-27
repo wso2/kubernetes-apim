@@ -90,3 +90,4 @@ spec:
         -
           mountPath: "/home/wso2user/apim-artifacts"
           name: apim-mgt-storage-volume
+      serviceAccountName: "wso2svcacct"

@@ -47,3 +47,4 @@ spec:
       - name: apim-rdbms-persistent-storage
         persistentVolumeClaim:
           claimName: apim-rdbms-volume-claim
+      serviceAccountName: "wso2svcacct"
