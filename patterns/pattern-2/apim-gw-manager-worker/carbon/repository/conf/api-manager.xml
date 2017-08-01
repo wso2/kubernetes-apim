@@ -16,7 +16,7 @@
          logic relies on this. -->
     <AuthManager>
         <!-- Server URL of the Authentication service -->
-        <ServerURL>https://wso2apim:9443${carbon.context}services/</ServerURL>
+        <ServerURL>https://wso2apim.default.svc:9443${carbon.context}services/</ServerURL>
         <!-- Admin username for the Authentication manager. -->
         <Username>${admin.username}</Username>
         <!-- Admin password for the Authentication manager. -->
@@ -87,7 +87,7 @@
                 <Name>Production and Sandbox</Name>
                 <Description>This is a hybrid gateway that handles both production and sandbox token traffic.</Description>
                 <!-- Server URL of the API gateway -->
-                <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
+                <ServerURL>https://wso2apim-gw.default.svc:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
 		        <!-- Admin username for the API gateway. -->
                 <Username>${admin.username}</Username>
                 <!-- Admin password for the API gateway.-->
@@ -202,7 +202,7 @@
     -->
     <APIKeyValidator>
         <!-- Server URL of the API key manager -->
-        <ServerURL>https://wso2apim:9443${carbon.context}services/</ServerURL>
+        <ServerURL>https://wso2apim.default.svc:9443${carbon.context}services/</ServerURL>
 
         <!-- Admin username for API key manager. -->
         <Username>${admin.username}</Username>
@@ -287,7 +287,7 @@
         <URL>https://wso2apim:32004/store</URL>
 
         <!-- Server URL of the API Store. -->
-        <ServerURL>https://wso2apim:9443${carbon.context}services/</ServerURL>
+        <ServerURL>https://wso2apim.default.svc:9443${carbon.context}services/</ServerURL>
         <!-- Admin username for API Store. -->
         <Username>${admin.username}</Username>
 
@@ -589,7 +589,7 @@
             </DataPublisherThreadPool>
         </DataPublisher>
         <PolicyDeployer>
-            <ServiceURL>https://wso2apim:9443${carbon.context}services/</ServiceURL>
+            <ServiceURL>https://wso2apim.default.svc:9443${carbon.context}services/</ServiceURL>
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
         </PolicyDeployer>
