@@ -19,6 +19,7 @@ metadata:
   labels:
     app: wso2apim
     node: pubstore-tm-km-2
+    pattern: wso2apim-pattern-2
 spec:
   strategy:
     type: Recreate
@@ -88,3 +89,4 @@ spec:
         -
           mountPath: "/home/wso2user/apim-artifacts"
           name: apim-tm2-storage-volume
+      serviceAccountName: "wso2svcacct"
