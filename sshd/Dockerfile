@@ -7,7 +7,8 @@ ARG USER_ID=1000000000
 ARG USER_HOME=/home/wso2user
 ARG APIM_ARTIFACTS_LOCATION=${USER_HOME}/apim-artifacts
 
-RUN apt-get install -y --no-install-recommends --no-install-suggests \
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends --no-install-suggests \
         telnet \
 	openssh-server \
 	rsync

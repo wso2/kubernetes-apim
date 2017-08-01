@@ -9,7 +9,8 @@ ARG LOCAL_ARTIFACTS_LOCATION=${USER_HOME}/apim-artifacts
 ARG REMOTE_HOST=localhost
 ARG REMOTE_ARTIFACTS_LOCATION=${USER_HOME}/apim-artifacts
 
-RUN apt-get install -y --no-install-recommends --no-install-suggests \
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends --no-install-suggests \
         telnet \
 	openssh-client \
 	rsync

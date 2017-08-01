@@ -18,7 +18,8 @@ RUN apt-get update \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
        	   zip \
            unzip \
-           telnet
+           telnet \
+           iproute2
 
 # creates the user 
 RUN useradd --system --uid ${USER_ID} --gid 0 --create-home --home-dir ${USER_HOME} \

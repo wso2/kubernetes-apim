@@ -315,6 +315,7 @@ do
     -Dorg.opensaml.httpclient.https.disableHostnameVerification=true \
     -Dorg.wso2.ignoreHostnameVerification=true \
     -DworkerNode=false \
+    -Dprofile=gateway-manager \
     org.wso2.carbon.bootstrap.Bootstrap $*
     status=$?
 done

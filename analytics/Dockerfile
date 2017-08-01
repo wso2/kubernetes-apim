@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ARG USER=wso2user
 ARG USER_ID=1000000000
 #ARG GROUP=wso2
-ARG USER_HOME=/home/wso2user
+ARG USER_HOME=/home/${USER}
 ARG WSO2_SERVER=wso2am-analytics
 ARG WSO2_SERVER_VERSION=2.1.0
 ARG WSO2_SERVER_PACK=${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip
@@ -18,7 +18,8 @@ RUN apt-get update \
         && apt-get install -y --no-install-recommends --no-install-suggests \
            zip \
            unzip \
-           telnet
+           telnet \
+           iproute2
 
 # creates the user 
 RUN useradd --system --uid ${USER_ID} --gid 0 --create-home --home-dir ${USER_HOME} \

@@ -10,5 +10,5 @@ COPY artifacts/kubernetes-membership-scheme-1.0.0-SNAPSHOT.jar \
         /home/${USER}/wso2am-2.1.0/repository/components/dropins/
 
 USER root
-RUN chown -R wso2user /home/${USER}/
+RUN chown -R ${USER} /home/${USER}/
 USER ${USER}
