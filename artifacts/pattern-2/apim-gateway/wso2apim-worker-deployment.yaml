@@ -19,6 +19,7 @@ metadata:
   labels:
     app: wso2apim-gw
     node: worker
+    pattern: wso2apim-pattern-2
 spec:
   strategy:
     type: Recreate
@@ -76,3 +77,4 @@ spec:
         -
           mountPath: "/home/wso2user/apim-artifacts"
           name: apim-worker-storage-volume
+      serviceAccountName: "wso2svcacct"

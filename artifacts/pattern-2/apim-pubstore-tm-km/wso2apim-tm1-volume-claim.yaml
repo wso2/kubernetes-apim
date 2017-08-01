@@ -18,6 +18,7 @@ metadata:
   name: apim-tm1-volume-claim
   labels:
     app: apim-tm1
+    pattern: wso2apim-pattern-2
 spec:
   accessModes:
     - ReadWriteMany

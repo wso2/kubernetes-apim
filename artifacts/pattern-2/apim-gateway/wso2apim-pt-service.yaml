@@ -13,15 +13,27 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: Service
 metadata:
-  name: apim-rdbms-volume-claim
+  name: wso2apim-gw
   labels:
-    app: apim-rdbms
+    app: wso2apim-gw
     pattern: wso2apim-pattern-2
 spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
+  type: NodePort
+  ports:
+    # ports that this service should serve on
+    -
+      name: 'pass-through-http'
+      port: 8280
+      targetPort: 8280
+      nodePort: 32001
+    -
+      name: 'pass-through-https'
+      port: 8243
+      targetPort: 8243
+      nodePort: 32002
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    app: wso2apim-gw
+  sessionAffinity: ClientIP

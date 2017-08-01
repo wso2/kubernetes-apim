@@ -1,6 +1,10 @@
 #!/bin/bash
 oc project default
 
+# service account
+oc create serviceaccount wso2svcacct
+oc adm policy add-scc-to-user anyuid -z wso2svcacct -n default
+
 # databases
 echo 'deploying databases ...'
 oc create -f rdbms/rdbms-persistent-volume-claim.yaml

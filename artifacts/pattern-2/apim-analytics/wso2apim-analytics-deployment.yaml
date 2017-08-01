@@ -19,6 +19,7 @@ metadata:
   labels:
     app: wso2apim-analytics
     tier: wso2apim-analytics
+    pattern: wso2apim-pattern-2
 spec:
   strategy:
     type: Recreate
@@ -45,3 +46,4 @@ spec:
         -
           containerPort: 7712
           protocol: "TCP"
+      serviceAccountName: "wso2svcacct"
