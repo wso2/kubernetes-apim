@@ -18,6 +18,7 @@ metadata:
   name: wso2apim-analytics
   labels:
     app: wso2apim-analytics
+    tier: wso2apim-analytics
     pattern: wso2apim-pattern-1
 spec:
   type: NodePort
@@ -34,21 +35,17 @@ spec:
       targetPort: 9444
       nodePort: 32009
     -
-      name: 'spark-1'
-      port: 8082
-      targetPort: 8082
+      name: 'thrift-http'
+      port: 7612
+      targetPort: 7612
       nodePort: 32010
     -
-      name: 'spark-2'
-      port: 4041
-      targetPort: 4041
+      name: 'thrift-https'
+      port: 7712
+      targetPort: 7712
       nodePort: 32011
-    -
-      name: 'spark-3'
-      port: 11501
-      targetPort: 11501
-      nodePort: 32012
   # label keys and values that must match in order to receive traffic for this service
   selector:
     app: wso2apim-analytics
+    tier: wso2apim-analytics
     pattern: wso2apim-pattern-1
