@@ -1,4 +1,7 @@
 #!/bin/bash
+# use the default system user
+oc login -u system:admin
+
 oc project default
 
 # service account
@@ -15,7 +18,11 @@ sleep 20s
 # analytics
 echo 'deploying apim analytics ...'
 oc create -f apim-analytics/wso2apim-analytics-service.yaml
-oc create -f apim-analytics/wso2apim-analytics-deployment.yaml
+oc create -f apim-analytics/wso2apim-analytics-1-service.yaml
+oc create -f apim-analytics/wso2apim-analytics-2-service.yaml
+oc create -f apim-analytics/wso2apim-analytics-1-deployment.yaml
+sleep 30s
+oc create -f apim-analytics/wso2apim-analytics-2-deployment.yaml
 
 sleep 1m
 # apim
