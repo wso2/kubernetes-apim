@@ -11,15 +11,8 @@ COPY artifacts/mysql-connector-java-5.1.34-bin.jar \
 COPY artifacts/kubernetes-membership-scheme-1.0.0-SNAPSHOT.jar \
         ${USER_HOME}/wso2am-analytics-2.1.0/repository/components/dropins/
 
-#COPY ${ANALYTICS_STARTUP_SCRIPT} ${USER_HOME}/ 
-
-#RUN cat ${USER_HOME}/${ANALYTICS_STARTUP_SCRIPT} > ${USER_HOME}/scripts/${ANALYTICS_STARTUP_SCRIPT} \
-#	&& chmod 0755 ${USER_HOME}/scripts/${ANALYTICS_STARTUP_SCRIPT}
-
 USER root
 RUN chown -R ${USER} ${USER_HOME}/
 USER ${USER}
 
 EXPOSE 11225 10006 11001 11501 8082 4041
-
-#ENTRYPOINT exec ${USER_HOME}/scripts/init_analytics.sh
