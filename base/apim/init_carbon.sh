@@ -16,10 +16,6 @@ if [[ -d ${HOME}/tmp/server/ ]]; then
    rm -rf ${HOME}/tmp/server/
 fi
 
-echo "checking permission in carbon_home after ######"
-ls -al ${server_artifact_location}/
-
-
 # Copy customizations done by user do the CARBON_HOME location. 
 if [[ -d ${HOME}/tmp/carbon/ ]]; then
    echo "copying custom configurations and artifacts from ${HOME}/tmp/carbon/ to ${carbon_home}/ .."
