@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:17.04
 MAINTAINER WSO2 Docker Maintainers "dev@wso2.org"
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -19,7 +19,8 @@ RUN apt-get update \
        	   zip \
            unzip \
            telnet \
-           iproute2
+           iproute2 \
+	   sudo && rm -rf /var/lib/apt/lists/*
 
 # creates the user 
 RUN useradd --system --uid ${USER_ID} --gid 0 --create-home --home-dir ${USER_HOME} \
