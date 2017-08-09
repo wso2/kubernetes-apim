@@ -15,11 +15,11 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: wso2apim-pubstore-tm-2
+  name: wso2apim-tm-1
   labels:
     app: wso2apim
-    node: pubstore-tm-2
-    pattern: wso2apim-pattern-2
+    node: tm-1
+    pattern: wso2apim-pattern-3
 spec:
   strategy:
     type: Recreate
@@ -27,24 +27,18 @@ spec:
     metadata:
       labels:
         app: wso2apim
-        node: pubstore-tm-2
+        node: tm-1
     spec:
       volumes:
-      - name: apim-tm2-storage-volume
+      - name: apim-tm1-storage-volume
         persistentVolumeClaim:
-          claimName: apim-tm2-volume-claim
+          claimName: apim-tm1-volume-claim
 
       containers:
-      - image: wso2/wso2am-pubstore-tm-2-pattern-2:2.1.0
+      - image: wso2/wso2am-tm-1-pattern-3:2.1.0
         name: wso2apim
         imagePullPolicy: IfNotPresent
         ports:
-        -
-          containerPort: 8280
-          protocol: "TCP"
-        -
-          containerPort: 8243
-          protocol: "TCP"
         -
           containerPort: 9763
           protocol: "TCP"
@@ -66,22 +60,26 @@ spec:
         -
           containerPort: 7611
           protocol: "TCP"
+        -
+          containerPort: 22
+          protocol: "TCP"
 
         volumeMounts:
         -
           mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
-          name: apim-tm2-storage-volume
+          name: apim-tm1-storage-volume
 
       -
-        image: wso2/rsync:1.0.0
-        name: wso2apim-rsync
-        env:
-          -
-            name: REMOTE_HOST
-            value: "wso2apim-pubstore-tm-1"
+        image: wso2/sshd:1.0.0
+        name: wso2apim-sshd
         imagePullPolicy: IfNotPresent
+        ports:
+        -
+          containerPort: 8022
+          protocol: "TCP"
+
         volumeMounts:
         -
           mountPath: "/home/wso2user/apim-artifacts"
-          name: apim-tm2-storage-volume
+          name: apim-tm1-storage-volume
       serviceAccountName: "wso2svcacct"
