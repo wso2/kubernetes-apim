@@ -22,7 +22,6 @@ metadata:
 spec:
   ports:
     # ports that this service should serve on
-    # ports that this service should serve on
     -
       name: "http"
       protocol: TCP
