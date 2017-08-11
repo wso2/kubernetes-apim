@@ -16,7 +16,7 @@
          logic relies on this. -->
     <AuthManager>
         <!-- Server URL of the Authentication service -->
-        <ServerURL>https://wso2am-km.default.svc:9443/services/</ServerURL>
+        <ServerURL>https://wso2apim-km.default.svc:9443/services/</ServerURL>
         <!-- Admin username for the Authentication manager. -->
         <Username>${admin.username}</Username>
         <!-- Admin password for the Authentication manager. -->
@@ -202,7 +202,7 @@
     -->
     <APIKeyValidator>
         <!-- Server URL of the API key manager -->
-        <ServerURL>https://wso2am-km.default.svc:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
+        <ServerURL>https://wso2apim-km.default.svc:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
 
         <!-- Admin username for API key manager. -->
         <Username>${admin.username}</Username>
@@ -574,8 +574,8 @@
         <DataPublisher>
             <Enabled>true</Enabled>
             <Type>Binary</Type>
-            <ReceiverUrlGroup>{tcp://${carbon.local.ip}:${receiver.url.port}}, {tcp://wso2apim-pubstore-tm-1:9611}</ReceiverUrlGroup>
-            <AuthUrlGroup>{ssl://${carbon.local.ip}:${auth.url.port}}, {ssl://wso2apim-pubstore-tm-1:9711}</AuthUrlGroup>
+            <ReceiverUrlGroup>{tcp://wso2apim-tm-1:9611}, {tcp://wso2apim-tm-2:9611}</ReceiverUrlGroup>
+            <AuthUrlGroup>{ssl://wso2apim-tm-1:9711}, {ssl://wso2apim-tm-2:9711}</AuthUrlGroup>
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
             <DataPublisherPool>
@@ -589,7 +589,7 @@
             </DataPublisherThreadPool>
         </DataPublisher>
         <PolicyDeployer>
-            <ServiceURL>https://wso2apim-pubstore-tm-1.default.svc:9443${carbon.context}services/</ServiceURL>
+            <ServiceURL>https://wso2apim-tm-1.default.svc:${mgt.transport.https.port}${carbon.context}services/</ServiceURL>
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
         </PolicyDeployer>
