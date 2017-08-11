@@ -80,11 +80,6 @@ spec:
             name: REMOTE_HOST
             value: "wso2apim-pubstore-tm-1"
         imagePullPolicy: IfNotPresent
-        ports:
-        -
-          containerPort: 22
-          protocol: "TCP"
-
         volumeMounts:
         -
           mountPath: "/home/wso2user/apim-artifacts"
