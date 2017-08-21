@@ -36,7 +36,7 @@ spec:
           claimName: apim-worker-volume-claim
 
       containers:
-      - image: registry.openshift.private.wso2.com:80/wso2am-worker-pattern-1:2.1.0
+      - image: wso2/wso2am-worker-pattern-1:2.1.0
         name: wso2apim
         imagePullPolicy: IfNotPresent
         ports:
