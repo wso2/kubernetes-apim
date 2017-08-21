@@ -56,16 +56,16 @@ oc create -f apim-publisher/wso2apim-publisher-deployment.yaml
 
 sleep 1m
 echo 'deploying apim store...'
-#oc create -f apim-store/wso2apim-store-deployment.yaml
-#
-#sleep 1m
-#echo 'deploying apim key manager...'
-#oc create -f apim-km/wso2apim-km-deployment.yaml
-#
-#sleep 1m
-#echo 'deploying apim manager-worker ...'
-#oc create -f apim-gateway/wso2apim-manager-worker-deployment.yaml
-#
-#sleep 1m
-#echo 'deploying apim worker ...'
-#oc create -f apim-gateway/wso2apim-worker-deployment.yaml
+oc create -f apim-store/wso2apim-store-deployment.yaml
+
+sleep 1m
+echo 'deploying apim key manager...'
+oc create -f apim-km/wso2apim-km-deployment.yaml
+
+sleep 1m
+echo 'deploying apim manager-worker ...'
+oc create -f apim-gateway/wso2apim-manager-worker-deployment.yaml
+
+sleep 1m
+echo 'deploying apim worker ...'
+oc create -f apim-gateway/wso2apim-worker-deployment.yaml

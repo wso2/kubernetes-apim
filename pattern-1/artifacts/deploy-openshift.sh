@@ -1,9 +1,11 @@
 #!/bin/bash
-oc project default
+
+oc new-project wso2 --description="Middleware" --display-name="wso2"
+oc project wso2
 
 # service account
 oc create serviceaccount wso2svcacct
-oc adm policy add-scc-to-user anyuid -z wso2svcacct -n default
+oc adm policy add-scc-to-user anyuid -z wso2svcacct -n wso2
 
 # volumes
 oc create -f volume/persistent-volumes.yaml
