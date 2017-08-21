@@ -1,12 +1,12 @@
 #!/bin/bash
-# use the default system user
-oc login -u system:admin
-
 oc project default
 
 # service account
 oc create serviceaccount wso2svcacct
 oc adm policy add-scc-to-user anyuid -z wso2svcacct -n default
+
+# volumes
+oc create -f volume/persistent-volumes.yaml
 
 # databases
 echo 'deploying databases ...'
@@ -14,7 +14,7 @@ oc create -f rdbms/rdbms-persistent-volume-claim.yaml
 oc create -f rdbms/rdbms-service.yaml
 oc create -f rdbms/rdbms-deployment.yaml
 
-sleep 20s
+sleep 30s
 # analytics
 echo 'deploying apim analytics ...'
 oc create -f apim-analytics/wso2apim-analytics-service.yaml

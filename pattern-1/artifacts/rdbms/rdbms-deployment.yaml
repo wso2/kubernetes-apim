@@ -43,6 +43,7 @@ spec:
         volumeMounts:
         - name: apim-rdbms-persistent-storage
           mountPath: /var/lib/mysql
+        args: ["--max-connections", "10000"]
       volumes:
       - name: apim-rdbms-persistent-storage
         persistentVolumeClaim:

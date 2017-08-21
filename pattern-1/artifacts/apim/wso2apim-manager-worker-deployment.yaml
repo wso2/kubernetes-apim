@@ -78,7 +78,7 @@ spec:
           name: apim-mgt-storage-volume
 
       -
-        image: wso2/sshd:1.0.0
+        image: registry.openshift.private.wso2.com:80/sshd:1.0.0
         name: wso2apim-sshd
         imagePullPolicy: IfNotPresent
         ports:
