@@ -1,5 +1,5 @@
 ################################################################################
-#   Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved
+#   Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved
 #
 #   Licensed under the Apache License, Version 2.0 (the \"License\");
 #   you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ wso2.cabon.apimgt:
   # DCR Endpoint URL
   keyManagerConfigs:
     dcrEndpoint: http://${env:KEY_MANAGER_SERVICE_HOST}:9763/identity/connect/register
-    # Token Endpoint URL 
+    # Token Endpoint URL
     tokenEndpoint: https://${env:KEY_MANAGER_SERVICE_HOST}:9443/oauth2/token
     # Revoke Endpoint URL
     revokeEndpoint: https://${env:KEY_MANAGER_SERVICE_HOST}:9443/oauth2/revoke
