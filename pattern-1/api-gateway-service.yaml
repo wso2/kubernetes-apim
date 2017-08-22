@@ -14,9 +14,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2apim-api-core
+  name: wso2apim-gateway
   labels:
-    app: wso2apim-api-core
+    app: wso2apim-gateway
     tier: prod
     pattern: wso2apim3-pattern-1
 spec:
@@ -24,11 +24,11 @@ spec:
   ports:
     # ports that this service should serve on
     -
-      name: 'servlet-https'
+      name: 'ballerina-https'
       port: 443
-      targetPort: 9292
-      nodePort: 32009
+      targetPort: 9092
+      nodePort: 320010
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    app: wso2apim-api-core
+    app: wso2apim-gateway
     tier: prod

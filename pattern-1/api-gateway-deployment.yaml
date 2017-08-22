@@ -1,4 +1,4 @@
-# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ metadata:
   labels:
     app: wso2apim-api-gateway
     tier: prod
+    pattern: wso2apim3-pattern-1
 spec:
   strategy:
     type: Recreate
@@ -27,11 +28,12 @@ spec:
       labels:
         app: wso2apim-api-gateway
         tier: prod
+        pattern: wso2apim3-pattern-1
     spec:
       containers:
-      - image: docker.wso2.com/wso2apim-gateway:v3.0.0-m4
+      - image: docker.wso2.com/wso2apim-gateway:v3.0.0-m5
         name: wso2apim-api-gateway
-        #imagePullPolicy: Always
+        imagePullPolicy: Always
         env:
         -
          name: API_CORE_URL
@@ -40,4 +42,3 @@ spec:
         -
           containerPort: 9292
           protocol: "TCP"
-
