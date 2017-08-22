@@ -18,6 +18,7 @@ metadata:
   labels:
     app: wso2apim-api-core
     tier: prod
+    pattern: wso2apim3-pattern-1
 spec:
   type: NodePort
   ports:

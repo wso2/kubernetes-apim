@@ -19,6 +19,7 @@ metadata:
   labels:
     app: key-manager
     tier: prod
+    pattern: wso2apim3-pattern-1
 spec:
   strategy:
     type: Recreate
@@ -27,9 +28,9 @@ spec:
       labels:
         app: key-manager
         tier: prod
+        pattern: wso2apim3-pattern-1
     spec:
       containers:
-      - image: docker.wso2.com/wso2is:5.3.0-openshift 
+      - image: docker.wso2.com/wso2is:5.3.0-openshift
         name: kay-manager
-        imagePullPolicy: Never
-
+        imagePullPolicy: IfNotPresent

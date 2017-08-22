@@ -9,4 +9,4 @@ if [[ ! -z "${ACTIVEMQ_SERVICE_HOST}" ]];then
     fi
 fi
 
-bin/ballerina run service org/wso2/carbon/apimgt/gateway
+bin/ballerina run service services.bsz
