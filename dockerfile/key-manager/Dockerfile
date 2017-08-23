@@ -1,10 +1,13 @@
 FROM ubuntu:16.04
+MAINTAINER dev@wso2.org
 
 WORKDIR /mnt
 COPY wso2is-5.4.0-m2.zip /mnt
 COPY jdk-8u131-linux-x64.tar.gz /mnt
 
 ENV JAVA_HOME /mnt/jdk1.8.0_131
+
+# TODO: set proxy ports as needed
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends --no-install-suggests \
