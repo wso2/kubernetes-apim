@@ -19,14 +19,20 @@
 FROM docker.wso2.com/base-c5
 MAINTAINER dev@wso2.org
 
+ARG PRODUCT_NAME
+ARG PRODUCT_VERSION
+
+ENV PRODUCT_NAME=${PRODUCT_NAME:-wso2apim-gateway} \
+    PRODUCT_VERSION=${PRODUCT_VERSION}
+
 WORKDIR /opt
 
-COPY wso2apim-gateway-3.0.0-m6.zip .
+COPY ${PRODUCT_NAME}-${PRODUCT_VERSION}.zip .
 COPY gateway.sh .
 
-RUN unzip wso2apim-gateway-3.0.0-m6.zip && \
-    chown -R wso2:wso2 /opt/wso2apim-gateway-3.0.0-m6 && \
-    rm -rf wso2apim-gateway-3.0.0-m6.zip && \
+RUN unzip ${PRODUCT_NAME}-${PRODUCT_VERSION}.zip && \
+    chown -R wso2:wso2 /opt/${PRODUCT_NAME}-${PRODUCT_VERSION} && \
+    rm -rf ${PRODUCT_NAME}-${PRODUCT_VERSION}.zip && \
     chmod +x /opt/gateway.sh
 
 EXPOSE 9090

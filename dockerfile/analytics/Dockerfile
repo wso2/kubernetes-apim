@@ -19,13 +19,22 @@
 FROM docker.wso2.com/base-c5
 MAINTAINER dev@wso2.org
 
-WORKDIR /opt
-COPY wso2apim-das-3.0.0-m6.zip /opt
+ARG PRODUCT_NAME
+ARG PRODUCT_VERSION
 
-RUN unzip wso2apim-das-3.0.0-m6.zip && \
-    chown -R wso2:wso2 /opt/wso2apim-das-3.0.0-m6 && \
-    rm -rf /opt/wso2apim-das-3.0.0-m6.zip
+ENV PRODUCT_NAME=${PRODUCT_NAME:-wso2apim-das} \
+    PRODUCT_VERSION=${PRODUCT_VERSION}
+
+WORKDIR /opt
+
+COPY ${PRODUCT_NAME}-${PRODUCT_VERSION}.zip /opt
+
+RUN unzip ${PRODUCT_NAME}-${PRODUCT_VERSION}.zip && \
+    chown -R wso2:wso2 /opt/${PRODUCT_NAME}-${PRODUCT_VERSION} && \
+    rm -rf /opt/${PRODUCT_NAME}-${PRODUCT_VERSION}.zip
 
 EXPOSE 9091
 
-ENTRYPOINT ["/opt/wso2apim-das-3.0.0-m6/bin/worker.sh"]
+WORKDIR /opt/${PRODUCT_NAME}-${PRODUCT_VERSION}
+
+ENTRYPOINT ["bin/worker.sh"]

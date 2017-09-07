@@ -19,8 +19,15 @@
 FROM ubuntu:16.04
 MAINTAINER dev@wso2.org
 
+ARG PRODUCT_NAME
+ARG PRODUCT_VERSION
+
+ENV PRODUCT_NAME=${PRODUCT_NAME:-wso2is} \
+    PRODUCT_VERSION=${PRODUCT_VERSION}
+
 WORKDIR /opt
-COPY wso2is-5.4.0-m2.zip /opt
+
+COPY ${PRODUCT_NAME}-${PRODUCT_VERSION}.zip /opt
 COPY jdk-8u131-linux-x64.tar.gz /opt
 
 ENV JAVA_HOME /opt/jdk1.8.0_131
@@ -30,10 +37,13 @@ ENV JAVA_HOME /opt/jdk1.8.0_131
 RUN apt-get update && \
     apt-get install -y --no-install-recommends --no-install-suggests \
       zip unzip net-tools && \
-    unzip /opt/wso2is-5.4.0-m2.zip && \
+    unzip /opt/${PRODUCT_NAME}-${PRODUCT_VERSION}.zip && \
     tar zxvf jdk-8u131-linux-x64.tar.gz && \
-    rm -rf jdk-8u131-linux-x64.tar.gz wso2is-5.4.0-m2.zip
+    rm -rf jdk-8u131-linux-x64.tar.gz ${PRODUCT_NAME}-${PRODUCT_VERSION}.zip
 
 USER root
 EXPOSE 9443 9763
-ENTRYPOINT ["/opt/wso2is-5.4.0-m2/bin/wso2server.sh"]
+
+WORKDIR /opt/${PRODUCT_NAME}-${PRODUCT_VERSION}
+
+ENTRYPOINT ["bin/wso2server.sh"]
