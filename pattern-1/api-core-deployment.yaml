@@ -31,13 +31,16 @@ spec:
         pattern: wso2apim3-pattern-1
     spec:
       containers:
-      - image: docker.wso2.com/wso2apim:v3.0.0-m5
+      - image: docker.wso2.com/wso2apim:v3.0.0-m6
         name: wso2apim-api-core
         imagePullPolicy: Always
         env:
         -
-         name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION
-         value: "true"
+          name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION
+          value: "true"
+        -
+          name: KEY_MANAGER_SERVICE_HOST
+          value: "key-manager"
         ports:
         -
           containerPort: 9292

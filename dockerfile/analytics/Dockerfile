@@ -16,23 +16,25 @@
 #
 # ------------------------------------------------------------------------
 
-FROM openjdk:8u111-jdk-alpine
+FROM docker.wso2.com/base-c5
 MAINTAINER dev@wso2.org
+
+ARG PRODUCT_NAME
+ARG PRODUCT_VERSION
+
+ENV PRODUCT_NAME=${PRODUCT_NAME:-wso2apim-das} \
+    PRODUCT_VERSION=${PRODUCT_VERSION}
 
 WORKDIR /opt
 
-ADD apache-activemq-5.14.0-bin.tar.gz  .
-COPY activemq.sh .
+COPY ${PRODUCT_NAME}-${PRODUCT_VERSION}.zip /opt
 
-EXPOSE 61616
+RUN unzip ${PRODUCT_NAME}-${PRODUCT_VERSION}.zip && \
+    chown -R wso2:wso2 /opt/${PRODUCT_NAME}-${PRODUCT_VERSION} && \
+    rm -rf /opt/${PRODUCT_NAME}-${PRODUCT_VERSION}.zip
 
-RUN apk update && \
-    addgroup -S wso2 && \
-    adduser -S -g wso2 wso2 && \
-    chown -R wso2:wso2 /opt/activemq.sh && \
-    chown -R wso2:wso2 /opt/apache-activemq-5.14.0 && \
-    chmod u+x /opt/activemq.sh
+EXPOSE 9091
 
-USER wso2
+WORKDIR /opt/${PRODUCT_NAME}-${PRODUCT_VERSION}
 
-CMD ["/opt/activemq.sh"]
+ENTRYPOINT ["bin/worker.sh"]

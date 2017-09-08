@@ -31,7 +31,7 @@ spec:
         pattern: wso2apim3-pattern-1
     spec:
       containers:
-      - image: docker.wso2.com/wso2apim-gateway:v3.0.0-m5
+      - image: docker.wso2.com/wso2apim-gateway:v3.0.0-m6
         name: wso2apim-api-gateway
         imagePullPolicy: Always
         env:
