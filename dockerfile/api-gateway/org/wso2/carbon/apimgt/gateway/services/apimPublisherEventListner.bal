@@ -13,7 +13,7 @@ import org.wso2.carbon.apimgt.ballerina.util as apimgtUtil;
 
 @jms:config {
     initialContextFactory:"org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-    providerUrl:"tcp://localhost:61616",
+    providerUrl:"tcp://activemq:61616",
     connectionFactoryType:"topic",
     connectionFactoryName:"TopicConnectionFactory",
     destination:"PublisherTopic",
