@@ -30,7 +30,7 @@ spec:
         pattern: wso2apim-pattern-1
     spec:
       containers:
-      - image: docker.wso2.com/apim-rdbms-kubernetes:2.1.0
+      - image: wso2/apim-rdbms-kubernetes:2.1.0
         name: apim-rdbms
         imagePullPolicy: IfNotPresent
         env:
