@@ -21,6 +21,7 @@ kubectl create -f wso2apim3-namespace.yaml
 kubectl create -f activemq-service.yaml -n wso2apim3
 kubectl create -f key-manager-service.yaml -n wso2apim3
 kubectl create -f api-core-service.yaml -n wso2apim3
+kubectl create -f api-gateway-service.yaml -n wso2apim3
 
 kubectl create -f activemq-deployment.yaml -n wso2apim3
 sleep 5

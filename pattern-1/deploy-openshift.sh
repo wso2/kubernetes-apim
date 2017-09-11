@@ -21,6 +21,7 @@ oc create -f wso2apim3-namespace.yaml
 oc create -f activemq-service.yaml -n wso2apim3
 oc create -f key-manager-service.yaml -n wso2apim3
 oc create -f api-core-service.yaml -n wso2apim3
+kubectl create -f api-gateway-service.yaml -n wso2apim3
 
 oc create -f activemq-deployment.yaml -n wso2apim3
 sleep 5

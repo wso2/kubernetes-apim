@@ -31,7 +31,7 @@ spec:
       name: 'ballerina-https'
       port: 443
       targetPort: 9092
-      nodePort: 320010
+      nodePort: 32010
   # label keys and values that must match in order to receive traffic for this service
   selector:
     app: wso2apim-gateway
