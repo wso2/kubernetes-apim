@@ -30,13 +30,8 @@ spec:
         node: worker
         pattern: wso2apim-pattern-1
     spec:
-      volumes:
-      - name: apim-worker-storage-volume
-        persistentVolumeClaim:
-          claimName: apim-worker-volume-claim
-
       containers:
-      - image: wso2/wso2am-worker-pattern-1:2.1.0
+      - image: wso2/wso2am:2.1.0
         name: wso2apim
         imagePullPolicy: IfNotPresent
         ports:
@@ -72,17 +67,60 @@ spec:
         -
           mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
           name: apim-worker-storage-volume
-
+        - name: apim-worker-bin
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/bin/"
+        - name: apim-worker-conf
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf/"
+        - name: apim-worker-identity
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-identity/"
+        - name: apim-worker-axis2
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-axis2/"
+        - name: apim-worker-datasources
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-datasources/"
+        - name: apim-worker-tomcat
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-tomcat/"
+#        - name: apim-worker-resources-security
+#          mountPath: "/home/wso2user/wso2am-2.1.0-conf/resources-security/"
+        livenessProbe:
+          tcpSocket:
+            port: 9443
+          initialDelaySeconds: 60
+          periodSeconds: 20
       -
         image: wso2/rsync:1.0.0
         name: wso2apim-rsync
         env:
-          -
-            name: REMOTE_HOST
-            value: "wso2apim-manager-worker"
+        -
+          name: REMOTE_HOST
+          value: "wso2apim-manager-worker"
         imagePullPolicy: IfNotPresent
         volumeMounts:
         -
           mountPath: "/home/wso2user/apim-artifacts"
           name: apim-worker-storage-volume
       serviceAccountName: "wso2svcacct"
+      volumes:
+      - name: apim-worker-storage-volume
+        persistentVolumeClaim:
+          claimName: apim-worker-volume-claim
+      - name: apim-worker-bin
+        configMap:
+          name: apim-worker-bin
+      - name: apim-worker-conf
+        configMap:
+          name: apim-worker-conf
+      - name: apim-worker-identity
+        configMap:
+          name: apim-worker-identity
+      - name: apim-worker-axis2
+        configMap:
+          name: apim-worker-axis2
+      - name: apim-worker-datasources
+        configMap:
+          name: apim-worker-datasources
+      - name: apim-worker-tomcat
+        configMap:
+          name: apim-worker-tomcat
+#      - name: apim-worker-resources-security
+#        configMap:
+#          name: apim-worker-resources-security
