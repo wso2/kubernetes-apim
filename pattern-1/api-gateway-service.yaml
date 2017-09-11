@@ -22,6 +22,7 @@ metadata:
     app: wso2apim-gateway
     tier: prod
     pattern: wso2apim3-pattern-1
+  namespace: wso2apim3
 spec:
   type: NodePort
   ports:

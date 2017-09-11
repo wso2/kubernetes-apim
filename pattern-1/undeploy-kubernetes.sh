@@ -17,4 +17,5 @@
 #
 # ------------------------------------------------------------------------
 
-kubectl delete deployments,services,PersistentVolume,PersistentVolumeClaim -l pattern=wso2apim3-pattern-1
+kubectl delete deployments,services,PersistentVolume,PersistentVolumeClaim -l pattern=wso2apim3-pattern-1 -n wso2apim3
+kubectl delete ns wso2apim3

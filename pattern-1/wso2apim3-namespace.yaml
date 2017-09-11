@@ -12,26 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: v1
+kind: Namespace
 metadata:
-  name: key-manager
-  labels:
-    app: key-manager
-    tier: prod
-    pattern: wso2apim3-pattern-1
-  namespace: wso2apim3
-spec:
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app: key-manager
-        tier: prod
-        pattern: wso2apim3-pattern-1
-    spec:
-      containers:
-      - image: docker.wso2.com/wso2is:5.4.0-m2
-        name: key-manager
-        imagePullPolicy: IfNotPresent
+  name: wso2apim3

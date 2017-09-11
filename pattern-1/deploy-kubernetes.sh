@@ -17,15 +17,16 @@
 #
 # ------------------------------------------------------------------------
 
-kubectl create -f activemq-service.yaml
-kubectl create -f key-manager-service.yaml
-kubectl create -f api-core-service.yaml
+kubectl create -f wso2apim3-namespace.yaml
+kubectl create -f activemq-service.yaml -n wso2apim3
+kubectl create -f key-manager-service.yaml -n wso2apim3
+kubectl create -f api-core-service.yaml -n wso2apim3
 
-kubectl create -f activemq-deployment.yaml
+kubectl create -f activemq-deployment.yaml -n wso2apim3
 sleep 5
 
-kubectl create -f key-manager-deployment.yaml
+kubectl create -f key-manager-deployment.yaml -n wso2apim3
 
-kubectl create -f api-core-deployment.yaml
+kubectl create -f api-core-deployment.yaml -n wso2apim3
 
-kubectl create -f api-gateway-deployment.yaml
+kubectl create -f api-gateway-deployment.yaml -n wso2apim3

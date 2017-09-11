@@ -20,6 +20,7 @@ metadata:
     app: key-manager
     tier: prod
     pattern: wso2apim3-pattern-1
+  namespace: wso2apim3
 spec:
   type: ClusterIP
   ports:
