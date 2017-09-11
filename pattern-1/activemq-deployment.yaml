@@ -34,4 +34,4 @@ spec:
       containers:
       - image: docker.wso2.com/activemq
         name: activemq
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always

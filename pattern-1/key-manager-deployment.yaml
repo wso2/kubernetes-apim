@@ -34,4 +34,4 @@ spec:
       containers:
       - image: docker.wso2.com/wso2is:5.4.0-m2
         name: key-manager
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
