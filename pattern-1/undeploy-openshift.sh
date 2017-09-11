@@ -17,4 +17,5 @@
 #
 # ------------------------------------------------------------------------
 
-oc delete deployments,services,PersistentVolume,PersistentVolumeClaim -l pattern=wso2apim3-pattern-1
+oc delete deployments,services,PersistentVolume,PersistentVolumeClaim -l pattern=wso2apim3-pattern-1 -n wso2api3
+oc delete ns wso2apim3

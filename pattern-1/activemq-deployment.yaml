@@ -20,6 +20,7 @@ metadata:
     app: activemq
     tier: prod
     pattern: wso2apim3-pattern-1
+  namespace: wso2apim3
 spec:
   strategy:
     type: Recreate
@@ -33,4 +34,4 @@ spec:
       containers:
       - image: docker.wso2.com/activemq
         name: activemq
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always

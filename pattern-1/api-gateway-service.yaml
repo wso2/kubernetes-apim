@@ -22,6 +22,7 @@ metadata:
     app: wso2apim-gateway
     tier: prod
     pattern: wso2apim3-pattern-1
+  namespace: wso2apim3
 spec:
   type: NodePort
   ports:
@@ -30,7 +31,7 @@ spec:
       name: 'ballerina-https'
       port: 443
       targetPort: 9092
-      nodePort: 320010
+      nodePort: 32010
   # label keys and values that must match in order to receive traffic for this service
   selector:
     app: wso2apim-gateway

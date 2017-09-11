@@ -20,6 +20,7 @@ metadata:
     app: wso2apim-api-gateway
     tier: prod
     pattern: wso2apim3-pattern-1
+  namespace: wso2apim3
 spec:
   strategy:
     type: Recreate

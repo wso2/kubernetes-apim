@@ -20,6 +20,7 @@ metadata:
     app: key-manager
     tier: prod
     pattern: wso2apim3-pattern-1
+  namespace: wso2apim3
 spec:
   strategy:
     type: Recreate
@@ -33,4 +34,4 @@ spec:
       containers:
       - image: docker.wso2.com/wso2is:5.4.0-m2
         name: key-manager
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always

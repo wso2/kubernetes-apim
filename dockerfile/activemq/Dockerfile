@@ -35,4 +35,4 @@ RUN apk update && \
 
 USER wso2
 
-CMD ["/opt/activemq.sh"]
+CMD ["sh", "/opt/activemq.sh"]

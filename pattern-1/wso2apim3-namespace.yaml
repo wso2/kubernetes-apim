@@ -11,25 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 apiVersion: v1
-kind: Service
+kind: Namespace
 metadata:
-  name: activemq
-  labels:
-    app: activemq
-    tier: prod
-    pattern: wso2apim3-pattern-1
-  namespace: wso2apim3
-spec:
-  type: ClusterIP
-  ports:
-    # ports that this service should serve on
-    -
-      name: 'tcp'
-      protocol: TCP
-      port: 61616
-      targetPort: 61616
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    app: activemq
-    tier: prod
+  name: wso2apim3
