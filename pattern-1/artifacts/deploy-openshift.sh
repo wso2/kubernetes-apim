@@ -73,3 +73,8 @@ oc create -f apim/wso2apim-manager-worker-deployment.yaml
 sleep 1m
 echo 'deploying apim worker ...'
 oc create -f apim/wso2apim-worker-deployment.yaml
+
+echo 'deploying wso2apim and wso2apim-analytics routes ...'
+oc create -f routes/wso2apim-route.yaml
+oc create -f routes/wso2apim-gw-route.yaml
+oc create -f routes/wso2apim-analytics-route.yaml

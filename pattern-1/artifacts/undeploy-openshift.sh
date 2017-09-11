@@ -1,6 +1,6 @@
 #!/bin/bash
 
-oc delete deployments,services,PersistentVolume,PersistentVolumeClaim -l pattern=wso2apim-pattern-1
+oc delete deployments,services,PersistentVolume,PersistentVolumeClaim,Routes -l pattern=wso2apim-pattern-1
 
 oc delete configmaps apim-analytics-1-bin
 oc delete configmaps apim-analytics-1-conf
