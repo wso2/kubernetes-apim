@@ -1,5 +1,4 @@
 #!/bin/bash
 
-# TODO: set broker URL somehow
-
-/opt/wso2apim-gateway-3.0.0-m6/bin/ballerina run service /opt/wso2apim-gateway-3.0.0-m6/services.bsz
+echo "APIM Core: ${API_CORE_URL}"
+/opt/${PRODUCT_NAME}-${PRODUCT_VERSION}/bin/ballerina run service /opt/${PRODUCT_NAME}-${PRODUCT_VERSION}/services.bsz
