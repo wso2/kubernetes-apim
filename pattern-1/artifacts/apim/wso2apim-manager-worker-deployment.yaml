@@ -63,9 +63,6 @@ spec:
         -
           containerPort: 7611
           protocol: "TCP"
-        -
-          containerPort: 22
-          protocol: "TCP"
 
         volumeMounts:
         -
