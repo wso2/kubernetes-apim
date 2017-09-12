@@ -1,7 +1,4 @@
-#!/bin/bash
-
-# ------------------------------------------------------------------------
-# Copyright 2017 WSO2, Inc. (http://wso2.com)
+# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,14 +10,20 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License
-# ------------------------------------------------------------------------
+# limitations under the License.
 
-set -e
-echo 'generating new server keys with ssh-keygen -A'
-echo 'ssh-keygen -A'
-### useful for debugging ssh related issues
-#rsyslogd
-###
-echo 'starting sshd deamon'
-/usr/sbin/sshd -D && tailf /var/log/auth.log 2>&1 
+apiVersion: v1
+kind: Route
+metadata:
+  name: wso2apim-analytics-route
+  labels:
+    pattern: wso2apim-pattern-1
+spec:
+  host: wso2apim-analytics
+  port:
+    targetPort: servlet-https
+  to:
+    kind: Service
+    name: wso2apim-analytics
+  tls:
+    termination: passthrough

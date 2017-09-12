@@ -1,5 +1,21 @@
 #!/bin/bash
 
+# ------------------------------------------------------------------------
+# Copyright 2017 WSO2, Inc. (http://wso2.com)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License
+# ------------------------------------------------------------------------
+
 oc new-project wso2 --description="Middleware" --display-name="WSO2 API Manager Deployment"
 oc project wso2
 
@@ -73,3 +89,8 @@ oc create -f apim/wso2apim-manager-worker-deployment.yaml
 sleep 1m
 echo 'deploying apim worker ...'
 oc create -f apim/wso2apim-worker-deployment.yaml
+
+echo 'deploying wso2apim and wso2apim-analytics routes ...'
+oc create -f routes/wso2apim-route.yaml
+oc create -f routes/wso2apim-gw-route.yaml
+oc create -f routes/wso2apim-analytics-route.yaml
