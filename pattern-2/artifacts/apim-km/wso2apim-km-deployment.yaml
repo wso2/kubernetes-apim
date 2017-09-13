@@ -53,6 +53,11 @@ spec:
           mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-datasources/"
         - name: apim-km-tomcat
           mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-tomcat/"
+        livenessProbe:
+          tcpSocket:
+            port: 9443
+          initialDelaySeconds: 90
+          periodSeconds: 20
       serviceAccountName: "wso2svcacct"
       volumes:
       - name: apim-km-bin

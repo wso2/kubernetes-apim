@@ -69,7 +69,7 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 7712
-          initialDelaySeconds: 60
+          initialDelaySeconds: 90
           periodSeconds: 20
         volumeMounts:
           - name: apim-analytics-1-bin

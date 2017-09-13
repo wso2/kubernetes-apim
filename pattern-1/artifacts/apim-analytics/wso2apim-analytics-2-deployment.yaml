@@ -69,7 +69,7 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 7712
-          initialDelaySeconds: 60
+          initialDelaySeconds: 90
           periodSeconds: 20
         volumeMounts:
           - name: apim-analytics-2-bin
@@ -103,7 +103,4 @@ spec:
         - name: apim-analytics-2-tomcat
           configMap:
             name: apim-analytics-2-tomcat
-        - name: apim-analytics-2-security
-          configMap:
-            name: apim-analytics-2-security
       serviceAccountName: "wso2svcacct"
