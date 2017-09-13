@@ -84,8 +84,6 @@ spec:
             mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-datasources/"
           - name: apim-analytics-1-tomcat
             mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-tomcat/"
-#          - name: apim-analytics-1-security
-#            mountPath: /home/wso2user/wso2am-analytics-2.1.0-conf/resources-security/"
       volumes:
         - name: apim-analytics-1-bin
           configMap:
