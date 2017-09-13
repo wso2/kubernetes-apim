@@ -29,7 +29,7 @@ spec:
         tier: apim-rdbms
     spec:
       containers:
-      - image: docker.wso2.com/apim-rdbms-kubernetes:2.1.0
+      - image: wso2/apim-rdbms-kubernetes:2.1.0
         name: apim-rdbms
         imagePullPolicy: IfNotPresent
         env:
@@ -42,6 +42,7 @@ spec:
         volumeMounts:
         - name: apim-rdbms-persistent-storage
           mountPath: /var/lib/mysql
+        args: ["--max-connections", "10000"]
       volumes:
       - name: apim-rdbms-persistent-storage
         persistentVolumeClaim:

@@ -29,13 +29,8 @@ spec:
         app: wso2apim
         node: pubstore-tm-2
     spec:
-      volumes:
-      - name: apim-tm2-storage-volume
-        persistentVolumeClaim:
-          claimName: apim-tm2-volume-claim
-
       containers:
-      - image: wso2/wso2am-pubstore-tm-2-pattern-2:2.1.0
+      - image: wso2/wso2am:2.1.0
         name: wso2apim
         imagePullPolicy: IfNotPresent
         ports:
@@ -69,9 +64,22 @@ spec:
 
         volumeMounts:
         -
-          mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
           name: apim-tm2-storage-volume
-
+          mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
+        - name: apim-pubstore-tm-2-bin
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/bin/"
+        - name: apim-pubstore-tm-2-conf
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf/"
+        - name: apim-pubstore-tm-2-identity
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-identity/"
+        - name: apim-pubstore-tm-2-axis2
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-axis2/"
+        - name: apim-pubstore-tm-2-datasources
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-datasources/"
+        - name: apim-pubstore-tm-2-tomcat
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-tomcat/"
+#        - name: apim-pubstore-tm-2-resources-security
+#          mountPath: "/home/wso2user/wso2am-2.1.0-conf/resources-security/"
       -
         image: wso2/rsync:1.0.0
         name: wso2apim-rsync
@@ -85,3 +93,28 @@ spec:
           mountPath: "/home/wso2user/apim-artifacts"
           name: apim-tm2-storage-volume
       serviceAccountName: "wso2svcacct"
+      volumes:
+      - name: apim-tm2-storage-volume
+        persistentVolumeClaim:
+          claimName: apim-tm2-volume-claim
+      - name: apim-pubstore-tm-2-bin
+        configMap:
+          name: apim-pubstore-tm-2-bin
+      - name: apim-pubstore-tm-2-conf
+        configMap:
+          name: apim-pubstore-tm-2-conf
+      - name: apim-pubstore-tm-2-identity
+        configMap:
+          name: apim-pubstore-tm-2-identity
+      - name: apim-pubstore-tm-2-axis2
+        configMap:
+          name: apim-pubstore-tm-2-axis2
+      - name: apim-pubstore-tm-2-datasources
+        configMap:
+          name: apim-pubstore-tm-2-datasources
+      - name: apim-pubstore-tm-2-tomcat
+        configMap:
+          name: apim-pubstore-tm-2-tomcat
+#        - name: apim-pubstore-tm-2-resources-security
+#          configMap:
+#            name: apim-pubstore-tm-2-resources-security
