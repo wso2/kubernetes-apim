@@ -16,7 +16,7 @@
 #
 # ------------------------------------------------------------------------
 
-FROM mysql:5.7.18
+FROM mysql:5.7.19
 
 MAINTAINER WSO2 Docker Maintainers "dev@wso2.org"
 
