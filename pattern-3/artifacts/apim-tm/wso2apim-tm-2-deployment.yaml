@@ -29,22 +29,11 @@ spec:
         app: wso2apim
         node: tm-2
     spec:
-      volumes:
-      - name: apim-tm2-storage-volume
-        persistentVolumeClaim:
-          claimName: apim-tm2-volume-claim
-
       containers:
-      - image: wso2/wso2am-tm-2-pattern-3:2.1.0
+      - image: docker.wso2.com/wso2am-kubernetes:2.1.0
         name: wso2apim
         imagePullPolicy: IfNotPresent
         ports:
-        -
-          containerPort: 9763
-          protocol: "TCP"
-        -
-          containerPort: 9443
-          protocol: "TCP"
         -
           containerPort: 5672
           protocol: "TCP"
@@ -60,25 +49,32 @@ spec:
         -
           containerPort: 7611
           protocol: "TCP"
-        -
-          containerPort: 22
-          protocol: "TCP"
-
         volumeMounts:
         -
+          name: apim-tm2-storage-volume
           mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
-          name: apim-tm2-storage-volume
-
-      -
-        image: wso2/rsync:1.0.0
-        name: wso2apim-rsync
-        env:
-          -
-            name: REMOTE_HOST
-            value: "wso2apim-tm-1"
-        imagePullPolicy: IfNotPresent
-        volumeMounts:
-        -
-          mountPath: "/home/wso2user/apim-artifacts"
-          name: apim-tm2-storage-volume
+        - name: apim-tm2-bin
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/bin/"
+        - name: apim-tm2-conf
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf/"
+        - name: apim-tm2-identity
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-identity/"
+        livenessProbe:
+          tcpSocket:
+            port: 9443
+          initialDelaySeconds: 90
+          periodSeconds: 20
       serviceAccountName: "wso2svcacct"
+      volumes:
+      - name: apim-tm2-storage-volume
+        persistentVolumeClaim:
+          claimName: apim-tm2-volume-claim
+      - name: apim-tm2-bin
+        configMap:
+          name: apim-tm2-bin
+      - name: apim-tm2-conf
+        configMap:
+          name: apim-tm2-conf
+      - name: apim-tm2-identity
+        configMap:
+          name: apim-tm2-identity

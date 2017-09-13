@@ -25,14 +25,12 @@ spec:
     # ports that this service should serve on
     -
       name: 'servlet-http'
+      protocol: TCP
       port: 9763
-      targetPort: 9763
-      nodePort: 32003
     -
       name: 'servlet-https'
+      protocol: TCP
       port: 9443
-      targetPort: 9443
-      nodePort: 32004
   # label keys and values that must match in order to receive traffic for this service
   selector:
     app: wso2apim-publisher
