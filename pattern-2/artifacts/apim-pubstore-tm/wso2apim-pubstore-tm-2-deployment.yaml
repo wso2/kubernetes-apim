@@ -30,7 +30,7 @@ spec:
         node: pubstore-tm-2
     spec:
       containers:
-      - image: wso2/wso2am:2.1.0
+      - image: docker.wso2.com/wso2am-kubernetes:2.1.0
         name: wso2apim
         imagePullPolicy: IfNotPresent
         ports:
@@ -78,10 +78,13 @@ spec:
           mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-datasources/"
         - name: apim-pubstore-tm-2-tomcat
           mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-tomcat/"
-#        - name: apim-pubstore-tm-2-resources-security
-#          mountPath: "/home/wso2user/wso2am-2.1.0-conf/resources-security/"
+        livenessProbe:
+          tcpSocket:
+            port: 9443
+          initialDelaySeconds: 90
+          periodSeconds: 20
       -
-        image: wso2/rsync:1.0.0
+        image: docker.wso2.com/rsync:1.0.0
         name: wso2apim-rsync
         env:
           -
@@ -115,6 +118,3 @@ spec:
       - name: apim-pubstore-tm-2-tomcat
         configMap:
           name: apim-pubstore-tm-2-tomcat
-#        - name: apim-pubstore-tm-2-resources-security
-#          configMap:
-#            name: apim-pubstore-tm-2-resources-security

@@ -16,14 +16,15 @@
 #
 # ------------------------------------------------------------------------
 
-FROM ubuntu:17.04
+FROM ubuntu:16.04
 MAINTAINER WSO2 Docker Maintainers "dev@wso2.org"
 ENV DEBIAN_FRONTEND noninteractive
 
 # defined arguments and defaults
 ARG USER=wso2user
 ARG USER_ID=1000000000
-#ARG GROUP=wso2
+# files
+ARG FILES=./files
 ARG USER_HOME=/home/${USER}
 ARG WSO2_SERVER=wso2am-analytics
 ARG WSO2_SERVER_VERSION=2.1.0
@@ -34,6 +35,8 @@ ARG STARTUP_SCRIPT=init_carbon.sh
 ARG JDBC_DRIVER=mysql-connector-java-5*-bin.jar
 ARG DNS_JAVA=dnsjava-2.1.8.jar
 ARG KUBERNETES_MEMBERSHIP_SCHEME=kubernetes-membership-scheme-1.0.*.jar
+ARG CLIENT_TRUSTSTORE=client-truststore.jks
+ARG WSO2CARBON_JKS=wso2carbon.jks
 
 RUN apt-get update \
         && apt-get install -y --no-install-recommends --no-install-suggests \
@@ -47,8 +50,9 @@ RUN useradd --system --uid ${USER_ID} --gid 0 --create-home --home-dir ${USER_HO
         --no-log-init ${USER}
 
 # copy the jdk and product packs
-COPY ${WSO2_SERVER_PACK} ${STARTUP_SCRIPT} ${JDK_ARCHIVE} ${JDBC_DRIVER} ${DNS_JAVA} ${KUBERNETES_MEMBERSHIP_SCHEME} \
-    ${USER_HOME}/
+COPY ${FILES}/${WSO2_SERVER_PACK} ${STARTUP_SCRIPT} ${FILES}/${JDK_ARCHIVE} ${FILES}/${JDBC_DRIVER} \
+        ${FILES}/${DNS_JAVA} ${FILES}/${KUBERNETES_MEMBERSHIP_SCHEME} ${FILES}/${CLIENT_TRUSTSTORE} \
+        ${FILES}/${WSO2CARBON_JKS} ${USER_HOME}/
 
 # and creates the init script
 RUN unzip -q ${USER_HOME}/${WSO2_SERVER_PACK} -d ${USER_HOME}/ \
@@ -59,6 +63,10 @@ RUN unzip -q ${USER_HOME}/${WSO2_SERVER_PACK} -d ${USER_HOME}/ \
             ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/components/lib/ \
         && cp ${USER_HOME}/${KUBERNETES_MEMBERSHIP_SCHEME} \
             ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/components/dropins/ \
+        && cp ${USER_HOME}/${CLIENT_TRUSTSTORE} \
+            ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/resources/security/ \
+        && cp ${USER_HOME}/${WSO2CARBON_JKS} \
+            ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/resources/security/ \
         && cp -r ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/deployment/server ${USER_HOME}/tmp/ \
         && rm ${USER_HOME}/${WSO2_SERVER_PACK} \
         && rm ${USER_HOME}/${JDK_ARCHIVE} \
@@ -68,6 +76,8 @@ RUN unzip -q ${USER_HOME}/${WSO2_SERVER_PACK} -d ${USER_HOME}/ \
         && rm ${USER_HOME}/${JDBC_DRIVER} \
         && rm ${USER_HOME}/${DNS_JAVA} \
         && rm ${USER_HOME}/${KUBERNETES_MEMBERSHIP_SCHEME} \
+        && rm ${USER_HOME}/${CLIENT_TRUSTSTORE} \
+        && rm ${USER_HOME}/${WSO2CARBON_JKS} \
         && chgrp -R 0 ${USER_HOME} \
         && chmod -R g=u ${USER_HOME} \
         && chown -R ${USER_ID} ${USER_HOME} \
