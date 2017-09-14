@@ -1,4 +1,4 @@
-# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,15 +13,17 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: Route
 metadata:
-  name: apim-gw-worker-volume-claim-int
+  name: wso2apim-gw-ext-route
   labels:
-    app: apim-worker-int
     pattern: wso2apim-pattern-4
 spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
+  host: wso2apim-gw-ext
+  port:
+    targetPort: pass-through-https
+  to:
+    kind: Service
+    name: wso2apim-gw-ext
+  tls:
+    termination: passthrough

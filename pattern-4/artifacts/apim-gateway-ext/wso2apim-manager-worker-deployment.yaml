@@ -53,22 +53,22 @@ spec:
         -
           name: apim-mgt-storage-volume-ext
           mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
-        - name: apim-gw-manager-worker-bin
+        - name: apim-gw-manager-worker-ext-bin
           mountPath: "/home/wso2user/wso2am-2.1.0-conf/bin/"
-        - name: apim-gw-manager-worker-conf
+        - name: apim-gw-manager-worker-ext-conf
           mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf/"
-        - name: apim-gw-manager-worker-identity
+        - name: apim-gw-manager-worker-ext-identity
           mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-identity/"
-        - name: apim-gw-manager-worker-axis2
+        - name: apim-gw-manager-worker-ext-axis2
           mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-axis2/"
-        - name: apim-gw-manager-worker-datasources
+        - name: apim-gw-manager-worker-ext-datasources
           mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-datasources/"
-        - name: apim-gw-manager-worker-tomcat
+        - name: apim-gw-manager-worker-ext-tomcat
           mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-tomcat/"
         livenessProbe:
           tcpSocket:
             port: 9443
-          initialDelaySeconds: 90
+          initialDelaySeconds: 120
           periodSeconds: 20
       -
         image: docker.wso2.com/sshd-kubernetes:1.0.0
@@ -88,21 +88,21 @@ spec:
       - name: apim-mgt-storage-volume-ext
         persistentVolumeClaim:
           claimName: apim-mgt-volume-claim-ext
-      - name: apim-gw-manager-worker-bin
+      - name: apim-gw-manager-worker-ext-bin
         configMap:
-          name: apim-gw-manager-worker-bin
-      - name: apim-gw-manager-worker-conf
+          name: apim-gw-manager-worker-ext-bin
+      - name: apim-gw-manager-worker-ext-conf
         configMap:
-          name: apim-gw-manager-worker-conf
-      - name: apim-gw-manager-worker-identity
+          name: apim-gw-manager-worker-ext-conf
+      - name: apim-gw-manager-worker-ext-identity
         configMap:
-          name: apim-gw-manager-worker-identity
-      - name: apim-gw-manager-worker-axis2
+          name: apim-gw-manager-worker-ext-identity
+      - name: apim-gw-manager-worker-ext-axis2
         configMap:
-          name: apim-gw-manager-worker-axis2
-      - name: apim-gw-manager-worker-datasources
+          name: apim-gw-manager-worker-ext-axis2
+      - name: apim-gw-manager-worker-ext-datasources
         configMap:
-          name: apim-gw-manager-worker-datasources
-      - name: apim-gw-manager-worker-tomcat
+          name: apim-gw-manager-worker-ext-datasources
+      - name: apim-gw-manager-worker-ext-tomcat
         configMap:
-          name: apim-gw-manager-worker-tomcat
+          name: apim-gw-manager-worker-ext-tomcat

@@ -56,7 +56,7 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 9443
-          initialDelaySeconds: 90
+          initialDelaySeconds: 120
           periodSeconds: 20
       serviceAccountName: "wso2svcacct"
       volumes:
