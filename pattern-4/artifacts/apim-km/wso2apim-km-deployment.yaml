@@ -30,7 +30,7 @@ spec:
         node: key-manager
     spec:
       containers:
-      - image: wso2/wso2am-km-pattern-4:2.1.0
+      - image: docker.wso2.com/wso2am-kubernetes:2.1.0
         name: wso2apim-km
         imagePullPolicy: IfNotPresent
         ports:
@@ -40,4 +40,41 @@ spec:
         -
           containerPort: 9443
           protocol: "TCP"
+        volumeMounts:
+        - name: apim-km-bin
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/bin/"
+        - name: apim-km-conf
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf/"
+        - name: apim-km-identity
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-identity/"
+        - name: apim-km-axis2
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-axis2/"
+        - name: apim-km-datasources
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-datasources/"
+        - name: apim-km-tomcat
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-tomcat/"
+        livenessProbe:
+          tcpSocket:
+            port: 9443
+          initialDelaySeconds: 90
+          periodSeconds: 20
       serviceAccountName: "wso2svcacct"
+      volumes:
+      - name: apim-km-bin
+        configMap:
+          name: apim-km-bin
+      - name: apim-km-conf
+        configMap:
+          name: apim-km-conf
+      - name: apim-km-identity
+        configMap:
+          name: apim-km-identity
+      - name: apim-km-axis2
+        configMap:
+          name: apim-km-axis2
+      - name: apim-km-datasources
+        configMap:
+          name: apim-km-datasources
+      - name: apim-km-tomcat
+        configMap:
+          name: apim-km-tomcat

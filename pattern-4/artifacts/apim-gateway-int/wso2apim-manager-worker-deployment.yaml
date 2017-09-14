@@ -30,13 +30,9 @@ spec:
         node: manager-worker-int
         app: wso2apim-gw-sv-int
     spec:
-      volumes:
-      - name: apim-mgt-storage-volume-int
-        persistentVolumeClaim:
-          claimName: apim-mgt-volume-claim-int
-
       containers:
-      - image: wso2/wso2am-gw-manager-worker-int-pattern-4:2.1.0
+      -
+        image: docker.wso2.com/wso2am-kubernetes:2.1.0
         name: wso2apim
         imagePullPolicy: IfNotPresent
         ports:
@@ -52,17 +48,30 @@ spec:
         -
           containerPort: 9443
           protocol: "TCP"
-        -
-          containerPort: 22
-          protocol: "TCP"
 
         volumeMounts:
         -
-          mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
           name: apim-mgt-storage-volume-int
-
+          mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
+        - name: apim-gw-manager-worker-bin
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/bin/"
+        - name: apim-gw-manager-worker-conf
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf/"
+        - name: apim-gw-manager-worker-identity
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-identity/"
+        - name: apim-gw-manager-worker-axis2
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-axis2/"
+        - name: apim-gw-manager-worker-datasources
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-datasources/"
+        - name: apim-gw-manager-worker-tomcat
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-tomcat/"
+        livenessProbe:
+          tcpSocket:
+            port: 9443
+          initialDelaySeconds: 90
+          periodSeconds: 20
       -
-        image: wso2/sshd:1.0.0
+        image: docker.wso2.com/sshd-kubernetes:1.0.0
         name: wso2apim-sshd
         imagePullPolicy: IfNotPresent
         ports:
@@ -75,3 +84,25 @@ spec:
           mountPath: "/home/wso2user/apim-artifacts"
           name: apim-mgt-storage-volume-int
       serviceAccountName: "wso2svcacct"
+      volumes:
+      - name: apim-mgt-storage-volume-int
+        persistentVolumeClaim:
+          claimName: apim-mgt-volume-claim-int
+      - name: apim-gw-manager-worker-bin
+        configMap:
+          name: apim-gw-manager-worker-bin
+      - name: apim-gw-manager-worker-conf
+        configMap:
+          name: apim-gw-manager-worker-conf
+      - name: apim-gw-manager-worker-identity
+        configMap:
+          name: apim-gw-manager-worker-identity
+      - name: apim-gw-manager-worker-axis2
+        configMap:
+          name: apim-gw-manager-worker-axis2
+      - name: apim-gw-manager-worker-datasources
+        configMap:
+          name: apim-gw-manager-worker-datasources
+      - name: apim-gw-manager-worker-tomcat
+        configMap:
+          name: apim-gw-manager-worker-tomcat

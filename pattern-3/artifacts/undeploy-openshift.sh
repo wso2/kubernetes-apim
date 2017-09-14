@@ -15,4 +15,61 @@
 # limitations under the License
 # ------------------------------------------------------------------------
 
-oc delete deployments,services,PersistentVolume,PersistentVolumeClaim -l pattern=wso2apim-pattern-3
+oc delete deployments,services,PersistentVolume,PersistentVolumeClaim,Routes -l pattern=wso2apim-pattern-3
+
+oc delete configmaps apim-analytics-1-bin
+oc delete configmaps apim-analytics-1-conf
+oc delete configmaps apim-analytics-1-spark
+oc delete configmaps apim-analytics-1-axis2
+oc delete configmaps apim-analytics-1-datasources
+oc delete configmaps apim-analytics-1-tomcat
+
+oc delete configmaps apim-analytics-2-bin
+oc delete configmaps apim-analytics-2-conf
+oc delete configmaps apim-analytics-2-spark
+oc delete configmaps apim-analytics-2-axis2
+oc delete configmaps apim-analytics-2-datasources
+oc delete configmaps apim-analytics-2-tomcat
+
+oc delete configmaps apim-gw-manager-worker-bin
+oc delete configmaps apim-gw-manager-worker-conf
+oc delete configmaps apim-gw-manager-worker-identity
+oc delete configmaps apim-gw-manager-worker-axis2
+oc delete configmaps apim-gw-manager-worker-datasources
+oc delete configmaps apim-gw-manager-worker-tomcat
+
+oc delete configmaps apim-gw-worker-bin
+oc delete configmaps apim-gw-worker-conf
+oc delete configmaps apim-gw-worker-identity
+oc delete configmaps apim-gw-worker-axis2
+oc delete configmaps apim-gw-worker-datasources
+oc delete configmaps apim-gw-worker-tomcat
+
+oc delete configmaps apim-km-bin
+oc delete configmaps apim-km-conf
+oc delete configmaps apim-km-identity
+oc delete configmaps apim-km-axis2
+oc delete configmaps apim-km-datasources
+oc delete configmaps apim-km-tomcat
+
+oc delete configmaps apim-publisher-bin
+oc delete configmaps apim-publisher-conf
+oc delete configmaps apim-publisher-identity
+oc delete configmaps apim-publisher-axis2
+oc delete configmaps apim-publisher-datasources
+oc delete configmaps apim-publisher-tomcat
+
+oc delete configmaps apim-store-bin
+oc delete configmaps apim-store-conf
+oc delete configmaps apim-store-identity
+oc delete configmaps apim-store-axis2
+oc delete configmaps apim-store-datasources
+oc delete configmaps apim-store-tomcat
+
+oc delete configmaps apim-tm1-bin
+oc delete configmaps apim-tm1-conf
+oc delete configmaps apim-tm1-identity
+
+oc delete configmaps apim-tm2-bin
+oc delete configmaps apim-tm2-conf
+oc delete configmaps apim-tm2-identity

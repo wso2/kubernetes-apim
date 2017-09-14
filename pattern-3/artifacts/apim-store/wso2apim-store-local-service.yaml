@@ -23,10 +23,6 @@ spec:
   ports:
     # ports that this service should serve on
     -
-      name: "ssh"
-      protocol: TCP
-      port: 8022
-    -
       name: "http"
       protocol: TCP
       port: 9763
