@@ -65,7 +65,7 @@ spec:
       - name: apim-publisher-storage-volume
         persistentVolumeClaim:
           claimName: apim-publisher-volume-claim
-      - name: apim-pubstore-bin
+      - name: apim-publisher-bin
         configMap:
           name: apim-publisher-bin
       - name: apim-publisher-conf

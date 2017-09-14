@@ -16,7 +16,7 @@
          logic relies on this. -->
     <AuthManager>
         <!-- Server URL of the Authentication service -->
-        <ServerURL>https://wso2apim.default.svc:9443${carbon.context}services/</ServerURL>
+        <ServerURL>https://wso2apim.wso2.svc:9443${carbon.context}services/</ServerURL>
         <!-- Admin username for the Authentication manager. -->
         <Username>${admin.username}</Username>
         <!-- Admin password for the Authentication manager. -->
@@ -93,7 +93,7 @@
                 <!-- Admin password for the API gateway.-->
                 <Password>${admin.password}</Password>
                 <!-- Endpoint URLs for the APIs hosted in this API gateway.-->
-                <GatewayEndpoint>http://wso2apim-gw-int:32001,https://wso2apim-gw-int:32002</GatewayEndpoint>
+                <GatewayEndpoint>http://wso2apim-gw-int,https://wso2apim-gw-int</GatewayEndpoint>
             </Environment>
         </Environments>
     </APIGateway>
@@ -202,7 +202,7 @@
     -->
     <APIKeyValidator>
         <!-- Server URL of the API key manager -->
-        <ServerURL>https://wso2apim-km.default.svc:9443${carbon.context}services/</ServerURL>
+        <ServerURL>https://wso2apim-km.wso2.svc:9443${carbon.context}services/</ServerURL>
 
         <!-- Admin username for API key manager. -->
         <Username>${admin.username}</Username>
@@ -284,10 +284,10 @@
         <!--This property is used to indicate how we do user name comparision for token generation https://wso2.org/jira/browse/APIMANAGER-2225-->
         <CompareCaseInsensitively>true</CompareCaseInsensitively>
         <DisplayURL>false</DisplayURL>
-        <URL>https://wso2apim:32004/store</URL>
+        <URL>https://wso2apim/store</URL>
 
         <!-- Server URL of the API Store. -->
-        <ServerURL>https://wso2apim.default.svc:9443${carbon.context}services/</ServerURL>
+        <ServerURL>https://wso2apim.wso2.svc:9443${carbon.context}services/</ServerURL>
         <!-- Admin username for API Store. -->
         <Username>${admin.username}</Username>
 
@@ -317,7 +317,7 @@
 
     <APIPublisher>
         <DisplayURL>false</DisplayURL>
-        <URL>https://wso2apim:32004/publisher</URL>
+        <URL>https://wso2apim/publisher</URL>
         <!-- This parameter specifies enabling the capability of setting API documentation level granular visibility levels.
              By default any document associate with an API will have the same permissions set as the API.With enabling below
              property,it will show two additional permission levels as visible only to all registered users in a particular
@@ -589,7 +589,7 @@
             </DataPublisherThreadPool>
         </DataPublisher>
         <PolicyDeployer>
-            <ServiceURL>https://wso2apim.default.svc:9443${carbon.context}services/</ServiceURL>
+            <ServiceURL>https://wso2apim.wso2.svc:9443${carbon.context}services/</ServiceURL>
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
         </PolicyDeployer>

@@ -44,12 +44,12 @@
        This is will become part of the End Point Reference of the
        services deployed on this server instance.
     -->
-    <HostName>wso2apim-gw-ext.default.svc</HostName>
+    <HostName>wso2apim-gw-ext</HostName>
 
     <!--
     Host name to be used for the Carbon management console
     -->
-    <MgtHostName>wso2apim-gw-ext.default.svc</MgtHostName>
+    <MgtHostName>wso2apim-gw-ext</MgtHostName>
 
     <!--
         The URL of the back end server. This is where the admin services are hosted and

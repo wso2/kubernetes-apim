@@ -20,19 +20,16 @@ metadata:
     app: wso2apim-gw-int
     pattern: wso2apim-pattern-4
 spec:
-  type: NodePort
   ports:
     # ports that this service should serve on
     -
       name: 'pass-through-http'
+      protocol: TCP
       port: 8280
-      targetPort: 8280
-      nodePort: 32001
     -
       name: 'pass-through-https'
+      protocol: TCP
       port: 8243
-      targetPort: 8243
-      nodePort: 32002
   # label keys and values that must match in order to receive traffic for this service
   selector:
     app: wso2apim-gw-int

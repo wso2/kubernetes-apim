@@ -74,13 +74,13 @@ oc create configmap apim-store-axis2 --from-file=../confs/apim-store/repository/
 oc create configmap apim-store-datasources --from-file=../confs/apim-store/repository/conf/datasources/
 oc create configmap apim-store-tomcat --from-file=../confs/apim-store/repository/conf/tomcat/
 
-oc create configmap apim-tm1-bin --from-file=../confs/apim-tm1/bin/
-oc create configmap apim-tm1-conf --from-file=../confs/apim-tm1/repository/conf/
-oc create configmap apim-tm1-identity --from-file=../confs/apim-tm1/repository/conf/identity/
+oc create configmap apim-tm1-bin --from-file=../confs/apim-tm-1/bin/
+oc create configmap apim-tm1-conf --from-file=../confs/apim-tm-1/repository/conf/
+oc create configmap apim-tm1-identity --from-file=../confs/apim-tm-1/repository/conf/identity/
 
-oc create configmap apim-tm2-bin --from-file=../confs/apim-tm2/bin/
-oc create configmap apim-tm2-conf --from-file=../confs/apim-tm2/repository/conf/
-oc create configmap apim-tm2-identity --from-file=../confs/apim-tm2/repository/conf/identity/
+oc create configmap apim-tm2-bin --from-file=../confs/apim-tm-2/bin/
+oc create configmap apim-tm2-conf --from-file=../confs/apim-tm-2/repository/conf/
+oc create configmap apim-tm2-identity --from-file=../confs/apim-tm-2/repository/conf/identity/
 
 # databases
 echo 'deploying databases ...'
@@ -111,7 +111,7 @@ oc create -f apim-tm/wso2apim-tm-1-service.yaml
 oc create -f apim-tm/wso2apim-tm-2-service.yaml
 
 oc create -f apim-publisher/wso2apim-publisher-volume-claim.yaml
-oc create -f apim-store/wso2apim-publisher-volume-claim.yaml
+oc create -f apim-store/wso2apim-store-volume-claim.yaml
 oc create -f apim-gateway/wso2apim-mgt-volume-claim.yaml
 oc create -f apim-gateway/wso2apim-worker-volume-claim.yaml
 oc create -f apim-tm/wso2apim-tm-1-volume-claim.yaml
@@ -124,17 +124,15 @@ oc create -f apim-analytics/wso2apim-analytics-1-deployment.yaml
 sleep 10s
 oc create -f apim-analytics/wso2apim-analytics-2-deployment.yaml
 
-sleep 1m
+sleep 30s
 echo 'deploying apim traffic manager ...'
 oc create -f apim-tm/wso2apim-tm-1-deployment.yaml
-sleep 1m
 oc create -f apim-tm/wso2apim-tm-2-deployment.yaml
 
-sleep 30s
 echo 'deploying apim key manager...'
 oc create -f apim-km/wso2apim-km-deployment.yaml
 
-sleep 30s
+sleep 1m
 echo 'deploying apim publisher ...'
 oc create -f apim-publisher/wso2apim-publisher-deployment.yaml
 
