@@ -9,7 +9,7 @@
 ##### 1. Checkout WSO2 kubernetes-apim  repository using `git clone`:
 ```
 git clone https://github.com/wso2/kubernetes-apim.git
-git checkout tags/v2.1.0.v1
+git checkout tags/v2.1.0-1
 ```
 
 ##### 2. Pull required Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com) using `docker pull`:
