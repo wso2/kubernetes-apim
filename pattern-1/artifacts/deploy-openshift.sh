@@ -16,12 +16,7 @@
 # limitations under the License
 # ------------------------------------------------------------------------
 
-oc new-project wso2 --description="Middleware" --display-name="WSO2 API Manager Deployment"
 oc project wso2
-
-# service account
-oc create serviceaccount wso2svcacct
-oc adm policy add-scc-to-user anyuid -z wso2svcacct -n wso2
 
 # volumes
 oc create -f volumes/persistent-volumes.yaml

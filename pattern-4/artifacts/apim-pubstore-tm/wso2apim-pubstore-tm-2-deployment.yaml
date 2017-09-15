@@ -81,10 +81,10 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 9443
-          initialDelaySeconds: 90
+          initialDelaySeconds: 300
           periodSeconds: 20
       -
-        image: docker.wso2.com/rsync:1.0.0
+        image: docker.wso2.com/rsync-kubernetes:1.0.0
         name: wso2apim-rsync
         env:
           -

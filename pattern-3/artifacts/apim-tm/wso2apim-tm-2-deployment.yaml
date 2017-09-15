@@ -62,8 +62,20 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 9443
-          initialDelaySeconds: 90
+          initialDelaySeconds: 300
           periodSeconds: 20
+      -
+        image: docker.wso2.com/rsync-kubernetes:1.0.0
+        name: wso2apim-rsync
+        env:
+          -
+            name: REMOTE_HOST
+            value: "wso2apim-tm-1"
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        -
+          mountPath: "/home/wso2user/apim-artifacts"
+          name: apim-tm2-storage-volume
       serviceAccountName: "wso2svcacct"
       volumes:
       - name: apim-tm2-storage-volume

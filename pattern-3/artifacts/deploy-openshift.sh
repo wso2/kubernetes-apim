@@ -17,10 +17,6 @@
 
 oc project wso2
 
-# service account
-oc create serviceaccount wso2svcacct
-oc adm policy add-scc-to-user anyuid -z wso2svcacct -n default
-
 # volumes
 oc create -f volumes/persistent-volumes.yaml
 
@@ -124,6 +120,7 @@ oc create -f apim-analytics/wso2apim-analytics-1-deployment.yaml
 sleep 10s
 oc create -f apim-analytics/wso2apim-analytics-2-deployment.yaml
 
+# apim
 sleep 30s
 echo 'deploying apim traffic manager ...'
 oc create -f apim-tm/wso2apim-tm-1-deployment.yaml

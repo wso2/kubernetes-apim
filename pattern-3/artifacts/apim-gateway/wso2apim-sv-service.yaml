@@ -17,7 +17,7 @@ kind: Service
 metadata:
   name: wso2apim-gw-sv
   labels:
-    app: wso2apim-gw-sv
+    app-sv: wso2apim-gw-sv
     pattern: wso2apim-pattern-3
 spec:
   ports:
@@ -32,5 +32,5 @@ spec:
       port: 9443
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    app: wso2apim-gw-sv
+    app-sv: wso2apim-gw-sv
   sessionAffinity: ClientIP
