@@ -23,7 +23,7 @@ For apim
 
 Add the above files to apim/files location.
 
-> For mysql, rsync and sshd do not need any files.
+> mysql, rsync and sshd docker images do not need any files.
 
 ##### 2. Build docker images
 

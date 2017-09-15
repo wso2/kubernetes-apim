@@ -31,7 +31,6 @@ required image, `scp` the tar file to each node, and then use `docker load` to l
 on the nodes). Alternatively, if a private Docker registry is used, transfer the images there.
 
 ##### 4. Deploy Kubernetes/Openshift Resources:
-<br>
 
 * Deploy on Kubernetes 
 
@@ -47,25 +46,22 @@ on the nodes). Alternatively, if a private Docker registry is used, transfer the
     ```
     ./deploy-kubernetes.sh
     ```
-    4. Access Management Console <br>
+    4. Access Management Console 
        Using the following command to list ingresses in the deployment.
         ```
         kubectl get ingress
         ```
-         <br>
-        Add relevant hosts and addresses to /etc/hosts file.
+        Add relevant hosts and IP addresses to /etc/hosts file.
         
-        > Sample Access URLs (This will vary based on the pattern) 
-        https://wso2apim
-        https://wso2apim-analytics
-        https://wso2apim-gw
+        > Sample Access URLs (This will vary based on the pattern)   
+        > https://wso2apim  
+        > https://wso2apim-analytics  
+        > https://wso2apim-gw  
 
     5. Undeploy any pattern by running `undeploy-kubernetes.sh` script inside pattern folder (KUBERNETES_HOME/pattern-X/).
     ```
     ./undeploy-kubernetes.sh
     ```
- <br>
-
 
 * Deploy on Openshift
 
@@ -89,18 +85,17 @@ on the nodes). Alternatively, if a private Docker registry is used, transfer the
     ```
     ./deploy-openshift.sh
     ```
-    5. Access Management Console <br>
+    5. Access Management Console 
        Using the following command to list the routes in the deployment.
         ```
         oc get routes
         ```
-         <br>
-        Add relevant hosts and addresses to /etc/hosts file.
+        Add relevant hosts and IP addresses to /etc/hosts file.
         
-        > Sample Access URLs (This will vary based on the pattern) 
-        https://wso2apim
-        https://wso2apim-analytics
-        https://wso2apim-gw
+        > Sample Access URLs (This will vary based on the pattern)  
+        > https://wso2apim  
+        > https://wso2apim-analytics  
+        > https://wso2apim-gw  
 
     6. Undeploy any pattern by running `undeploy-openshift.sh` script inside pattern folder (KUBERNETES_HOME/pattern-X/).
     ```
