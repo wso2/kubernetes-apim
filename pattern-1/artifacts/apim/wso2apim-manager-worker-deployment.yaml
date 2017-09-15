@@ -83,7 +83,7 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 9443
-          initialDelaySeconds: 120
+          initialDelaySeconds: 300
           periodSeconds: 20
       -
         image: docker.wso2.com/sshd-kubernetes:1.0.0
