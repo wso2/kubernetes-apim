@@ -24,9 +24,11 @@ spec:
     storage: 1Gi
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
-  hostPath:
-    path: /tmp/data/pattern-2-pv-1
+  persistentVolumeReclaimPolicy: Recycle
+  nfs:
+    # FIXME: use the right IP
+    server: 10.23.245.15
+    path: "/exports/pattern-2/apim1"
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -40,9 +42,11 @@ spec:
     storage: 1Gi
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
-  hostPath:
-    path: /tmp/data/pattern-2-pv-2
+  persistentVolumeReclaimPolicy: Recycle
+  nfs:
+    # FIXME: use the right IP
+    server: 10.23.245.15
+    path: "/exports/pattern-2/apim2"
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -56,38 +60,8 @@ spec:
     storage: 20Gi
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
-  hostPath:
-    path: /tmp/data/pattern-2-pv-3
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: local-pv-4
-  labels:
-    type: local
-    pattern: wso2apim-pattern-2
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
-  hostPath:
-    path: /tmp/data/pattern-2-pv-4
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: local-pv-5
-  labels:
-    type: local
-    pattern: wso2apim-pattern-2
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
-  hostPath:
-    path: /tmp/data/pattern-2-pv-5
+  persistentVolumeReclaimPolicy: Recycle
+  nfs:
+    # FIXME: use the right IP
+    server: 10.23.245.15
+    path: "/exports/pattern-2/mysql"

@@ -38,3 +38,4 @@ spec:
   selector:
     node: key-manager
   clusterIP: None
+  sessionAffinity: ClientIP

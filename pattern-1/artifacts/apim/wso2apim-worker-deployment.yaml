@@ -64,9 +64,8 @@ spec:
           protocol: "TCP"
 
         volumeMounts:
-        -
+        - name: apim-mgt-storage-volume
           mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
-          name: apim-worker-storage-volume
         - name: apim-worker-bin
           mountPath: "/home/wso2user/wso2am-2.1.0-conf/bin/"
         - name: apim-worker-conf
@@ -84,23 +83,11 @@ spec:
             port: 9443
           initialDelaySeconds: 300
           periodSeconds: 20
-      -
-        image: docker.wso2.com/rsync-kubernetes:1.0.0
-        name: wso2apim-rsync
-        env:
-        -
-          name: REMOTE_HOST
-          value: "wso2apim-manager-worker"
-        imagePullPolicy: IfNotPresent
-        volumeMounts:
-        -
-          mountPath: "/home/wso2user/apim-artifacts"
-          name: apim-worker-storage-volume
       serviceAccountName: "wso2svcacct"
       volumes:
-      - name: apim-worker-storage-volume
+      - name: apim-mgt-storage-volume
         persistentVolumeClaim:
-          claimName: apim-worker-volume-claim
+          claimName: apim-mgt-volume-claim
       - name: apim-worker-bin
         configMap:
           name: apim-worker-bin

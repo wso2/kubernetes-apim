@@ -28,12 +28,12 @@ oc create configmap apim-analytics-1-axis2 --from-file=../confs/apim-analytics-1
 oc create configmap apim-analytics-1-datasources --from-file=../confs/apim-analytics-1/repository/conf/datasources/
 oc create configmap apim-analytics-1-tomcat --from-file=../confs/apim-analytics-1/repository/conf/tomcat/
 
-oc create configmap apim-analytics-2-bin --from-file=../confs/apim-analytics-1/bin/
-oc create configmap apim-analytics-2-conf --from-file=../confs/apim-analytics-1/repository/conf/
-oc create configmap apim-analytics-2-spark --from-file=../confs/apim-analytics-1/repository/conf/analytics/spark/
-oc create configmap apim-analytics-2-axis2 --from-file=../confs/apim-analytics-1/repository/conf/axis2/
-oc create configmap apim-analytics-2-datasources --from-file=../confs/apim-analytics-1/repository/conf/datasources/
-oc create configmap apim-analytics-2-tomcat --from-file=../confs/apim-analytics-1/repository/conf/tomcat/
+oc create configmap apim-analytics-2-bin --from-file=../confs/apim-analytics-2/bin/
+oc create configmap apim-analytics-2-conf --from-file=../confs/apim-analytics-2/repository/conf/
+oc create configmap apim-analytics-2-spark --from-file=../confs/apim-analytics-2/repository/conf/analytics/spark/
+oc create configmap apim-analytics-2-axis2 --from-file=../confs/apim-analytics-2/repository/conf/axis2/
+oc create configmap apim-analytics-2-datasources --from-file=../confs/apim-analytics-2/repository/conf/datasources/
+oc create configmap apim-analytics-2-tomcat --from-file=../confs/apim-analytics-2/repository/conf/tomcat/
 
 oc create configmap apim-gw-manager-worker-bin --from-file=../confs/apim-gw-manager-worker/bin/
 oc create configmap apim-gw-manager-worker-conf --from-file=../confs/apim-gw-manager-worker/repository/conf/
@@ -41,13 +41,6 @@ oc create configmap apim-gw-manager-worker-identity --from-file=../confs/apim-gw
 oc create configmap apim-gw-manager-worker-axis2 --from-file=../confs/apim-gw-manager-worker/repository/conf/axis2/
 oc create configmap apim-gw-manager-worker-datasources --from-file=../confs/apim-gw-manager-worker/repository/conf/datasources/
 oc create configmap apim-gw-manager-worker-tomcat --from-file=../confs/apim-gw-manager-worker/repository/conf/tomcat/
-
-oc create configmap apim-gw-worker-bin --from-file=../confs/apim-gw-worker/bin/
-oc create configmap apim-gw-worker-conf --from-file=../confs/apim-gw-worker/repository/conf/
-oc create configmap apim-gw-worker-identity --from-file=../confs/apim-gw-worker/repository/conf/identity/
-oc create configmap apim-gw-worker-axis2 --from-file=../confs/apim-gw-worker/repository/conf/axis2/
-oc create configmap apim-gw-worker-datasources --from-file=../confs/apim-gw-worker/repository/conf/datasources/
-oc create configmap apim-gw-worker-tomcat --from-file=../confs/apim-gw-worker/repository/conf/tomcat/
 
 oc create configmap apim-km-bin --from-file=../confs/apim-km/bin/
 oc create configmap apim-km-conf --from-file=../confs/apim-km/repository/conf/
@@ -85,7 +78,6 @@ oc create -f apim-pubstore-tm/wso2apim-service.yaml
 oc create -f apim-pubstore-tm/wso2apim-pubstore-tm-1-service.yaml
 oc create -f apim-pubstore-tm/wso2apim-pubstore-tm-2-service.yaml
 
-oc create -f apim-gateway/wso2apim-worker-service.yaml
 oc create -f apim-gateway/wso2apim-sv-service.yaml
 oc create -f apim-gateway/wso2apim-pt-service.yaml
 oc create -f apim-gateway/wso2apim-manager-worker-service.yaml
@@ -94,9 +86,7 @@ oc create -f apim-km/wso2apim-km-service.yaml
 oc create -f apim-km/wso2apim-key-manager-service.yaml
 
 oc create -f apim-pubstore-tm/wso2apim-tm1-volume-claim.yaml
-oc create -f apim-pubstore-tm/wso2apim-tm2-volume-claim.yaml
 oc create -f apim-gateway/wso2apim-mgt-volume-claim.yaml
-oc create -f apim-gateway/wso2apim-worker-volume-claim.yaml
 
 sleep 30s
 # analytics
@@ -121,9 +111,6 @@ oc create -f apim-km/wso2apim-km-deployment.yaml
 sleep 30s
 echo 'deploying apim manager-worker ...'
 oc create -f apim-gateway/wso2apim-manager-worker-deployment.yaml
-sleep 30s
-echo 'deploying apim worker ...'
-oc create -f apim-gateway/wso2apim-worker-deployment.yaml
 
 echo 'deploying wso2apim and wso2apim-analytics routes ...'
 oc create -f routes/wso2apim-route.yaml

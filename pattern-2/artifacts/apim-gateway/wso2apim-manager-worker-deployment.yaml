@@ -21,6 +21,7 @@ metadata:
     node: manager-worker
     pattern: wso2apim-pattern-2
 spec:
+  replicas: 2
   strategy:
     type: Recreate
   template:
@@ -70,19 +71,6 @@ spec:
             port: 9443
           initialDelaySeconds: 300
           periodSeconds: 20
-      -
-        image: docker.wso2.com/sshd-kubernetes:1.0.0
-        name: wso2apim-sshd
-        imagePullPolicy: IfNotPresent
-        ports:
-        -
-          containerPort: 8022
-          protocol: "TCP"
-
-        volumeMounts:
-        -
-          mountPath: "/home/wso2user/apim-artifacts"
-          name: apim-mgt-storage-volume
       serviceAccountName: "wso2svcacct"
       volumes:
       - name: apim-mgt-storage-volume

@@ -18,6 +18,10 @@
 
 kubectl delete deployments,services,PersistentVolume,PersistentVolumeClaim,Ingress -l pattern=wso2apim-pattern-1 -n wso2
 
+kubectl delete deployment nginx-default-http-backend -n kube-system
+kubectl delete deployment nginx-ingress-controller -n kube-system
+kubectl delete service nginx-default-http-backend -n kube-system
+
 kubectl delete configmaps apim-analytics-1-bin
 kubectl delete configmaps apim-analytics-1-conf
 kubectl delete configmaps apim-analytics-1-spark

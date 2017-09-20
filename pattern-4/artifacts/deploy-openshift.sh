@@ -28,12 +28,12 @@ oc create configmap apim-analytics-1-axis2 --from-file=../confs/apim-analytics-1
 oc create configmap apim-analytics-1-datasources --from-file=../confs/apim-analytics-1/repository/conf/datasources/
 oc create configmap apim-analytics-1-tomcat --from-file=../confs/apim-analytics-1/repository/conf/tomcat/
 
-oc create configmap apim-analytics-2-bin --from-file=../confs/apim-analytics-1/bin/
-oc create configmap apim-analytics-2-conf --from-file=../confs/apim-analytics-1/repository/conf/
-oc create configmap apim-analytics-2-spark --from-file=../confs/apim-analytics-1/repository/conf/analytics/spark/
-oc create configmap apim-analytics-2-axis2 --from-file=../confs/apim-analytics-1/repository/conf/axis2/
-oc create configmap apim-analytics-2-datasources --from-file=../confs/apim-analytics-1/repository/conf/datasources/
-oc create configmap apim-analytics-2-tomcat --from-file=../confs/apim-analytics-1/repository/conf/tomcat/
+oc create configmap apim-analytics-2-bin --from-file=../confs/apim-analytics-2/bin/
+oc create configmap apim-analytics-2-conf --from-file=../confs/apim-analytics-2/repository/conf/
+oc create configmap apim-analytics-2-spark --from-file=../confs/apim-analytics-2/repository/conf/analytics/spark/
+oc create configmap apim-analytics-2-axis2 --from-file=../confs/apim-analytics-2/repository/conf/axis2/
+oc create configmap apim-analytics-2-datasources --from-file=../confs/apim-analytics-2/repository/conf/datasources/
+oc create configmap apim-analytics-2-tomcat --from-file=../confs/apim-analytics-2/repository/conf/tomcat/
 
 oc create configmap apim-gw-manager-worker-ext-bin --from-file=../confs/apim-gw-manager-worker-ext/bin/
 oc create configmap apim-gw-manager-worker-ext-conf --from-file=../confs/apim-gw-manager-worker-ext/repository/conf/
