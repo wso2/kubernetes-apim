@@ -23,7 +23,7 @@ For apim
 
 Add the above files to apim/files location.
 
-> mysql docker images do not need any files.
+> mysql docker image does not need any files.
 
 ##### 2. Build docker images
 

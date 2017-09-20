@@ -121,5 +121,7 @@ on the nodes). Alternatively, if a private Docker registry is used, transfer the
         - Use a CA signed certificate and update client-truststore.jks and wso2carbon.jks files
            
 <br>
+
 > Tested in OpenShift v3.6.0 and Kubernetes v1.6.1
+
 > NFS is tested in Kubernetes v1.6.1
