@@ -18,7 +18,7 @@ metadata:
   name: wso2apim-manager-worker
   labels:
     app: wso2apim
-    node: manager-worker
+    node-m: manager-worker
     pattern: wso2apim-pattern-1
 spec:
   strategy:
@@ -27,7 +27,7 @@ spec:
     metadata:
       labels:
         app: wso2apim
-        node: manager-worker
+        node-m: manager-worker
         pattern: wso2apim-pattern-1
     spec:
       containers:

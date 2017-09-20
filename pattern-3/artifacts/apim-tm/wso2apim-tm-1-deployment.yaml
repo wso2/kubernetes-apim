@@ -18,7 +18,7 @@ metadata:
   name: wso2apim-tm-1
   labels:
     app: wso2apim
-    node: tm-1
+    node-1: tm-1
     pattern: wso2apim-pattern-3
 spec:
   strategy:
@@ -27,7 +27,8 @@ spec:
     metadata:
       labels:
         app: wso2apim
-        node: tm-1
+        node-1: tm-1
+        node: tm
     spec:
       containers:
       - image: docker.wso2.com/wso2am-kubernetes:2.1.0
@@ -64,19 +65,6 @@ spec:
             port: 9443
           initialDelaySeconds: 300
           periodSeconds: 20
-      -
-        image: docker.wso2.com/sshd-kubernetes:1.0.0
-        name: wso2apim-sshd
-        imagePullPolicy: IfNotPresent
-        ports:
-        -
-          containerPort: 8022
-          protocol: "TCP"
-
-        volumeMounts:
-        -
-          mountPath: "/home/wso2user/apim-artifacts"
-          name: apim-tm1-storage-volume
       serviceAccountName: "wso2svcacct"
       volumes:
       - name: apim-tm1-storage-volume

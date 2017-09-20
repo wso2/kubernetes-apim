@@ -17,7 +17,7 @@ kind: Service
 metadata:
   name: wso2apim-worker
   labels:
-    node: worker
+    node-w: worker
     pattern: wso2apim-pattern-1
 spec:
   ports:
@@ -52,6 +52,6 @@ spec:
       port: 7611
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    node: worker
+    node-w: worker
     pattern: wso2apim-pattern-1
   clusterIP: None

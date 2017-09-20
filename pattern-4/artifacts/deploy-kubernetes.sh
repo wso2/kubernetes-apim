@@ -44,26 +44,12 @@ kubectl create configmap apim-gw-manager-worker-ext-axis2 --from-file=../confs/a
 kubectl create configmap apim-gw-manager-worker-ext-datasources --from-file=../confs/apim-gw-manager-worker-ext/repository/conf/datasources/
 kubectl create configmap apim-gw-manager-worker-ext-tomcat --from-file=../confs/apim-gw-manager-worker-ext/repository/conf/tomcat/
 
-kubectl create configmap apim-gw-worker-ext-bin --from-file=../confs/apim-gw-worker-ext/bin/
-kubectl create configmap apim-gw-worker-ext-conf --from-file=../confs/apim-gw-worker-ext/repository/conf/
-kubectl create configmap apim-gw-worker-ext-identity --from-file=../confs/apim-gw-worker-ext/repository/conf/identity/
-kubectl create configmap apim-gw-worker-ext-axis2 --from-file=../confs/apim-gw-worker-ext/repository/conf/axis2/
-kubectl create configmap apim-gw-worker-ext-datasources --from-file=../confs/apim-gw-worker-ext/repository/conf/datasources/
-kubectl create configmap apim-gw-worker-ext-tomcat --from-file=../confs/apim-gw-worker-ext/repository/conf/tomcat/
-
 kubectl create configmap apim-gw-manager-worker-int-bin --from-file=../confs/apim-gw-manager-worker-int/bin/
 kubectl create configmap apim-gw-manager-worker-int-conf --from-file=../confs/apim-gw-manager-worker-int/repository/conf/
 kubectl create configmap apim-gw-manager-worker-int-identity --from-file=../confs/apim-gw-manager-worker-int/repository/conf/identity/
 kubectl create configmap apim-gw-manager-worker-int-axis2 --from-file=../confs/apim-gw-manager-worker-int/repository/conf/axis2/
 kubectl create configmap apim-gw-manager-worker-int-datasources --from-file=../confs/apim-gw-manager-worker-int/repository/conf/datasources/
 kubectl create configmap apim-gw-manager-worker-int-tomcat --from-file=../confs/apim-gw-manager-worker-int/repository/conf/tomcat/
-
-kubectl create configmap apim-gw-worker-int-bin --from-file=../confs/apim-gw-worker-int/bin/
-kubectl create configmap apim-gw-worker-int-conf --from-file=../confs/apim-gw-worker-int/repository/conf/
-kubectl create configmap apim-gw-worker-int-identity --from-file=../confs/apim-gw-worker-int/repository/conf/identity/
-kubectl create configmap apim-gw-worker-int-axis2 --from-file=../confs/apim-gw-worker-int/repository/conf/axis2/
-kubectl create configmap apim-gw-worker-int-datasources --from-file=../confs/apim-gw-worker-int/repository/conf/datasources/
-kubectl create configmap apim-gw-worker-int-tomcat --from-file=../confs/apim-gw-worker-int/repository/conf/tomcat/
 
 kubectl create configmap apim-km-bin --from-file=../confs/apim-km/bin/
 kubectl create configmap apim-km-conf --from-file=../confs/apim-km/repository/conf/
@@ -101,12 +87,10 @@ kubectl create -f apim-pubstore-tm/wso2apim-service.yaml
 kubectl create -f apim-pubstore-tm/wso2apim-pubstore-tm-1-service.yaml
 kubectl create -f apim-pubstore-tm/wso2apim-pubstore-tm-2-service.yaml
 
-kubectl create -f apim-gateway-ext/wso2apim-worker-service.yaml
 kubectl create -f apim-gateway-ext/wso2apim-sv-service.yaml
 kubectl create -f apim-gateway-ext/wso2apim-pt-service.yaml
 kubectl create -f apim-gateway-ext/wso2apim-manager-worker-service.yaml
 
-kubectl create -f apim-gateway-int/wso2apim-worker-service.yaml
 kubectl create -f apim-gateway-int/wso2apim-sv-service.yaml
 kubectl create -f apim-gateway-int/wso2apim-pt-service.yaml
 kubectl create -f apim-gateway-int/wso2apim-manager-worker-service.yaml
@@ -115,45 +99,36 @@ kubectl create -f apim-km/wso2apim-km-service.yaml
 kubectl create -f apim-km/wso2apim-key-manager-service.yaml
 
 kubectl create -f apim-pubstore-tm/wso2apim-tm1-volume-claim.yaml
-kubectl create -f apim-pubstore-tm/wso2apim-tm2-volume-claim.yaml
 kubectl create -f apim-gateway-ext/wso2apim-mgt-volume-claim.yaml
-kubectl create -f apim-gateway-ext/wso2apim-worker-volume-claim.yaml
 kubectl create -f apim-gateway-int/wso2apim-mgt-volume-claim.yaml
-kubectl create -f apim-gateway-int/wso2apim-worker-volume-claim.yaml
 
-#sleep 30s
+sleep 30s
 # analytics
 echo 'deploying apim analytics ...'
 kubectl create -f apim-analytics/wso2apim-analytics-1-deployment.yaml
-#sleep 10s
+sleep 10s
 kubectl create -f apim-analytics/wso2apim-analytics-2-deployment.yaml
 
 # apim
-#sleep 1m
+sleep 1m
 echo 'deploying apim pubstore-tm-1 ...'
 kubectl create -f apim-pubstore-tm/wso2apim-pubstore-tm-1-deployment.yaml
 
-#sleep 1m
+sleep 1m
 echo 'deploying apim pubstore-tm-2 ...'
 kubectl create -f apim-pubstore-tm/wso2apim-pubstore-tm-2-deployment.yaml
 
-#sleep 30s
+sleep 30s
 echo 'deploying apim key manager...'
 kubectl create -f apim-km/wso2apim-km-deployment.yaml
 
-#sleep 30s
+sleep 30s
 echo 'deploying apim manager-worker external ...'
 kubectl create -f apim-gateway-ext/wso2apim-manager-worker-deployment.yaml
-#sleep 30s
-echo 'deploying apim worker external ...'
-kubectl create -f apim-gateway-ext/wso2apim-worker-deployment.yaml
 
-#sleep 30s
+sleep 30s
 echo 'deploying apim manager-worker internal ...'
 kubectl create -f apim-gateway-int/wso2apim-manager-worker-deployment.yaml
-#sleep 30s
-echo 'deploying apim worker internal ...'
-kubectl create -f apim-gateway-int/wso2apim-worker-deployment.yaml
 
 echo 'deploying wso2apim and wso2apim-analytics ingress resources ...'
 kubectl create -f ingresses/nginx-default-http-backend.yaml

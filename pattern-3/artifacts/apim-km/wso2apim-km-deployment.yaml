@@ -20,7 +20,7 @@ metadata:
     app: wso2apim-km
     pattern: wso2apim-pattern-3
 spec:
-  replicas: 1
+  replicas: 2
   strategy:
     type: Recreate
   template:

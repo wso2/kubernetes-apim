@@ -9,15 +9,13 @@
 ##### 1. Checkout WSO2 kubernetes-apim  repository using `git clone`:
 ```
 git clone https://github.com/wso2/kubernetes-apim.git
-git checkout tags/v2.1.0-1
+git checkout tags/v2.1.0-2
 ```
 
 ##### 2. Pull required Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com) using `docker pull`:
 ```
 docker login docker.wso2.com
 
-docker pull docker.wso2.com/sshd-kubernetes:1.0.0
-docker pull docker.wso2.com/rsync-kubernetes:1.0.0
 docker pull docker.wso2.com/wso2am-analytics-kubernetes:2.1.0
 docker pull docker.wso2.com/wso2am-kubernetes:2.1.0
 docker pull docker.wso2.com/apim-rdbms-kubernetes:2.1.0
@@ -30,8 +28,20 @@ Copy the required Docker images over to the Kubernetes Nodes (ex: use `docker sa
 required image, `scp` the tar file to each node, and then use `docker load` to load the image from the copied tar file 
 on the nodes). Alternatively, if a private Docker registry is used, transfer the images there.
 
-##### 4. Deploy Kubernetes/Openshift Resources:
+##### 4. Prerequisites for the deployment
+ 
+ * Network File System (NFS) is used as the persistent volume for API Manager servers. Therefore setting up NFS is required to deploy any pattern.
+   Complete the following.  
+   
+     1. Update the NFS server IP in `KUBERNETES_HOME/pattern-X/artifacts/volumes/persistent-volumes.yaml'
+     2. Create required directories in NFS server for each pattern as mentioned in `KUBERNETES_HOME/pattern-X/artifacts/volumes/persistent-volumes.yaml'
+        eg: For pattern-1, create directories as '/exports/pattern-1/apim'
+      
+  * It is recommend to use a mysql or any database cluster in a production environment. Only 1 mysql container is used with host path mount in these deployments.
 
+
+##### 5. Deploy Kubernetes/Openshift Resources:
+ 
 * Deploy on Kubernetes 
 
     1. Create a namespace called wso2.
@@ -101,7 +111,15 @@ on the nodes). Alternatively, if a private Docker registry is used, transfer the
     ```
     ./undeploy-openshift.sh
     ```
- <br>
  
+##### 6. How to customize for a deployment
 
+* Configurations are bind with wso2 namespace. If you are changing the hostnames or the namespace, do the following.
+    1. Change wso2.svc to `<namespace>.svc` in all the configuration files.
+    2. Update the KUBERNETES_NAMESPACE parameter with the correct namespace in all the axis2.xml files.
+    3. Update docker base images.
+        - Use a CA signed certificate and update client-truststore.jks and wso2carbon.jks files
+           
+<br>
 > Tested in OpenShift v3.6.0 and Kubernetes v1.6.1
+> NFS is tested in Kubernetes v1.6.1

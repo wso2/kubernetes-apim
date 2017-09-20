@@ -38,13 +38,6 @@ oc delete configmaps apim-gw-manager-worker-axis2
 oc delete configmaps apim-gw-manager-worker-datasources
 oc delete configmaps apim-gw-manager-worker-tomcat
 
-oc delete configmaps apim-gw-worker-bin
-oc delete configmaps apim-gw-worker-conf
-oc delete configmaps apim-gw-worker-identity
-oc delete configmaps apim-gw-worker-axis2
-oc delete configmaps apim-gw-worker-datasources
-oc delete configmaps apim-gw-worker-tomcat
-
 oc delete configmaps apim-km-bin
 oc delete configmaps apim-km-conf
 oc delete configmaps apim-km-identity

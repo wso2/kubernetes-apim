@@ -42,26 +42,12 @@ oc create configmap apim-gw-manager-worker-ext-axis2 --from-file=../confs/apim-g
 oc create configmap apim-gw-manager-worker-ext-datasources --from-file=../confs/apim-gw-manager-worker-ext/repository/conf/datasources/
 oc create configmap apim-gw-manager-worker-ext-tomcat --from-file=../confs/apim-gw-manager-worker-ext/repository/conf/tomcat/
 
-oc create configmap apim-gw-worker-ext-bin --from-file=../confs/apim-gw-worker-ext/bin/
-oc create configmap apim-gw-worker-ext-conf --from-file=../confs/apim-gw-worker-ext/repository/conf/
-oc create configmap apim-gw-worker-ext-identity --from-file=../confs/apim-gw-worker-ext/repository/conf/identity/
-oc create configmap apim-gw-worker-ext-axis2 --from-file=../confs/apim-gw-worker-ext/repository/conf/axis2/
-oc create configmap apim-gw-worker-ext-datasources --from-file=../confs/apim-gw-worker-ext/repository/conf/datasources/
-oc create configmap apim-gw-worker-ext-tomcat --from-file=../confs/apim-gw-worker-ext/repository/conf/tomcat/
-
 oc create configmap apim-gw-manager-worker-int-bin --from-file=../confs/apim-gw-manager-worker-int/bin/
 oc create configmap apim-gw-manager-worker-int-conf --from-file=../confs/apim-gw-manager-worker-int/repository/conf/
 oc create configmap apim-gw-manager-worker-int-identity --from-file=../confs/apim-gw-manager-worker-int/repository/conf/identity/
 oc create configmap apim-gw-manager-worker-int-axis2 --from-file=../confs/apim-gw-manager-worker-int/repository/conf/axis2/
 oc create configmap apim-gw-manager-worker-int-datasources --from-file=../confs/apim-gw-manager-worker-int/repository/conf/datasources/
 oc create configmap apim-gw-manager-worker-int-tomcat --from-file=../confs/apim-gw-manager-worker-int/repository/conf/tomcat/
-
-oc create configmap apim-gw-worker-int-bin --from-file=../confs/apim-gw-worker-int/bin/
-oc create configmap apim-gw-worker-int-conf --from-file=../confs/apim-gw-worker-int/repository/conf/
-oc create configmap apim-gw-worker-int-identity --from-file=../confs/apim-gw-worker-int/repository/conf/identity/
-oc create configmap apim-gw-worker-int-axis2 --from-file=../confs/apim-gw-worker-int/repository/conf/axis2/
-oc create configmap apim-gw-worker-int-datasources --from-file=../confs/apim-gw-worker-int/repository/conf/datasources/
-oc create configmap apim-gw-worker-int-tomcat --from-file=../confs/apim-gw-worker-int/repository/conf/tomcat/
 
 oc create configmap apim-km-bin --from-file=../confs/apim-km/bin/
 oc create configmap apim-km-conf --from-file=../confs/apim-km/repository/conf/
@@ -99,12 +85,10 @@ oc create -f apim-pubstore-tm/wso2apim-service.yaml
 oc create -f apim-pubstore-tm/wso2apim-pubstore-tm-1-service.yaml
 oc create -f apim-pubstore-tm/wso2apim-pubstore-tm-2-service.yaml
 
-oc create -f apim-gateway-ext/wso2apim-worker-service.yaml
 oc create -f apim-gateway-ext/wso2apim-sv-service.yaml
 oc create -f apim-gateway-ext/wso2apim-pt-service.yaml
 oc create -f apim-gateway-ext/wso2apim-manager-worker-service.yaml
 
-oc create -f apim-gateway-int/wso2apim-worker-service.yaml
 oc create -f apim-gateway-int/wso2apim-sv-service.yaml
 oc create -f apim-gateway-int/wso2apim-pt-service.yaml
 oc create -f apim-gateway-int/wso2apim-manager-worker-service.yaml
@@ -113,11 +97,8 @@ oc create -f apim-km/wso2apim-km-service.yaml
 oc create -f apim-km/wso2apim-key-manager-service.yaml
 
 oc create -f apim-pubstore-tm/wso2apim-tm1-volume-claim.yaml
-oc create -f apim-pubstore-tm/wso2apim-tm2-volume-claim.yaml
 oc create -f apim-gateway-ext/wso2apim-mgt-volume-claim.yaml
-oc create -f apim-gateway-ext/wso2apim-worker-volume-claim.yaml
 oc create -f apim-gateway-int/wso2apim-mgt-volume-claim.yaml
-oc create -f apim-gateway-int/wso2apim-worker-volume-claim.yaml
 
 sleep 30s
 # analytics
@@ -142,16 +123,10 @@ oc create -f apim-km/wso2apim-km-deployment.yaml
 sleep 30s
 echo 'deploying apim manager-worker external ...'
 oc create -f apim-gateway-ext/wso2apim-manager-worker-deployment.yaml
-sleep 30s
-echo 'deploying apim worker external ...'
-oc create -f apim-gateway-ext/wso2apim-worker-deployment.yaml
 
 sleep 30s
 echo 'deploying apim manager-worker internal ...'
 oc create -f apim-gateway-int/wso2apim-manager-worker-deployment.yaml
-sleep 30s
-echo 'deploying apim worker internal ...'
-oc create -f apim-gateway-int/wso2apim-worker-deployment.yaml
 
 echo 'deploying wso2apim and wso2apim-analytics routes ...'
 oc create -f routes/wso2apim-route.yaml
