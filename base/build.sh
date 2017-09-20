@@ -21,8 +21,6 @@
 set -e
 
 this_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-rsync_dir=$(cd "${this_dir}/rsync"; pwd)
-sshd_dir=$(cd "${this_dir}/sshd"; pwd)
 analytics_dir=$(cd "${this_dir}/analytics"; pwd)
 apim_dir=$(cd "${this_dir}/apim"; pwd)
 mysql_dir=$(cd "${this_dir}/mysql"; pwd)
@@ -40,8 +38,6 @@ function docker_build() {
     fi
 }
 
-docker_build docker.wso2.com/rsync-kubernetes:1.0.0 $rsync_dir
-docker_build docker.wso2.com/sshd-kubernetes:1.0.0 $sshd_dir
 docker_build docker.wso2.com/wso2am-kubernetes:2.1.0 $apim_dir
 docker_build docker.wso2.com/wso2am-analytics-kubernetes:2.1.0 $analytics_dir
 docker_build docker.wso2.com/apim-rdbms-kubernetes:2.1.0 $mysql_dir
