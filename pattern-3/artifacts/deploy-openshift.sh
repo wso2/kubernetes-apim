@@ -42,13 +42,6 @@ oc create configmap apim-gw-manager-worker-axis2 --from-file=../confs/apim-gw-ma
 oc create configmap apim-gw-manager-worker-datasources --from-file=../confs/apim-gw-manager-worker/repository/conf/datasources/
 oc create configmap apim-gw-manager-worker-tomcat --from-file=../confs/apim-gw-manager-worker/repository/conf/tomcat/
 
-oc create configmap apim-gw-worker-bin --from-file=../confs/apim-gw-worker/bin/
-oc create configmap apim-gw-worker-conf --from-file=../confs/apim-gw-worker/repository/conf/
-oc create configmap apim-gw-worker-identity --from-file=../confs/apim-gw-worker/repository/conf/identity/
-oc create configmap apim-gw-worker-axis2 --from-file=../confs/apim-gw-worker/repository/conf/axis2/
-oc create configmap apim-gw-worker-datasources --from-file=../confs/apim-gw-worker/repository/conf/datasources/
-oc create configmap apim-gw-worker-tomcat --from-file=../confs/apim-gw-worker/repository/conf/tomcat/
-
 oc create configmap apim-km-bin --from-file=../confs/apim-km/bin/
 oc create configmap apim-km-conf --from-file=../confs/apim-km/repository/conf/
 oc create configmap apim-km-identity --from-file=../confs/apim-km/repository/conf/identity/
@@ -89,7 +82,6 @@ oc create -f apim-analytics/wso2apim-analytics-service.yaml
 oc create -f apim-analytics/wso2apim-analytics-1-service.yaml
 oc create -f apim-analytics/wso2apim-analytics-2-service.yaml
 
-oc create -f apim-gateway/wso2apim-worker-service.yaml
 oc create -f apim-gateway/wso2apim-sv-service.yaml
 oc create -f apim-gateway/wso2apim-pt-service.yaml
 oc create -f apim-gateway/wso2apim-manager-worker-service.yaml
@@ -103,15 +95,14 @@ oc create -f apim-publisher/wso2apim-publisher-service.yaml
 oc create -f apim-store/wso2apim-store-local-service.yaml
 oc create -f apim-store/wso2apim-store-service.yaml
 
+oc create -f apim-tm/wso2apim-tm-service.yaml
 oc create -f apim-tm/wso2apim-tm-1-service.yaml
 oc create -f apim-tm/wso2apim-tm-2-service.yaml
 
 oc create -f apim-publisher/wso2apim-publisher-volume-claim.yaml
 oc create -f apim-store/wso2apim-store-volume-claim.yaml
 oc create -f apim-gateway/wso2apim-mgt-volume-claim.yaml
-oc create -f apim-gateway/wso2apim-worker-volume-claim.yaml
 oc create -f apim-tm/wso2apim-tm-1-volume-claim.yaml
-oc create -f apim-tm/wso2apim-tm-2-volume-claim.yaml
 
 sleep 30s
 # analytics
@@ -140,10 +131,6 @@ oc create -f apim-store/wso2apim-store-deployment.yaml
 sleep 30s
 echo 'deploying apim manager-worker ...'
 oc create -f apim-gateway/wso2apim-manager-worker-deployment.yaml
-
-sleep 30s
-echo 'deploying apim worker ...'
-oc create -f apim-gateway/wso2apim-worker-deployment.yaml
 
 echo 'deploying wso2apim and wso2apim-analytics routes ...'
 oc create -f routes/wso2apim-publisher-route.yaml

@@ -17,7 +17,7 @@ kind: Service
 metadata:
   name: wso2apim-pubstore-tm-1
   labels:
-    node: pubstore-tm-1
+    node-1: pubstore-tm-1
     pattern: wso2apim-pattern-2
 spec:
   ports:
@@ -43,10 +43,6 @@ spec:
       protocol: TCP
       port: 7611
     -
-      name: "ssh"
-      protocol: TCP
-      port: 8022
-    -
       name: "http"
       protocol: TCP
       port: 9763
@@ -56,5 +52,5 @@ spec:
       port: 9443
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    node: pubstore-tm-1
+    node-1: pubstore-tm-1
   clusterIP: None

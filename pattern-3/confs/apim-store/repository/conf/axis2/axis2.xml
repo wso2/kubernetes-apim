@@ -657,7 +657,7 @@
         -->
         <parameter name="membershipScheme">kubernetes</parameter>
         <parameter name="membershipSchemeClassName">org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme</parameter>
-        <parameter name="KUBERNETES_SERVICES">wso2apim-store-local</parameter>
+        <parameter name="KUBERNETES_SERVICES">wso2apim-store-local,wso2apim-publisher-local</parameter>
         <parameter name="KUBERNETES_NAMESPACE">wso2</parameter>
         <!--<parameter name="licenseKey">xxx</parameter>-->
         <!--<parameter name="mgtCenterURL">http://localhost:8081/mancenter/</parameter>-->

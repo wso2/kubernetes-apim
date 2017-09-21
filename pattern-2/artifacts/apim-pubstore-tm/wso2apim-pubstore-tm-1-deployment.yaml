@@ -18,7 +18,7 @@ metadata:
   name: wso2apim-pubstore-tm-1
   labels:
     app: wso2apim
-    node: pubstore-tm-1
+    node-1: pubstore-tm-1
     pattern: wso2apim-pattern-2
 spec:
   strategy:
@@ -27,7 +27,7 @@ spec:
     metadata:
       labels:
         app: wso2apim
-        node: pubstore-tm-1
+        node-1: pubstore-tm-1
     spec:
       containers:
       - image: docker.wso2.com/wso2am-kubernetes:2.1.0

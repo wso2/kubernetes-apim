@@ -16,7 +16,7 @@
 # limitations under the License
 # ------------------------------------------------------------------------
 
-# builds the base images - apim-base, analytics, rsync, sshd
+# builds the base images - apim, analytics
 
 set -e
 

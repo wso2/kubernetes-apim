@@ -42,8 +42,6 @@ spec:
     storage: 20Gi
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Recycle
-  nfs:
-    # FIXME: use the right IP
-    server: 10.23.245.15
-    path: "/exports/pattern-1/mysql"
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: /tmp/data/pattern-1-pv-2

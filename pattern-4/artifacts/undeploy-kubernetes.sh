@@ -43,26 +43,12 @@ kubectl delete configmaps apim-gw-manager-worker-int-axis2
 kubectl delete configmaps apim-gw-manager-worker-int-datasources
 kubectl delete configmaps apim-gw-manager-worker-int-tomcat
 
-kubectl delete configmaps apim-gw-worker-int-bin
-kubectl delete configmaps apim-gw-worker-int-conf
-kubectl delete configmaps apim-gw-worker-int-identity
-kubectl delete configmaps apim-gw-worker-int-axis2
-kubectl delete configmaps apim-gw-worker-int-datasources
-kubectl delete configmaps apim-gw-worker-int-tomcat
-
 kubectl delete configmaps apim-gw-manager-worker-ext-bin
 kubectl delete configmaps apim-gw-manager-worker-ext-conf
 kubectl delete configmaps apim-gw-manager-worker-ext-identity
 kubectl delete configmaps apim-gw-manager-worker-ext-axis2
 kubectl delete configmaps apim-gw-manager-worker-ext-datasources
 kubectl delete configmaps apim-gw-manager-worker-ext-tomcat
-
-kubectl delete configmaps apim-gw-worker-ext-bin
-kubectl delete configmaps apim-gw-worker-ext-conf
-kubectl delete configmaps apim-gw-worker-ext-identity
-kubectl delete configmaps apim-gw-worker-ext-axis2
-kubectl delete configmaps apim-gw-worker-ext-datasources
-kubectl delete configmaps apim-gw-worker-ext-tomcat
 
 kubectl delete configmaps apim-km-bin
 kubectl delete configmaps apim-km-conf

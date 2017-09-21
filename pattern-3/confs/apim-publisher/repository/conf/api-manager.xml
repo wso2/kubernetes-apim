@@ -589,7 +589,7 @@
             </DataPublisherThreadPool>
         </DataPublisher>
         <PolicyDeployer>
-            <ServiceURL>https://wso2apim-tm-1.wso2.svc:${mgt.transport.https.port}${carbon.context}services/</ServiceURL>
+            <ServiceURL>https://wso2apim-tm.wso2.svc:${mgt.transport.https.port}${carbon.context}services/</ServiceURL>
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
         </PolicyDeployer>

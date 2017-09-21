@@ -43,13 +43,6 @@ kubectl delete configmaps apim-gw-manager-worker-axis2
 kubectl delete configmaps apim-gw-manager-worker-datasources
 kubectl delete configmaps apim-gw-manager-worker-tomcat
 
-kubectl delete configmaps apim-gw-worker-bin
-kubectl delete configmaps apim-gw-worker-conf
-kubectl delete configmaps apim-gw-worker-identity
-kubectl delete configmaps apim-gw-worker-axis2
-kubectl delete configmaps apim-gw-worker-datasources
-kubectl delete configmaps apim-gw-worker-tomcat
-
 kubectl delete configmaps apim-km-bin
 kubectl delete configmaps apim-km-conf
 kubectl delete configmaps apim-km-identity

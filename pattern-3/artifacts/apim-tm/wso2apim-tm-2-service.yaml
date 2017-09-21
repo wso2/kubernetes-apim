@@ -17,7 +17,7 @@ kind: Service
 metadata:
   name: wso2apim-tm-2
   labels:
-    node: tm-2
+    node-2: tm-2
     pattern: wso2apim-pattern-3
 spec:
   ports:
@@ -45,5 +45,5 @@ spec:
 
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    node: tm-2
+    node-2: tm-2
   clusterIP: None
