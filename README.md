@@ -34,7 +34,7 @@ on the nodes). Alternatively, if a private Docker registry is used, transfer the
    Complete the following.  
    
      1. Update the NFS server IP in `KUBERNETES_HOME/pattern-X/artifacts/volumes/persistent-volumes.yaml'
-     2. Create required directories in NFS server for each pattern as mentioned in `KUBERNETES_HOME/pattern-X/artifacts/volumes/persistent-volumes.yaml'
+     2. Create required directories in NFS server for each pattern as mentioned in `KUBERNETES_HOME/pattern-X/artifacts/volumes/persistent-volumes.yaml`
         eg: For pattern-1, create directories as '/exports/pattern-1/apim'
       
   * It is recommend to use a mysql or any database cluster in a production environment. Only 1 mysql container is used with host path mount in these deployments.
