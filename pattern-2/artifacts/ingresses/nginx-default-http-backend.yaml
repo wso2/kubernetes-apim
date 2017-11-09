@@ -1,0 +1,70 @@
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Source reference:
+# https://github.com/kubernetes/ingress/tree/nginx-0.9.0-beta.11/
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-default-http-backend
+  labels:
+    k8s-app: nginx-default-http-backend
+    pattern: wso2apim-pattern-2
+  namespace: kube-system
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: nginx-default-http-backend
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: nginx-default-http-backend
+        # Any image is permissable as long as:
+        # 1. It serves a 404 page at /
+        # 2. It serves 200 on a /healthz endpoint
+        image: gcr.io/google_containers/defaultbackend:1.0
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 10m
+            memory: 20Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+#      serviceAccountName: "wso2svcacct"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-default-http-backend
+  namespace: kube-system
+  labels:
+    k8s-app: nginx-default-http-backend
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    k8s-app: nginx-default-http-backend

@@ -1,0 +1,106 @@
+# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wso2apim-analytics-2
+  labels:
+    app: wso2apim-analytics
+    node: wso2apim-analytics-2
+    pattern: wso2apim-pattern-1
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wso2apim-analytics
+        node: wso2apim-analytics-2
+        pattern: wso2apim-pattern-1
+    spec:
+      hostname: wso2apim-analytics-2
+      containers:
+      - image: docker.wso2.com/wso2am-analytics-kubernetes:2.1.0
+        name: wso2apim-analytics
+        imagePullPolicy: IfNotPresent
+        ports:
+        -
+          containerPort: 9764
+          protocol: "TCP"
+        -
+          containerPort: 9444
+          protocol: "TCP"
+        -
+          containerPort: 7612
+          protocol: "TCP"
+        -
+          containerPort: 7712
+          protocol: "TCP"
+        -
+          containerPort: 11225
+          protocol: "TCP"
+        -
+          containerPort: 10006
+          protocol: "TCP"
+        -
+          containerPort: 11001
+          protocol: "TCP"
+        -
+          containerPort: 11501
+          protocol: "TCP"
+        -
+          containerPort: 8083
+          protocol: "TCP"
+        -
+          containerPort: 4041
+          protocol: "TCP"
+        livenessProbe:
+          tcpSocket:
+            port: 7712
+          initialDelaySeconds: 300
+          periodSeconds: 20
+        volumeMounts:
+          - name: apim-analytics-2-bin
+            mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/bin/"
+          - name: apim-analytics-2-conf
+            mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf/"
+          - name: apim-analytics-2-spark
+            mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-analytics-spark/"
+          - name: apim-analytics-2-axis2
+            mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-axis2/"
+          - name: apim-analytics-2-datasources
+            mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-datasources/"
+          - name: apim-analytics-2-tomcat
+            mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-tomcat/"
+      volumes:
+        - name: apim-analytics-2-bin
+          configMap:
+            name: apim-analytics-2-bin
+        - name: apim-analytics-2-conf
+          configMap:
+            name: apim-analytics-2-conf
+        - name: apim-analytics-2-spark
+          configMap:
+            name: apim-analytics-2-spark
+        - name: apim-analytics-2-axis2
+          configMap:
+            name: apim-analytics-2-axis2
+        - name: apim-analytics-2-datasources
+          configMap:
+            name: apim-analytics-2-datasources
+        - name: apim-analytics-2-tomcat
+          configMap:
+            name: apim-analytics-2-tomcat
+      serviceAccountName: "wso2svcacct"
