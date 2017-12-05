@@ -18,7 +18,7 @@ metadata:
   name: local-pv-1
   labels:
     type: local
-    pattern: wso2apim-pattern-2
+    pattern: wso2apim-pattern-2.1
 spec:
   capacity:
     storage: 1Gi
@@ -28,7 +28,7 @@ spec:
   nfs:
     # FIXME: use the right IP
     server: 10.11.253.199
-    path: "/exports/pattern-2/apim1"
+    path: "/exports/pattern-2.1/apim1"
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -36,7 +36,7 @@ metadata:
   name: local-pv-2
   labels:
     type: local
-    pattern: wso2apim-pattern-2
+    pattern: wso2apim-pattern-2.1
 spec:
   capacity:
     storage: 1Gi
@@ -46,7 +46,7 @@ spec:
   nfs:
     # FIXME: use the right IP
     server: 10.11.253.199
-    path: "/exports/pattern-2/apim2"
+    path: "/exports/pattern-2.1/apim2"
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -54,7 +54,7 @@ metadata:
   name: local-pv-3
   labels:
     type: local
-    pattern: wso2apim-pattern-2
+    pattern: wso2apim-pattern-2.1
 spec:
   capacity:
     storage: 20Gi
@@ -62,4 +62,4 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Delete
   hostPath:
-    path: /tmp/data/pattern-2-pv-3
+    path: /tmp/data/pattern-2.1-pv-3

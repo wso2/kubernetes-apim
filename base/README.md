@@ -23,6 +23,16 @@ For apim
 
 Add the above files to apim/files location.
 
+For is_as_km_prepacked
+
+- wso2is-km-2=5.3.0.zip
+- jdk-8u*-linux-x64.tar.gz (Any JDK 8u* version)
+- dnsjava-2.1.8.jar (http://www.dnsjava.org/)
+- [`kubernetes-membership-scheme-1.0.1.jar`](https://github.com/wso2/kubernetes-common/releases/tag/v1.0.1)
+- mysql-connector-java-5*-bin.jar (Any mysql connector 5* version)
+
+Add the above files to is_as_km_prepacked/files location.
+
 > mysql docker image does not need any files.
 
 ##### 2. Build docker images
