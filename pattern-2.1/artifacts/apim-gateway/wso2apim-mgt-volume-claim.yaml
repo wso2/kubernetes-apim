@@ -21,7 +21,7 @@ metadata:
     pattern: wso2apim-pattern-2.1
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 1Gi

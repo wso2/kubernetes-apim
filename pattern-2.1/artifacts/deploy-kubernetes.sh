@@ -22,7 +22,7 @@ kubectl config set-context $(kubectl config current-context) --namespace=wso2
 # volumes
 kubectl create -f volumes/persistent-volumes.yaml
 
- Configuration Maps
+# Configuration Maps
 kubectl create configmap apim-analytics-1-bin --from-file=../confs/apim-analytics-1/bin/
 kubectl create configmap apim-analytics-1-conf --from-file=../confs/apim-analytics-1/repository/conf/
 kubectl create configmap apim-analytics-1-spark --from-file=../confs/apim-analytics-1/repository/conf/analytics/spark/
@@ -84,6 +84,8 @@ kubectl create -f apim-gateway/wso2apim-manager-worker-service.yaml
 
 kubectl create -f apim-is-as-km/wso2apim-is-as-km-service.yaml
 kubectl create -f apim-is-as-km/wso2apim-is-as-key-manager-service.yaml
+kubectl create -f apim-is-as-km/wso2apim-is-km-volume-claim.yaml
+
 kubectl create -f apim-pubstore-tm/wso2apim-tm1-volume-claim.yaml
 kubectl create -f apim-gateway/wso2apim-mgt-volume-claim.yaml
 
