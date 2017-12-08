@@ -38,12 +38,19 @@ oc delete configmaps apim-gw-manager-worker-axis2
 oc delete configmaps apim-gw-manager-worker-datasources
 oc delete configmaps apim-gw-manager-worker-tomcat
 
+# Comment these config maps if you deploying WSO2 Identity Server as Key Manager
 oc delete configmaps apim-km-bin
 oc delete configmaps apim-km-conf
 oc delete configmaps apim-km-identity
 oc delete configmaps apim-km-axis2
 oc delete configmaps apim-km-datasources
 oc delete configmaps apim-km-tomcat
+
+# Uncomment the following config maps when deploying WSO2 Identity Server as Key Manager
+#oc delete configmaps apim-is-km-conf
+#oc delete configmaps apim-is-km-axis2
+#oc delete configmaps apim-is-km-datasources
+#oc delete configmaps apim-is-km-tomcat
 
 oc delete configmaps apim-pubstore-tm-1-bin
 oc delete configmaps apim-pubstore-tm-1-conf
