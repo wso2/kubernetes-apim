@@ -42,12 +42,19 @@ oc create configmap apim-gw-manager-worker-axis2 --from-file=../confs/apim-gw-ma
 oc create configmap apim-gw-manager-worker-datasources --from-file=../confs/apim-gw-manager-worker/repository/conf/datasources/
 oc create configmap apim-gw-manager-worker-tomcat --from-file=../confs/apim-gw-manager-worker/repository/conf/tomcat/
 
+# Comment these config maps if you deploying WSO2 Identity Server as Key Manager
 oc create configmap apim-km-bin --from-file=../confs/apim-km/bin/
 oc create configmap apim-km-conf --from-file=../confs/apim-km/repository/conf/
 oc create configmap apim-km-identity --from-file=../confs/apim-km/repository/conf/identity/
 oc create configmap apim-km-axis2 --from-file=../confs/apim-km/repository/conf/axis2/
 oc create configmap apim-km-datasources --from-file=../confs/apim-km/repository/conf/datasources/
 oc create configmap apim-km-tomcat --from-file=../confs/apim-km/repository/conf/tomcat/
+
+# Uncomment the following Config maps to deploy WSO2 Identity Server as Key Manager
+#oc create configmap apim-is-km-conf --from-file=../confs/apim-is-as-km/repository/conf/
+#oc create configmap apim-is-km-axis2 --from-file=../confs/apim-is-as-km/repository/conf/axis2/
+#oc create configmap apim-is-km-datasources --from-file=../confs/apim-is-as-km/repository/conf/datasources/
+#oc create configmap apim-is-km-tomcat --from-file=../confs/apim-is-as-km/repository/conf/tomcat/
 
 oc create configmap apim-pubstore-tm-1-bin --from-file=../confs/apim-pubstore-tm-1/bin/
 oc create configmap apim-pubstore-tm-1-conf --from-file=../confs/apim-pubstore-tm-1/repository/conf/
@@ -82,8 +89,14 @@ oc create -f apim-gateway/wso2apim-sv-service.yaml
 oc create -f apim-gateway/wso2apim-pt-service.yaml
 oc create -f apim-gateway/wso2apim-manager-worker-service.yaml
 
-oc create -f apim-km/wso2apim-km-service.yaml
-oc create -f apim-km/wso2apim-key-manager-service.yaml
+# Comment these services if you deploying WSO2 Identity Server as Key Manager
+oc create -f apim-km/wso2apim-km-internal-service.yaml
+oc create -f apim-km/wso2apim-km-clustering-service.yaml
+
+# Uncomment the following services to deploy WSO2 Identity Server as Key Manager
+#oc create -f apim-is-as-km/wso2apim-is-as-km-internal-service.yaml
+#oc create -f apim-is-as-km/wso2apim-is-as-km-clustering-service.yaml
+#oc create -f apim-is-as-km/wso2apim-is-km-volume-claim.yaml
 
 oc create -f apim-pubstore-tm/wso2apim-tm1-volume-claim.yaml
 oc create -f apim-gateway/wso2apim-mgt-volume-claim.yaml
@@ -106,7 +119,11 @@ oc create -f apim-pubstore-tm/wso2apim-pubstore-tm-2-deployment.yaml
 
 sleep 30s
 echo 'deploying apim key manager...'
+# Comment this deployment if you deploying WSO2 Identity Server as Key Manager
 oc create -f apim-km/wso2apim-km-deployment.yaml
+
+# Uncomment the following deployment to deploy WSO2 Identity Server as Key Manager
+#oc create -f apim-is-as-km/wso2apim-is-as-km-deployment.yaml
 
 sleep 30s
 echo 'deploying apim manager-worker ...'

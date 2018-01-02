@@ -15,23 +15,23 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: wso2apim-km-internal
+  name: wso2apim-is-as-km
   labels:
-    app: wso2apim-km
+    app: wso2apim-is-as-km
     pattern: wso2apim-pattern-2
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: wso2apim-km
+        app: wso2apim-is-as-km
         node: key-manager
     spec:
       containers:
-      - image: docker.wso2.com/wso2am-kubernetes:2.1.0
-        name: wso2apim-km
+      - image: docker.wso2.com/wso2apim-is-as-km-kubernetes:5.3.0
+        name: wso2apim-is-as-km
         imagePullPolicy: IfNotPresent
         ports:
         -
@@ -41,18 +41,17 @@ spec:
           containerPort: 9443
           protocol: "TCP"
         volumeMounts:
-        - name: apim-km-bin
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/bin/"
-        - name: apim-km-conf
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf/"
-        - name: apim-km-identity
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-identity/"
-        - name: apim-km-axis2
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-axis2/"
-        - name: apim-km-datasources
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-datasources/"
-        - name: apim-km-tomcat
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-tomcat/"
+        -
+          name: apim-is-km-storage-volume
+          mountPath: "/home/wso2user/wso2is-km-5.3.0/repository/deployment/server"
+        - name: apim-is-km-conf
+          mountPath: "/home/wso2user/wso2is-km-5.3.0-conf/conf/"
+        - name: apim-is-km-axis2
+          mountPath: "/home/wso2user/wso2is-km-5.3.0-conf/conf-axis2/"
+        - name: apim-is-km-datasources
+          mountPath: "/home/wso2user/wso2is-km-5.3.0-conf/conf-datasources/"
+        - name: apim-is-km-tomcat
+          mountPath: "/home/wso2user/wso2is-km-5.3.0-conf/conf-tomcat/"
         livenessProbe:
           tcpSocket:
             port: 9443
@@ -60,21 +59,18 @@ spec:
           periodSeconds: 20
       serviceAccountName: "wso2svcacct"
       volumes:
-      - name: apim-km-bin
+      - name: apim-is-km-storage-volume
+        persistentVolumeClaim:
+          claimName: apim-is-km-volume-claim
+      - name: apim-is-km-conf
         configMap:
-          name: apim-km-bin
-      - name: apim-km-conf
+          name: apim-is-km-conf
+      - name: apim-is-km-axis2
         configMap:
-          name: apim-km-conf
-      - name: apim-km-identity
+          name: apim-is-km-axis2
+      - name: apim-is-km-datasources
         configMap:
-          name: apim-km-identity
-      - name: apim-km-axis2
+          name: apim-is-km-datasources
+      - name: apim-is-km-tomcat
         configMap:
-          name: apim-km-axis2
-      - name: apim-km-datasources
-        configMap:
-          name: apim-km-datasources
-      - name: apim-km-tomcat
-        configMap:
-          name: apim-km-tomcat
+          name: apim-is-km-tomcat

@@ -43,12 +43,19 @@ kubectl delete configmaps apim-gw-manager-worker-axis2
 kubectl delete configmaps apim-gw-manager-worker-datasources
 kubectl delete configmaps apim-gw-manager-worker-tomcat
 
+# Comment these config maps if you deploying WSO2 Identity Server as Key Manager
 kubectl delete configmaps apim-km-bin
 kubectl delete configmaps apim-km-conf
 kubectl delete configmaps apim-km-identity
 kubectl delete configmaps apim-km-axis2
 kubectl delete configmaps apim-km-datasources
 kubectl delete configmaps apim-km-tomcat
+
+# Uncomment the following config maps when deploying WSO2 Identity Server as Key Manager
+#kubectl delete configmaps apim-is-km-conf
+#kubectl delete configmaps apim-is-km-axis2
+#kubectl delete configmaps apim-is-km-datasources
+#kubectl delete configmaps apim-is-km-tomcat
 
 kubectl delete configmaps apim-pubstore-tm-1-bin
 kubectl delete configmaps apim-pubstore-tm-1-conf

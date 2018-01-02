@@ -15,9 +15,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2apim-km
+  name: wso2apim-km-internal
   labels:
-    app: wso2apim-km
+    app: wso2apim-is-as-km
     pattern: wso2apim-pattern-2
 spec:
   ports:
@@ -32,5 +32,5 @@ spec:
       port: 9443
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    app: wso2apim-km
+    app: wso2apim-is-as-km
   sessionAffinity: ClientIP

@@ -13,25 +13,15 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: Service
+kind: PersistentVolumeClaim
 metadata:
-  name: wso2apim-key-manager
+  name: apim-is-km-volume-claim
   labels:
-    node: key-manager
-    pattern: wso2apim-pattern-2
+    app: apim-is-km
+    pattern: wso2apim-pattern-2.1
 spec:
-  ports:
-    # ports that this service should serve on
-    -
-      name: "http"
-      protocol: TCP
-      port: 9673
-    -
-      name: "https"
-      protocol: TCP
-      port: 9443
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    node: key-manager
-  clusterIP: None
-  sessionAffinity: ClientIP
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
