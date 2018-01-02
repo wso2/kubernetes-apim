@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: wso2apim-km
+  name: wso2apim-km-internal
   labels:
     app: wso2apim-km
     pattern: wso2apim-pattern-2

@@ -90,12 +90,12 @@ oc create -f apim-gateway/wso2apim-pt-service.yaml
 oc create -f apim-gateway/wso2apim-manager-worker-service.yaml
 
 # Comment these services if you deploying WSO2 Identity Server as Key Manager
-oc create -f apim-km/wso2apim-km-service.yaml
-oc create -f apim-km/wso2apim-key-manager-service.yaml
+oc create -f apim-km/wso2apim-km-internal-service.yaml
+oc create -f apim-km/wso2apim-km-clustering-service.yaml
 
 # Uncomment the following services to deploy WSO2 Identity Server as Key Manager
-#oc create -f apim-is-as-km/wso2apim-is-as-km-service.yaml
-#oc create -f apim-is-as-km/wso2apim-is-as-key-manager-service.yaml
+#oc create -f apim-is-as-km/wso2apim-is-as-km-internal-service.yaml
+#oc create -f apim-is-as-km/wso2apim-is-as-km-clustering-service.yaml
 #oc create -f apim-is-as-km/wso2apim-is-km-volume-claim.yaml
 
 oc create -f apim-pubstore-tm/wso2apim-tm1-volume-claim.yaml
