@@ -35,6 +35,11 @@ spec:
       - image: docker.wso2.com/wso2am-analytics-kubernetes:2.1.0
         name: wso2apim-analytics
         imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "4Gi"
+          requests:
+            memory: "4Gi"
         ports:
         -
           containerPort: 9764
@@ -66,12 +71,35 @@ spec:
         -
           containerPort: 4041
           protocol: "TCP"
+        -
+          containerPort: 10006
+          protocol: TCP
+        -
+          containerPort: 12501
+          protocol: TCP
+        -
+          containerPort: 13001
+          protocol: TCP
+        -
+          containerPort: 13501
+          protocol: TCP
+        -
+          containerPort: 14501
+          protocol: TCP
+        -
+          containerPort: 7078
+          protocol: TCP
+        -
+          containerPort: 6067
+          protocol: TCP
         livenessProbe:
           tcpSocket:
             port: 7712
           initialDelaySeconds: 300
           periodSeconds: 20
         volumeMounts:
+          - name: apim-analytics2-storage-volume
+            mountPath: "/home/wso2user/wso2am-analytics-2.1.0/repository/data/"
           - name: apim-analytics-2-bin
             mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/bin/"
           - name: apim-analytics-2-conf
@@ -84,7 +112,12 @@ spec:
             mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-datasources/"
           - name: apim-analytics-2-tomcat
             mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-tomcat/"
+          - name: apim-analytics-2-conf-analytics
+            mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-analytics/"
       volumes:
+        - name: apim-analytics2-storage-volume
+          persistentVolumeClaim:
+            claimName: apim-analytics-volume-claim-2
         - name: apim-analytics-2-bin
           configMap:
             name: apim-analytics-2-bin
@@ -103,4 +136,9 @@ spec:
         - name: apim-analytics-2-tomcat
           configMap:
             name: apim-analytics-2-tomcat
+        - name: apim-analytics-2-conf-analytics
+          configMap:
+            name: apim-analytics-2-conf-analytics
       serviceAccountName: "wso2svcacct"
+      securityContext:
+        supplementalGroups: [0]

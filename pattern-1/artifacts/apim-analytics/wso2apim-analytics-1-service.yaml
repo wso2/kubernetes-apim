@@ -42,6 +42,70 @@ spec:
       name: 'spark-3'
       port: 11001
       protocol: TCP
+    -
+      name: 'spark-44'
+      protocol: TCP
+      port: 8082
+    -
+      name: 'spark-5'
+      protocol: TCP
+      port: 4041
+    -
+      name: 'spark6'
+      protocol: TCP
+      port: 12001
+    -
+      name: 'spark7'
+      protocol: TCP
+      port: 12002
+    -
+      name: 'spark8'
+      protocol: TCP
+      port: 12003
+    -
+      name: 'spark9'
+      protocol: TCP
+      port: 12004
+    -
+      name: 'spark10'
+      protocol: TCP
+      port: 12005
+    -
+      name: 'analytics1'
+      protocol: TCP
+      port: 10006
+    -
+      name: 'analytics2'
+      protocol: TCP
+      port: 11001
+    -
+      name: 'analytics3'
+      protocol: TCP
+      port: 12501
+    -
+      name: 'analytics5'
+      protocol: TCP
+      port: 13001
+    -
+      name: 'analytics6'
+      protocol: TCP
+      port: 13501
+    -
+      name: 'analytics7'
+      protocol: TCP
+      port: 14501
+    -
+      name: 'analytics8'
+      protocol: TCP
+      port: 7078
+    -
+      name: 'analytics9'
+      protocol: TCP
+      port: 6067
+    -
+      name: 'analytics10'
+      protocol: TCP
+      port: 11001
 
   # label keys and values that must match in order to receive traffic for this service
   selector:

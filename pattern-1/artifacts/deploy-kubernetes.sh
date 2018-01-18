@@ -29,6 +29,7 @@ kubectl create configmap apim-analytics-1-spark --from-file=../confs/apim-analyt
 kubectl create configmap apim-analytics-1-axis2 --from-file=../confs/apim-analytics-1/repository/conf/axis2/
 kubectl create configmap apim-analytics-1-datasources --from-file=../confs/apim-analytics-1/repository/conf/datasources/
 kubectl create configmap apim-analytics-1-tomcat --from-file=../confs/apim-analytics-1/repository/conf/tomcat/
+kubectl create configmap apim-analytics-1-conf-analytics --from-file=../confs/apim-analytics-1/repository/conf/analytics/
 
 kubectl create configmap apim-analytics-2-bin --from-file=../confs/apim-analytics-2/bin/
 kubectl create configmap apim-analytics-2-conf --from-file=../confs/apim-analytics-2/repository/conf/
@@ -36,6 +37,7 @@ kubectl create configmap apim-analytics-2-spark --from-file=../confs/apim-analyt
 kubectl create configmap apim-analytics-2-axis2 --from-file=../confs/apim-analytics-2/repository/conf/axis2/
 kubectl create configmap apim-analytics-2-datasources --from-file=../confs/apim-analytics-2/repository/conf/datasources/
 kubectl create configmap apim-analytics-2-tomcat --from-file=../confs/apim-analytics-2/repository/conf/tomcat/
+kubectl create configmap apim-analytics-2-conf-analytics --from-file=../confs/apim-analytics-2/repository/conf/analytics/
 
 kubectl create configmap apim-manager-worker-bin --from-file=../confs/apim-manager-worker/bin/
 kubectl create configmap apim-manager-worker-conf --from-file=../confs/apim-manager-worker/repository/conf/
@@ -65,6 +67,7 @@ kubectl create -f apim/wso2apim-service.yaml
 kubectl create -f apim/wso2apim-manager-worker-service.yaml
 kubectl create -f apim/wso2apim-worker-service.yaml
 kubectl create -f apim/wso2apim-mgt-volume-claim.yaml
+kubectl create -f apim-analytics/wso2apim-analytics-volume-claim.yaml
 
 sleep 30s
 # analytics
