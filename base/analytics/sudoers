@@ -1,0 +1,50 @@
+# ------------------------------------------------------------------------
+# Copyright 2017 WSO2, Inc. (http://wso2.com)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License
+# ------------------------------------------------------------------------
+#
+# This file MUST be edited with the 'visudo' command as root.
+#
+# Please consider adding local content in /etc/sudoers.d/ instead of
+# directly modifying this file.
+#
+# See the man page for details on how to write a sudoers file.
+#
+#Defaults	env_reset
+Defaults  	env_keep += "USER_HOME"
+Defaults  	env_keep += "USER"
+Defaults  	env_keep += "WSO2_SERVER_VERSION"
+Defaults  	env_keep += "WSO2_SERVER"
+Defaults	mail_badpass
+Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+# Host alias specification
+
+# User alias specification
+
+# Cmnd alias specification
+
+# User privilege specification
+#root	ALL=(ALL:ALL) ALL
+
+# Members of the admin group may gain root privileges
+#%admin ALL=(ALL) ALL
+
+# Allow members of group sudo to execute any command
+#%sudo	ALL=(ALL:ALL) ALL
+
+# See sudoers(5) for more information on "#include" directives:
+
+#includedir /etc/sudoers.d
+ALL ALL=(root) NOPASSWD: /bin/change_ownership.sh

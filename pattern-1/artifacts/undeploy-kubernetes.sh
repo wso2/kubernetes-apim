@@ -28,6 +28,7 @@ kubectl delete configmaps apim-analytics-1-spark
 kubectl delete configmaps apim-analytics-1-axis2
 kubectl delete configmaps apim-analytics-1-datasources
 kubectl delete configmaps apim-analytics-1-tomcat
+kubectl delete configmaps apim-analytics-1-conf-analytics
 
 kubectl delete configmaps apim-analytics-2-bin
 kubectl delete configmaps apim-analytics-2-conf
@@ -35,6 +36,7 @@ kubectl delete configmaps apim-analytics-2-spark
 kubectl delete configmaps apim-analytics-2-axis2
 kubectl delete configmaps apim-analytics-2-datasources
 kubectl delete configmaps apim-analytics-2-tomcat
+kubectl delete configmaps apim-analytics-2-conf-analytics
 
 kubectl delete configmaps apim-manager-worker-bin
 kubectl delete configmaps apim-manager-worker-conf

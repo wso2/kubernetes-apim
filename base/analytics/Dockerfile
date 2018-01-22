@@ -43,16 +43,16 @@ RUN apt-get update \
            zip \
            unzip \
            telnet \
-           iproute2
+           iproute2 \
+      sudo && rm -rf /var/lib/apt/lists/*
 
-# creates the user 
 RUN useradd --system --uid ${USER_ID} --gid 0 --create-home --home-dir ${USER_HOME} \
         --no-log-init ${USER}
 
 # copy the jdk and product packs
 COPY ${FILES}/${WSO2_SERVER_PACK} ${STARTUP_SCRIPT} ${FILES}/${JDK_ARCHIVE} ${FILES}/${JDBC_DRIVER} \
         ${FILES}/${DNS_JAVA} ${FILES}/${KUBERNETES_MEMBERSHIP_SCHEME} ${FILES}/${CLIENT_TRUSTSTORE} \
-        ${FILES}/${WSO2CARBON_JKS} ${USER_HOME}/
+        ${FILES}/${WSO2CARBON_JKS} sudoers change_ownership.sh ${USER_HOME}/
 
 # and creates the init script
 RUN unzip -q ${USER_HOME}/${WSO2_SERVER_PACK} -d ${USER_HOME}/ \
@@ -81,9 +81,12 @@ RUN unzip -q ${USER_HOME}/${WSO2_SERVER_PACK} -d ${USER_HOME}/ \
         && chgrp -R 0 ${USER_HOME} \
         && chmod -R g=u ${USER_HOME} \
         && chown -R ${USER_ID} ${USER_HOME} \
-        && chmod -R 0774 ${USER_HOME}
+        && chmod -R 0774 ${USER_HOME} \
+        && cat ${USER_HOME}/sudoers > /etc/sudoers \
+        && rm ${USER_HOME}/sudoers \
+        && cat ${USER_HOME}/change_ownership.sh > /bin/change_ownership.sh \
+        && chmod 0755 /bin/change_ownership.sh
 
-# set the user, work directory and home 
 USER ${USER_ID}
 WORKDIR ${USER_HOME}
 
@@ -92,6 +95,6 @@ ENV HOME=${USER_HOME} JAVA_HOME=${JAVA_HOME} PATH=$JAVA_HOME/bin:$PATH USER_HOME
         WSO2_SERVER=${WSO2_SERVER} WSO2_SERVER_VERSION=${WSO2_SERVER_VERSION}
 
 # expose ports
-EXPOSE 9764 9444 7712 7612 11225 10006 11001 11501 8082 4041
+EXPOSE 9764 9444 7712 7612 11225 10006 11001 11501 8082 4041 18081 12501 13001 13501 14001 14501 7078 6067 12000-12005
 
 ENTRYPOINT exec ${USER_HOME}/scripts/init_carbon.sh
