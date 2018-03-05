@@ -18,7 +18,7 @@ metadata:
   name: apim-is-km-volume-claim
   labels:
     app: apim-is-km
-    pattern: wso2apim-pattern-2.1
+    pattern: wso2apim-pattern-2
 spec:
   accessModes:
     - ReadWriteMany
