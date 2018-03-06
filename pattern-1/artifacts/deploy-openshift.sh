@@ -57,7 +57,6 @@ echo 'deploying databases ...'
 oc create -f rdbms/rdbms-persistent-volume-claim.yaml
 oc create -f rdbms/rdbms-service.yaml
 oc create -f rdbms/rdbms-deployment.yaml
-sleep 10s
 
 echo 'deploying services and volume claims ...'
 oc create -f apim-analytics/wso2apim-analytics-service.yaml

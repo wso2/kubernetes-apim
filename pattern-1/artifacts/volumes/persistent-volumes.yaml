@@ -27,7 +27,7 @@ spec:
   persistentVolumeReclaimPolicy: Recycle
   nfs:
     # FIXME: use the right IP
-    # EXAMLE: /nfs/pattern-1/analytics1
+    #Example Path in NFS server: /exports/pattern-1/anlytics2
     server: <NFS-Server-IP>
     path: "<NFS location path>"
 ---
@@ -62,7 +62,7 @@ spec:
   persistentVolumeReclaimPolicy: Delete
   nfs:
   # FIXME: use the right IP
-  # EXAMLE: /nfs/pattern-1/analytics2
+  #Example Path in NFS server: /exports/pattern-1/anlytics2
     server: <NFS-Server-IP>
     path: "<NFS location path>"
 ---
@@ -81,6 +81,6 @@ spec:
   persistentVolumeReclaimPolicy: Delete
   nfs:
   # FIXME: use the right IP
-  # EXAMLE: /nfs/pattern-1/apim
+  #Example Path in NFS server: /exports/pattern-1/apim
     server: <NFS-Server-IP>
     path: "<NFS location path>"
