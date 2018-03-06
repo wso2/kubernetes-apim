@@ -30,7 +30,6 @@ oc create configmap apim-analytics-1-datasources --from-file=../confs/apim-analy
 oc create configmap apim-analytics-1-tomcat --from-file=../confs/apim-analytics-1/repository/conf/tomcat/
 oc create configmap apim-analytics-1-conf-analytics --from-file=../confs/apim-analytics-1/repository/conf/analytics/
 
-
 oc create configmap apim-analytics-2-bin --from-file=../confs/apim-analytics-2/bin/
 oc create configmap apim-analytics-2-conf --from-file=../confs/apim-analytics-2/repository/conf/
 oc create configmap apim-analytics-2-spark --from-file=../confs/apim-analytics-2/repository/conf/analytics/spark/
