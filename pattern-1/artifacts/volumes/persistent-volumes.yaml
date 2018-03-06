@@ -27,8 +27,8 @@ spec:
   persistentVolumeReclaimPolicy: Recycle
   nfs:
     # FIXME: use the right IP
-    server: 10.11.251.230
-    path: "/exports/pattern-1/apim"
+    server: 192.168.57.196
+    path: "/home/centos/nfs/pattern-1/apim"
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -61,8 +61,8 @@ spec:
   persistentVolumeReclaimPolicy: Delete
   nfs:
   # FIXME: use the right IP
-    server: 10.11.251.230
-    path: "/exports/pattern-1/analytics1"
+    server: 192.168.57.196
+    path: "/home/centos/nfs/pattern-1/analytics1"
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -79,5 +79,5 @@ spec:
   persistentVolumeReclaimPolicy: Delete
   nfs:
   # FIXME: use the right IP
-    server: 10.11.251.230
-    path: "/exports/pattern-1/analytics2"
+    server: 192.168.57.196
+    path: "/home/centos/nfs/pattern-1/analytics2"

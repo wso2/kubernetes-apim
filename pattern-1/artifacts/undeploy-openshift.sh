@@ -24,6 +24,7 @@ oc delete configmaps apim-analytics-1-spark
 oc delete configmaps apim-analytics-1-axis2
 oc delete configmaps apim-analytics-1-datasources
 oc delete configmaps apim-analytics-1-tomcat
+oc delete configmaps apim-analytics-1-conf-analytics
 
 oc delete configmaps apim-analytics-2-bin
 oc delete configmaps apim-analytics-2-conf
@@ -31,6 +32,7 @@ oc delete configmaps apim-analytics-2-spark
 oc delete configmaps apim-analytics-2-axis2
 oc delete configmaps apim-analytics-2-datasources
 oc delete configmaps apim-analytics-2-tomcat
+oc delete configmaps apim-analytics-2-conf-analytics
 
 oc delete configmaps apim-manager-worker-bin
 oc delete configmaps apim-manager-worker-conf
