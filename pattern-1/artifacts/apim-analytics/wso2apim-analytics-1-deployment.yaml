@@ -35,11 +35,7 @@ spec:
       - image: docker.wso2.com/wso2am-analytics-kubernetes:2.1.0
         name: wso2apim-analytics
         imagePullPolicy: IfNotPresent
-        resources:
-          limits:
-            memory: "4Gi"
-          requests:
-            memory: "4Gi"
+
         ports:
         -
           containerPort: 9764
@@ -63,6 +59,12 @@ spec:
           containerPort: 11001
           protocol: "TCP"
         -
+          containerPort: 11002
+          protocol: "TCP"
+        -
+          containerPort: 11003
+          protocol: "TCP"
+        -
           containerPort: 11501
           protocol: "TCP"
         -
@@ -72,7 +74,7 @@ spec:
           containerPort: 4041
           protocol: "TCP"
         -
-          containerPort: 10006
+          containerPort: 10007
           protocol: TCP
         -
           containerPort: 12501
