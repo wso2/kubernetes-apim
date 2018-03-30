@@ -72,7 +72,7 @@ spec:
           containerPort: 4041
           protocol: "TCP"
         -
-          containerPort: 10006
+          containerPort: 10007
           protocol: TCP
         -
           containerPort: 12501

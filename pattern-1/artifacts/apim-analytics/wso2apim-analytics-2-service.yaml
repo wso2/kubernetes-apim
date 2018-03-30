@@ -73,7 +73,7 @@ spec:
     -
       name: 'analytics1'
       protocol: TCP
-      port: 10006
+      port: 10007
     -
       name: 'analytics2'
       protocol: TCP

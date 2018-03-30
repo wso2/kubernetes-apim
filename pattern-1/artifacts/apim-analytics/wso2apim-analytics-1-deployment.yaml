@@ -63,6 +63,12 @@ spec:
           containerPort: 11001
           protocol: "TCP"
         -
+          containerPort: 11002
+          protocol: "TCP"
+        -
+          containerPort: 11003
+          protocol: "TCP"
+        -
           containerPort: 11501
           protocol: "TCP"
         -
@@ -72,7 +78,7 @@ spec:
           containerPort: 4041
           protocol: "TCP"
         -
-          containerPort: 10006
+          containerPort: 10007
           protocol: TCP
         -
           containerPort: 12501
