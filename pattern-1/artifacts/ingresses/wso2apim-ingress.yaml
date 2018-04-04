@@ -21,7 +21,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class : "nginx"		
     nginx.ingress.kubernetes.io/affinity : cookie		
-    nginx.ingress.kubernetes.io/ssl-passthrough	:	"true"
+    nginx.ingress.kubernetes.io/ssl-passthrough : "true"
 
 spec:
   tls:
