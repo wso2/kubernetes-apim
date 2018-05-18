@@ -17,11 +17,12 @@ kind: PersistentVolumeClaim
 metadata:
   name: apim-mgt-volume-claim
   labels:
-    app: apim-gateway
+    type: NFS
     pattern: wso2apim-pattern-1
 spec:
+  storageClassName: nfs
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
+      storage: 25Gi

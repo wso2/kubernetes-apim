@@ -15,72 +15,37 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: local-pv-1
+  name: nfs-pv-1
   labels:
-    type: local
+    type: NFS
     pattern: wso2apim-pattern-1
 spec:
+  storageClassName: nfs
   capacity:
-    storage: 1Gi
+    storage: 25Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   persistentVolumeReclaimPolicy: Recycle
   nfs:
-    # FIXME: use the right IP
-    #Example Path in NFS server: /exports/pattern-1/anlytics2
-    server: <NFS-Server-IP>
-    path: "<NFS location path>"
+    server: <NFS_SERVER_IP>
+    path: /path/to/mount/for/apim
+
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: local-pv-2
+  name: nfs-pv-2
   labels:
-    type: local
-    pattern: wso2apim-pattern-1
+    type: NFS
+    pattern: wso2analytics-pattern-1
 spec:
+  storageClassName: nfs
   capacity:
-    storage: 20Gi
+    storage: 25Gi
   accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
-  hostPath:
-    path: /tmp/data/pattern-1-pv-2
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: local-pv-3
-  labels:
-    type: local
-    pattern: wso2apim-pattern-1
-spec:
-  capacity:
-    storage: 2Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
   nfs:
-  # FIXME: use the right IP
-  #Example Path in NFS server: /exports/pattern-1/anlytics2
-    server: <NFS-Server-IP>
-    path: "<NFS location path>"
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: local-pv-4
-  labels:
-    type: local
-    pattern: wso2apim-pattern-1
-spec:
-  capacity:
-    storage: 2Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
-  nfs:
-  # FIXME: use the right IP
-  #Example Path in NFS server: /exports/pattern-1/apim
-    server: <NFS-Server-IP>
-    path: "<NFS location path>"
+    server: <NFS_SERVER_IP>
+    path: /path/to/mount/for/apim-analytics
+
