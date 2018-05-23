@@ -25,3 +25,6 @@ target/
 wso2*/scripts
 
 notes.txt
+
+# Dockerfiles files folder content
+**/files/*
