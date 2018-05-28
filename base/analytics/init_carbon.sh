@@ -20,7 +20,14 @@ set -e
 # The artifacts will be copied to the CARBON_HOME/repository/deployment/server location before the server is started.
 carbon_home=${HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}
 server_artifact_location=${carbon_home}/repository/deployment/server
-sudo /bin/change_ownership.sh
+
+# change the user of repository/deployment/server to wso2user.
+# this is done to avoid permission issues arising with volume mounts
+# 24th May 18 - Removing this since the chown command fails with permission issues in some cases.
+# Now, NFS server remote location is expected to have the same user (wso2user)
+# and group 0 as the owner.
+# sudo /bin/change_ownership.sh
+
 if [[ -d ${HOME}/tmp/server/ ]]; then
    if [[ ! "$(ls -A ${server_artifact_location}/)" ]]; then
       # There are no artifacts under CARBON_HOME/repository/deployment/server/; copy them.

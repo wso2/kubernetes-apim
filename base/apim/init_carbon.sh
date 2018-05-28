@@ -21,8 +21,11 @@ carbon_home=${HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}
 server_artifact_location=${carbon_home}/repository/deployment/server
 
 # change the user of repository/deployment/server to wso2user. 
-# this is done to avoid permission issues arising with volume mounts 
-sudo /bin/change_ownership.sh
+# this is done to avoid permission issues arising with volume mounts
+# 24th May 18 - Removing this since the chown command fails with permission issues in some cases.
+# Now, NFS server remote location is expected to have the same user (wso2user)
+# and group 0 as the owner.
+# sudo /bin/change_ownership.sh
 
 # Copy the backed up artifacts from ${HOME}/tmp/server/. Copying the initial artifacts to ${HOME}/tmp/server/ is done in the 
 # Dockerfile. This is to preserve the initial artifacts in a volume mount (the mounted directory can be empty initially). 
