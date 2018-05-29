@@ -19,11 +19,26 @@ metadata:
   labels:
     pattern: wso2apim-pattern-1
 spec:
-  host: wso2apim
+  host: wso2apim.customer.poc.wso2.com
   port:
     targetPort: servlet-https
   to:
     kind: Service
     name: wso2apim
   tls:
-    termination: passthrough
+    termination: reencrypt
+    key: |-
+      -----BEGIN RSA PRIVATE KEY-----
+      -----END RSA PRIVATE KEY-----
+
+    certificate: |-
+      -----BEGIN CERTIFICATE-----
+      -----END CERTIFICATE-----
+
+    caCertificate: |-
+      -----BEGIN CERTIFICATE-----
+      -----END CERTIFICATE----- 
+
+    destinationCACertificate: |-
+      -----BEGIN CERTIFICATE-----
+      -----END CERTIFICATE----- 

@@ -53,10 +53,10 @@ oc create configmap apim-worker-datasources --from-file=../confs/apim-worker/rep
 oc create configmap apim-worker-tomcat --from-file=../confs/apim-worker/repository/conf/tomcat/
 
 # databases
-echo 'deploying databases ...'
-oc create -f rdbms/rdbms-persistent-volume-claim.yaml
-oc create -f rdbms/rdbms-service.yaml
-oc create -f rdbms/rdbms-deployment.yaml
+#echo 'deploying databases ...'
+#oc create -f rdbms/rdbms-persistent-volume-claim.yaml
+#oc create -f rdbms/rdbms-service.yaml
+#oc create -f rdbms/rdbms-deployment.yaml
 
 echo 'deploying services and volume claims ...'
 oc create -f apim-analytics/wso2apim-analytics-service.yaml
