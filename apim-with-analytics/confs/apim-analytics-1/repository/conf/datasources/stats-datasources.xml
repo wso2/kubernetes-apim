@@ -13,9 +13,9 @@
 	    </jndiConfig>
 	  <definition type="RDBMS">
 		  <configuration>
-			  <url>jdbc:mysql://apim-rdbms:3306/statdb?autoReconnect=true&amp;relaxAutoCommit=true</url>
-			  <username>root</username>
-			  <password>root</password>
+			  <url>jdbc:mysql://wso2apim-with-analytics-rdbms-service:3306/WSO2AM_STAT_DB?autoReconnect=true&amp;useSSL=false</url>
+			  <username>wso2carbon</username>
+			  <password>wso2carbon</password>
 			  <driverClassName>com.mysql.jdbc.Driver</driverClassName>
 			  <maxActive>50</maxActive>
 			  <maxWait>60000</maxWait>

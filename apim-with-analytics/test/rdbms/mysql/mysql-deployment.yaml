@@ -12,40 +12,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: apim-rdbms-deployment
-  labels:
-    app: apim-rdbms
-    pattern: wso2apim-pattern-1
+  name: wso2apim-with-analytics-mysql-deployment
 spec:
-  strategy:
-    type: Recreate
+  replicas: 1
   template:
     metadata:
       labels:
-        app: apim-rdbms
-        tier: apim-rdbms
-        pattern: wso2apim-pattern-1
+        deployment: wso2apim-with-analytics-mysql
     spec:
       containers:
-      - image: docker.wso2.com/apim-rdbms-kubernetes:2.1.0
-        name: apim-rdbms
+      - name: wso2apim-with-analytics-mysql
+        image: mysql:5.7
         imagePullPolicy: IfNotPresent
         env:
-          -
-            name: MYSQL_ROOT_PASSWORD
-            value: root
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: MYSQL_USER
+          value: wso2carbon
+        - name: MYSQL_PASSWORD
+          value: wso2carbon
         ports:
         - containerPort: 3306
-          name: apim-rdbms
+          protocol: TCP
         volumeMounts:
+        - name: mysql-dbscripts
+          mountPath: /docker-entrypoint-initdb.d
         - name: apim-rdbms-persistent-storage
           mountPath: /var/lib/mysql
         args: ["--max-connections", "10000"]
       volumes:
+      - name: mysql-dbscripts
+        configMap:
+          name: mysql-dbscripts
       - name: apim-rdbms-persistent-storage
         persistentVolumeClaim:
           claimName: apim-rdbms-volume-claim
-      serviceAccountName: "wso2svcacct"
+      serviceAccountName: "wso2svc-account"

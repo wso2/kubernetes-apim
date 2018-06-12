@@ -13,17 +13,16 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: Service
+kind: PersistentVolumeClaim
 metadata:
-  name: apim-rdbms
-  labels:
-    app: apim-rdbms
-    pattern: wso2apim-pattern-1
+  name: apim-rdbms-volume-claim
 spec:
-  ports:
-    - port: 3306
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: ""
   selector:
-    app: apim-rdbms
-    tier: apim-rdbms
-    pattern: wso2apim-pattern-1
-  clusterIP: None
+    matchLabels:
+      purpose: apim-rdbms-data
