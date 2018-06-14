@@ -27,6 +27,8 @@ spec:
       - name: wso2apim-with-analytics-mysql
         image: mysql:5.7
         imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsUser: 999
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: root
@@ -49,5 +51,5 @@ spec:
           name: mysql-dbscripts
       - name: apim-rdbms-persistent-storage
         persistentVolumeClaim:
-          claimName: apim-rdbms-volume-claim
+          claimName: wso2apim-with-analytics-rdbms-volume-claim
       serviceAccountName: "wso2svc-account"

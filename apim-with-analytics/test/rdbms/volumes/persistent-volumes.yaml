@@ -1,4 +1,4 @@
-# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,16 +13,17 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: PersistentVolume
 metadata:
-  name: wso2apim-with-analytics-rdbms-volume-claim
+  name: wso2apim-with-analytics-mysql-pv
+  labels:
+    purpose: apim-rdbms-data
 spec:
+  capacity:
+    storage: 20Gi
   accessModes:
     - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: apim-rdbms-data
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 10.128.0.6
+    path: "/data/apim/rdbms"
