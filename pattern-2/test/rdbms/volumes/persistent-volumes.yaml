@@ -1,4 +1,4 @@
-# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,32 +15,15 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wso2apim-gateway-deployment-pv
+  name: wso2apim-pattern-2-rdbms-pv
   labels:
-    purpose: apim-shared-deployment
+    purpose: apim-rdbms-data
 spec:
   capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"
-
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: wso2apim-analytics-data-pv
-  labels:
-    purpose: apim-analytics-data
-spec:
-  capacity:
-    storage: 1Gi
+    storage: 20Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"
+    server: 10.128.0.6
+    path: "/data/apim/rdbms"

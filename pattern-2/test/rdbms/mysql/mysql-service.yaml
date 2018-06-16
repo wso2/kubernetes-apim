@@ -12,25 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: v1
+kind: Service
 metadata:
-  name: wso2apim-analytics-ingress
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    nginx.ingress.kubernetes.io/affinity: "cookie"
-    nginx.ingress.kubernetes.io/session-cookie-name: "route"
-    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+  name: wso2apim-pattern-2-rdbms-service
 spec:
-  tls:
-  - hosts:
-    - wso2apim-analytics
-  rules:
-  - host: wso2apim-analytics
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: wso2apim-analytics-service
-          servicePort: 9444
+  type: ClusterIP
+  selector:
+    deployment: wso2apim-pattern-2-mysql
+  ports:
+  - name: mysql-port
+    port: 3306
+    targetPort: 3306
+    protocol: TCP

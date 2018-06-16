@@ -30,13 +30,10 @@ spec:
   - host: wso2apim-gateway
     http:
       paths:
-      - path: /carbon
+      - path: /
         backend:
           serviceName: wso2apim-gateway-service
           servicePort: 9443
-  - host: wso2apim-gateway
-    http:
-      paths:
       - path: /
         backend:
           serviceName: wso2apim-gateway-service
