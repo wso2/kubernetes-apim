@@ -168,14 +168,16 @@
                          class="org.apache.axis2.format.PlainTextFormatter"/>
 
         <!--JSON Message Formatters-->
-	<messageFormatter contentType="application/json"
-                          class="org.apache.synapse.commons.json.JsonFormatter"/>
+        <messageFormatter contentType="application/json"
+                          class="org.apache.synapse.commons.json.JsonStreamFormatter"/>
         <!--messageFormatter contentType="application/json"
-                          class="org.apache.synapse.commons.json.JsonStreamFormatter"/-->
+                          class="org.apache.synapse.commons.json.JsonFormatter"/-->
         <messageFormatter contentType="application/json/badgerfish"
                           class="org.apache.axis2.json.JSONBadgerfishMessageFormatter"/>
         <messageFormatter contentType="text/javascript"
                           class="org.apache.axis2.json.JSONMessageFormatter"/>
+        <messageFormatter contentType="application/octet-streaml" 
+                          class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
 
         <!-- See https://wso2.org/jira/browse/ESBJAVA-1725 before enabling bellow line -->
         <!--messageFormatter contentType=".*"
@@ -232,14 +234,17 @@
                         class="org.apache.axis2.format.PlainTextBuilder"/>
 
         <!--JSON Message Builders-->
-	<messageBuilder contentType="application/json"
-                        class="org.apache.synapse.commons.json.JsonBuilder"/>
+        <messageBuilder contentType="application/json"
+                        class="org.apache.synapse.commons.json.JsonStreamBuilder"/>
         <!--messageBuilder contentType="application/json"
-                        class="org.apache.synapse.commons.json.JsonStreamBuilder"/-->
+                        class="org.apache.synapse.commons.json.JsonBuilder"/-->
         <messageBuilder contentType="application/json/badgerfish"
                         class="org.apache.axis2.json.JSONBadgerfishOMBuilder"/>
         <messageBuilder contentType="text/javascript"
                         class="org.apache.axis2.json.JSONBuilder"/>
+        <messageBuilder contentType="application/octet-stream" 
+                        class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
+
         <!--messageBuilder contentType="text/javascript"
                         class="org.apache.axis2.json.JSONStreamBuilder"/-->
 
@@ -543,7 +548,15 @@
                 <Password>wso2carbon</Password>
             </TrustStore>
         </parameter>
-        <parameter name="HostnameVerifier">AllowAll</parameter>
+        <!-- ============================================== -->
+        <!-- Configuration for Dynamic SSL Profile loading. -->
+        <!-- Configured for 10 mins. -->
+        <!-- ============================================== -->
+        <parameter name="dynamicSSLProfilesConfig">
+            <filePath>repository/resources/security/sslprofiles.xml</filePath>
+            <fileReadInterval>600000</fileReadInterval>
+        </parameter>
+        <!--<parameter name="HostnameVerifier">DefaultAndLocalhost</parameter>-->
             <!--supports Strict|AllowAll|DefaultAndLocalhost or the default if none specified -->
     </transportSender>
 
@@ -601,6 +614,15 @@
         <parameter name="ws.outflow.dispatch.fault.sequence" locked="false">outflowFaultSeq</parameter>
     </transportSender>
 
+    <transportSender name="wss" class="org.wso2.carbon.websocket.transport.WebsocketTransportSender">
+        <parameter name="ws.outflow.dispatch.sequence" locked="false">outflowDispatchSeq</parameter>
+        <parameter name="ws.outflow.dispatch.fault.sequence" locked="false">outflowFaultSeq</parameter>
+        <parameter name="ws.trust.store" locked="false">
+            <ws.trust.store.location>repository/resources/security/client-truststore.jks</ws.trust.store.location>
+            <ws.trust.store.Password>wso2carbon</ws.trust.store.Password>
+        </parameter>
+    </transportSender>
+
     <!--<transportSender name="https"-->
                      <!--class="org.apache.axis2.transport.http.CommonsHTTPTransportSender">-->
         <!--<parameter name="PROTOCOL">HTTP/1.1</parameter>-->
@@ -656,9 +678,6 @@
                     Service (GMS) using a TCP ping mechanism.
         -->
         <parameter name="membershipScheme">kubernetes</parameter>
-        <parameter name="membershipSchemeClassName">org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme</parameter>
-        <parameter name="KUBERNETES_SERVICES">wso2apim-manager-worker</parameter>
-        <parameter name="KUBERNETES_NAMESPACE">wso2</parameter>
         <!--<parameter name="licenseKey">xxx</parameter>-->
         <!--<parameter name="mgtCenterURL">http://localhost:8081/mancenter/</parameter>-->
 
@@ -687,7 +706,7 @@
         -->
         <!-- The host name or IP address of this member -->
 
-        <parameter name="localMemberHost">api-manager</parameter>
+        <parameter name="localMemberHost">am-gateway</parameter>
 
         <!--
             The bind adress of this member. The difference between localMemberHost & localMemberBindAddress
@@ -722,16 +741,11 @@
             <property name="subDomain" value="worker"/>
         </parameter>
 
-        <!--
-           The list of static or well-known members. These entries will only be valid if the
-           "membershipScheme" above is set to "wka"
-        -->
-        <members>
-            <member>
-                <hostName>api-manager</hostName>
-                <port>4000</port>
-            </member>
-        </members>
+        <parameter name="membershipSchemeClassName">org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme</parameter>
+        <parameter name="KUBERNETES_NAMESPACE">wso2</parameter>
+        <parameter name="KUBERNETES_SERVICES">wso2apim-gateway-service</parameter>
+        <parameter name="KUBERNETES_MASTER_SKIP_SSL_VERIFICATION">true</parameter>
+        <parameter name="USE_DNS">false</parameter>
 
         <!--
         Enable the groupManagement entry if you need to run this node as a cluster manager.

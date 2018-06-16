@@ -15,69 +15,15 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: local-pv-1
+  name: wso2apim-gateway-deployment-pv
   labels:
-    type: local
-    pattern: wso2apim-pattern-2
+    purpose: apim-shared-deployment
 spec:
   capacity:
     storage: 1Gi
   accessModes:
     - ReadWriteMany
-  persistentVolumeReclaimPolicy: Recycle
+  persistentVolumeReclaimPolicy: Retain
   nfs:
-    # FIXME: use the right IP
-    server: 10.11.253.199
-    path: "/exports/pattern-2/apim1"
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: local-pv-2
-  labels:
-    type: local
-    pattern: wso2apim-pattern-2
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Recycle
-  nfs:
-    # FIXME: use the right IP
-    server: 10.11.253.199
-    path: "/exports/pattern-2/apim2"
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: local-pv-3
-  labels:
-    type: local
-    pattern: wso2apim-pattern-2
-spec:
-  capacity:
-    storage: 20Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Delete
-  hostPath:
-    path: /tmp/data/pattern-2-pv-3
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: local-pv-4
-  labels:
-    type: local
-    pattern: wso2apim-pattern-2.1
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Recycle
-  nfs:
-    # FIXME: use the right IP
-    server: 10.11.253.199
-    path: "/exports/pattern-2/apim3"
+    server: 10.128.0.6
+    path: "/data/apim/server"
