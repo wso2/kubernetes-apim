@@ -69,5 +69,5 @@ kubectl create -f ../apim/wso2apim-gateway-service.yaml
 sleep 10s
 
 echoBold 'Deploying Ingresses...'
-kubectl create -f ../ingresses/wso2apim-ingress.yaml
+kubectl create -f ../ingresses/wso2apim-gateway-ingress.yaml
 kubectl create -f ../ingresses/wso2apim-analytics-ingress.yaml
