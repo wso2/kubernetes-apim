@@ -15,27 +15,40 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: wso2apim-manager-worker
-  labels:
-    app: wso2apim-gw
-    node: manager-worker
-    pattern: wso2apim-pattern-2
+  name: wso2apim-gateway-deployment
 spec:
   replicas: 2
+  minReadySeconds: 30
   strategy:
-    type: Recreate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
   template:
     metadata:
       labels:
-        app: wso2apim-gw
-        node: manager-worker
-        app-sv: wso2apim-gw-sv
+        deployment: wso2apim-gateway
     spec:
       containers:
-      -
-        image: docker.wso2.com/wso2am-kubernetes:2.1.0
-        name: wso2apim
-        imagePullPolicy: IfNotPresent
+      - name: wso2apim-gateway
+        image: gcr.io/apim3-177506/wso2am:2.2.0
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - nc -z localhost 9443
+          initialDelaySeconds: 150
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+              - /bin/bash
+              - -c
+              - nc -z localhost 9443
+          initialDelaySeconds: 150
+          periodSeconds: 10
+        imagePullPolicy: Always
         ports:
         -
           containerPort: 8280
@@ -49,48 +62,38 @@ spec:
         -
           containerPort: 9443
           protocol: "TCP"
-
-        volumeMounts:
         -
-          name: apim-mgt-storage-volume
-          mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
-        - name: apim-gw-manager-worker-bin
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/bin/"
-        - name: apim-gw-manager-worker-conf
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf/"
-        - name: apim-gw-manager-worker-identity
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-identity/"
-        - name: apim-gw-manager-worker-axis2
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-axis2/"
-        - name: apim-gw-manager-worker-datasources
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-datasources/"
-        - name: apim-gw-manager-worker-tomcat
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-tomcat/"
-        livenessProbe:
-          tcpSocket:
-            port: 9443
-          initialDelaySeconds: 300
-          periodSeconds: 20
-      serviceAccountName: "wso2svcacct"
+          containerPort: 5672
+          protocol: "TCP"
+        -
+          containerPort: 9711
+          protocol: "TCP"
+        -
+          containerPort: 9611
+          protocol: "TCP"
+        -
+          containerPort: 7711
+          protocol: "TCP"
+        -
+          containerPort: 7611
+          protocol: "TCP"
+        volumeMounts:
+        - name: apim-storage-volume
+          mountPath: /home/wso2carbon/wso2am-2.2.0/repository/deployment/server
+        - name: apim-conf
+          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf
+        - name: apim-conf-datasources
+          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/datasources
+      serviceAccountName: "wso2svc-account"
+      imagePullSecrets:
+      - name: wso2creds
       volumes:
-      - name: apim-mgt-storage-volume
+      - name: apim-storage-volume
         persistentVolumeClaim:
-          claimName: apim-mgt-volume-claim
-      - name: apim-gw-manager-worker-bin
+          claimName: wso2apim-with-analytics-apim-deployment-volume-claim
+      - name: apim-conf
         configMap:
-          name: apim-gw-manager-worker-bin
-      - name: apim-gw-manager-worker-conf
+          name: apim-conf
+      - name: apim-conf-datasources
         configMap:
-          name: apim-gw-manager-worker-conf
-      - name: apim-gw-manager-worker-identity
-        configMap:
-          name: apim-gw-manager-worker-identity
-      - name: apim-gw-manager-worker-axis2
-        configMap:
-          name: apim-gw-manager-worker-axis2
-      - name: apim-gw-manager-worker-datasources
-        configMap:
-          name: apim-gw-manager-worker-datasources
-      - name: apim-gw-manager-worker-tomcat
-        configMap:
-          name: apim-gw-manager-worker-tomcat
+          name: apim-conf-datasources
