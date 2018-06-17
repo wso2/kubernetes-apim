@@ -17,7 +17,7 @@ kind: Deployment
 metadata:
   name: wso2apim-with-analytics-apim
 spec:
-  replicas: 2
+  replicas: 1
   minReadySeconds: 30
   strategy:
     rollingUpdate:

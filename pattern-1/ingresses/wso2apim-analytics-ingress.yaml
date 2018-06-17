@@ -32,5 +32,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: wso2apim-analytics
+          serviceName: wso2apim-with-analytics-apim-analytics-service
           servicePort: 9444
