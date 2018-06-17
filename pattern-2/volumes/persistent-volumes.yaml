@@ -15,9 +15,9 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wso2apim-gateway-deployment-pv
+  name: wso2apim-gateway-server-pv
   labels:
-    purpose: apim-shared-deployment
+    purpose: apim-shared-server
 spec:
   capacity:
     storage: 1Gi
@@ -25,8 +25,8 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"
+    server: 10.128.0.6
+    path: "/data/apim/server"
 
 ---
 apiVersion: v1
@@ -42,5 +42,5 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"
+    server: 10.128.0.6
+    path: "/data/apim/data"

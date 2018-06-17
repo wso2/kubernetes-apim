@@ -35,14 +35,23 @@ kubectl config set-context $(kubectl config current-context) --namespace=wso2
 #kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<username> --docker-password=<password> --docker-email=<email>
 
 # create Kubernetes role and role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
-kubectl create --username=admin --password=<cluster-admin-password> -f ../../rbac/rbac.yaml
+kubectl create --username=admin --password=el8QQ36wrdVYViba -f ../../rbac/rbac.yaml
 
 echoBold 'Creating ConfigMaps...'
+# create the APIM Gateway ConfigMaps
 kubectl create configmap apim-gateway-conf --from-file=../confs/apim-gateway/
 kubectl create configmap apim-gateway-conf-axis2 --from-file=../confs/apim-gateway/axis2/
 kubectl create configmap apim-gateway-conf-datasources --from-file=../confs/apim-gateway/datasources/
 kubectl create configmap apim-analytics-conf --from-file=../confs/apim-analytics/
 kubectl create configmap apim-analytics-conf-datasources --from-file=../confs/apim-analytics/datasources/
+# create the APIM Publisher-Store-Traffic-Manager ConfigMaps
+kubectl create configmap apim-pubstore-tm-1-conf --from-file=../confs/apim-pubstore-tm-1/
+kubectl create configmap apim-pubstore-tm-1-conf-axis2 --from-file=../confs/apim-pubstore-tm-1/axis2/
+kubectl create configmap apim-pubstore-tm-1-conf-datasources --from-file=../confs/apim-pubstore-tm-1/datasources/
+kubectl create configmap apim-pubstore-tm-2-conf --from-file=../confs/apim-pubstore-tm-2/
+kubectl create configmap apim-pubstore-tm-2-conf-axis2 --from-file=../confs/apim-pubstore-tm-2/axis2/
+kubectl create configmap apim-pubstore-tm-2-conf-datasources --from-file=../confs/apim-pubstore-tm-2/datasources/
+
 kubectl create configmap mysql-dbscripts --from-file=confs/rdbms/mysql/dbscripts/
 
 # MySQL
@@ -60,14 +69,22 @@ echoBold 'Deploying WSO2 API Manager Analytics...'
 kubectl create -f ../apim-analytics/wso2apim-analytics-volume-claim.yaml
 kubectl create -f ../apim-analytics/wso2apim-analytics-deployment.yaml
 kubectl create -f ../apim-analytics/wso2apim-analytics-service.yaml
-sleep 200s
+sleep 300s
 
 echoBold 'Deploying WSO2 API Manager...'
-kubectl create -f ../apim/wso2apim-gateway-volume-claim.yaml
-kubectl create -f ../apim/wso2apim-gateway-deployment.yaml
-kubectl create -f ../apim/wso2apim-gateway-service.yaml
+kubectl create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-1-deployment.yaml
+kubectl create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-1-service.yaml
+kubectl create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-2-deployment.yaml
+kubectl create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-2-service.yaml
+kubectl create -f ../apim-pubstore-tm/wso2apim-service.yaml
+sleep 100s
+
+kubectl create -f ../apim-gw/wso2apim-gateway-volume-claim.yaml
+kubectl create -f ../apim-gw/wso2apim-gateway-deployment.yaml
+kubectl create -f ../apim-gw/wso2apim-gateway-service.yaml
 sleep 10s
 
 echoBold 'Deploying Ingresses...'
 kubectl create -f ../ingresses/wso2apim-gateway-ingress.yaml
+kubectl create -f ../ingresses/wso2apim-ingress.yaml
 kubectl create -f ../ingresses/wso2apim-analytics-ingress.yaml

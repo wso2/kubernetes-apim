@@ -1,4 +1,4 @@
-# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: wso2apim-gateway-deployment
+  name: wso2apim-km-internal-deployment
 spec:
-  replicas: 1
+  replicas: 2
   minReadySeconds: 30
   strategy:
     rollingUpdate:
@@ -27,17 +27,17 @@ spec:
   template:
     metadata:
       labels:
-        deployment: wso2apim-gateway
+        deployment: wso2apim-km
     spec:
       containers:
-      - name: wso2apim-gateway
+      - name: wso2apim-km
         image: gcr.io/apim3-177506/wso2am:2.2.0
         livenessProbe:
           exec:
             command:
             - /bin/bash
             - -c
-            - nc -z localhost 8243
+            - nc -z localhost 9443
           initialDelaySeconds: 150
           periodSeconds: 10
         readinessProbe:
@@ -45,7 +45,7 @@ spec:
             command:
               - /bin/bash
               - -c
-              - nc -z localhost 8243
+              - nc -z localhost 9443
           initialDelaySeconds: 150
           periodSeconds: 10
         imagePullPolicy: Always
@@ -78,27 +78,35 @@ spec:
           containerPort: 7611
           protocol: "TCP"
         volumeMounts:
-        - name: apim-storage-volume
-          mountPath: /home/wso2carbon/wso2am-2.2.0/repository/deployment/server
-        - name: apim-gateway-conf
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf
-        - name: apim-gateway-conf-axis2
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/axis2
-        - name: apim-gateway-conf-datasources
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/datasources
-      serviceAccountName: "wso2svc-account"
-      imagePullSecrets:
-      - name: wso2creds
+        - name: apim-km-bin
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/bin/"
+        - name: apim-km-conf
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf/"
+        - name: apim-km-identity
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-identity/"
+        - name: apim-km-axis2
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-axis2/"
+        - name: apim-km-datasources
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-datasources/"
+        - name: apim-km-tomcat
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-tomcat/"
+      serviceAccountName: "wso2svcacct"
       volumes:
-      - name: apim-storage-volume
-        persistentVolumeClaim:
-          claimName: wso2apim-gateway-shared-server-volume-claim
-      - name: apim-gateway-conf
+      - name: apim-km-bin
         configMap:
-          name: apim-gateway-conf
-      - name: apim-gateway-conf-axis2
+          name: apim-km-bin
+      - name: apim-km-conf
         configMap:
-          name: apim-gateway-conf-axis2
-      - name: apim-gateway-conf-datasources
+          name: apim-km-conf
+      - name: apim-km-identity
         configMap:
-          name: apim-gateway-conf-datasources
+          name: apim-km-identity
+      - name: apim-km-axis2
+        configMap:
+          name: apim-km-axis2
+      - name: apim-km-datasources
+        configMap:
+          name: apim-km-datasources
+      - name: apim-km-tomcat
+        configMap:
+          name: apim-km-tomcat

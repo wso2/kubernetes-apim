@@ -12,17 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: PersistentVolumeClaim
+apiVersion: extensions/v1beta1
+kind: Ingress
 metadata:
-  name: wso2apim-gateway-shared-server-volume-claim
+  name: wso2apim-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
 spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: apim-shared-server
+  tls:
+  - hosts:
+    - wso2apim
+  rules:
+  - host: wso2apim
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: wso2apim-service
+          servicePort: 9443

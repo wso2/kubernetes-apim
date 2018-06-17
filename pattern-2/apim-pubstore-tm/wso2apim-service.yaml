@@ -13,16 +13,20 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: Service
 metadata:
-  name: wso2apim-gateway-shared-server-volume-claim
+  name: wso2apim-service
 spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: ""
+  # label keys and values that must match in order to receive traffic for this service
   selector:
-    matchLabels:
-      purpose: apim-shared-server
+    deployment: wso2apim-pubstore-tm
+  ports:
+    # ports that this service should serve on
+    -
+      name: servlet-http
+      protocol: TCP
+      port: 9763
+    -
+      name: servlet-https
+      protocol: TCP
+      port: 9443

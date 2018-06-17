@@ -33,8 +33,4 @@ spec:
       - path: /
         backend:
           serviceName: wso2apim-gateway-service
-          servicePort: 9443
-      - path: /
-        backend:
-          serviceName: wso2apim-gateway-service
           servicePort: 8243
