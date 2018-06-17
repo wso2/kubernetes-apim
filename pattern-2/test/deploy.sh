@@ -35,13 +35,14 @@ kubectl config set-context $(kubectl config current-context) --namespace=wso2
 #kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<username> --docker-password=<password> --docker-email=<email>
 
 # create Kubernetes role and role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
-kubectl create --username=admin --password=el8QQ36wrdVYViba -f ../../rbac/rbac.yaml
+kubectl create --username=admin --password=<cluster-admin-password> -f ../../rbac/rbac.yaml
 
 echoBold 'Creating ConfigMaps...'
 # create the APIM Gateway ConfigMaps
 kubectl create configmap apim-gateway-conf --from-file=../confs/apim-gateway/
 kubectl create configmap apim-gateway-conf-axis2 --from-file=../confs/apim-gateway/axis2/
 kubectl create configmap apim-gateway-conf-datasources --from-file=../confs/apim-gateway/datasources/
+# create the APIM Analytics ConfigMaps
 kubectl create configmap apim-analytics-conf --from-file=../confs/apim-analytics/
 kubectl create configmap apim-analytics-conf-datasources --from-file=../confs/apim-analytics/datasources/
 # create the APIM Publisher-Store-Traffic-Manager ConfigMaps
@@ -51,6 +52,11 @@ kubectl create configmap apim-pubstore-tm-1-conf-datasources --from-file=../conf
 kubectl create configmap apim-pubstore-tm-2-conf --from-file=../confs/apim-pubstore-tm-2/
 kubectl create configmap apim-pubstore-tm-2-conf-axis2 --from-file=../confs/apim-pubstore-tm-2/axis2/
 kubectl create configmap apim-pubstore-tm-2-conf-datasources --from-file=../confs/apim-pubstore-tm-2/datasources/
+# create the APIM KeyManager ConfigMaps
+kubectl create configmap apim-km-bin --from-file=../confs/apim-km/bin
+kubectl create configmap apim-km-conf --from-file=../confs/apim-km/repository/conf
+kubectl create configmap apim-km-conf-axis2 --from-file=../confs/apim-km/repository/conf/axis2/
+kubectl create configmap apim-km-conf-datasources --from-file=../confs/apim-km/repository/conf/datasources/
 
 kubectl create configmap mysql-dbscripts --from-file=confs/rdbms/mysql/dbscripts/
 
@@ -69,15 +75,19 @@ echoBold 'Deploying WSO2 API Manager Analytics...'
 kubectl create -f ../apim-analytics/wso2apim-analytics-volume-claim.yaml
 kubectl create -f ../apim-analytics/wso2apim-analytics-deployment.yaml
 kubectl create -f ../apim-analytics/wso2apim-analytics-service.yaml
-sleep 300s
+sleep 5m
 
-echoBold 'Deploying WSO2 API Manager...'
 kubectl create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-1-deployment.yaml
 kubectl create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-1-service.yaml
 kubectl create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-2-deployment.yaml
 kubectl create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-2-service.yaml
 kubectl create -f ../apim-pubstore-tm/wso2apim-service.yaml
-sleep 100s
+sleep 5m
+
+echoBold 'Deploying WSO2 API Manager...'
+kubectl create -f ../apim-km/wso2apim-km-deployment.yaml
+kubectl create -f ../apim-km/wso2apim-km-service.yaml
+sleep 2m
 
 kubectl create -f ../apim-gw/wso2apim-gateway-volume-claim.yaml
 kubectl create -f ../apim-gw/wso2apim-gateway-deployment.yaml

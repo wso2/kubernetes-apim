@@ -1,4 +1,4 @@
-# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: wso2apim-km-internal-deployment
+  name: wso2apim-km-deployment
 spec:
   replicas: 2
   minReadySeconds: 30
@@ -79,18 +79,16 @@ spec:
           protocol: "TCP"
         volumeMounts:
         - name: apim-km-bin
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/bin/"
+          mountPath: /home/wso2carbon/kubernetes-volumes/am/bin
         - name: apim-km-conf
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf/"
-        - name: apim-km-identity
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-identity/"
-        - name: apim-km-axis2
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-axis2/"
-        - name: apim-km-datasources
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-datasources/"
-        - name: apim-km-tomcat
-          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-tomcat/"
-      serviceAccountName: "wso2svcacct"
+          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf
+        - name: apim-km-conf-axis2
+          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/axis2
+        - name: apim-km-conf-datasources
+          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/datasources
+      serviceAccountName: "wso2svc-account"
+      imagePullSecrets:
+      - name: wso2creds
       volumes:
       - name: apim-km-bin
         configMap:
@@ -98,15 +96,9 @@ spec:
       - name: apim-km-conf
         configMap:
           name: apim-km-conf
-      - name: apim-km-identity
+      - name: apim-km-conf-axis2
         configMap:
-          name: apim-km-identity
-      - name: apim-km-axis2
+          name: apim-km-conf-axis2
+      - name: apim-km-conf-datasources
         configMap:
-          name: apim-km-axis2
-      - name: apim-km-datasources
-        configMap:
-          name: apim-km-datasources
-      - name: apim-km-tomcat
-        configMap:
-          name: apim-km-tomcat
+          name: apim-km-conf-datasources
