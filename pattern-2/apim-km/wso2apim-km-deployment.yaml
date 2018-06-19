@@ -31,14 +31,14 @@ spec:
     spec:
       containers:
       - name: wso2apim-km
-        image: gcr.io/apim3-177506/wso2am:2.2.0
+        image: docker.wso2.com/wso2am:2.2.0
         livenessProbe:
           exec:
             command:
             - /bin/bash
             - -c
             - nc -z localhost 9443
-          initialDelaySeconds: 150
+          initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
           exec:
@@ -46,7 +46,7 @@ spec:
               - /bin/bash
               - -c
               - nc -z localhost 9443
-          initialDelaySeconds: 150
+          initialDelaySeconds: 300
           periodSeconds: 10
         imagePullPolicy: Always
         ports:
@@ -86,6 +86,8 @@ spec:
           mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/axis2
         - name: apim-km-conf-datasources
           mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/datasources
+        - name: apim-km-conf-identity
+          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/identity
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
@@ -102,3 +104,6 @@ spec:
       - name: apim-km-conf-datasources
         configMap:
           name: apim-km-conf-datasources
+      - name: apim-km-conf-identity
+        configMap:
+          name: apim-km-conf-identity

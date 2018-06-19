@@ -209,7 +209,7 @@
     -->
     <APIKeyValidator>
         <!-- Server URL of the API key manager -->
-        <ServerURL>https://wso2apim-km-service:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
+        <ServerURL>https://wso2apim-km:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
 
         <!-- Admin username for API key manager. -->
         <Username>${admin.username}</Username>
@@ -294,7 +294,7 @@
         <!--This property is used to indicate how we do user name comparision for token generation https://wso2.org/jira/browse/APIMANAGER-2225-->
         <CompareCaseInsensitively>true</CompareCaseInsensitively>
         <DisplayURL>false</DisplayURL>
-        <URL>https://wso2apim-service:${mgt.transport.https.port}/store</URL>
+        <URL>https://wso2apim/store</URL>
 
         <!-- Server URL of the API Store. -->
         <ServerURL>https://wso2apim-service:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
@@ -327,7 +327,7 @@
 
     <APIPublisher>
         <DisplayURL>false</DisplayURL>
-        <URL>https://localhost:${mgt.transport.https.port}/publisher</URL>
+        <URL>https://wso2apim/publisher</URL>
         <!-- This parameter specifies enabling the capability of setting API documentation level granular visibility levels.
              By default any document associate with an API will have the same permissions set as the API.With enabling below
              property,it will show two additional permission levels as visible only to all registered users in a particular

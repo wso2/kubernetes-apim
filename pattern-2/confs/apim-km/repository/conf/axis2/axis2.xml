@@ -677,7 +677,7 @@
                     is deemed to have left the cluster, it will be detected by the Group Membership
                     Service (GMS) using a TCP ping mechanism.
         -->
-        <parameter name="membershipScheme">multicast</parameter>
+        <parameter name="membershipScheme">kubernetes</parameter>
         <!--<parameter name="licenseKey">xxx</parameter>-->
         <!--<parameter name="mgtCenterURL">http://localhost:8081/mancenter/</parameter>-->
 
@@ -685,7 +685,7 @@
          The clustering domain/group. Nodes in the same group will belong to the same multicast
          domain. There will not be interference between nodes in different groups.
         -->
-        <parameter name="domain">wso2.carbon.domain</parameter>
+        <parameter name="domain">wso2.am.domain</parameter>
 
         <!-- The multicast address to be used -->
         <!--<parameter name="mcastAddress">228.0.0.4</parameter>-->
@@ -706,7 +706,7 @@
         -->
         <!-- The host name or IP address of this member -->
 
-        <parameter name="localMemberHost">127.0.0.1</parameter>
+        <parameter name="localMemberHost">am-km</parameter>
 
         <!--
             The bind adress of this member. The difference between localMemberHost & localMemberBindAddress
@@ -741,16 +741,11 @@
             <property name="subDomain" value="worker"/>
         </parameter>
 
-        <!--
-           The list of static or well-known members. These entries will only be valid if the
-           "membershipScheme" above is set to "wka"
-        -->
-        <members>
-            <member>
-                <hostName>127.0.0.1</hostName>
-                <port>4000</port>
-            </member>
-        </members>
+        <parameter name="membershipSchemeClassName">org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme</parameter>
+        <parameter name="KUBERNETES_NAMESPACE">wso2</parameter>
+        <parameter name="KUBERNETES_SERVICES">wso2apim-km</parameter>
+        <parameter name="KUBERNETES_MASTER_SKIP_SSL_VERIFICATION">true</parameter>
+        <parameter name="USE_DNS">false</parameter>
 
         <!--
         Enable the groupManagement entry if you need to run this node as a cluster manager.
