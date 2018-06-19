@@ -35,7 +35,7 @@ please refer the official documentation, [NGINX Ingress Controller Installation 
 
 ##### 3. Update the deploy.sh file with the [`WSO2 Docker Registry`](https://docker.wso2.com) credentials and Kubernetes cluster admin password.
 
-Replace the relevant placeholders in `KUBERNETES_HOME/is-with-analytics//test/deploy.sh` file with appropriate details, as described below.
+Replace the relevant placeholders in `KUBERNETES_HOME/pattern-1/test/deploy.sh` file with appropriate details, as described below.
 
 * A Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
 The following details need to be replaced in the relevant command.
@@ -46,7 +46,7 @@ kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com 
 
 `username`: Username of your Free Trial Subscription<br>
 `password`: Password of your Free Trial Subscription<br>
-`email`: Docker email
+`email`: Username of your Free Trial Subscription
 
 * A Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 

@@ -1,6 +1,6 @@
 # Kubernetes Resources for deployment of WSO2 API Manager with WSO2 API Manager Analytics
 
-Core Kubernetes resources for a WSO2 API Manager deployment pattern 1. This consists of a scalable deployment of WSO2 API Manager
+Core Kubernetes resources for WSO2 API Manager deployment pattern 1. This consists of a scalable deployment of WSO2 API Manager
 with WSO2 API Manager Analytics support.
 
 ![WSO2 API Manager deployment with WSO2 API Manager Analytics support](pattern-1.png)
@@ -51,7 +51,7 @@ kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com 
 
 `username`: Username of your Free Trial Subscription<br>
 `password`: Password of your Free Trial Subscription<br>
-`email`: Docker email
+`email`: Username of your Free Trial Subscription
 
 Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
 for further details.
@@ -74,7 +74,7 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
 **Note**:
 
 * For **evaluation purposes**, you can use Kubernetes resources provided in the directory<br>
-`KUBERNETES_HOME/is-with-analytics/test/rdbms/mysql` for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
+`KUBERNETES_HOME/pattern-1/test/rdbms/mysql` for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
 **not recommended** for a production setup.
 
 * For using these Kubernetes resources,
