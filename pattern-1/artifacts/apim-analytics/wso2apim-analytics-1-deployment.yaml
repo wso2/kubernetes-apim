@@ -118,12 +118,15 @@ spec:
             mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-datasources/"
           - name: apim-analytics-1-tomcat
             mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-tomcat/"
-          - name: apim-analytics-1-conf-analytics
-            mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-analytics/"
+          - name: apim-analytics-1-conf-analytics-volume
+            mountPath: "/home/wso2user/wso2am-analytics-2.1.0/repository/conf/analytics"
       volumes:
         - name: apim-analytics-storage-volume
           persistentVolumeClaim:
-            claimName: apim-analytics-volume-claim-1
+            claimName: apim-analytics-data-volume-claim-1
+        - name: apim-analytics-1-conf-analytics-volume
+          persistentVolumeClaim:
+            claimName: apim-analytics-conf-volume-claim-1
         - name: apim-analytics-1-bin
           configMap:
             name: apim-analytics-1-bin
@@ -142,7 +145,4 @@ spec:
         - name: apim-analytics-1-tomcat
           configMap:
             name: apim-analytics-1-tomcat
-        - name: apim-analytics-1-conf-analytics
-          configMap:
-            name: apim-analytics-1-conf-analytics
       serviceAccountName: "wso2svcacct"
