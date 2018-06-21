@@ -121,7 +121,7 @@ spec:
           - name: apim-analytics-1-conf-analytics
             mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-analytics/"
           - name: apim-analytics-1-conf-analytics-volume
-            mountPath: "/home/wso2user/wso2am-analytics-2.1.0/repository/conf/analytics"
+            mountPath: "/home/wso2user/wso2am-analytics-2.1.0/repository/conf/analytics/"
       volumes:
         - name: apim-analytics-storage-volume
           persistentVolumeClaim:
