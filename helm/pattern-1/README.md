@@ -34,15 +34,15 @@ configurations as necessary.
 
 2. Open the `<HELM_HOME>/apim-with-analytics-conf/values.yaml` and provide the following values.
 
-    `username`: Username of your Free Trial Subscription<br>
-    `password`: Password of your Free Trial Subscription<br>
+    `username`: Username of your WSO2 subscription credentials<br>
+    `password`: Password of your WSO2 subscription credentials<br>
     `email`: Docker email<br>
     `namespace`: Namespace<br>
     `svcaccount`: Service Account<br>
     `serverIp`: NFS Server IP<br>
     `locationPath`: NFS location path<br>
     `sharedDeploymentLocationPath`: NFS shared deployment directory(<APIM_HOME>/repository/deployment) location for APIM<br> 
-    `apimDataLocationPath`: NFS shared tenants directory(<APIM_HOME>/repository/tenants) location for APIM<br>
+    `analyticsDataLocationPath`: NFS volume for Indexed data for Analytics(<DAS_HOME>/repository/data)<br>
     
 3. Open the `<HELM_HOME>/apim-with-analytics-deployment/values.yaml` and provide the following values.
 
@@ -89,7 +89,7 @@ wso2apim-with-analytics-apim-analytics-ingress               wso2apim-analytics 
 wso2apim-analytics-apim-ingress                              wso2apim, wso2apim-gateway           <EXTERNAL-IP>    80, 443   9m
 ```
 
-2. Add the above two hosts as entries in /etc/hosts file as follows:
+2. Add the above three hosts as entries in /etc/hosts file as follows:
 
 ```
 <EXTERNAL-IP>	wso2apim
