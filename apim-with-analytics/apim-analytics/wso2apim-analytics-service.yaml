@@ -31,78 +31,78 @@ spec:
       port: 7712
       protocol: TCP
     -
-      name: spark-1
+      name: spark-port-1
       port: 11225
       protocol: TCP
     -
-      name: spark-2
+      name: spark-port-2
       port: 10006
       protocol: TCP
     -
-      name: spark-3
+      name: spark-port-3
       port: 11001
       protocol: TCP
     -
-      name: spark-44
+      name: spark-port-44
       protocol: TCP
       port: 8082
     -
-      name: spark-5
+      name: spark-port-5
       protocol: TCP
       port: 4041
     -
-      name: spark6
+      name: spark-port-6
       protocol: TCP
       port: 12001
     -
-      name: spark7
+      name: spark-port-7
       protocol: TCP
       port: 12002
     -
-      name: spark8
+      name: spark-port-8
       protocol: TCP
       port: 12003
     -
-      name: spark9
+      name: spark-port-9
       protocol: TCP
       port: 12004
     -
-      name: spark10
+      name: spark-port-10
       protocol: TCP
       port: 12005
     -
-      name: analytics1
+      name: analytics-port-1
       protocol: TCP
       port: 10007
     -
-      name: analytics2
+      name: analytics-port-2
       protocol: TCP
       port: 11002
     -
-      name: analytics3
+      name: analytics-port-3
       protocol: TCP
       port: 12501
     -
-      name: analytics5
+      name: analytics-port-5
       protocol: TCP
       port: 13001
     -
-      name: analytics6
+      name: analytics-port-6
       protocol: TCP
       port: 13501
     -
-      name: analytics7
+      name: analytics-port-7
       protocol: TCP
       port: 14501
     -
-      name: analytics8
+      name: analytics-port-8
       protocol: TCP
       port: 7078
     -
-      name: analytics9
+      name: analytics-port-9
       protocol: TCP
       port: 6067
     -
-      name: analytics10
+      name: analytics-port-10
       protocol: TCP
       port: 11003
