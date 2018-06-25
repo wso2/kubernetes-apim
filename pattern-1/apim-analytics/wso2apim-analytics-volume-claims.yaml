@@ -21,8 +21,25 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 20Gi
   storageClassName: ""
   selector:
     matchLabels:
       purpose: apim-analytics-data
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wso2apim-with-analytics-apim-analytics-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""
+  selector:
+    matchLabels:
+      purpose: apim-analytics
