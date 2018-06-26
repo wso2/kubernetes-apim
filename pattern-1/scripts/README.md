@@ -5,9 +5,8 @@ Kubernetes resources provided for a scalable deployment of WSO2 API Manager with
 
 ## Prerequisites
 
-* In order to use these Kubernetes resources, you will need an active [Free Trial Subscription](https://wso2.com/free-trial-subscription)
-from WSO2 since the referring Docker images hosted at docker.wso2.com contains the latest updates and fixes for WSO2 API Manager and WSO2 API Manager Analytics.
-You can sign up for a Free Trial Subscription [here](https://wso2.com/free-trial-subscription).<br><br>
+* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active WSO2
+subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
 
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Docker](https://www.docker.com/get-docker)
 (version 17.09.0 or above) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
@@ -33,31 +32,13 @@ The WSO2 API Manager Kubernetes Ingress resource uses the NGINX Ingress Controll
 In order to enable the NGINX Ingress controller in the desired cloud or on-premise environment,
 please refer the official documentation, [NGINX Ingress Controller Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/).
 
-##### 3. Update the deploy.sh file with the [`WSO2 Docker Registry`](https://docker.wso2.com) credentials and Kubernetes cluster admin password.
+##### 3. Setup a Network File System (NFS) to be used as the persistent volume for artifact sharing across API Manager and Analytics instances.
 
-Replace the relevant placeholders in `KUBERNETES_HOME/pattern-1/test/deploy.sh` file with appropriate details, as described below.
-
-* A Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
-The following details need to be replaced in the relevant command.
-
-```
-kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<username> --docker-password=<password> --docker-email=<email>
-```
-
-`username`: Username of your Free Trial Subscription<br>
-`password`: Password of your Free Trial Subscription<br>
-`email`: Username of your Free Trial Subscription
-
-* A Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
-
-`cluster-admin-password`: Kubernetes cluster admin password
-
-##### 4. Setup a Network File System (NFS) to be used as the persistent volume for artifact sharing across Identity Server and Analytics instances.
-
-pdate the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resources,
+Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resources,
 
 * `wso2apim-with-analytics-shared-deployment-pv`
 * `wso2apim-with-analytics-apim-analytics-data-pv`
+* `wso2apim-with-analytics-apim-analytics-pv`
 
 in `<KUBERNETES_HOME>/pattern-1/volumes/persistent-volumes.yaml` file.
 
@@ -66,17 +47,33 @@ Add `wso2carbon` user to the group `wso2`.
 
 Then, provide ownership of the exported folder `NFS_LOCATION_PATH` (used for artifact sharing) to `wso2carbon` user and `wso2` group.
 And provide read-write-executable permissions to owning `wso2carbon` user, for the folder `NFS_LOCATION_PATH`.
+
+Finally, setup a Network File System (NFS) to be used as the persistent volume for persisting MySQL DB data.
+Provide read-write-executable permissions to `other` users, for the folder `NFS_LOCATION_PATH`.
+Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resource
+named `wso2apim-with-analytics-mysql-pv` in the file `<KUBERNETES_HOME>/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml`.
   
-##### 5. Deploy Kubernetes test resources:
+##### 4. Deploy Kubernetes resources:
 
-Change directory to `KUBERNETES_HOME/pattern-1/test` and execute the `deploy.sh` shell script on the terminal.
+Change directory to `KUBERNETES_HOME/pattern-1/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
 
 ```
-./deploy.sh
+./deploy.sh --wso2-subscription-username=<WSO2_USERNAME> --wso2-subscription-password=<WSO2_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
 ```
+
+* A Kubernetes Secret named `wso2creds` in the cluster to authenticate with the [`WSO2 Docker Registry`](https://docker.wso2.com), to pull the required images.
+The following details need to be replaced in the relevant command.
+
+`WSO2_USERNAME`: Your WSO2 username<br>
+`WSO2_PASSWORD`: Your WSO2 password
+
+* A Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
+
+`K8S_CLUSTER_ADMIN_PASSWORD`: Kubernetes cluster admin password
+
 >To un-deploy, be on the same directory and execute the `undeploy.sh` shell script on the terminal.
 
-##### 6. Access Management Consoles:
+##### 5. Access Management Consoles:
 
 Default deployment will expose `wso2apim`, `wso2apim-gateway` and `wso2apim-analytics` hosts.
 
@@ -102,7 +99,7 @@ wso2apim-with-analytics-apim-ingress             wso2apim,wso2apim-gateway   <EX
 
 3. Try navigating to `https://wso2wso2apim/carbon` and `https://wso2apim-analytics/carbon` from your favorite browser.
 
-##### 7. Scale up using `kubectl scale`:
+##### 6. Scale up using `kubectl scale`:
 
 Default deployment runs a single replica (or pod) of WSO2 API Manager. To scale this deployment into any `<n>` number of
 container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
