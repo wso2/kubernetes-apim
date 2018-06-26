@@ -117,6 +117,8 @@ spec:
           mountPath: /home/wso2carbon/kubernetes-volumes/am-analytics/conf
         - name: apim-analytics-conf-datasources
           mountPath: /home/wso2carbon/kubernetes-volumes/am-analytics/conf-datasources
+        - name: analytics-persistent-disk
+          mountPath: /home/wso2carbon/wso2am-analytics-2.2.0/repository/conf/analytics
         - name: data-persistent-disk
           mountPath: /home/wso2carbon/wso2am-analytics-2.2.0/repository/data
       serviceAccountName: "wso2svc-account"
@@ -129,6 +131,9 @@ spec:
       - name: apim-analytics-conf-datasources
         configMap:
           name: apim-analytics-conf-datasources
+      - name: analytics-persistent-disk
+        persistentVolumeClaim:
+          claimName: wso2apim-with-analytics-apim-analytics-volume-claim
       - name: data-persistent-disk
         persistentVolumeClaim:
           claimName: wso2apim-with-analytics-apim-analytics-data-volume-claim
