@@ -16,92 +16,142 @@
 # limitations under the License
 # ------------------------------------------------------------------------
 
-# methods
 set -e
 
+ECHO=`which echo`
+KUBECTL=`which kubectl`
+
+# methods
 function echoBold () {
-    echo $'\e[1m'"${1}"$'\e[0m'
+    ${ECHO} -e $'\e[1m'"${1}"$'\e[0m'
 }
 
+function usage () {
+    echoBold "This script automates the installation of WSO2 EI Integrator Analytics Kubernetes resources\n"
+    echoBold "Allowed arguments:\n"
+    echoBold "-h | --help"
+    echoBold "--wu | --wso2-username\t\tYour WSO2 username"
+    echoBold "--wp | --wso2-password\t\tYour WSO2 password"
+    echoBold "--cap | --cluster-admin-password\tKubernetes cluster admin password\n\n"
+}
+
+WSO2_SUBSCRIPTION_USERNAME=''
+WSO2_SUBSCRIPTION_PASSWORD=''
+ADMIN_PASSWORD=''
+
+# capture named arguments
+while [ "$1" != "" ]; do
+    PARAM=`echo $1 | awk -F= '{print $1}'`
+    VALUE=`echo $1 | awk -F= '{print $2}'`
+
+    case ${PARAM} in
+        -h | --help)
+            usage
+            exit 1
+            ;;
+        --wu | --wso2-username)
+            WSO2_SUBSCRIPTION_USERNAME=${VALUE}
+            ;;
+        --wp | --wso2-password)
+            WSO2_SUBSCRIPTION_PASSWORD=${VALUE}
+            ;;
+        --cap | --cluster-admin-password)
+            ADMIN_PASSWORD=${VALUE}
+            ;;
+        *)
+            echoBold "ERROR: unknown parameter \"${PARAM}\""
+            usage
+            exit 1
+            ;;
+    esac
+    shift
+done
+
 # create a new Kubernetes Namespace
-kubectl create namespace wso2
+${KUBECTL} create namespace wso2
 
 # create a new service account in 'wso2' Kubernetes Namespace
-kubectl create serviceaccount wso2svc-account -n wso2
+${KUBECTL} create serviceaccount wso2svc-account -n wso2
 
 # switch the context to new 'wso2' namespace
-kubectl config set-context $(kubectl config current-context) --namespace=wso2
+${KUBECTL} config set-context $(${KUBECTL} config current-context) --namespace=wso2
 
-kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<username> --docker-password=<password> --docker-email=<email>
+# create a Kubernetes Secret for passing WSO2 Private Docker Registry credentials
+${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${WSO2_SUBSCRIPTION_USERNAME} --docker-password=${WSO2_SUBSCRIPTION_PASSWORD} --docker-email=${WSO2_SUBSCRIPTION_USERNAME}
 
-# create Kubernetes role and role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
-kubectl create --username=admin --password=<cluster-admin-password> -f ../../rbac/rbac.yaml
+# create Kubernetes Role and Role Binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
+${KUBECTL} create --username=admin --password=${ADMIN_PASSWORD} -f ../../rbac/rbac.yaml
 
 echoBold 'Creating ConfigMaps...'
 # create the APIM Gateway ConfigMaps
-kubectl create configmap apim-gateway-conf --from-file=../confs/apim-gateway/
-kubectl create configmap apim-gateway-conf-axis2 --from-file=../confs/apim-gateway/axis2/
-kubectl create configmap apim-gateway-conf-datasources --from-file=../confs/apim-gateway/datasources/
-kubectl create configmap apim-gateway-conf-identity --from-file=../confs/apim-gateway/identity/
+${KUBECTL} create configmap apim-gateway-conf --from-file=../confs/apim-gateway/
+${KUBECTL} create configmap apim-gateway-conf-axis2 --from-file=../confs/apim-gateway/axis2/
+${KUBECTL} create configmap apim-gateway-conf-datasources --from-file=../confs/apim-gateway/datasources/
+${KUBECTL} create configmap apim-gateway-conf-identity --from-file=../confs/apim-gateway/identity/
 # create the APIM Analytics ConfigMaps
-kubectl create configmap apim-analytics-conf --from-file=../confs/apim-analytics/
-kubectl create configmap apim-analytics-conf-datasources --from-file=../confs/apim-analytics/datasources/
+${KUBECTL} create configmap apim-analytics-conf --from-file=../confs/apim-analytics/
+${KUBECTL} create configmap apim-analytics-conf-datasources --from-file=../confs/apim-analytics/datasources/
 # create the APIM Publisher-Store-Traffic-Manager ConfigMaps
-kubectl create configmap apim-pubstore-tm-1-conf --from-file=../confs/apim-pubstore-tm-1/
-kubectl create configmap apim-pubstore-tm-1-conf-axis2 --from-file=../confs/apim-pubstore-tm-1/axis2/
-kubectl create configmap apim-pubstore-tm-1-conf-datasources --from-file=../confs/apim-pubstore-tm-1/datasources/
-kubectl create configmap apim-pubstore-tm-1-conf-identity --from-file=../confs/apim-pubstore-tm-1/identity/
-kubectl create configmap apim-pubstore-tm-2-conf --from-file=../confs/apim-pubstore-tm-2/
-kubectl create configmap apim-pubstore-tm-2-conf-axis2 --from-file=../confs/apim-pubstore-tm-2/axis2/
-kubectl create configmap apim-pubstore-tm-2-conf-datasources --from-file=../confs/apim-pubstore-tm-2/datasources/
-kubectl create configmap apim-pubstore-tm-2-conf-identity --from-file=../confs/apim-pubstore-tm-2/identity/
+${KUBECTL} create configmap apim-pubstore-tm-1-conf --from-file=../confs/apim-pubstore-tm-1/
+${KUBECTL} create configmap apim-pubstore-tm-1-conf-axis2 --from-file=../confs/apim-pubstore-tm-1/axis2/
+${KUBECTL} create configmap apim-pubstore-tm-1-conf-datasources --from-file=../confs/apim-pubstore-tm-1/datasources/
+${KUBECTL} create configmap apim-pubstore-tm-1-conf-identity --from-file=../confs/apim-pubstore-tm-1/identity/
+${KUBECTL} create configmap apim-pubstore-tm-2-conf --from-file=../confs/apim-pubstore-tm-2/
+${KUBECTL} create configmap apim-pubstore-tm-2-conf-axis2 --from-file=../confs/apim-pubstore-tm-2/axis2/
+${KUBECTL} create configmap apim-pubstore-tm-2-conf-datasources --from-file=../confs/apim-pubstore-tm-2/datasources/
+${KUBECTL} create configmap apim-pubstore-tm-2-conf-identity --from-file=../confs/apim-pubstore-tm-2/identity/
 # create the APIM KeyManager ConfigMaps
-kubectl create configmap apim-km-bin --from-file=../confs/apim-km/bin
-kubectl create configmap apim-km-conf --from-file=../confs/apim-km/repository/conf
-kubectl create configmap apim-km-conf-axis2 --from-file=../confs/apim-km/repository/conf/axis2/
-kubectl create configmap apim-km-conf-datasources --from-file=../confs/apim-km/repository/conf/datasources/
-kubectl create configmap apim-km-conf-identity --from-file=../confs/apim-km/repository/conf/identity/
+${KUBECTL} create configmap apim-km-conf --from-file=../confs/apim-km/
+${KUBECTL} create configmap apim-km-conf-axis2 --from-file=../confs/apim-km/axis2/
+${KUBECTL} create configmap apim-km-conf-datasources --from-file=../confs/apim-km/datasources/
+${KUBECTL} create configmap apim-km-conf-identity --from-file=../confs/apim-km/identity/
 
-kubectl create configmap mysql-dbscripts --from-file=confs/rdbms/mysql/dbscripts/
+${KUBECTL} create configmap mysql-dbscripts --from-file=../extras/confs/rdbms/mysql/dbscripts/
 
-kubectl create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-1-service.yaml
-kubectl create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-2-service.yaml
-kubectl create -f ../apim-pubstore-tm/wso2apim-service.yaml
-kubectl create -f ../apim-km/wso2apim-km-service.yaml
-kubectl create -f ../apim-gw/wso2apim-gateway-service.yaml
-kubectl create -f ../apim-analytics/wso2apim-analytics-service.yaml
+${KUBECTL} create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-1-service.yaml
+${KUBECTL} create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-2-service.yaml
+${KUBECTL} create -f ../apim-pubstore-tm/wso2apim-service.yaml
+${KUBECTL} create -f ../apim-km/wso2apim-km-service.yaml
+${KUBECTL} create -f ../apim-gw/wso2apim-gateway-service.yaml
+${KUBECTL} create -f ../apim-analytics/wso2apim-analytics-service.yaml
 
 # MySQL
 echoBold 'Deploying WSO2 API Manager Databases...'
-kubectl create -f rdbms/mysql/mysql-persistent-volume-claim.yaml
-kubectl create -f rdbms/volumes/persistent-volumes.yaml
-kubectl create -f rdbms/mysql/mysql-deployment.yaml
-kubectl create -f rdbms/mysql/mysql-service.yaml
+${KUBECTL} create -f ../extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+${KUBECTL} create -f ../extras/rdbms/volumes/persistent-volumes.yaml
+${KUBECTL} create -f ../extras/rdbms/mysql/mysql-deployment.yaml
+${KUBECTL} create -f ../extras/rdbms/mysql/mysql-service.yaml
 sleep 30s
 
 echoBold 'Deploying persistent storage resources...'
-kubectl create -f ../volumes/persistent-volumes.yaml
+${KUBECTL} create -f ../volumes/persistent-volumes.yaml
 
 echoBold 'Deploying WSO2 API Manager Analytics...'
-kubectl create -f ../apim-analytics/wso2apim-analytics-volume-claim.yaml
-kubectl create -f ../apim-analytics/wso2apim-analytics-deployment.yaml
+${KUBECTL} create -f ../apim-analytics/wso2apim-analytics-volume-claims.yaml
+${KUBECTL} create -f ../apim-analytics/wso2apim-analytics-deployment.yaml
 sleep 3m
 
 echoBold 'Deploying WSO2 API Manager Publisher-Store-Traffic-Manager...'
-kubectl create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-1-deployment.yaml
+${KUBECTL} create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-1-deployment.yaml
 sleep 1m
-kubectl create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-2-deployment.yaml
+${KUBECTL} create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-2-deployment.yaml
 sleep 3m
 
 echoBold 'Deploying WSO2 API Manager Key Manager...'
-kubectl create -f ../apim-km/wso2apim-km-deployment.yaml
+${KUBECTL} create -f ../apim-km/wso2apim-km-deployment.yaml
 sleep 2m
 
-kubectl create -f ../apim-gw/wso2apim-gateway-volume-claim.yaml
-kubectl create -f ../apim-gw/wso2apim-gateway-deployment.yaml
+${KUBECTL} create -f ../apim-gw/wso2apim-gateway-volume-claim.yaml
+${KUBECTL} create -f ../apim-gw/wso2apim-gateway-deployment.yaml
 sleep 2m
 
 echoBold 'Deploying Ingresses...'
-kubectl create -f ../ingresses/wso2apim-gateway-ingress.yaml
-kubectl create -f ../ingresses/wso2apim-ingress.yaml
-kubectl create -f ../ingresses/wso2apim-analytics-ingress.yaml
+${KUBECTL} create -f ../ingresses/wso2apim-gateway-ingress.yaml
+${KUBECTL} create -f ../ingresses/wso2apim-ingress.yaml
+${KUBECTL} create -f ../ingresses/wso2apim-analytics-ingress.yaml
+
+echoBold 'Finished'
+echo 'To access the WSO2 API Manager Management console, try https://wso2apim/carbon in your browser.'
+echo 'To access the WSO2 API Manager Publisher, try https://wso2apim/publisher in your browser.'
+echo 'To access the WSO2 API Manager Store, try https://wso2apim/store in your browser.'
+echo 'To access the WSO2 API Manager Analytics management console, try https://wso2apim-analytics/carbon in your browser.'

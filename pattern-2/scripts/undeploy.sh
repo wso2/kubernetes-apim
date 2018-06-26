@@ -17,20 +17,50 @@
 # ------------------------------------------------------------------------
 
 # methods
+
 set -e
 
+ECHO=`which echo`
+KUBECTL=`which kubectl`
+
+# methods
 function echoBold () {
-    echo $'\e[1m'"${1}"$'\e[0m'
+    ${ECHO} $'\e[1m'"${1}"$'\e[0m'
 }
 
-echoBold "Deleting the wso2 namespace..."
-kubectl delete ns wso2
+# persistent storage
+echoBold 'Deleting persistent volume and volume claim...'
+${KUBECTL} delete -f ../apim-gw/wso2apim-gateway-volume-claim.yaml
+${KUBECTL} delete -f ../apim-analytics/wso2apim-analytics-volume-claims.yaml
+${KUBECTL} delete -f ../volumes/persistent-volumes.yaml
+
+# WSO2 Identity Server
+echoBold 'Deleting WSO2 API Manager pattern 2 deployment...'
+${KUBECTL} delete -f ../apim-pubstore-tm/wso2apim-pubstore-tm-1-service.yaml
+${KUBECTL} delete -f ../apim-pubstore-tm/wso2apim-pubstore-tm-2-service.yaml
+${KUBECTL} delete -f ../apim-pubstore-tm/wso2apim-service.yaml
+${KUBECTL} delete -f ../apim-km/wso2apim-km-service.yaml
+${KUBECTL} delete -f ../apim-gw/wso2apim-gateway-service.yaml
+${KUBECTL} delete -f ../apim-analytics/wso2apim-analytics-service.yaml
+
+${KUBECTL} delete -f ../apim-gw/wso2apim-gateway-deployment.yaml
+${KUBECTL} delete -f ../apim-analytics/wso2apim-analytics-deployment.yaml
+${KUBECTL} delete -f ../apim-pubstore-tm/wso2apim-pubstore-tm-1-deployment.yaml
+${KUBECTL} delete -f ../apim-pubstore-tm/wso2apim-pubstore-tm-2-deployment.yaml
+sleep 90s
+
+# MySQL
+echoBold 'Deleting the MySQL deployment...'
+${KUBECTL} delete -f ../extras/rdbms/mysql/mysql-service.yaml
+${KUBECTL} delete -f ../extras/rdbms/mysql/mysql-deployment.yaml
+${KUBECTL} delete -f ../extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+${KUBECTL} delete -f ../extras/rdbms/volumes/persistent-volumes.yaml
 sleep 50s
 
-echoBold 'Deleting persistent storage resources...'
-kubectl delete -f ../volumes/persistent-volumes.yaml
-kubectl delete -f rdbms/volumes/persistent-volumes.yaml
-sleep 10s
+# delete the created Kubernetes Namespace
+${KUBECTL} delete namespace wso2
 
-# switch the context to new 'wso2' namespace
-kubectl config set-context $(kubectl config current-context) --namespace=default
+# switch the context to default namespace
+${KUBECTL} config set-context $(kubectl config current-context) --namespace=default
+
+echoBold 'Finished'

@@ -78,8 +78,6 @@ spec:
           containerPort: 7611
           protocol: "TCP"
         volumeMounts:
-        - name: apim-km-bin
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/bin
         - name: apim-km-conf
           mountPath: /home/wso2carbon/kubernetes-volumes/am/conf
         - name: apim-km-conf-axis2
@@ -92,9 +90,6 @@ spec:
       imagePullSecrets:
       - name: wso2creds
       volumes:
-      - name: apim-km-bin
-        configMap:
-          name: apim-km-bin
       - name: apim-km-conf
         configMap:
           name: apim-km-conf
