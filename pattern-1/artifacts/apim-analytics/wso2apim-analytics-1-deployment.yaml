@@ -120,10 +120,15 @@ spec:
             mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-tomcat/"
           - name: apim-analytics-1-conf-analytics
             mountPath: "/home/wso2user/wso2am-analytics-2.1.0-conf/conf-analytics/"
+          - name: apim-analytics-1-conf-analytics-volume
+            mountPath: "/home/wso2user/wso2am-analytics-2.1.0/repository/conf/analytics/"
       volumes:
         - name: apim-analytics-storage-volume
           persistentVolumeClaim:
             claimName: apim-analytics-volume-claim-1
+        - name: apim-analytics-1-conf-analytics-volume
+          persistentVolumeClaim:
+            claimName: apim-analytics-conf-volume-claim-1
         - name: apim-analytics-1-bin
           configMap:
             name: apim-analytics-1-bin
