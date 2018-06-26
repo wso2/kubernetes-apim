@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-with-analytics-apim-worker
-        image: gcr.io/apim3-177506/wso2am:2.2.0
+        image: docker.wso2.com/wso2am:2.2.0
         livenessProbe:
           exec:
             command:
