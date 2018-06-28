@@ -1,0 +1,107 @@
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wso2apim-manager-worker
+  labels:
+    app: wso2apim
+    node-m: manager-worker
+    pattern: wso2apim-pattern-1
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wso2apim
+        node-m: manager-worker
+        pattern: wso2apim-pattern-1
+    spec:
+      containers:
+      -
+        image: docker.wso2.com/wso2am-kubernetes:2.1.0
+        name: wso2apim
+        imagePullPolicy: IfNotPresent
+        ports:
+        -
+          containerPort: 8243
+          protocol: "TCP"
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"
+        -
+          containerPort: 5672
+          protocol: "TCP"
+        -
+          containerPort: 9711
+          protocol: "TCP"
+        -
+          containerPort: 9611
+          protocol: "TCP"
+        -
+          containerPort: 7711
+          protocol: "TCP"
+        -
+          containerPort: 7611
+          protocol: "TCP"
+
+        volumeMounts:
+        -
+          name: apim-mgt-storage-volume
+          mountPath: "/home/wso2user/wso2am-2.1.0/repository/deployment/server"
+        - name: apim-manager-worker-bin
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/bin/"
+        - name: apim-manager-worker-conf
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf/"
+        - name: apim-manager-worker-identity
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-identity/"
+        - name: apim-manager-worker-axis2
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-axis2/"
+        - name: apim-manager-worker-datasources
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-datasources/"
+        - name: apim-manager-worker-tomcat
+          mountPath: "/home/wso2user/wso2am-2.1.0-conf/conf-tomcat/"
+        livenessProbe:
+          tcpSocket:
+            port: 9443
+          initialDelaySeconds: 300
+          periodSeconds: 20
+      serviceAccountName: "wso2svcacct"
+      volumes:
+      - name: apim-mgt-storage-volume
+        persistentVolumeClaim:
+          claimName: apim-mgt-volume-claim
+      - name: apim-manager-worker-bin
+        configMap:
+          name: apim-manager-worker-bin
+      - name: apim-manager-worker-conf
+        configMap:
+          name: apim-manager-worker-conf
+      - name: apim-manager-worker-identity
+        configMap:
+          name: apim-manager-worker-identity
+      - name: apim-manager-worker-axis2
+        configMap:
+          name: apim-manager-worker-axis2
+      - name: apim-manager-worker-datasources
+        configMap:
+          name: apim-manager-worker-datasources
+      - name: apim-manager-worker-tomcat
+        configMap:
+          name: apim-manager-worker-tomcat
