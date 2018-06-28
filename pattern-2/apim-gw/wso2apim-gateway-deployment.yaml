@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-gateway
-        image: docker.wso2.com/wso2am:2.2.0
+        image: docker.wso2.com/wso2am:2.5.0
         livenessProbe:
           exec:
             command:
@@ -79,7 +79,7 @@ spec:
           protocol: "TCP"
         volumeMounts:
         - name: apim-storage-volume
-          mountPath: /home/wso2carbon/wso2am-2.2.0/repository/deployment/server
+          mountPath: /home/wso2carbon/wso2am-2.5.0/repository/deployment/server
         - name: apim-gateway-conf
           mountPath: /home/wso2carbon/kubernetes-volumes/am/conf
         - name: apim-gateway-conf-axis2
