@@ -1,0 +1,55 @@
+# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: wso2apim-with-analytics-mysql-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        deployment: wso2apim-with-analytics-mysql
+    spec:
+      containers:
+      - name: wso2apim-with-analytics-mysql
+        image: mysql:5.7
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsUser: 999
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: MYSQL_USER
+          value: wso2carbon
+        - name: MYSQL_PASSWORD
+          value: wso2carbon
+        ports:
+        - containerPort: 3306
+          protocol: TCP
+        volumeMounts:
+        - name: mysql-dbscripts
+          mountPath: /docker-entrypoint-initdb.d
+        - name: apim-rdbms-persistent-storage
+          mountPath: /var/lib/mysql
+        args: ["--max-connections", "10000"]
+      volumes:
+      - name: mysql-dbscripts
+        configMap:
+          name: mysql-dbscripts
+      - name: apim-rdbms-persistent-storage
+        persistentVolumeClaim:
+          claimName: wso2apim-with-analytics-rdbms-volume-claim
+      serviceAccountName: "wso2svc-account"
