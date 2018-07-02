@@ -35,7 +35,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2apim-pattern-2-rdbms-service:3306/WSO2AM_APIMGT_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <url>jdbc:mysql://wso2apim-pattern-2-rdbms-service-mysql:3306/WSO2AM_APIMGT_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <defaultAutoCommit>false</defaultAutoCommit>
@@ -57,7 +57,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2apim-pattern-2-rdbms-service:3306/WSO2AM_COMMON_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <url>jdbc:mysql://wso2apim-pattern-2-rdbms-service-mysql:3306/WSO2AM_COMMON_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -78,7 +78,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2apim-pattern-2-rdbms-service:3306/WSO2AM_COMMON_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <url>jdbc:mysql://wso2apim-pattern-2-rdbms-service-mysql:3306/WSO2AM_COMMON_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -99,7 +99,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2apim-pattern-2-rdbms-service:3306/WSO2AM_STAT_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <url>jdbc:mysql://wso2apim-pattern-2-rdbms-service-mysql:3306/WSO2AM_STAT_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>

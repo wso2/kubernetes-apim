@@ -77,9 +77,9 @@ resources:
 
 # Custom mysql configuration files used to override default mysql settings
 configurationFiles:
-#  mysql.cnf: |-
-#    [mysqld]
-#    skip-name-resolve
+  mysql.cnf: |-
+    [mysqld]
+    max_connections = 10000
 #    ssl-ca=/ssl/ca.pem
 #    ssl-cert=/ssl/server-cert.pem
 #    ssl-key=/ssl/server-key.pem

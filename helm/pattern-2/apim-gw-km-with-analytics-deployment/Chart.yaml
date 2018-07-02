@@ -14,6 +14,6 @@
 
 apiVersion: v1
 appVersion: "1.0"
-description:A Helm chart for the deployment of WSO2 API Manager with a separate Gateway and a separate Key Manager Deployment
+description: A Helm chart for the deployment of WSO2 API Manager with a separate Gateway and a separate Key Manager Deployment
 name: apim-gw-km-with-analytics-deployment
 version: 1.0.0
