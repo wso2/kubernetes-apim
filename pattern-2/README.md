@@ -21,7 +21,7 @@ in order to run the steps provided<br>in the following quick start guide.<br><br
 >In the context of this document, `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-apim`](https://github.com/wso2/kubernetes-apim/)
 Git repository.<br>
 
-##### 1. Checkout Kubernetes Resources for WSO2 API Manager Git repository:
+##### 1. Clone the Kubernetes Resources for WSO2 API Manager Git repository:
 
 ```
 git clone https://github.com/wso2/kubernetes-apim.git
@@ -54,7 +54,7 @@ kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com 
 Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
 for further details.
 
-##### 4. Setup and configure external product database(s):
+##### 4. Setup product database(s):
 
 Setup the external product databases. Please refer to WSO2 API Manager's [official documentation](https://docs.wso2.com/display/AM250/Installing+and+Configuring+the+Databases)
 on creating the required databases for the deployment.
@@ -87,7 +87,7 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     ```
     
     Setup a Network File System (NFS) to be used as the persistent volume for persisting MySQL DB data.
-    Provide read-write-executable permissions to `other` users, for the folder `NFS_LOCATION_PATH`.
+    Provide read-write-execute permissions to `other` users, for the folder `NFS_LOCATION_PATH`.
     Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resource
     named `wso2apim-pattern-2-rdbms-pv` in the file `<KUBERNETES_HOME>/pattern-2/extras/rdbms/volumes/persistent-volumes.yaml`.
     
@@ -115,19 +115,28 @@ kubectl create --username=admin --password=<K8S_CLUSTER_ADMIN_PASSWORD> -f <KUBE
 
 ##### 6. Setup a Network File System (NFS) to be used as the persistent volume for artifact sharing across API Manager and Analytics instances.
 
-Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resources,
+Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of the following persistent volume resources
+defined in the `<KUBERNETES_HOME>/pattern-2/volumes/persistent-volumes.yaml` file.
 
 * `wso2apim-gateway-server-pv`
 * `wso2apim-analytics-data-pv`
 * `wso2apim-analytics-pv`
 
-in `<KUBERNETES_HOME>/pattern-2/volumes/persistent-volumes.yaml` file.
-
-Create a user named `wso2carbon` with user id `802` and a group named `wso2` with group id `802` in the NFS node.
+Create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802` in the NFS node.
 Add `wso2carbon` user to the group `wso2`.
 
-Then, provide ownership of the exported folder `NFS_LOCATION_PATH` (used for artifact sharing) to `wso2carbon` user and `wso2` group.
-And provide read-write-executable permissions to owning `wso2carbon` user, for the folder `NFS_LOCATION_PATH`.
+```
+groupadd --system -g 802 wso2
+useradd --system -g 802 -u 802 wso2carbon
+```
+
+Then, grant ownership of the exported folder `NFS_LOCATION_PATH` (used for artifact sharing) to `wso2carbon` user and `wso2` group.
+And grant read-write-execute permissions to owning `wso2carbon` user, for the folder `NFS_LOCATION_PATH`.
+
+```
+sudo chown -R wso2carbon:wso2 NFS_LOCATION_PATH
+chmod -R 700 NFS_LOCATION_PATH
+```
 
 Then, deploy the persistent volume resource and volume claim as follows:
 
