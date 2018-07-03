@@ -4,10 +4,12 @@ email: "<EMAIL>"
 
 namespace: "wso2"
 svcaccount: "wso2svc-account"
-serverIp: 10.128.0.6
-sharedDeploymentLocationPath: "/data/thilina/apim/server"
-analyticsDataLocationPath: "/data/thilina/apim/data"
-analyticsLocationPath: "/data/thilina/apim/analytics"
+serverIp: "<SERVER_IP>"
+sharedDeploymentLocationPath: "<NFS_LOCATION>"
+analyticsDataLocationPath: "<NFS_LOCATION>"
+analyticsLocationPath: "<NFS_LOCATION>"
+
+
 
 
 

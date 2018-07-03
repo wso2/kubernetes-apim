@@ -84,10 +84,10 @@ To access the console in a test environment,
 e.g.
 
 ```
-NAME                                  HOSTS                    ADDRESS          PORTS      AGE
-wso2apim-ingress                      wso2apim                 <EXTERNAL-IP>    80, 443    7m 
-wso2apim-analytics-ingress            wso2apim-analytics       <EXTERNAL-IP>    80, 443    7m
-wso2apim-gateway-ingress              wso2apim-gateway         <EXTERNAL-IP>    80, 443    6m
+NAME                            HOSTS                ADDRESS          PORTS     AGE
+wso2apim-analytics-ingress      wso2apim-analytics   <EXTERNAL-IP>   80, 443   12h
+wso2apim-gateway-ingress        wso2apim-gateway     <EXTERNAL-IP>   80, 443   12h
+wso2apim-ingress                wso2apim             <EXTERNAL-IP>   80, 443   12h
 ```
 
 2. Add the above three hosts as entries in /etc/hosts file as follows:
