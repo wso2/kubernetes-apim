@@ -10,18 +10,26 @@ with WSO2 API Manager Analytics support.
 * In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active WSO2
 subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
 
-* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Docker](https://www.docker.com/get-docker)
-(version 17.09.0 or above) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 in order to run the steps provided<br>in the following quick start guide.<br><br>
 
 * An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/)<br><br>
- 
+
+* A pre-configured Network File System (NFS) to be used as the persistent volume for artifact sharing and persistence.
+In the NFS server instance, create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802`.
+Add the `wso2carbon` user to the group `wso2`.
+
+```
+groupadd --system -g 802 wso2
+useradd --system -g 802 -u 802 wso2carbon
+```
+
 ## Quick Start Guide
 
 >In the context of this document, `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-apim`](https://github.com/wso2/kubernetes-apim/)
 Git repository.<br>
 
-##### 1. Clone the Kubernetes Resources for WSO2 API Manager Git repository:
+##### 1. Clone the Kubernetes Resources for WSO2 API Manager Git repository.
 
 ```
 git clone https://github.com/wso2/kubernetes-apim.git
@@ -40,7 +48,7 @@ Then, switch the context to new `wso2` namespace from `default` namespace.
 kubectl config set-context $(kubectl config current-context) --namespace=wso2
 ```
 
-##### 3. Create a Kubernetes Secret for pulling the required Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com):
+##### 3. Create a Kubernetes Secret for pulling the required Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com).
 
 Create a Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
 
@@ -54,7 +62,7 @@ kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com 
 Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
 for further details.
 
-##### 4. Setup product database(s):
+##### 4. Setup product database(s).
 
 Setup the external product databases. Please refer to WSO2 API Manager's [official documentation](https://docs.wso2.com/display/AM250/Installing+and+Configuring+the+Databases)
 on creating the required databases for the deployment.
@@ -83,19 +91,23 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/pattern-1/extras/confs/mysql/dbscripts/
     ```
     
-    Setup a Network File System (NFS) to be used as the persistent volume for persisting MySQL DB data.
-    Provide read-write-execute permissions to `other` users, for the folder `NFS_LOCATION_PATH`.
-    Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resource
-    named `wso2apim-with-analytics-mysql-pv` in the file `<KUBERNETES_HOME>/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml`.
+    Here, a Network File System (NFS) is needed to be used for persisting MySQL DB data.
     
-    Then, deploy the persistent volume resource and volume claim as follows:
+    Create and export a directory within the NFS server instance.
+    
+    Provide read-write-execute permissions to other users for the created folder.
+    
+    Update the Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported,
+    NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml`.
+    
+    Deploy the persistent volume resource and volume claim as follows:
     
     ```
     kubectl create -f <KUBERNETES_HOME>/pattern-1/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
     kubectl create -f <KUBERNETES_HOME>/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml
     ```
 
-    Then, create a Kubernetes service (accessible only within the Kubernetes cluster) and followed by the MySQL Kubernetes deployment, as follows:
+    Then, create a Kubernetes service (accessible only within the Kubernetes cluster), followed by the MySQL Kubernetes deployment, as follows:
     
     ```
     kubectl create -f <KUBERNETES_HOME>/pattern-1/extras/rdbms/mysql/mysql-service.yaml
@@ -110,30 +122,24 @@ kubectl create --username=admin --password=<K8S_CLUSTER_ADMIN_PASSWORD> -f <KUBE
 
 `K8S_CLUSTER_ADMIN_PASSWORD`: Kubernetes cluster admin password
 
-##### 6. Setup a Network File System (NFS) to be used as the persistent volume for artifact sharing across API Manager and Analytics instances.
+##### 6. Setup a Network File System (NFS) to be used for persistent storage.
 
-Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of the following persistent volume resources
-defined in the `<KUBERNETES_HOME>/pattern-1/volumes/persistent-volumes.yaml` file.
+Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
+`<KUBERNETES_HOME>/pattern-1/volumes/persistent-volumes.yaml` file.
 
-* `wso2apim-with-analytics-shared-deployment-pv`
-* `wso2apim-with-analytics-apim-analytics-data-pv`
-* `wso2apim-with-analytics-apim-analytics-pv`
-
-Create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802` in the NFS node.
-Add `wso2carbon` user to the group `wso2`.
+Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
 ```
-groupadd --system -g 802 wso2
-useradd --system -g 802 -u 802 wso2carbon
+sudo chown -R wso2carbon:wso2 <directory_name>
 ```
 
-Then, grant ownership of the exported folder `NFS_LOCATION_PATH` (used for artifact sharing) to `wso2carbon` user and `wso2` group.
-And grant read-write-execute permissions to owning `wso2carbon` user, for the folder `NFS_LOCATION_PATH`.
+Grant read-write-execute permissions to the `wso2carbon` user, for each of the previously created directories.
 
 ```
-sudo chown -R wso2carbon:wso2 NFS_LOCATION_PATH
-chmod -R 700 NFS_LOCATION_PATH
+chmod -R 700 <directory_name>
 ```
+
+Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
 
 Then, deploy the persistent volume resource and volume claim as follows:
 
@@ -143,7 +149,7 @@ kubectl create -f <KUBERNETES_HOME>/pattern-1/apim-analytics/wso2apim-analytics-
 kubectl create -f <KUBERNETES_HOME>/pattern-1/volumes/persistent-volumes.yaml
 ```
     
-##### 7. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster:
+##### 7. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster.
 
 ```
 kubectl create configmap apim-conf --from-file=<KUBERNETES_HOME>/pattern-1/confs/apim/
@@ -153,7 +159,7 @@ kubectl create configmap apim-analytics-conf --from-file=<KUBERNETES_HOME>/patte
 kubectl create configmap apim-analytics-conf-datasources --from-file=<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/datasources/
 ```
 
-##### 8. Create Kubernetes Services and Deployments for WSO2 API Manager and Analytics:
+##### 8. Create Kubernetes Services and Deployments for WSO2 API Manager and Analytics.
 
 ```
 kubectl create -f <KUBERNETES_HOME>/pattern-1/apim-analytics/wso2apim-analytics-deployment.yaml
@@ -162,7 +168,7 @@ kubectl create -f <KUBERNETES_HOME>/pattern-1/apim/wso2apim-deployment.yaml
 kubectl create -f <KUBERNETES_HOME>/pattern-1/apim/wso2apim-service.yaml
 ```
 
-##### 9. Deploy Kubernetes Ingress resource:
+##### 9. Deploy Kubernetes Ingress resource.
 
 The WSO2 API Manager Kubernetes Ingress resource uses the NGINX Ingress Controller.
 
@@ -176,7 +182,7 @@ kubectl create -f <KUBERNETES_HOME>/pattern-1/ingresses/wso2apim-analytics-ingre
 kubectl create -f <KUBERNETES_HOME>/pattern-1/ingresses/wso2apim-ingress.yaml
 ```
 
-##### 10. Access Management Consoles:
+##### 10. Access Management Consoles.
 
 Default deployment will expose `wso2apim`, `wso2apim-gateway` and `wso2apim-analytics` hosts.
 
@@ -202,7 +208,7 @@ wso2apim-with-analytics-apim-ingress             wso2apim,wso2apim-gateway   <EX
 
 3. Try navigating to `https://wso2apim/carbon` and `https://wso2apim-analytics/carbon` from your favorite browser.
 
-##### 11. Scale up using `kubectl scale`:
+##### 11. Scale up using `kubectl scale`.
 
 Default deployment runs a single replica (or pod) of WSO2 API Manager. To scale this deployment into any `<n>` number of
 container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
