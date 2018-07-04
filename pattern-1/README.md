@@ -200,7 +200,7 @@ wso2apim-with-analytics-apim-ingress             wso2apim,wso2apim-gateway   <EX
 <EXTERNAL-IP>	wso2apim-gateway
 ```
 
-3. Try navigating to `https://wso2wso2apim/carbon` and `https://wso2apim-analytics/carbon` from your favorite browser.
+3. Try navigating to `https://wso2apim/carbon` and `https://wso2apim-analytics/carbon` from your favorite browser.
 
 ##### 11. Scale up using `kubectl scale`:
 
