@@ -63,7 +63,7 @@ Update each Kubernetes Persistent Volume resource with the corresponding NFS ser
 
 For **evaluation purposes**,
 
-* You can use Kubernetes resources provided in the directory `KUBERNETES_HOME/pattern-1/extras/rdbms/mysql`
+* You can use Kubernetes resources provided in the directory `<KUBERNETES_HOME>/pattern-1/extras/rdbms/mysql`
 for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
 **not recommended** for a production setup.
 
@@ -86,16 +86,16 @@ In a **production grade setup**,
   Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
   the following files:
   
-  * `KUBERNETES_HOME/pattern-1/confs/apim/datasources/master-datasources.xml`
-  * `KUBERNETES_HOME/pattern-1/confs/apim-analytics/datasources/analytics-datasources.xml`
-  * `KUBERNETES_HOME/pattern-1/confs/apim-analytics/datasources/master-datasources.xml`
-  * `KUBERNETES_HOME/pattern-1/confs/apim-analytics/datasources/stats-datasources.xml`
+  * `<KUBERNETES_HOME>/pattern-1/confs/apim/datasources/master-datasources.xml`
+  * `<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/datasources/analytics-datasources.xml`
+  * `<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/datasources/master-datasources.xml`
+  * `<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/datasources/stats-datasources.xml`
   
   Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN44x/Configuring+master-datasources.xml) on configuring data sources.
 
 ##### 5. Deploy Kubernetes resources.
 
-Change directory to `KUBERNETES_HOME/pattern-1/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
+Change directory to `<KUBERNETES_HOME>/pattern-1/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
 
 ```
 ./deploy.sh --wso2-username=<WSO2_USERNAME> --wso2-password=<WSO2_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
