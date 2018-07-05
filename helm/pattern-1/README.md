@@ -1,4 +1,4 @@
-# Helm Charts for deployment of WSO2 API Manager with Analytics
+# Helm Chart for deployment of WSO2 API Manager with Analytics
 
 ## Prerequisites
 
@@ -15,47 +15,49 @@ steps provided in the following quick start guide.<br><br>
   helm install stable/nginx-ingress --name nginx-wso2apim-analytics --set rbac.create=true
   ```
 ## Quick Start Guide
+
 >In the context of this document, <br>
 >* `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-apim`](https://github.com/wso2/kubernetes-apim/)
 Git repository. <br>
 >* `HELM_HOME` will refer to `<KUBERNETES_HOME>/helm/pattern-1`. <br>
 
-##### 1. Checkout Kubernetes Resources for WSO2 API Manager Git repository:
+##### 1. Clone Kubernetes Resources for WSO2 API Manager Git repository.
 
 ```
 git clone https://github.com/wso2/kubernetes-apim.git
 ```
 
-##### 2. Provide configurations:
+##### 2. Provide configurations.
 
 1. The default product configurations are available at `<HELM_HOME>/apim-with-analytics-conf/confs` folder. Change the 
 configurations as necessary.
 
 2. Open the `<HELM_HOME>/apim-with-analytics-conf/values.yaml` and provide the following values.
 
-    `username`: Username of your WSO2 subscription credentials<br>
-    `password`: Password of your WSO2 subscription credentials<br>
+    `username`: Your WSO2 username<br>
+    `password`: Your WSO2 password<br>
     `email`: Docker email<br>
-    `namespace`: Namespace<br>
-    `svcaccount`: Service Account<br>
+    `namespace`: Kubernetes Namespace in which the resources are deployed<br>
+    `svcaccount`: Kubernetes Service Account in the `namespace` to which product instance pods are attached<br>
     `serverIp`: NFS Server IP<br>
     `locationPath`: NFS location path<br>
-    `sharedDeploymentLocationPath`: NFS shared deployment directory(<APIM_HOME>/repository/deployment) location for APIM<br> 
-    `analyticsDataLocationPath`: NFS volume for Indexed data for Analytics(<DAS_HOME>/repository/data)<br>
-    `analyticsLocationPath`: NFS volume for Analytics data for Analytics(<DAS_HOME>/repository/analytics)<br>
+    `sharedDeploymentLocationPath`: NFS shared deployment directory(`<APIM_HOME>/repository/deployment`) location for APIM<br> 
+    `analyticsDataLocationPath`: NFS volume for Indexed data for Analytics(`<DAS_HOME>/repository/data`)<br>
+    `analyticsLocationPath`: NFS volume for Analytics data for Analytics(`<DAS_HOME>/repository/analytics`)<br>
     
 3. Open the `<HELM_HOME>/apim-with-analytics-deployment/values.yaml` and provide the following values.
 
-    `namespace`: Namespace<br>
-    `svcaccount`: Service Account
+    `namespace`: Kubernetes Namespace in which the resources are deployed<br>
+    `svcaccount`: Kubernetes Service Account in the `namespace` to which product instance pods are attached<br>
     
-##### 3. Deploy the configurations:
+##### 3. Deploy the configurations.
 
 ```
 helm install --name <RELEASE_NAME> <HELM_HOME>/apim-with-analytics-conf
 ```
 
-##### 4. Deploy MySQL:
+##### 4. Deploy MySQL.
+
 If there is an external product database(s), add those configurations as stated at `step 2.1`. Otherwise, run the below
  command to create the product database. 
 ```
@@ -64,7 +66,7 @@ stable/mysql --namespace <NAMESPACE>
 ```
 `NAMESPACE` should be same as `step 2.2`.
 
-##### 5. Deploy WSO2 API Manager with Analytics:
+##### 5. Deploy WSO2 API Manager with Analytics.
 
 ```
 helm install --name <RELEASE_NAME> <HELM_HOME>/apim-with-analytics-deployment
@@ -73,6 +75,7 @@ helm install --name <RELEASE_NAME> <HELM_HOME>/apim-with-analytics-deployment
 ##### 6. Access Management Console:
 
 Default deployment will expose three publicly accessible hosts, namely:<br>
+
 1. `wso2apim` - To expose Administrative services and Management Console<br>
 2. `wso2apim-analytics` - To expose Analytics server<br>
 3. `wso2apim-gateway` - To expose Gateway<br>
@@ -98,4 +101,3 @@ wso2apim-with-analytics-apim-ingress                         wso2apim, wso2apim-
 ```
 
 3. Try navigating to `https://wso2apim/carbon` from your favorite browser.
-
