@@ -1,19 +1,24 @@
 # Kubernetes Resources for deployment of WSO2 API Manager with WSO2 API Manager Analytics
 
-Core Kubernetes resources for WSO2 API Manager deployment pattern 1. This consists of a scalable deployment of WSO2 API Manager
-with WSO2 API Manager Analytics support.
+Core Kubernetes resources for [WSO2 API Manager deployment pattern 1](https://docs.wso2.com/display/AM220/Deployment+Patterns#DeploymentPatterns-Pattern1).
+This consists of a scalable deployment of WSO2 API Manager with WSO2 API Manager Analytics support.
 
 ![WSO2 API Manager deployment with WSO2 API Manager Analytics support](pattern-1.png)
 
+## Contents
+
+* [Prerequisites](#prerequisites)
+* [Quick Start Guide](#quick-start-guide)
+
 ## Prerequisites
 
-* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active WSO2
-subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
+* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active
+WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
 
-* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10)
 in order to run the steps provided in the following quick start guide.<br><br>
 
-* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/)<br><br>
+* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/).<br><br>
 
 * A pre-configured Network File System (NFS) to be used as the persistent volume for artifact sharing and persistence.
 In the NFS server instance, create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802`.
@@ -188,7 +193,11 @@ Default deployment will expose `wso2apim`, `wso2apim-gateway` and `wso2apim-anal
 
 To access the console in the environment,
 
-1. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses (using `kubectl get ing`).
+a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
+
+  ```
+  kubectl get ing
+  ```
 
 e.g.
 
@@ -198,15 +207,15 @@ wso2apim-with-analytics-apim-analytics-ingress   wso2apim-analytics          <EX
 wso2apim-with-analytics-apim-ingress             wso2apim,wso2apim-gateway   <EXTERNAL-IP>   80, 443   7m
 ```
 
-2. Add the above host as an entry in /etc/hosts file as follows:
+b. Add the above host as an entry in /etc/hosts file as follows:
 
-```
-<EXTERNAL-IP>	wso2apim-analytics
-<EXTERNAL-IP>	wso2apim
-<EXTERNAL-IP>	wso2apim-gateway
-```
+  ```
+  <EXTERNAL-IP>	wso2apim-analytics
+  <EXTERNAL-IP>	wso2apim
+  <EXTERNAL-IP>	wso2apim-gateway
+  ```
 
-3. Try navigating to `https://wso2apim/carbon` and `https://wso2apim-analytics/carbon` from your favorite browser.
+c. Try navigating to `https://wso2apim/carbon` and `https://wso2apim-analytics/carbon` from your favorite browser.
 
 ##### 11. Scale up using `kubectl scale`.
 
