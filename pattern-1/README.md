@@ -47,7 +47,7 @@ kubectl create namespace wso2
 kubectl create serviceaccount wso2svc-account -n wso2
 ```
 
-Then, switch the context to new `wso2` namespace from `default` namespace.
+Then, switch the context to new `wso2` namespace.
 
 ```
 kubectl config set-context $(kubectl config current-context) --namespace=wso2
