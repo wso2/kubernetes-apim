@@ -1,18 +1,22 @@
 # Kubernetes Test Resources for deployment of WSO2 API Manager with a separate Gateway and a separate Key Manager
 
-Kubernetes Test Resources for WSO2 API Manager pattern 2 contain artifacts, which can be used to test the core
-Kubernetes resources provided for a deployment of WSO2 API Manager with a separate Gateway and a separate Key Manager
-along with WSO2 API Manager Analytics support.
+Kubernetes Test Resources for [WSO2 API Manager deployment pattern 2](https://docs.wso2.com/display/AM220/Deployment+Patterns#DeploymentPatterns-Pattern2) contain artifacts,
+which can be used to test the core Kubernetes resources provided for a deployment of WSO2 API Manager with a separate Gateway and a separate Key Manager along with WSO2 API Manager Analytics support.
+
+## Contents
+
+* [Prerequisites](#prerequisites)
+* [Quick Start Guide](#quick-start-guide)
 
 ## Prerequisites
 
-* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active WSO2
-subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
+* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active
+WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
 
-* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10)
 in order to run the steps provided in the following quick start guide.<br><br>
 
-* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/)<br><br>
+* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/).<br><br>
 
 * A pre-configured Network File System (NFS) to be used as the persistent volume for artifact sharing and persistence.
 In the NFS server instance, create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802`.
