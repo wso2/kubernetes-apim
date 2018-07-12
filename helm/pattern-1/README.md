@@ -84,7 +84,7 @@ b. Open the `<HELM_HOME>/apim-with-analytics-conf/values.yaml` and provide the f
 | `analyticsDataLocationPath`     | NFS volume for Indexed data for Analytics (`<DAS_HOME>/repository/data`)                  |
 | `analyticsLocationPath`         | NFS volume for Analytics data for Analytics(`<DAS_HOME>/repository/analytics`)            |
 
-c. Open the `<HELM_HOME>/apim-with-analytics-conf/values.yaml` and provide the following values. 
+c. Open the `<HELM_HOME>/apim-with-analytics-deployment/values.yaml` and provide the following values. 
     
 | Parameter                       | Description                                                                               |
 |---------------------------------|-------------------------------------------------------------------------------------------|
