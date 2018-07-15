@@ -1,17 +1,22 @@
 # Kubernetes Test Resources for deployment of WSO2 API Manager with WSO2 API Manager Analytics
 
-Kubernetes Test Resources for WSO2 API Manager pattern 1 contain artifacts, which can be used to test the core
-Kubernetes resources provided for a scalable deployment of WSO2 API Manager with WSO2 API Manager Analytics support.
+Kubernetes Test Resources for [WSO2 API Manager deployment pattern 1](https://docs.wso2.com/display/AM220/Deployment+Patterns#DeploymentPatterns-Pattern1) contain artifacts,
+which can be used to test the core Kubernetes resources provided for a scalable deployment of WSO2 API Manager with WSO2 API Manager Analytics support.
+
+## Contents
+
+* [Prerequisites](#prerequisites)
+* [Quick Start Guide](#quick-start-guide)
 
 ## Prerequisites
 
-* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active WSO2
-subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
+* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active
+WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
 
-* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10)
 in order to run the steps provided in the following quick start guide.<br><br>
 
-* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/)<br><br>
+* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/).<br><br>
 
 * A pre-configured Network File System (NFS) to be used as the persistent volume for artifact sharing and persistence.
 In the NFS server instance, create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802`.
@@ -80,7 +85,7 @@ for deploying the product databases, using MySQL in Kubernetes. However, this ap
     
 In a **production grade setup**,
 
-* Setup the external product databases. Please refer to WSO2 API Manager's [official documentation](https://docs.wso2.com/display/AM220/Installing+and+Configuring+the+Databases)
+* Setup the external product databases. Please refer to WSO2 API Manager's [official documentation](https://docs.wso2.com/display/AM250/Installing+and+Configuring+the+Databases)
   on creating the required databases for the deployment.
   
   Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
@@ -149,3 +154,4 @@ kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/pattern-1/apim/wso2apim-deploy
 ```
 
 For example, If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
+    

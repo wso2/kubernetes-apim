@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-with-analytics-apim-analytics
-        image: docker.wso2.com/wso2am-analytics:2.2.0
+        image: docker.wso2.com/wso2am-analytics:2.5.0
         resources:
           limits:
             memory: "4Gi"
@@ -118,9 +118,9 @@ spec:
         - name: apim-analytics-conf-datasources
           mountPath: /home/wso2carbon/kubernetes-volumes/am-analytics/conf-datasources
         - name: analytics-persistent-disk
-          mountPath: /home/wso2carbon/wso2am-analytics-2.2.0/repository/conf/analytics
+          mountPath: /home/wso2carbon/wso2am-analytics-2.5.0/repository/conf/analytics
         - name: data-persistent-disk
-          mountPath: /home/wso2carbon/wso2am-analytics-2.2.0/repository/data
+          mountPath: /home/wso2carbon/wso2am-analytics-2.5.0/repository/data
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds

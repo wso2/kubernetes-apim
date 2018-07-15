@@ -60,58 +60,10 @@
 
     <!-- This handler provides resource retention locking for the resources -->
 
-    <handler class="org.wso2.carbon.registry.extensions.handlers.RetentionHandler" 
-            methods="PUT,DELETE,MOVE,RENAME,IMPORT,COPY,ADD_ASSOCIATION,REMOVE_ASSOCIATION,RESTORE,RESTORE_VERSION">
+    <handler class="org.wso2.carbon.registry.extensions.handlers.RetentionHandler"
+             methods="PUT,DELETE,MOVE,RENAME,IMPORT,COPY,ADD_ASSOCIATION,REMOVE_ASSOCIATION,RESTORE,RESTORE_VERSION">
         <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.URLMatcher">
             <property name="pattern">.*</property>
-        </filter>
-    </handler>
-
-    <!-- This handler process the uploaded  WSDL files -->
-
-    <handler class="org.wso2.carbon.registry.extensions.handlers.WSDLMediaTypeHandler">
-        <!--property name="createService">false</property>
-        <property name="disableWSDLValidation">true</property-->
-        <property name="disableSymlinkCreation">true</property>
-        <property name="schemaLocationConfiguration" type="xml">
-            <location>/trunk/schemas/</location>            
-	</property>
-        <property name="wsdlLocationConfiguration" type="xml">
-            <location>/trunk/wsdls/</location>            
-	</property>
-        <property name="policyLocationConfiguration" type="xml">
-            <location>/trunk/policies/</location>            
-	</property>
-
-        <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
-            <property name="mediaType">application/wsdl+xml</property>
-        </filter>
-    </handler>
-
-    <!-- This handler processes .zip & .gar files being added to the registry -->
-
-    <handler class="org.wso2.carbon.registry.extensions.handlers.ZipWSDLMediaTypeHandler">
-        <property name="wsdlMediaType">application/wsdl+xml</property>
-        <property name="schemaMediaType">application/xsd+xml</property>
-        <property name="threadPoolSize">50</property>
-        <property name="disableSymlinkCreation">true</property>
-        <!--property name="createService">false</property>
-	    <property name="useOriginalSchema">true</property>
-        <property name="disableWSDLValidation">true</property>
-        <property name="disableSchemaValidation">true</property>
-        <property name="wsdlExtension">.wsdl</property>
-        <property name="schemaExtension">.xsd</property>
-        <property name="archiveExtension">.gar</property>
-        <property name="tempFilePrefix">wsdl</property-->
-        <property name="numberOfRetry">3</property>
-        <property name="schemaLocationConfiguration" type="xml">
-            <location>/trunk/schemas/</location>
-        </property>
-        <property name="wsdlLocationConfiguration" type="xml">
-            <location>/trunk/wsdls/</location>
-        </property>
-	<filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
-            <property name="mediaType">application/vnd.wso2.governance-archive</property>
         </filter>
     </handler>
 
@@ -125,7 +77,7 @@
             <key>dev</key>
             <key>qa</key>
             <key>live</key>
-        </property>        
+        </property>
         <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
             <property name="mediaType">application/vnd.wso2-service+xml</property>
         </filter>
@@ -137,22 +89,22 @@
         <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
             <property name="mediaType">application/vnd.wso2-service+xml</property>
         </filter>
-    </handler>    
+    </handler>
 
 
     <!-- This handler use to index APIs when there change in Api artifact-->
-    <handler class="org.wso2.carbon.apimgt.impl.handlers.CustomAPIIndexHandler">
+    <handler class="org.wso2.carbon.registry.indexing.IndexingHandler">
         <filter class = "org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
             <property name="mediaType">application/vnd.wso2-api+xml</property>
         </filter>
     </handler>
 
-   <!--This handler delete the subscription hierarcy generated in the notifications path when a subscription is deleted directly -->
+    <!--This handler delete the subscription hierarcy generated in the notifications path when a subscription is deleted directly -->
 
     <handler class="org.wso2.carbon.registry.extensions.handlers.DeleteHierarchyHandler">
-         <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.URLMatcher">
-                <property name="deletePattern">/_system/governance/event/topics/registry/notifications/.*</property>
-         </filter>
+        <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.URLMatcher">
+            <property name="deletePattern">/_system/governance/event/topics/registry/notifications/.*</property>
+        </filter>
     </handler>
 
 
@@ -172,9 +124,9 @@
     <!-- This handler processes the policy files of the given media type defined by the filter -->
 
     <handler class="org.wso2.carbon.registry.extensions.handlers.PolicyMediaTypeHandler">
-	<property name="policyLocationConfiguration" type="xml">
-            <location>/trunk/policies/</location>            
-	</property>
+        <property name="policyLocationConfiguration" type="xml">
+            <location>/trunk/policies/</location>
+        </property>
         <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
             <property name="mediaType">application/policy+xml</property>
         </filter>
@@ -186,7 +138,7 @@
         <!--property name="disableSchemaValidation">true</property-->
         <property name="disableSymlinkCreation">true</property>
         <property name="locationConfiguration" type="xml">
-            <location>/trunk/schemas/</location>            
+            <location>/trunk/schemas/</location>
         </property>
         <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
             <property name="mediaType">application/x-xsd+xml</property>
@@ -213,17 +165,17 @@
     </handler>
 
     <handler class="org.wso2.carbon.governance.registry.extensions.handlers.UriMediaTypeHandler">
-	<filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
-	    <property name="mediaType">application/vnd.wso2-uri+xml</property>
-	</filter>
+        <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
+            <property name="mediaType">application/vnd.wso2-uri+xml</property>
+        </filter>
     </handler>
 
     <!-- When a resource/governance artifact is deleted, this handler will cleanup all its bounded subscriptions from registry-->
 
     <handler class="org.wso2.carbon.registry.extensions.handlers.DeleteSubscriptionHandler">
-         <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.URLMatcher">
-                 <property name="pattern">.*</property>
-         </filter>
+        <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.URLMatcher">
+            <property name="pattern">.*</property>
+        </filter>
     </handler>
 
     <!--This handler manage the meta data resource caching-->
@@ -234,11 +186,11 @@
     </handler>
 
     <!--This handler clears the caches when workflow-extension config is updated.-->
-   <handler class="org.wso2.carbon.apimgt.impl.handlers.APIConfigMediaTypeHandler" methods="PUT,DELETE">
-      <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
-        <property name="mediaType">workflow-config</property>
-    </filter>
-   </handler>
+    <handler class="org.wso2.carbon.apimgt.impl.handlers.APIConfigMediaTypeHandler" methods="PUT,DELETE">
+        <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
+            <property name="mediaType">workflow-config</property>
+        </filter>
+    </handler>
 
     <!--This handler hides the password of secure endpoints if specified, in an API-->
     <!--handler class="org.wso2.carbon.apimgt.impl.handlers.APIEndpointPasswordRegistryHandler" methods="GET,PUT">
@@ -284,7 +236,7 @@
     <!-- This defines index configuration which is used in meta data search feature of the registry -->
     <indexingConfiguration>
         <startIndexing>true</startIndexing>
-        <!--skipCache>true</skipCache-->
+        <skipCache>true</skipCache>
         <startingDelayInSeconds>35</startingDelayInSeconds>
         <indexingFrequencyInSeconds>3</indexingFrequencyInSeconds>
         <!--number of resources submit for given indexing thread -->
@@ -303,18 +255,17 @@
             <!--indexer class="org.wso2.carbon.governance.registry.extensions.indexers.RXTIndexer" mediaTypeRegEx="application/wsdl\+xml" profiles ="default,api-store,api-publisher"/>
             <indexer class="org.wso2.carbon.governance.registry.extensions.indexers.RXTIndexer" mediaTypeRegEx="application/x-xsd\+xml " profiles ="default,api-store,api-publisher"/>
             <indexer class="org.wso2.carbon.governance.registry.extensions.indexers.RXTIndexer" mediaTypeRegEx="application/policy\+xml" profiles ="default,api-store,api-publisher"/-->
-            <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.CustomAPIIndexer" mediaTypeRegEx="application/vnd.wso2-api\+xml" profiles ="default,api-store,api-publisher"/>
             <indexer class="org.wso2.carbon.governance.registry.extensions.indexers.RXTIndexer" mediaTypeRegEx="application/vnd.(.)+\+xml" profiles ="default,api-store,api-publisher"/>
             <!--indexer class="org.wso2.carbon.registry.indexing.indexer.XMLIndexer" mediaTypeRegEx="application/(.)+\+xml"/>
             <indexer class="org.wso2.carbon.registry.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="text/(.)+"/>
             <indexer class="org.wso2.carbon.registry.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="application/x-javascript"/-->
-	    <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="text/plain+" profiles ="default,api-store,api-publisher"/>
-	    <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.PDFIndexer" mediaTypeRegEx="application/pdf" profiles ="default,api-store,api-publisher"/>
-	    <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.MSWordIndexer" mediaTypeRegEx="application/msword" profiles ="default,api-store,api-publisher"/>
-	    <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.MSPowerpointIndexer" mediaTypeRegEx="application/vnd.ms-powerpoint" profiles ="default,api-store,api-publisher"/>
-	    <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.MSExcelIndexer" mediaTypeRegEx="application/vnd.ms-excel" profiles ="default,api-store,api-publisher"/>
-	    <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.XMLIndexer" mediaTypeRegEx="application/xml" profiles ="default,api-store,api-publisher"/>
-    	    <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.WSDLIndexer" mediaTypeRegEx="application/api-wsdl" profiles ="default,api-store,api-publisher"/>
+            <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="text/plain+" profiles ="default,api-store,api-publisher"/>
+            <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.PDFIndexer" mediaTypeRegEx="application/pdf" profiles ="default,api-store,api-publisher"/>
+            <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.MSWordIndexer" mediaTypeRegEx="application/msword" profiles ="default,api-store,api-publisher"/>
+            <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.MSPowerpointIndexer" mediaTypeRegEx="application/vnd.ms-powerpoint" profiles ="default,api-store,api-publisher"/>
+            <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.MSExcelIndexer" mediaTypeRegEx="application/vnd.ms-excel" profiles ="default,api-store,api-publisher"/>
+            <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.XMLIndexer" mediaTypeRegEx="application/xml" profiles ="default,api-store,api-publisher"/>
+            <indexer class="org.wso2.carbon.apimgt.impl.indexing.indexer.WSDLIndexer" mediaTypeRegEx="application/api-wsdl" profiles ="default,api-store,api-publisher"/>
         </indexers>
         <exclusions>
             <exclusion pathRegEx="/_system/config/repository/dashboards/gadgets/swfobject1-5/.*[.]html"/>
@@ -322,7 +273,7 @@
         </exclusions>
     </indexingConfiguration>
 
-    
+
     <versionResourcesOnChange>false</versionResourcesOnChange>
 
     <!-- NOTE: You can edit the options under "StaticConfiguration" only before the
@@ -337,11 +288,11 @@
     </staticConfiguration>
 
     <!-- This enables auto-versioning of resources (non-collection). Whenever a resource is updated a new version will be created -->
-  
+
     <versionResourcesOnChange>false</versionResourcesOnChange>
-    
+
     <!-- This enables JMX management for G-Reg -->
-    
+
     <jmx enabled="false">
         <service name="InvocationStatistics" enabled="true"/>
         <service name="Activities" enabled="true"/>
@@ -349,30 +300,30 @@
         <service name="Subscriptions" enabled="true"/>
         <service name="Events" enabled="true"/>
     </jmx>
-    
+
     <!-- If you need to use a Remote Human Task to provide the Work List functionality instead of the Embedded Human Task or if you want
-         to use Work List notifications, uncomment the following configuration. Please note that you need to provide the credentials 
+         to use Work List notifications, uncomment the following configuration. Please note that you need to provide the credentials
          and URL to connect to the remote instance (ex:- remote BPS server) if you are planning to use a Remote Human Task. You should
          provide credentials and URL to connect to the local instance if you simply want to use Work List notifications. -->
-    
+
     <!--workList serverURL="local://services/" remote="false">
         <username>admin</username>
         <password>admin</password>
     </workList-->
-    
-    <!-- Sample SCM configuration. Please note that checkOutURL, workingDir, and mountPoint are mandatory for each connection. 
+
+    <!-- Sample SCM configuration. Please note that checkOutURL, workingDir, and mountPoint are mandatory for each connection.
          The update frequency is in minutes. Setting readOnly would disable checkIn even if the checkInURL is set. The credentials
          are to connect to the corresponding repository and must be provided if required. -->
-    
+
     <!--scm>
         <connection checkOutURL="scm:svn:http://svn.wso2.org/repos/wso2" workingDir="/valid/filesystem/path" mountPoint="/_system/foo" checkInURL="" readOnly="" updateFrequency="">
         	<username>admin</username>
         	<password>admin</password>
         </connection>
     </scm-->
-    
+
     <!-- This defines the list of scheduled tasks for the registry -->
-    
+
     <!--tasks>
         <task name="TaskName" class="com.foo.TaskClass">
             <trigger cron="cronExpr"/>

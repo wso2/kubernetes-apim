@@ -21,87 +21,96 @@ spec:
   selector:
     deployment: wso2apim-with-analytics-apim-analytics
   ports:
+    # ports that this service should serve on
     -
-      name: 'thrift'
+      name: servlet-http
+      protocol: TCP
+      port: 9764
+    -
+      name: servlet-https
+      protocol: TCP
+      port: 9444
+    -
+      name: thrift
       port: 7612
       protocol: TCP
     -
-      name: 'thrift-ssl'
+      name: thrift-ssl
       port: 7712
       protocol: TCP
     -
-      name: 'spark-port-1'
+      name: spark-1
       port: 11225
       protocol: TCP
     -
-      name: 'spark-port-2'
+      name: spark-2
       port: 10006
       protocol: TCP
     -
-      name: 'spark-port-3'
+      name: spark-3
       port: 11001
       protocol: TCP
     -
-      name: 'spark-port-4'
+      name: spark-44
       protocol: TCP
       port: 8082
     -
-      name: 'spark-port-5'
+      name: spark-5
       protocol: TCP
       port: 4041
     -
-      name: 'spark-port-6'
+      name: spark6
       protocol: TCP
       port: 12001
     -
-      name: 'spark-port-7'
+      name: spark7
       protocol: TCP
       port: 12002
     -
-      name: 'spark-port-8'
+      name: spark8
       protocol: TCP
       port: 12003
     -
-      name: 'spark-port-9'
+      name: spark9
       protocol: TCP
       port: 12004
     -
-      name: 'spark-port-10'
+      name: spark10
       protocol: TCP
       port: 12005
     -
-      name: 'analytics-port-1'
+      name: analytics1
       protocol: TCP
       port: 10007
     -
-      name: 'analytics-port-2'
+      name: analytics2
       protocol: TCP
       port: 11002
     -
-      name: 'analytics-port-3'
+      name: analytics3
       protocol: TCP
       port: 12501
     -
-      name: 'analytics-port-4'
+      name: analytics5
       protocol: TCP
       port: 13001
     -
-      name: 'analytics-port-5'
+      name: analytics6
       protocol: TCP
       port: 13501
     -
-      name: 'analytics-port-6'
+      name: analytics7
       protocol: TCP
       port: 14501
     -
-      name: 'analytics-port-7'
+      name: analytics8
       protocol: TCP
       port: 7078
     -
-      name: 'analytics-port-8'
+      name: analytics9
       protocol: TCP
       port: 6067
     -
-      name: 'analytics-port-9'
+      name: analytics10
       protocol: TCP
       port: 11003

@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-km
-        image: docker.wso2.com/wso2am:2.2.0
+        image: docker.wso2.com/wso2am:2.5.0
         livenessProbe:
           exec:
             command:
