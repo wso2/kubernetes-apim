@@ -110,4 +110,3 @@ spec:
       name: 'analytics-port-10'
       protocol: TCP
       port: 9444
-

@@ -67,10 +67,10 @@ Grant read-write-execute permissions to the `wso2carbon` user, for each of the p
 
 ##### 3. Provide configurations.
 
-a. The default product configurations are available at `<HELM_HOME>/apim-with-analytics-conf/confs` folder. Change the 
+a. The default product configurations are available at `<HELM_HOME>/apim-with-analytics/confs` folder. Change the
 configurations as necessary.
 
-b. Open the `<HELM_HOME>/apim-with-analytics-conf/values.yaml` and provide the following values.
+b. Open the `<HELM_HOME>/apim-with-analytics/values.yaml` and provide the following values.
 
 | Parameter                       | Description                                                                               |
 |---------------------------------|-------------------------------------------------------------------------------------------|
@@ -84,20 +84,8 @@ b. Open the `<HELM_HOME>/apim-with-analytics-conf/values.yaml` and provide the f
 | `analyticsDataLocationPath`     | NFS volume for Indexed data for Analytics (`<DAS_HOME>/repository/data`)                  |
 | `analyticsLocationPath`         | NFS volume for Analytics data for Analytics(`<DAS_HOME>/repository/analytics`)            |
 
-c. Open the `<HELM_HOME>/apim-with-analytics-deployment/values.yaml` and provide the following values. 
-    
-| Parameter                       | Description                                                                               |
-|---------------------------------|-------------------------------------------------------------------------------------------|
-| `namespace`                     | Kubernetes Namespace in which the resources are deployed                                  |
-| `svcaccount`                    | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
 
-##### 4. Deploy the configurations.
-
-```
-helm install --name <RELEASE_NAME> <HELM_HOME>/apim-with-analytics-conf
-```
-
-##### 5. Deploy product database(s) using MySQL in Kubernetes.
+##### 4. Deploy product database(s) using MySQL in Kubernetes.
 
 ```
 helm install --name wso2apim-with-analytics-rdbms-service -f <HELM_HOME>/mysql/values.yaml stable/mysql --namespace <NAMESPACE>
@@ -107,13 +95,15 @@ NAMESPACE should be same as in `step 3.b`.
 
 For a serious deployment (e.g. production grade setup), it is recommended to connect product instances to a user owned and managed RDBMS instance.
 
-##### 6. Deploy WSO2 API Manager with Analytics.
+##### 5. Deploy WSO2 API Manager with Analytics.
 
 ```
-helm install --name <RELEASE_NAME> <HELM_HOME>/apim-with-analytics-deployment
+helm install --name <RELEASE_NAME> <HELM_HOME>/apim-with-analytics --namespace <NAMESPACE>
 ```
 
-##### 7. Access Management Console:
+NAMESPACE should be same as in `step 3.b`.
+
+##### 6. Access Management Console:
 
 a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
 
