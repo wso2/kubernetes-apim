@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: wso2apim-with-analytics-apim
+  name: wso2apim-with-analytics-apim-deployment
   namespace : {{ .Values.namespace }}
 spec:
   replicas: 1
