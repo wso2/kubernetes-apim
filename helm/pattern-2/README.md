@@ -76,13 +76,18 @@ b. Open the `<HELM_HOME>/apim-gw-km-with-analytics/values.yaml` and provide the 
 | `username`                      | Your WSO2 username                                                                        |
 | `password`                      | Your WSO2 password                                                                        |
 | `email`                         | Docker email                                                                              |
-| `namespace`                     | Kubernetes Namespace in which the resources are deployed                                  |
+| `namespace`                     | Kubernetes Namespace in which the resources are deployed*                                  |
 | `svcaccount`                    | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
 | `serverIp`                      | NFS Server IP                                                                             |
 | `sharedDeploymentLocationPath`  | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for APIM   |
 | `analyticsDataLocationPath`     | NFS volume for Indexed data for Analytics (`<DAS_HOME>/repository/data`)                  |
 | `analyticsLocationPath`         | NFS volume for Analytics data for Analytics(`<DAS_HOME>/repository/analytics`)            |
 
+*Provide the same kubernetes namespace used in configuring the `<parameter name="KUBERNETES_NAMESPACE">` element in following `axis2.xml` files
+* `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-gateway/axis2/axis2.xml`
+* `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-km/axis2/axis2.xml`
+* `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-pubstore-tm-1/axis2/axis2.xml`
+* `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-pubstore-tm-2/axis2/axis2.xml`
 
 ##### 4. Deploy product database(s) using MySQL in Kubernetes.
 
