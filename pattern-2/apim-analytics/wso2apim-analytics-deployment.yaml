@@ -40,7 +40,7 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/bash
+            - /bin/sh
             - -c
             - nc -z localhost 7712
           initialDelaySeconds: 250
@@ -48,12 +48,18 @@ spec:
         readinessProbe:
           exec:
             command:
-              - /bin/bash
+              - /bin/sh
               - -c
               - nc -z localhost 7712
           initialDelaySeconds: 250
           periodSeconds: 10
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         imagePullPolicy: Always
+        securityContext:
+          runAsUser: 802
         ports:
         -
           containerPort: 9764
@@ -114,9 +120,9 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: apim-analytics-conf
-          mountPath: /home/wso2carbon/kubernetes-volumes/am-analytics/conf
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: apim-analytics-conf-datasources
-          mountPath: /home/wso2carbon/kubernetes-volumes/am-analytics/conf-datasources
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
         - name: analytics-persistent-disk
           mountPath: /home/wso2carbon/wso2am-analytics-2.5.0/repository/conf/analytics
         - name: data-persistent-disk
