@@ -29,6 +29,25 @@ spec:
     path: "<NFS_LOCATION_PATH>"
 
 ---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wso2apim-is-as-km-server-pv
+  labels:
+    purpose: apim-is-as-km-shared-server
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: <NFS_SERVER_IP>
+    path: "<NFS_LOCATION_PATH>"
+
+---
+
 apiVersion: v1
 kind: PersistentVolume
 metadata:

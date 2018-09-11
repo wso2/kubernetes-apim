@@ -16,7 +16,7 @@
          logic relies on this. -->
     <AuthManager>
         <!-- Server URL of the Authentication service -->
-        <ServerURL>https://wso2apim-km-service:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
+        <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
         <!-- Admin username for the Authentication manager. -->
         <Username>${admin.username}</Username>
         <!-- Admin password for the Authentication manager. -->
@@ -37,16 +37,16 @@
              to be appended to the JWT. If not specified no claims will be appended.If user wants to add all user claims in the
              jwt token, he needs to enable this parameter.
              The DefaultClaimsRetriever class adds user claims from the default carbon user store. -->
-        <!--ClaimsRetrieverImplClass>org.wso2.carbon.apimgt.impl.token.DefaultClaimsRetriever</ClaimsRetrieverImplClass-->
+        <ClaimsRetrieverImplClass>org.wso2.carbon.apimgt.impl.token.DefaultClaimsRetriever</ClaimsRetrieverImplClass>
 
         <!-- The dialectURI under which the claimURIs that need to be appended to the
              JWT are defined. Not used with custom ClaimsRetriever implementations. The
              same value is used in the keys for appending the default properties to the
              JWT. -->
-        <!--ConsumerDialectURI>http://wso2.org/claims</ConsumerDialectURI-->
+        <ConsumerDialectURI>http://wso2.org/claims</ConsumerDialectURI>
 
         <!-- Signature algorithm. Accepts "SHA256withRSA" or "NONE". To disable signing explicitly specify "NONE". -->
-        <!--SignatureAlgorithm>SHA256withRSA</SignatureAlgorithm-->
+        <SignatureAlgorithm>SHA256withRSA</SignatureAlgorithm>
 
         <!-- This parameter specifies which implementation should be used for generating the Token. JWTGenerator is the
 	     default implementation provided. -->
@@ -81,27 +81,19 @@
                  An API deployed on a 'sandbox' type gateway will only support sandbox keys
                  An API deployed on a 'hybrid' type gateway will support both production and sandbox keys. -->
             <!-- api-console element specifies whether the environment should be listed in API Console or not -->
-             <!--<Environment type="hybrid" api-console="true">-->
-                <!--<Name>Production and Sandbox</Name>-->
-                <!--<Description>This is a hybrid gateway that handles both production and sandbox token traffic.</Description>-->
+            <Environment type="hybrid" api-console="true">
+                <Name>Production and Sandbox</Name>
+                <Description>This is a hybrid gateway that handles both production and sandbox token traffic.</Description>
                 <!-- Server URL of the API gateway -->
-                <!--<ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>-->
-		        <!-- Admin username for the API gateway. -->
-                <!--<Username>${admin.username}</Username>-->
-                <!-- Admin password for the API gateway.-->
-                <!--<Password>${admin.password}</Password>-->
-                <!-- Endpoint URLs for the APIs hosted in this API gateway.-->
-                <!--<GatewayEndpoint>http://${carbon.local.ip}:${http.nio.port},https://${carbon.local.ip}:${https.nio.port}</GatewayEndpoint>-->
-                <!-- Endpoint of the Websocket APIs hosted in this API Gateway -->
-                <!--<GatewayWSEndpoint>ws://${carbon.local.ip}:9099</GatewayWSEndpoint>-->
-            <!--</Environment>-->
-            <Environment type="production">
-                <Name>Production Gateway</Name>
-                <Description>Production Gateway Environment</Description>
                 <ServerURL>https://wso2apim-gateway-service:9443${carbon.context}services/</ServerURL>
-                <Username>admin</Username>
-                <Password>admin</Password>
-                <GatewayEndpoint>http://wso2apim-gateway-service:8280,https://wso2apim-gateway-service:8243</GatewayEndpoint>
+		        <!-- Admin username for the API gateway. -->
+                <Username>${admin.username}</Username>
+                <!-- Admin password for the API gateway.-->
+                <Password>${admin.password}</Password>
+                <!-- Endpoint URLs for the APIs hosted in this API gateway.-->
+                <GatewayEndpoint>https://wso2apim-gateway</GatewayEndpoint>
+                <!-- Endpoint of the Websocket APIs hosted in this API Gateway -->
+                <GatewayWSEndpoint>ws://${carbon.local.ip}:9099</GatewayWSEndpoint>
             </Environment>
         </Environments>
     </APIGateway>
@@ -141,7 +133,7 @@
     -->
     <Analytics>
         <!-- Enable Analytics for API Manager -->
-        <Enabled>true</Enabled>
+        <Enabled>false</Enabled>
 
         <!-- Server URL of the remote DAS/CEP server used to collect statistics. Must
              be specified in protocol://hostname:port/ format.
@@ -153,8 +145,8 @@
 
              Ex - Multiple Receiver Groups with two receivers each
              {tcp://localhost:7612/,tcp://localhost:7613},{tcp://localhost:7712/,tcp://localhost:7713/} -->
-        <DASServerURL>tcp://wso2apim-analytics-service:7612</DASServerURL>
-        <DASAuthServerURL>ssl://wso2apim-analytics-service:7712</DASAuthServerURL>
+        <DASServerURL>{tcp://localhost:7612}</DASServerURL>
+        <!--DASAuthServerURL>{ssl://localhost:7712}</DASAuthServerURL-->
         <!-- Administrator username to login to the remote DAS server. -->
         <DASUsername>${admin.username}</DASUsername>
         <!-- Administrator password to login to the remote DAS server. -->
@@ -164,7 +156,7 @@
         <StatsProviderImpl>org.wso2.carbon.apimgt.usage.client.impl.APIUsageStatisticsRdbmsClientImpl</StatsProviderImpl>
 
         <!-- DAS REST API configuration -->
-        <DASRestApiURL>https://wso2apim-analytics:9444</DASRestApiURL>
+        <DASRestApiURL>https://localhost:9444</DASRestApiURL>
         <DASRestApiUsername>${admin.username}</DASRestApiUsername>
         <DASRestApiPassword>${admin.password}</DASRestApiPassword>
 
@@ -222,7 +214,7 @@
     -->
     <APIKeyValidator>
         <!-- Server URL of the API key manager -->
-        <ServerURL>https://wso2apim-km-service:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
+        <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
 
         <!-- Admin username for API key manager. -->
         <Username>${admin.username}</Username>
@@ -236,11 +228,11 @@
              -If you need to start two API Manager instances in the same machine, you need to give different ports to "ThriftServerPort" value in two nodes.
              -ThriftServerHost - Allows to configure a hostname for the thrift server. It uses the carbon hostname by default.
 	         -The Gateway uses this parameter to connect to the key validation thrift service. -->
-        <KeyValidatorClientType>WSClient</KeyValidatorClientType>
+        <KeyValidatorClientType>ThriftClient</KeyValidatorClientType>
         <ThriftClientConnectionTimeOut>10000</ThriftClientConnectionTimeOut>
         <!--ThriftClientPort>10397</ThriftClientPort-->
 
-        <EnableThriftServer>false</EnableThriftServer>
+        <EnableThriftServer>true</EnableThriftServer>
         <ThriftServerHost>localhost</ThriftServerHost>
         <!--ThriftServerPort>10397</ThriftServerPort-->
 
@@ -286,7 +278,8 @@
              In distributed deployment we should configure this property in key manager node by pointing
              gateway https( /http, we recommend users to use 'https' endpoints for security purpose) url.
              Also please note that we should point gateway revoke service to key manager -->
-        <RevokeAPIURL>https://wso2apim-gateway-service:${https.nio.port}/revoke</RevokeAPIURL>
+        <!-- ${https.nio.port} is not resolved in non-synapse environments, therefore use 8243 here. -->   
+        <RevokeAPIURL>https://wso2apim-gateway-service:8243/revoke</RevokeAPIURL>
         <!-- Whether to encrypt tokens when storing in the Database
         Note: If changing this value to true, change the value of <TokenPersistenceProcessor> to
         org.wso2.carbon.identity.oauth.tokenprocessor.EncryptionDecryptionPersistenceProcessor in the identity.xml -->
@@ -311,7 +304,7 @@
         <!--This property is used to indicate how we do user name comparision for token generation https://wso2.org/jira/browse/APIMANAGER-2225-->
         <CompareCaseInsensitively>true</CompareCaseInsensitively>
         <DisplayURL>false</DisplayURL>
-        <URL>https://wso2apim/store</URL>
+        <URL>https://localhost:${mgt.transport.https.port}/store</URL>
 
         <!-- Server URL of the API Store. -->
         <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
@@ -350,7 +343,7 @@
 
     <APIPublisher>
         <DisplayURL>false</DisplayURL>
-        <URL>https://wso2apim/publisher</URL>
+        <URL>https://localhost:${mgt.transport.https.port}/publisher</URL>
         <!-- This parameter specifies enabling the capability of setting API documentation level granular visibility levels.
              By default any document associate with an API will have the same permissions set as the API.With enabling below
              property,it will show two additional permission levels as visible only to all registered users in a particular
@@ -568,13 +561,13 @@
         <EnableAdvanceThrottling>true</EnableAdvanceThrottling>
         <TrafficManager>
             <Type>Binary</Type>
-            <ReceiverUrlGroup>tcp://${carbon.local.ip}:${receiver.url.port},{tcp://wso2apim-pubstore-tm-1:9611}</ReceiverUrlGroup>
-            <AuthUrlGroup>ssl://${carbon.local.ip}:${auth.url.port},{ssl://wso2apim-pubstore-tm-1:9711}</AuthUrlGroup>
+            <ReceiverUrlGroup>tcp://${carbon.local.ip}:${receiver.url.port}</ReceiverUrlGroup>
+            <AuthUrlGroup>ssl://${carbon.local.ip}:${auth.url.port}</AuthUrlGroup>
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
         </TrafficManager>
         <DataPublisher>
-            <Enabled>false</Enabled>
+            <Enabled>true</Enabled>
             <DataPublisherPool>
                 <MaxIdle>1000</MaxIdle>
                 <InitIdleCapacity>200</InitIdleCapacity>
@@ -592,12 +585,12 @@
             <Password>${admin.password}</Password>
         </PolicyDeployer>
         <BlockCondition>
-            <Enabled>false</Enabled>
+            <Enabled>true</Enabled>
             <!--InitDelay>300000</InitDelay>
             <Period>3600000</Period-->
         </BlockCondition>
         <JMSConnectionDetails>
-            <Enabled>false</Enabled>
+            <Enabled>true</Enabled>
             <Destination>throttleData</Destination>
             <!--InitDelay>300000</InitDelay-->
             <JMSConnectionParameters>
