@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-with-analytics-apim-worker
-        image: docker.wso2.com/wso2am:2.5.0
+        image: docker.wso2.com/wso2am:2.6.0
         livenessProbe:
           exec:
             command:
@@ -81,9 +81,9 @@ spec:
         - name: apim-storage-volume
           mountPath: /home/wso2carbon/wso2am-2.5.0/repository/deployment/server
         - name: apim-conf
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf
+          mountPath: /home/wso2carbon/wso2-config-volume/am/conf
         - name: apim-conf-datasources
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/datasources
+          mountPath: /home/wso2carbon/wso2-config-volume/am/conf/datasources
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds

@@ -85,8 +85,7 @@ ${KUBECTL} create --username=admin --password=${ADMIN_PASSWORD} -f ../../rbac/rb
 echoBold 'Creating ConfigMaps...'
 ${KUBECTL} create configmap apim-conf --from-file=../confs/apim/
 ${KUBECTL} create configmap apim-conf-datasources --from-file=../confs/apim/datasources/
-${KUBECTL} create configmap apim-analytics-conf --from-file=../confs/apim-analytics/
-${KUBECTL} create configmap apim-analytics-conf-datasources --from-file=../confs/apim-analytics/datasources/
+${KUBECTL} create configmap apim-analytics-conf-worker --from-file=../confs/apim-analytics/conf/worker/
 ${KUBECTL} create configmap mysql-dbscripts --from-file=../extras/confs/rdbms/mysql/dbscripts/
 
 # MySQL
@@ -101,7 +100,6 @@ echoBold 'Deploying persistent storage resources...'
 ${KUBECTL} create -f ../volumes/persistent-volumes.yaml
 
 echoBold 'Deploying WSO2 API Manager Analytics...'
-${KUBECTL} create -f ../apim-analytics/wso2apim-analytics-volume-claims.yaml
 ${KUBECTL} create -f ../apim-analytics/wso2apim-analytics-deployment.yaml
 ${KUBECTL} create -f ../apim-analytics/wso2apim-analytics-service.yaml
 sleep 200s
