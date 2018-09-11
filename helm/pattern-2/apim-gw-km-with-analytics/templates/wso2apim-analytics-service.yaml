@@ -106,3 +106,7 @@ spec:
       name: 'analytics-port-9'
       protocol: TCP
       port: 11003
+    -
+      name: 'analytics-port-10'
+      protocol: TCP
+      port: 9444

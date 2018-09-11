@@ -66,37 +66,30 @@ Grant read-write-execute permissions to the `wso2carbon` user, for each of the p
   
 ##### 3. Provide configurations.
 
-a. The default product configurations are available at `<HELM_HOME>/apim-gw-km-with-analytics-conf/confs` folder. Change the 
+a. The default product configurations are available at `<HELM_HOME>/apim-gw-km-with-analytics/confs` folder. Change the
 configurations as necessary.
 
-b. Open the `<HELM_HOME>/apim-gw-km-with-analytics-conf/values.yaml` and provide the following values.
+b. Open the `<HELM_HOME>/apim-gw-km-with-analytics/values.yaml` and provide the following values.
 
 | Parameter                       | Description                                                                               |
 |---------------------------------|-------------------------------------------------------------------------------------------|
 | `username`                      | Your WSO2 username                                                                        |
 | `password`                      | Your WSO2 password                                                                        |
 | `email`                         | Docker email                                                                              |
-| `namespace`                     | Kubernetes Namespace in which the resources are deployed                                  |
+| `namespace`                     | Kubernetes Namespace in which the resources are deployed*                                  |
 | `svcaccount`                    | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
 | `serverIp`                      | NFS Server IP                                                                             |
 | `sharedDeploymentLocationPath`  | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for APIM   |
 | `analyticsDataLocationPath`     | NFS volume for Indexed data for Analytics (`<DAS_HOME>/repository/data`)                  |
 | `analyticsLocationPath`         | NFS volume for Analytics data for Analytics(`<DAS_HOME>/repository/analytics`)            |
 
-c. Open the `<HELM_HOME>/apim-gw-km-with-analytics-deployment/values.yaml` and provide the following values. 
-    
-| Parameter                       | Description                                                                               |
-|---------------------------------|-------------------------------------------------------------------------------------------|
-| `namespace`                     | Kubernetes Namespace in which the resources are deployed                                  |
-| `svcaccount`                    | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
+*Provide the same kubernetes namespace used in configuring the `<parameter name="KUBERNETES_NAMESPACE">` element in following `axis2.xml` files
+* `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-gateway/axis2/axis2.xml`
+* `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-km/axis2/axis2.xml`
+* `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-pubstore-tm-1/axis2/axis2.xml`
+* `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-pubstore-tm-2/axis2/axis2.xml`
 
-##### 4. Deploy the configurations.
-
-```
-helm install --name <RELEASE_NAME> <HELM_HOME>/apim-gw-km-with-analytics-conf
-```
-
-##### 5. Deploy product database(s) using MySQL in Kubernetes.
+##### 4. Deploy product database(s) using MySQL in Kubernetes.
 
 ```
 helm install --name wso2apim-pattern-2-rdbms-service -f <HELM_HOME>/mysql/values.yaml stable/mysql --namespace <NAMESPACE>
@@ -106,13 +99,15 @@ NAMESPACE should be same as in `step 3.b`.
 
 For a serious deployment (e.g. production grade setup), it is recommended to connect product instances to a user owned and managed RDBMS instance.
 
-##### 6. Deploy WSO2 API Manager with a separate Gateway and a separate Key Manager.
+##### 5. Deploy WSO2 API Manager with a separate Gateway and a separate Key Manager.
 
 ```
-helm install --name <RELEASE_NAME> <HELM_HOME>/apim-gw-km-with-analytics-deployment
+helm install --name <RELEASE_NAME> <HELM_HOME>/apim-gw-km-with-analytics --namespace <NAMESPACE>
 ```
 
-##### 7. Access product management consoles.
+NAMESPACE should be same as in `step 3.b`.
+
+##### 6. Access product management consoles.
 
 Default deployment will expose `wso2apim`, `wso2apim-gateway` and `wso2apim-analytics` hosts.
 
