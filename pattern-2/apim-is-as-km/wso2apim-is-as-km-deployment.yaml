@@ -1,4 +1,5 @@
-# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: wso2apim-pubstore-tm-1-deployment
+  name: wso2apim-is-as-km-deployment
 spec:
   replicas: 1
   minReadySeconds: 30
@@ -27,12 +28,11 @@ spec:
   template:
     metadata:
       labels:
-        deployment: wso2apim-pubstore-tm
-        node: pubstore-tm-1
+        deployment: wso2apim-is-as-km
     spec:
       containers:
-      - name: wso2apim-pubstore-tm
-        image: docker.wso2.com/wso2am:2.2.0
+      - name: wso2apim-is-as-km
+        image: docker.wso2.com/wso2is-km:5.5.0
         livenessProbe:
           exec:
             command:
@@ -58,54 +58,33 @@ spec:
           runAsUser: 802
         ports:
         -
-          containerPort: 8280
-          protocol: "TCP"
-        -
-          containerPort: 8243
-          protocol: "TCP"
-        -
           containerPort: 9763
           protocol: "TCP"
         -
           containerPort: 9443
           protocol: "TCP"
-        -
-          containerPort: 5672
-          protocol: "TCP"
-        -
-          containerPort: 9711
-          protocol: "TCP"
-        -
-          containerPort: 9611
-          protocol: "TCP"
-        -
-          containerPort: 7711
-          protocol: "TCP"
-        -
-          containerPort: 7611
-          protocol: "TCP"
         volumeMounts:
-        - name: apim-pubstore-tm-1-conf
+        - name: apim-is-as-km-storage-volume
+          mountPath: /home/wso2carbon/wso2is-km-5.5.0/repository/deployment
+        - name: apim-is-as-km-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-        - name: apim-pubstore-tm-1-conf-axis2
+        - name: apim-is-as-km-conf-axis2
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
-        - name: apim-pubstore-tm-1-conf-datasources
+        - name: apim-is-as-km-conf-datasources
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
-        - name: apim-pubstore-tm-1-conf-identity
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
       volumes:
-      - name: apim-pubstore-tm-1-conf
+      - name: apim-is-as-km-storage-volume
+        persistentVolumeClaim:
+          claimName: wso2apim-is-as-km-shared-server-volume-claim
+      - name: apim-is-as-km-conf
         configMap:
-          name: apim-pubstore-tm-1-conf
-      - name: apim-pubstore-tm-1-conf-axis2
+          name: apim-is-as-km-conf
+      - name: apim-is-as-km-conf-axis2
         configMap:
-          name: apim-pubstore-tm-1-conf-axis2
-      - name: apim-pubstore-tm-1-conf-datasources
+          name: apim-is-as-km-conf-axis2
+      - name: apim-is-as-km-conf-datasources
         configMap:
-          name: apim-pubstore-tm-1-conf-datasources
-      - name: apim-pubstore-tm-1-conf-identity
-        configMap:
-          name: apim-pubstore-tm-1-conf-identity
+          name: apim-is-as-km-conf-datasources
