@@ -31,11 +31,11 @@ spec:
     spec:
       containers:
       - name: wso2apim-with-analytics-apim-worker
-        image: docker.wso2.com/wso2am:2.2.0
+        image: gcr.io/research-n-development-209206/wso2am:2.2.0
         livenessProbe:
           exec:
             command:
-            - /bin/bash
+            - /bin/sh
             - -c
             - nc -z localhost 9443
           initialDelaySeconds: 150
@@ -43,12 +43,18 @@ spec:
         readinessProbe:
           exec:
             command:
-              - /bin/bash
+              - /bin/sh
               - -c
               - nc -z localhost 9443
           initialDelaySeconds: 150
           periodSeconds: 10
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         imagePullPolicy: Always
+        securityContext:
+          runAsUser: 802
         ports:
         -
           containerPort: 8280
@@ -81,9 +87,9 @@ spec:
         - name: apim-storage-volume
           mountPath: /home/wso2carbon/wso2am-2.2.0/repository/deployment/server
         - name: apim-conf
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: apim-conf-datasources
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/datasources
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
