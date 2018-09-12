@@ -743,7 +743,7 @@
 
         <parameter name="membershipSchemeClassName">org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme</parameter>
         <parameter name="KUBERNETES_NAMESPACE">wso2</parameter>
-        <parameter name="KUBERNETES_SERVICES">wso2apim-km</parameter>
+        <parameter name="KUBERNETES_SERVICES">wso2apim-km-service</parameter>
         <parameter name="KUBERNETES_MASTER_SKIP_SSL_VERIFICATION">true</parameter>
         <parameter name="USE_DNS">false</parameter>
 
