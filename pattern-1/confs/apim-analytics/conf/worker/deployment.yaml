@@ -303,7 +303,7 @@ wso2.datasources:
           driverClassName: com.mysql.jdbc.Driver
           idleTimeout: 60000
           isAutoCommit: false
-          jdbcUrl: "jdbc:mysql://wso2apim-with-analytics-rdbms-service:3306/WSO2AM_COMMON_DB?autoReconnect=true&amp;useSSL=false"
+          jdbcUrl: 'jdbc:mysql://wso2apim-with-analytics-rdbms-service:3306/WSO2AM_COMMON_DB?useSSL=false'
           maxPoolSize: 50
           password: wso2carbon
           username: wso2carbon
@@ -388,7 +388,7 @@ wso2.datasources:
       definition:
         type: RDBMS
         configuration:
-          jdbcUrl: 'jdbc:mysql://wso2apim-with-analytics-rdbms-service:3306/WSO2AM_STAT_DB?autoReconnect=true&amp;useSSL=false'
+          jdbcUrl: 'jdbc:mysql://wso2apim-with-analytics-rdbms-service:3306/WSO2AM_STAT_DB?useSSL=false'
           username: wso2carbon
           password: wso2carbon
           driverClassName: com.mysql.jdbc.Driver

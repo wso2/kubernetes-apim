@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-with-analytics-apim-analytics
-        image: docker.wso2.com/wso2am-analytics:2.6.0
+        image: gcr.io/research-n-development-209206/wso2am-analytics:2.6.0
         resources:
           limits:
             memory: "4Gi"
@@ -51,12 +51,12 @@ spec:
               - /bin/bash
               - -c
               - nc -z localhost 7712
+          initialDelaySeconds: 250
+          periodSeconds: 10
         lifecycle:
           preStop:
             exec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
-          initialDelaySeconds: 250
-          periodSeconds: 10
         imagePullPolicy: Always
         securityContext:
           runAsUser: 802
@@ -120,10 +120,8 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: apim-analytics-conf-worker
-          mountPath: /home/wso2carbon/wso2-config-volume/am-analytics/conf/worker
+          mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
       serviceAccountName: "wso2svc-account"
-      imagePullSecrets:
-      - name: wso2creds
       volumes:
       - name: apim-analytics-conf-worker
         configMap:
