@@ -76,7 +76,7 @@ ${KUBECTL} create serviceaccount wso2svc-account -n wso2
 ${KUBECTL} config set-context $(${KUBECTL} config current-context) --namespace=wso2
 
 # create a Kubernetes Secret for passing WSO2 Private Docker Registry credentials
-${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${WSO2_SUBSCRIPTION_USERNAME} --docker-password=${WSO2_SUBSCRIPTION_PASSWORD} --docker-email=${WSO2_SUBSCRIPTION_USERNAME}
+#${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${WSO2_SUBSCRIPTION_USERNAME} --docker-password=${WSO2_SUBSCRIPTION_PASSWORD} --docker-email=${WSO2_SUBSCRIPTION_USERNAME}
 
 # create Kubernetes Role and Role Binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
 ${KUBECTL} create --username=admin --password=${ADMIN_PASSWORD} -f ../../rbac/rbac.yaml
@@ -88,8 +88,7 @@ ${KUBECTL} create configmap apim-gateway-conf-axis2 --from-file=../confs/apim-ga
 ${KUBECTL} create configmap apim-gateway-conf-datasources --from-file=../confs/apim-gateway/datasources/
 ${KUBECTL} create configmap apim-gateway-conf-identity --from-file=../confs/apim-gateway/identity/
 # create the APIM Analytics ConfigMaps
-${KUBECTL} create configmap apim-analytics-conf --from-file=../confs/apim-analytics/
-${KUBECTL} create configmap apim-analytics-conf-datasources --from-file=../confs/apim-analytics/datasources/
+${KUBECTL} create configmap apim-analytics-conf-worker --from-file=../confs/apim-analytics/
 # create the APIM Publisher-Store-Traffic-Manager ConfigMaps
 ${KUBECTL} create configmap apim-pubstore-tm-1-conf --from-file=../confs/apim-pubstore-tm-1/
 ${KUBECTL} create configmap apim-pubstore-tm-1-conf-axis2 --from-file=../confs/apim-pubstore-tm-1/axis2/

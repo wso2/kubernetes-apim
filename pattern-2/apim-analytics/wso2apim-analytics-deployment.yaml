@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-analytics
-        image: docker.wso2.com/wso2am-analytics:2.5.0
+        image: gcr.io/research-n-development-209206/wso2am-analytics:2.6.0
         resources:
           limits:
             memory: "4Gi"
@@ -56,7 +56,7 @@ spec:
         lifecycle:
           preStop:
             exec:
-              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
         imagePullPolicy: Always
         securityContext:
           runAsUser: 802
@@ -120,21 +120,11 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: apim-analytics-conf
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-        - name: apim-analytics-conf-datasources
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
-        - name: data-persistent-disk
-          mountPath: /home/wso2carbon/wso2am-analytics-2.5.0/repository/data
+          mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
       serviceAccountName: "wso2svc-account"
-      imagePullSecrets:
-      - name: wso2creds
+#      imagePullSecrets:
+#      - name: wso2creds
       volumes:
-      - name: apim-analytics-conf
+      - name: apim-analytics-conf-worker
         configMap:
-          name: apim-analytics-conf
-      - name: apim-analytics-conf-datasources
-        configMap:
-          name: apim-analytics-conf-datasources
-      - name: data-persistent-disk
-        persistentVolumeClaim:
-          claimName: wso2apim-analytics-data-volume-claim
+          name: apim-analytics-conf-worker
