@@ -113,3 +113,5 @@ sleep 10s
 echoBold 'Deploying Ingresses...'
 ${KUBECTL} create -f ../ingresses/wso2apim-ingress.yaml
 ${KUBECTL} create -f ../ingresses/wso2apim-analytics-ingress.yaml
+
+echoBold 'Finished'
