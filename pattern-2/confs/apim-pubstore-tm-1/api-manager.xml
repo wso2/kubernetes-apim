@@ -99,7 +99,7 @@
                 <ServerURL>https://wso2apim-gateway-service:9443${carbon.context}services/</ServerURL>
                 <Username>admin</Username>
                 <Password>admin</Password>
-                <GatewayEndpoint>http://wso2apim-gateway,https://wso2apim-gateway</GatewayEndpoint>
+                <GatewayEndpoint>http://wso2apim-gateway-service:8280,https://wso2apim-gateway-service:8243</GatewayEndpoint>
             </Environment>
         </Environments>
     </APIGateway>
