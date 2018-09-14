@@ -105,3 +105,7 @@ spec:
       name: 'analytics-port-9'
       protocol: TCP
       port: 11003
+    -
+      name: 'rest-api-port'
+      protocol: TCP
+      port: 9444

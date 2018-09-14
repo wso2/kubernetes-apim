@@ -95,8 +95,8 @@ spec:
         - name: apim-gateway-conf-identity
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
       serviceAccountName: "wso2svc-account"
-      imagePullSecrets:
-      - name: wso2creds
+#      imagePullSecrets:
+#      - name: wso2creds
       volumes:
       - name: apim-storage-volume
         persistentVolumeClaim:

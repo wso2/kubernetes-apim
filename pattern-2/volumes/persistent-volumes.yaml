@@ -25,8 +25,8 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"
+    server: 10.128.0.6
+    path: "/data/thilina/gw"
 
 ---
 
@@ -43,6 +43,6 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"
+    server: 10.128.0.6
+    path: "/data/thilina/is-km"
 

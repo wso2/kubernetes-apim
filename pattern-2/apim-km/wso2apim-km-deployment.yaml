@@ -17,7 +17,7 @@ kind: Deployment
 metadata:
   name: wso2apim-km-deployment
 spec:
-  replicas: 2
+  replicas: 1
   minReadySeconds: 30
   strategy:
     rollingUpdate:
@@ -93,8 +93,8 @@ spec:
         - name: apim-km-conf-identity
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
       serviceAccountName: "wso2svc-account"
-      imagePullSecrets:
-      - name: wso2creds
+#      imagePullSecrets:
+#      - name: wso2creds
       volumes:
       - name: apim-km-conf
         configMap:

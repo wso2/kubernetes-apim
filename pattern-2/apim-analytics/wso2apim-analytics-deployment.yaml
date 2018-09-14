@@ -119,7 +119,7 @@ spec:
           containerPort: 6067
           protocol: TCP
         volumeMounts:
-        - name: apim-analytics-conf
+        - name: apim-analytics-conf-worker
           mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
       serviceAccountName: "wso2svc-account"
 #      imagePullSecrets:

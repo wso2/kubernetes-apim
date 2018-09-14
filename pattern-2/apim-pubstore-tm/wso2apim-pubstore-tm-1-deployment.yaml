@@ -94,8 +94,8 @@ spec:
         - name: apim-pubstore-tm-1-conf-identity
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
       serviceAccountName: "wso2svc-account"
-      imagePullSecrets:
-      - name: wso2creds
+#      imagePullSecrets:
+#      - name: wso2creds
       volumes:
       - name: apim-pubstore-tm-1-conf
         configMap:
