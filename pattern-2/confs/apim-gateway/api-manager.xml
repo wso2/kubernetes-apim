@@ -214,7 +214,7 @@
     -->
     <APIKeyValidator>
         <!-- Server URL of the API key manager -->
-        <ServerURL>https://wso2apim-km:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
+        <ServerURL>https://wso2apim-km-service:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
 
         <!-- Admin username for API key manager. -->
         <Username>${admin.username}</Username>

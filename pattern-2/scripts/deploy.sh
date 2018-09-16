@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # ------------------------------------------------------------------------
 # Copyright 2017 WSO2, Inc. (http://wso2.com)
 #
@@ -101,35 +100,47 @@ ${KUBECTL} create configmap apim-pubstore-tm-2-conf-axis2 --from-file=../confs/a
 ${KUBECTL} create configmap apim-pubstore-tm-2-conf-datasources --from-file=../confs/apim-pubstore-tm-2/datasources/
 ${KUBECTL} create configmap apim-pubstore-tm-2-conf-identity --from-file=../confs/apim-pubstore-tm-2/identity/
 # create the APIM KeyManager ConfigMaps
-${KUBECTL} create configmap apim-km-conf --from-file=../confs/apim-km/
-${KUBECTL} create configmap apim-km-conf-axis2 --from-file=../confs/apim-km/axis2/
-${KUBECTL} create configmap apim-km-conf-datasources --from-file=../confs/apim-km/datasources/
-${KUBECTL} create configmap apim-km-conf-identity --from-file=../confs/apim-km/identity/
+#${KUBECTL} create configmap apim-km-conf --from-file=../confs/apim-km/
+#${KUBECTL} create configmap apim-km-conf-axis2 --from-file=../confs/apim-km/axis2/
+#${KUBECTL} create configmap apim-km-conf-datasources --from-file=../confs/apim-km/datasources/
+#${KUBECTL} create configmap apim-km-conf-identity --from-file=../confs/apim-km/identity/
+# create the APIM IS as Key Manager ConfigMaps
+${KUBECTL} create configmap apim-is-as-km-conf --from-file=../confs/apim-is-as-km/
+${KUBECTL} create configmap apim-is-as-km-conf-axis2 --from-file=../confs/apim-is-as-km/axis2/
+${KUBECTL} create configmap apim-is-as-km-conf-datasources --from-file=../confs/apim-is-as-km/datasources/
 
 ${KUBECTL} create configmap mysql-dbscripts --from-file=../extras/confs/rdbms/mysql/dbscripts/
 
+# deploy the Kubernetes services
 ${KUBECTL} create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-1-service.yaml
 ${KUBECTL} create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-2-service.yaml
 ${KUBECTL} create -f ../apim-pubstore-tm/wso2apim-service.yaml
-${KUBECTL} create -f ../apim-km/wso2apim-km-service.yaml
+#${KUBECTL} create -f ../apim-km/wso2apim-km-service.yaml
+${KUBECTL} create -f ../apim-is-as-km/wso2apim-is-as-km-service.yaml
 ${KUBECTL} create -f ../apim-gw/wso2apim-gateway-service.yaml
 ${KUBECTL} create -f ../apim-analytics/wso2apim-analytics-service.yaml
+
+echoBold 'Deploying persistent storage resources...'
+${KUBECTL} create -f ../volumes/persistent-volumes.yaml
+${KUBECTL} create -f ../extras/rdbms/volumes/persistent-volumes.yaml
 
 # MySQL
 echoBold 'Deploying WSO2 API Manager Databases...'
 ${KUBECTL} create -f ../extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
-${KUBECTL} create -f ../extras/rdbms/volumes/persistent-volumes.yaml
 ${KUBECTL} create -f ../extras/rdbms/mysql/mysql-deployment.yaml
 ${KUBECTL} create -f ../extras/rdbms/mysql/mysql-service.yaml
 sleep 30s
 
-echoBold 'Deploying persistent storage resources...'
-${KUBECTL} create -f ../volumes/persistent-volumes.yaml
-
 echoBold 'Deploying WSO2 API Manager Analytics...'
-${KUBECTL} create -f ../apim-analytics/wso2apim-analytics-volume-claims.yaml
+${KUBECTL} create -f ../apim-analytics/wso2apim-analytics-volume-claim.yaml
 ${KUBECTL} create -f ../apim-analytics/wso2apim-analytics-deployment.yaml
 sleep 3m
+
+echoBold 'Deploying WSO2 API Manager Key Manager...'
+#${KUBECTL} create -f ../apim-km/wso2apim-km-deployment.yaml
+${KUBECTL} create -f ../apim-is-as-km/wso2apim-is-as-km-volume-claim.yaml
+${KUBECTL} create -f ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml
+sleep 2m
 
 echoBold 'Deploying WSO2 API Manager Publisher-Store-Traffic-Manager...'
 ${KUBECTL} create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-1-deployment.yaml
@@ -137,10 +148,7 @@ sleep 1m
 ${KUBECTL} create -f ../apim-pubstore-tm/wso2apim-pubstore-tm-2-deployment.yaml
 sleep 3m
 
-echoBold 'Deploying WSO2 API Manager Key Manager...'
-${KUBECTL} create -f ../apim-km/wso2apim-km-deployment.yaml
-sleep 2m
-
+echoBold 'Deploying WSO2 API Manager Gateway...'
 ${KUBECTL} create -f ../apim-gw/wso2apim-gateway-volume-claim.yaml
 ${KUBECTL} create -f ../apim-gw/wso2apim-gateway-deployment.yaml
 sleep 2m
