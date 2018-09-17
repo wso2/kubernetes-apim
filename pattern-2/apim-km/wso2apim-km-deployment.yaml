@@ -35,7 +35,7 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/bash
+            - /bin/sh
             - -c
             - nc -z localhost 9443
           initialDelaySeconds: 300
@@ -43,12 +43,18 @@ spec:
         readinessProbe:
           exec:
             command:
-              - /bin/bash
+              - /bin/sh
               - -c
               - nc -z localhost 9443
           initialDelaySeconds: 300
           periodSeconds: 10
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         imagePullPolicy: Always
+        securityContext:
+          runAsUser: 802
         ports:
         -
           containerPort: 8280
@@ -79,13 +85,13 @@ spec:
           protocol: "TCP"
         volumeMounts:
         - name: apim-km-conf
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: apim-km-conf-axis2
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/axis2
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
         - name: apim-km-conf-datasources
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/datasources
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
         - name: apim-km-conf-identity
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/identity
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
