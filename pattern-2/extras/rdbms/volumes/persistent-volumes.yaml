@@ -25,5 +25,5 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: 10.128.0.6
-    path: "/data/thilina/mysql"
+    server: <NFS_SERVER_IP>
+    path: "<NFS_LOCATION_PATH>"

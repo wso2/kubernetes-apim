@@ -36,7 +36,7 @@ function usage () {
 
 WSO2_SUBSCRIPTION_USERNAME=''
 WSO2_SUBSCRIPTION_PASSWORD=''
-ADMIN_PASSWORD=
+ADMIN_PASSWORD=''
 
 # capture named arguments
 while [ "$1" != "" ]; do
@@ -76,7 +76,7 @@ ${KUBECTL} create serviceaccount wso2svc-account -n wso2
 ${KUBECTL} config set-context $(${KUBECTL} config current-context) --namespace=wso2
 
 # create a Kubernetes Secret for passing WSO2 Private Docker Registry credentials
-#${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${WSO2_SUBSCRIPTION_USERNAME} --docker-password=${WSO2_SUBSCRIPTION_PASSWORD} --docker-email=${WSO2_SUBSCRIPTION_USERNAME}
+${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${WSO2_SUBSCRIPTION_USERNAME} --docker-password=${WSO2_SUBSCRIPTION_PASSWORD} --docker-email=${WSO2_SUBSCRIPTION_USERNAME}
 
 # create Kubernetes Role and Role Binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
 ${KUBECTL} create --username=admin --password=${ADMIN_PASSWORD} -f ../../rbac/rbac.yaml
@@ -154,10 +154,8 @@ sleep 2m
 echoBold 'Deploying Ingresses...'
 ${KUBECTL} create -f ../ingresses/wso2apim-gateway-ingress.yaml
 ${KUBECTL} create -f ../ingresses/wso2apim-ingress.yaml
-${KUBECTL} create -f ../ingresses/wso2apim-analytics-ingress.yaml
 
 echoBold 'Finished'
 echo 'To access the WSO2 API Manager Management console, try https://wso2apim/carbon in your browser.'
 echo 'To access the WSO2 API Manager Publisher, try https://wso2apim/publisher in your browser.'
 echo 'To access the WSO2 API Manager Store, try https://wso2apim/store in your browser.'
-echo 'To access the WSO2 API Manager Analytics management console, try https://wso2apim-analytics/carbon in your browser.'

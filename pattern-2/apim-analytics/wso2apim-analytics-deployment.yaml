@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-analytics
-        image: gcr.io/research-n-development-209206/wso2am-analytics:2.6.0
+        image: docker.wso2.com/wso2am-analytics:2.6.0
         resources:
           limits:
             memory: "4Gi"
@@ -122,8 +122,8 @@ spec:
         - name: apim-analytics-conf-worker
           mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
       serviceAccountName: "wso2svc-account"
-#      imagePullSecrets:
-#      - name: wso2creds
+      imagePullSecrets:
+      - name: wso2creds
       volumes:
       - name: apim-analytics-conf-worker
         configMap:
