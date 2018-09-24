@@ -25,5 +25,5 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server:
-    path: /data/thilina/apim/deployment
+    server: <NFS_SERVER_IP>
+    path: "<NFS_LOCATION_PATH>"
