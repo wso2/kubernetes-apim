@@ -81,8 +81,6 @@ b. Open the `<HELM_HOME>/apim-with-analytics/values.yaml` and provide the follow
 | `svcaccount`                    | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
 | `serverIp`                      | NFS Server IP                                                                             |
 | `sharedDeploymentLocationPath`  | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for APIM   |
-| `analyticsDataLocationPath`     | NFS volume for Indexed data for Analytics (`<DAS_HOME>/repository/data`)                  |
-| `analyticsLocationPath`         | NFS volume for Analytics data for Analytics(`<DAS_HOME>/repository/analytics`)            |
 
 
 ##### 4. Deploy product database(s) using MySQL in Kubernetes.
@@ -115,16 +113,14 @@ e.g.
 
 ```
 NAME                                             HOSTS                       ADDRESS         PORTS     AGE
-wso2apim-with-analytics-apim-analytics-ingress   wso2apim-analytics          <EXTERNAL-IP>   80, 443   6m
 wso2apim-with-analytics-apim-ingress             wso2apim,wso2apim-gateway   <EXTERNAL-IP>   80, 443   7m
 ```
 
 b. Add the above host as an entry in /etc/hosts file as follows:
 
   ```
-  <EXTERNAL-IP>	wso2apim-analytics
   <EXTERNAL-IP>	wso2apim
   <EXTERNAL-IP>	wso2apim-gateway
   ```
 
-c. Try navigating to `https://wso2apim/carbon` and `https://wso2apim-analytics/carbon` from your favorite browser.
+c. Try navigating to `https://wso2apim/carbon` from your favorite browser.
