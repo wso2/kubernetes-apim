@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-with-analytics-apim-analytics
-        image: docker.wso2.com/wso2am-analytics:2.6.0
+        image: docker.wso2.com/wso2am-analytics-worker:2.6.0
         resources:
           limits:
             memory: "4Gi"
