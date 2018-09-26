@@ -34,9 +34,11 @@ spec:
         image: docker.wso2.com/wso2am-analytics:2.2.0
         resources:
           limits:
-            memory: "4Gi"
+            memory: "6Gi"
+            cpu: "4000m"
           requests:
-            memory: "4Gi"
+            memory: "9Gi"
+            cpu: "6000m"
         livenessProbe:
           exec:
             command:

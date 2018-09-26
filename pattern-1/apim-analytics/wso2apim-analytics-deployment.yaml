@@ -32,11 +32,6 @@ spec:
       containers:
       - name: wso2apim-with-analytics-apim-analytics
         image: docker.wso2.com/wso2am-analytics:2.2.0
-        resources:
-          limits:
-            memory: "4Gi"
-          requests:
-            memory: "4Gi"
         livenessProbe:
           exec:
             command:
@@ -58,6 +53,13 @@ spec:
             exec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "6Gi"
+            cpu: "4000m"
+          requests:
+            memory: "9Gi"
+            cpu: "6000m"
         securityContext:
           runAsUser: 802
         ports:

@@ -31,5 +31,4 @@ given below:
 WSO2 developers can be contacted via the mailing lists:
 
 * WSO2 Developers List : dev@wso2.org
-
 * WSO2 Architecture List : architecture@wso2.org
