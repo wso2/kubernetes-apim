@@ -1,4 +1,4 @@
-# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,35 +13,22 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: Service
 metadata:
-  name: wso2apim-analytics-data-volume-claim
+  name: wso2apim-km-service
   namespace : {{ .Values.namespace }}
 spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
-  storageClassName: ""
+  # label keys and values that must match in order to receive traffic for this service
   selector:
-    matchLabels:
-      purpose: apim-analytics-data
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: wso2apim-analytics-volume-claim
-  namespace : {{ .Values.namespace }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: apim-analytics
+    deployment: wso2apim-is-as-km
+  sessionAffinity: ClientIP
+  ports:
+    # ports that this service should serve on
+    -
+      name: servlet-http
+      protocol: TCP
+      port: 9763
+    -
+      name: servlet-https
+      protocol: TCP
+      port: 9443

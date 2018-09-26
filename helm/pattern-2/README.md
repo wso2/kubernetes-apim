@@ -49,8 +49,7 @@ Create and export unique directories within the NFS server instance for each of 
 resources defined in the `<HELM_HOME>/apim-gw-km-with-analytics-conf/values.yaml` file:
 
 * `sharedDeploymentLocationPath`
-* `analyticsDataLocationPath`
-* `analyticsLocationPath`
+* `isKMLocationPath`
 
 Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
@@ -80,12 +79,11 @@ b. Open the `<HELM_HOME>/apim-gw-km-with-analytics/values.yaml` and provide the 
 | `svcaccount`                    | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
 | `serverIp`                      | NFS Server IP                                                                             |
 | `sharedDeploymentLocationPath`  | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for APIM   |
-| `analyticsDataLocationPath`     | NFS volume for Indexed data for Analytics (`<DAS_HOME>/repository/data`)                  |
-| `analyticsLocationPath`         | NFS volume for Analytics data for Analytics(`<DAS_HOME>/repository/analytics`)            |
+| `isKMLocationPath`              | NFS shared deployment directory (`<APIM_IS_KM_HOME>/repository/deployment`) location for IS_AS_KM |
 
 *Provide the same kubernetes namespace used in configuring the `<parameter name="KUBERNETES_NAMESPACE">` element in following `axis2.xml` files
 * `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-gateway/axis2/axis2.xml`
-* `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-km/axis2/axis2.xml`
+* `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-is-as-km/axis2/axis2.xml`
 * `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-pubstore-tm-1/axis2/axis2.xml`
 * `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-pubstore-tm-2/axis2/axis2.xml`
 
@@ -124,16 +122,14 @@ e.g.
 ```
 NAME                                  HOSTS                    ADDRESS          PORTS      AGE
 wso2apim-ingress                      wso2apim                 <EXTERNAL-IP>    80, 443    7m 
-wso2apim-analytics-ingress            wso2apim-analytics       <EXTERNAL-IP>    80, 443    7m
 wso2apim-gateway-ingress              wso2apim-gateway         <EXTERNAL-IP>    80, 443    6m
 ```
 
 b. Add the above host as an entry in /etc/hosts file as follows:
 
 ```
-<EXTERNAL-IP>	wso2apim-analytics
 <EXTERNAL-IP>	wso2apim
 <EXTERNAL-IP>	wso2apim-gateway
 ```
 
-c. Try navigating to `https://wso2apim/carbon` and `https://wso2apim-analytics/carbon` from your favorite browser.
+c. Try navigating to `https://wso2apim/carbon` from your favorite browser.

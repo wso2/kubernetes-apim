@@ -13,18 +13,17 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: ConfigMap
+kind: PersistentVolumeClaim
 metadata:
-  name: apim-km-conf-axis2
+  name: wso2apim-is-as-km-shared-server-volume-claim
   namespace : {{ .Values.namespace }}
-data:
-  {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/apim-km/axis2/*" }}
-  {{- $list := $path | splitList "/"}}
-  {{- $length := len $list }}
-  {{- $last := add $length -1 }}
-  {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
-    {{- end }}
-  {{- end }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""
+  selector:
+    matchLabels:
+      purpose: apim-is-as-km-shared-server

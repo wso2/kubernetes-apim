@@ -81,27 +81,19 @@
                  An API deployed on a 'sandbox' type gateway will only support sandbox keys
                  An API deployed on a 'hybrid' type gateway will support both production and sandbox keys. -->
             <!-- api-console element specifies whether the environment should be listed in API Console or not -->
-            <!--<Environment type="hybrid" api-console="true">-->
-                <!--<Name>Production and Sandbox</Name>-->
-                <!--<Description>This is a hybrid gateway that handles both production and sandbox token traffic.</Description>-->
+            <Environment type="hybrid" api-console="true">
+                <Name>Production and Sandbox</Name>
+                <Description>This is a hybrid gateway that handles both production and sandbox token traffic.</Description>
                 <!-- Server URL of the API gateway -->
-                <!--<ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>-->
-		        <!-- Admin username for the API gateway. -->
-                <!--<Username>${admin.username}</Username>-->
-                <!-- Admin password for the API gateway.-->
-                <!--<Password>${admin.password}</Password>-->
-                <!-- Endpoint URLs for the APIs hosted in this API gateway.-->
-                <!--<GatewayEndpoint>http://${carbon.local.ip}:${http.nio.port},https://${carbon.local.ip}:${https.nio.port}</GatewayEndpoint>-->
-                <!-- Endpoint of the Websocket APIs hosted in this API Gateway -->
-                <!--<GatewayWSEndpoint>ws://${carbon.local.ip}:9099</GatewayWSEndpoint>-->
-            <!--</Environment>-->
-            <Environment type="production">
-                <Name>Production Gateway</Name>
-                <Description>Production Gateway Environment</Description>
                 <ServerURL>https://wso2apim-gateway-service:9443${carbon.context}services/</ServerURL>
-                <Username>admin</Username>
-                <Password>admin</Password>
+		        <!-- Admin username for the API gateway. -->
+                <Username>${admin.username}</Username>
+                <!-- Admin password for the API gateway.-->
+                <Password>${admin.password}</Password>
+                <!-- Endpoint URLs for the APIs hosted in this API gateway.-->
                 <GatewayEndpoint>https://wso2apim-gateway</GatewayEndpoint>
+                <!-- Endpoint of the Websocket APIs hosted in this API Gateway -->
+                <GatewayWSEndpoint>ws://${carbon.local.ip}:9099</GatewayWSEndpoint>
             </Environment>
         </Environments>
     </APIGateway>
@@ -133,17 +125,23 @@
              only be created when this element is uncommented. When the specified
              time duration gets elapsed ,tag cache will get re-generated. -->
         <!--TagCacheDuration>120000</TagCacheDuration-->
+        <!-- JWT Claim cache can be disabled only if below config <EnableJWTClaimCache> is set as 'false'. The default
+          value is 'true'.
+          Other than this config, also <EnableGatewayTokenCache> and <EnableKeyManagerTokenCache> should have been set
+          as 'false' to completely disable JWTClaimCache.
+         -->
+        <EnableJWTClaimCache>true</EnableJWTClaimCache>
     </CacheConfigurations>
 
     <!--
-        API usage tracker configuration used by the DAS data publisher and
+        API usage tracker configuration used by the StreamProcessor data publisher and
         Google Analytics publisher in API gateway.
     -->
     <Analytics>
         <!-- Enable Analytics for API Manager -->
-        <Enabled>true</Enabled>
+        <Enabled>false</Enabled>
 
-        <!-- Server URL of the remote DAS/CEP server used to collect statistics. Must
+        <!-- Server URL of the remote StreamProcessor server used to collect statistics. Must
              be specified in protocol://hostname:port/ format.
 
              An event can also be published to multiple Receiver Groups each having 1 or more receivers. Receiver
@@ -153,20 +151,20 @@
 
              Ex - Multiple Receiver Groups with two receivers each
              {tcp://localhost:7612/,tcp://localhost:7613},{tcp://localhost:7712/,tcp://localhost:7713/} -->
-        <DASServerURL>tcp://wso2apim-analytics-service:7612</DASServerURL>
-        <DASAuthServerURL>ssl://wso2apim-analytics-service:7712</DASAuthServerURL>
-        <!-- Administrator username to login to the remote DAS server. -->
-        <DASUsername>${admin.username}</DASUsername>
-        <!-- Administrator password to login to the remote DAS server. -->
-        <DASPassword>${admin.password}</DASPassword>
+        <StreamProcessorServerURL>{tcp://localhost:7612}</StreamProcessorServerURL>
+        <!--StreamProcessorAuthServerURL>{ssl://localhost:7712}</StreamProcessorAuthServerURL-->
+        <!-- Administrator username to login to the remote StreamProcessor server. -->
+        <StreamProcessorUsername>${admin.username}</StreamProcessorUsername>
+        <!-- Administrator password to login to the remote StreamProcessor server. -->
+        <StreamProcessorPassword>${admin.password}</StreamProcessorPassword>
 
         <!-- For APIM implemented Statistic client for RDBMS -->
-        <StatsProviderImpl>org.wso2.carbon.apimgt.usage.client.impl.APIUsageStatisticsRdbmsClientImpl</StatsProviderImpl>
+        <StatsProviderImpl>org.wso2.carbon.apimgt.usage.client.impl.APIUsageStatisticsRestClientImpl</StatsProviderImpl>
 
-        <!-- DAS REST API configuration -->
-        <DASRestApiURL>https://wso2apim-analytics:9444</DASRestApiURL>
-        <DASRestApiUsername>${admin.username}</DASRestApiUsername>
-        <DASRestApiPassword>${admin.password}</DASRestApiPassword>
+        <!-- StreamProcessor REST API configuration -->
+        <StreamProcessorRestApiURL>https://localhost:9444</StreamProcessorRestApiURL>
+        <StreamProcessorRestApiUsername>${admin.username}</StreamProcessorRestApiUsername>
+        <StreamProcessorRestApiPassword>${admin.password}</StreamProcessorRestApiPassword>
 
         <!-- Below property is used to skip trying to connect to event receiver nodes when publishing events even if
             the stats enabled flag is set to true. -->
@@ -186,29 +184,21 @@
         <Streams>
             <Request>
                 <Name>org.wso2.apimgt.statistics.request</Name>
-                <Version>1.1.0</Version>
+                <Version>3.0.0</Version>
             </Request>
-            <Response>
-                <Name>org.wso2.apimgt.statistics.response</Name>
-                <Version>1.1.0</Version>
-            </Response>
             <Fault>
                 <Name>org.wso2.apimgt.statistics.fault</Name>
-                <Version>1.0.0</Version>
+                <Version>3.0.0</Version>
             </Fault>
             <Throttle>
                 <Name>org.wso2.apimgt.statistics.throttle</Name>
-                <Version>1.0.0</Version>
+                <Version>3.0.0</Version>
             </Throttle>
             <Workflow>
                 <Name>org.wso2.apimgt.statistics.workflow</Name>
                 <Version>1.0.0</Version>
             </Workflow>
-            <ExecutionTime>
-                <Name>org.wso2.apimgt.statistics.execution.time</Name>
-                <Version>1.0.0</Version>
-            </ExecutionTime>
-	    <AlertTypes>
+	        <AlertTypes>
                 <Name>org.wso2.analytics.apim.alertStakeholderInfo</Name>
                 <Version>1.0.1</Version>
             </AlertTypes>
@@ -236,7 +226,7 @@
              -If you need to start two API Manager instances in the same machine, you need to give different ports to "ThriftServerPort" value in two nodes.
              -ThriftServerHost - Allows to configure a hostname for the thrift server. It uses the carbon hostname by default.
 	         -The Gateway uses this parameter to connect to the key validation thrift service. -->
-        <KeyValidatorClientType>WSClient</KeyValidatorClientType>
+        <KeyValidatorClientType>ThriftClient</KeyValidatorClientType>
         <ThriftClientConnectionTimeOut>10000</ThriftClientConnectionTimeOut>
         <!--ThriftClientPort>10397</ThriftClientPort-->
 
@@ -286,6 +276,7 @@
              In distributed deployment we should configure this property in key manager node by pointing
              gateway https( /http, we recommend users to use 'https' endpoints for security purpose) url.
              Also please note that we should point gateway revoke service to key manager -->
+        <!-- ${https.nio.port} is not resolved in non-synapse environments, therefore use 8243 here. -->   
         <RevokeAPIURL>https://wso2apim-gateway-service:8243/revoke</RevokeAPIURL>
         <!-- Whether to encrypt tokens when storing in the Database
         Note: If changing this value to true, change the value of <TokenPersistenceProcessor> to
@@ -311,7 +302,7 @@
         <!--This property is used to indicate how we do user name comparision for token generation https://wso2.org/jira/browse/APIMANAGER-2225-->
         <CompareCaseInsensitively>true</CompareCaseInsensitively>
         <DisplayURL>false</DisplayURL>
-        <URL>https://wso2apim/store</URL>
+        <URL>https://localhost:${mgt.transport.https.port}/store</URL>
 
         <!-- Server URL of the API Store. -->
         <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
@@ -350,7 +341,7 @@
 
     <APIPublisher>
         <DisplayURL>false</DisplayURL>
-        <URL>https://wso2apim/publisher</URL>
+        <URL>https://localhost:${mgt.transport.https.port}/publisher</URL>
         <!-- This parameter specifies enabling the capability of setting API documentation level granular visibility levels.
              By default any document associate with an API will have the same permissions set as the API.With enabling below
              property,it will show two additional permission levels as visible only to all registered users in a particular
@@ -568,8 +559,8 @@
         <EnableAdvanceThrottling>true</EnableAdvanceThrottling>
         <TrafficManager>
             <Type>Binary</Type>
-            <ReceiverUrlGroup>{tcp://wso2apim-pubstore-tm-1:9611}, {tcp://wso2apim-pubstore-tm-2:9611}</ReceiverUrlGroup>
-            <AuthUrlGroup>{ssl://wso2apim-pubstore-tm-1:9711}, {ssl://wso2apim-pubstore-tm-2:9711}</AuthUrlGroup>
+            <ReceiverUrlGroup>tcp://${carbon.local.ip}:${receiver.url.port}</ReceiverUrlGroup>
+            <AuthUrlGroup>ssl://${carbon.local.ip}:${auth.url.port}</AuthUrlGroup>
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
         </TrafficManager>
@@ -587,7 +578,7 @@
         </DataPublisher>
         <PolicyDeployer>
             <Enabled>true</Enabled>
-            <ServiceURL>https://wso2apim-service:${mgt.transport.https.port}${carbon.context}services/</ServiceURL>
+            <ServiceURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServiceURL>
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
         </PolicyDeployer>
@@ -604,7 +595,7 @@
                 <transport.jms.ConnectionFactoryJNDIName>TopicConnectionFactory</transport.jms.ConnectionFactoryJNDIName>
                 <transport.jms.DestinationType>topic</transport.jms.DestinationType>
                 <java.naming.factory.initial>org.wso2.andes.jndi.PropertiesFileInitialContextFactory</java.naming.factory.initial>
-                <connectionfactory.TopicConnectionFactory>amqp://admin:admin@clientID/carbon?failover='roundrobin'%26cyclecount='2'%26brokerlist='tcp://wso2apim-pubstore-tm-1:5672?retries='5'%26connectdelay='50';tcp://wso2apim-pubstore-tm-2:5672?retries='5'%26connectdelay='50''</connectionfactory.TopicConnectionFactory>
+                <connectionfactory.TopicConnectionFactory>amqp://${admin.username}:${admin.password}@clientid/carbon?brokerlist='tcp://${carbon.local.ip}:${jms.port}'</connectionfactory.TopicConnectionFactory>
             </JMSConnectionParameters>
         </JMSConnectionDetails>
 
@@ -637,9 +628,9 @@
     	<ServerUrl>https://localhost:9445/bpmn</ServerUrl>   		
     	<ServerUser>${admin.username}</ServerUser>
     	<ServerPassword>${admin.password}</ServerPassword>
-    	<WorkflowCallbackAPI>https://localhost:${mgt.transport.https.port}/api/am/publisher/v0.13/workflows/update-workflow-status</WorkflowCallbackAPI>
+    	<WorkflowCallbackAPI>https://localhost:${mgt.transport.https.port}/api/am/publisher/v0.14/workflows/update-workflow-status</WorkflowCallbackAPI>
         <TokenEndPoint>https://localhost:${https.nio.port}/token</TokenEndPoint>
-        <DCREndPoint>https://localhost:${mgt.transport.https.port}/client-registration/v0.13/register</DCREndPoint>
+        <DCREndPoint>https://localhost:${mgt.transport.https.port}/client-registration/v0.14/register</DCREndPoint>
         <DCREndPointUser>${admin.username}</DCREndPointUser>
         <DCREndPointPassword>${admin.password}</DCREndPointPassword>
     </WorkflowConfigurations>

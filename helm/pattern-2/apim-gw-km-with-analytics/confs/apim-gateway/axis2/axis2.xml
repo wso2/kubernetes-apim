@@ -514,7 +514,7 @@
                 <Password>wso2carbon</Password>
             </TrustStore>
         </parameter-->
-    <!--<parameter name="HostnameVerifier">DefaultAndLocalhost</parameter>-->
+        <!--<parameter name="HostnameVerifier">DefaultAndLocalhost</parameter>-->
             <!--supports Strict|AllowAll|DefaultAndLocalhost or the default if none specified -->
     <!--/transportSender-->
 
