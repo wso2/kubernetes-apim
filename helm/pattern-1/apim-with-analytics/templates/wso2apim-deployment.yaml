@@ -36,7 +36,7 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/bash
+            - /bin/sh
             - -c
             - nc -z localhost 9443
           initialDelaySeconds: 150
@@ -44,12 +44,18 @@ spec:
         readinessProbe:
           exec:
             command:
-              - /bin/bash
+              - /bin/sh
               - -c
               - nc -z localhost 9443
           initialDelaySeconds: 150
           periodSeconds: 10
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         imagePullPolicy: Always
+        securityContext:
+          runAsUser: 802
         ports:
         -
           containerPort: 8280
