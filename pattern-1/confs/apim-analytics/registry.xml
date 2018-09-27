@@ -48,7 +48,7 @@
     </mount>
     <mount path="/_system/config" overwrite="true">
         <instanceId>gov</instanceId>
-        <targetPath>/_system/analytics_config</targetPath>
+        <targetPath>/_system/analytics/config</targetPath>
     </mount>
 
    <!--<handler class="org.wso2.carbon.registry.extensions.handlers.SynapseRepositoryHandler">
