@@ -48,7 +48,7 @@ spec:
         readinessProbe:
           exec:
             command:
-              - /bin/bash
+              - /bin/sh
               - -c
               - nc -z localhost 7712
           initialDelaySeconds: 250
@@ -56,7 +56,7 @@ spec:
         lifecycle:
           preStop:
             exec:
-              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
         imagePullPolicy: Always
         securityContext:
           runAsUser: 802
@@ -74,50 +74,14 @@ spec:
           containerPort: 7712
           protocol: "TCP"
         -
-          containerPort: 11225
+          containerPort: 9091
           protocol: "TCP"
         -
-          containerPort: 10006
+          containerPort: 7071
           protocol: "TCP"
         -
-          containerPort: 11001
+          containerPort: 7444
           protocol: "TCP"
-        -
-          containerPort: 11002
-          protocol: "TCP"
-        -
-          containerPort: 11003
-          protocol: "TCP"
-        -
-          containerPort: 11501
-          protocol: "TCP"
-        -
-          containerPort: 8083
-          protocol: "TCP"
-        -
-          containerPort: 4041
-          protocol: "TCP"
-        -
-          containerPort: 10007
-          protocol: TCP
-        -
-          containerPort: 12501
-          protocol: TCP
-        -
-          containerPort: 13001
-          protocol: TCP
-        -
-          containerPort: 13501
-          protocol: TCP
-        -
-          containerPort: 14501
-          protocol: TCP
-        -
-          containerPort: 7078
-          protocol: TCP
-        -
-          containerPort: 6067
-          protocol: TCP
         volumeMounts:
         - name: apim-analytics-conf-worker
           mountPath: /home/wso2carbon/wso2-config-volume/conf/worker

@@ -37,7 +37,7 @@ function usage () {
 
 WSO2_SUBSCRIPTION_USERNAME=''
 WSO2_SUBSCRIPTION_PASSWORD=''
-ADMIN_PASSWORD=''
+ADMIN_PASSWORD=f5C0ORZjecNUMtny
 
 # capture named arguments
 while [ "$1" != "" ]; do
@@ -112,6 +112,5 @@ sleep 10s
 
 echoBold 'Deploying Ingresses...'
 ${KUBECTL} create -f ../ingresses/wso2apim-ingress.yaml
-${KUBECTL} create -f ../ingresses/wso2apim-analytics-ingress.yaml
 
 echoBold 'Finished'
