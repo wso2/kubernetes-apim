@@ -54,10 +54,10 @@ spec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         imagePullPolicy: Always
         resources:
-          limits:
+          requests:
             memory: "6Gi"
             cpu: "4000m"
-          requests:
+          limits:
             memory: "9Gi"
             cpu: "6000m"
         securityContext:

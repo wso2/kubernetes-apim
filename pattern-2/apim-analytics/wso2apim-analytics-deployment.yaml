@@ -33,10 +33,10 @@ spec:
       - name: wso2apim-analytics
         image: docker.wso2.com/wso2am-analytics:2.2.0
         resources:
-          limits:
+          requests:
             memory: "6Gi"
             cpu: "4000m"
-          requests:
+          limits:
             memory: "9Gi"
             cpu: "6000m"
         livenessProbe:
