@@ -20,11 +20,13 @@ given below:
 
 * [Manage configurations](ManageConfigurations.md)
 
+**Change log** from previous v2.2.0.2 release: [View Here](CHANGELOG.md)
+
 ## How To Contribute
 
 * Please report issues at [Kubernetes resources for WSO2 API Manager Issues](https://github.com/wso2/kubernetes-apim/issues).
 
-* You can find more instructions on how to contribute on community site (http://wso2.com/community).
+* You can find more instructions on how to contribute on community [site](http://wso2.com/community).
 
 ## Contact Us
 
