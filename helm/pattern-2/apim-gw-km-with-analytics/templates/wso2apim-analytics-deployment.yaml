@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-analytics
-        image: gcr.io/research-n-development-209206/wso2am-analytics:2.6.0-ubuntu
+        image: docker.wso2.com/wso2am-analytics-worker:2.6.0
         resources:
           limits:
             memory: "4Gi"
