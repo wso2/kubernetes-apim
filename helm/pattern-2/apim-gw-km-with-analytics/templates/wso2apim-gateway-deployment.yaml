@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-gateway
-        image: docker.wso2.com/wso2am:dock2.6.0er.wso2.com
+        image: gcr.io/research-n-development-209206/wso2am:2.6.0-ubuntu
         livenessProbe:
           exec:
             command:

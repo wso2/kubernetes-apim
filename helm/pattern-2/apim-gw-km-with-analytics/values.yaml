@@ -1,12 +1,12 @@
-username: "<USERNAME>"
-password: "<PASSWORD>"
-email: "<EMAIL>"
+username: "ss"
+password: "ss"
+email: "ss"
 
 namespace: "wso2"
 svcaccount: "wso2svc-account"
-serverIp: "<SERVER_IP>"
-sharedDeploymentLocationPath: "<NFS_LOCATION>"
-isKMLocationPath: "<NFS_LOCATION>"
+serverIp: 10.128.0.6
+sharedDeploymentLocationPath: "/data/thilina/gw"
+isKMLocationPath: "/data/thilina/is-km"
 
 
 

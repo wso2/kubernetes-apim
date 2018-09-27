@@ -38,3 +38,11 @@ spec:
       name: 'rest-api-port-2'
       protocol: TCP
       port: 9091
+    -
+      name: 'rest-api-port-3'
+      protocol: TCP
+      port: 7071
+    -
+      name: 'rest-api-port-4'
+      protocol: TCP
+      port: 7444
