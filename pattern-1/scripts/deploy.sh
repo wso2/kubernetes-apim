@@ -37,7 +37,7 @@ function usage () {
 
 WSO2_SUBSCRIPTION_USERNAME=''
 WSO2_SUBSCRIPTION_PASSWORD=''
-ADMIN_PASSWORD=f5C0ORZjecNUMtny
+ADMIN_PASSWORD=''
 
 # capture named arguments
 while [ "$1" != "" ]; do
