@@ -17,7 +17,7 @@ kind: Deployment
 metadata:
   name: wso2apim-km-deployment
 spec:
-  replicas: 2
+  replicas: 1
   minReadySeconds: 30
   strategy:
     rollingUpdate:
@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-km
-        image: docker.wso2.com/wso2am:2.5.0
+        image: docker.wso2.com/wso2am:2.6.0
         livenessProbe:
           exec:
             command:

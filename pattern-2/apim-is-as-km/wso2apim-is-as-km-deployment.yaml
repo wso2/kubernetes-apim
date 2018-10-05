@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-is-as-km
-        image: docker.wso2.com/wso2is-km:5.6.0
+        image: docker.wso2.com/wso2is-km:5.7.0
         livenessProbe:
           exec:
             command:
@@ -64,7 +64,7 @@ spec:
           protocol: "TCP"
         volumeMounts:
         - name: apim-is-as-km-storage-volume
-          mountPath: /home/wso2carbon/wso2is-km-5.6.0/repository/deployment
+          mountPath: /home/wso2carbon/wso2is-km-5.7.0/repository/deployment
         - name: apim-is-as-km-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: apim-is-as-km-conf-axis2

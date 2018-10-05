@@ -88,8 +88,7 @@ ${KUBECTL} create configmap apim-gateway-conf-axis2 --from-file=../confs/apim-ga
 ${KUBECTL} create configmap apim-gateway-conf-datasources --from-file=../confs/apim-gateway/datasources/
 ${KUBECTL} create configmap apim-gateway-conf-identity --from-file=../confs/apim-gateway/identity/
 # create the APIM Analytics ConfigMaps
-${KUBECTL} create configmap apim-analytics-conf --from-file=../confs/apim-analytics/
-${KUBECTL} create configmap apim-analytics-conf-datasources --from-file=../confs/apim-analytics/datasources/
+${KUBECTL} create configmap apim-analytics-conf-worker --from-file=../confs/apim-analytics/
 # create the APIM Publisher-Store-Traffic-Manager ConfigMaps
 ${KUBECTL} create configmap apim-pubstore-tm-1-conf --from-file=../confs/apim-pubstore-tm-1/
 ${KUBECTL} create configmap apim-pubstore-tm-1-conf-axis2 --from-file=../confs/apim-pubstore-tm-1/axis2/
@@ -100,10 +99,10 @@ ${KUBECTL} create configmap apim-pubstore-tm-2-conf-axis2 --from-file=../confs/a
 ${KUBECTL} create configmap apim-pubstore-tm-2-conf-datasources --from-file=../confs/apim-pubstore-tm-2/datasources/
 ${KUBECTL} create configmap apim-pubstore-tm-2-conf-identity --from-file=../confs/apim-pubstore-tm-2/identity/
 # create the APIM KeyManager ConfigMaps
-#${KUBECTL} create configmap apim-km-conf --from-file=../confs/apim-km/
-#${KUBECTL} create configmap apim-km-conf-axis2 --from-file=../confs/apim-km/axis2/
-#${KUBECTL} create configmap apim-km-conf-datasources --from-file=../confs/apim-km/datasources/
-#${KUBECTL} create configmap apim-km-conf-identity --from-file=../confs/apim-km/identity/
+${KUBECTL} create configmap apim-km-conf --from-file=../confs/apim-km/
+${KUBECTL} create configmap apim-km-conf-axis2 --from-file=../confs/apim-km/axis2/
+${KUBECTL} create configmap apim-km-conf-datasources --from-file=../confs/apim-km/datasources/
+${KUBECTL} create configmap apim-km-conf-identity --from-file=../confs/apim-km/identity/
 # create the APIM IS as Key Manager ConfigMaps
 ${KUBECTL} create configmap apim-is-as-km-conf --from-file=../confs/apim-is-as-km/
 ${KUBECTL} create configmap apim-is-as-km-conf-axis2 --from-file=../confs/apim-is-as-km/axis2/
@@ -132,7 +131,6 @@ ${KUBECTL} create -f ../extras/rdbms/mysql/mysql-service.yaml
 sleep 30s
 
 echoBold 'Deploying WSO2 API Manager Analytics...'
-${KUBECTL} create -f ../apim-analytics/wso2apim-analytics-volume-claim.yaml
 ${KUBECTL} create -f ../apim-analytics/wso2apim-analytics-deployment.yaml
 sleep 3m
 
@@ -156,10 +154,8 @@ sleep 2m
 echoBold 'Deploying Ingresses...'
 ${KUBECTL} create -f ../ingresses/wso2apim-gateway-ingress.yaml
 ${KUBECTL} create -f ../ingresses/wso2apim-ingress.yaml
-${KUBECTL} create -f ../ingresses/wso2apim-analytics-ingress.yaml
 
 echoBold 'Finished'
 echo 'To access the WSO2 API Manager Management console, try https://wso2apim/carbon in your browser.'
 echo 'To access the WSO2 API Manager Publisher, try https://wso2apim/publisher in your browser.'
 echo 'To access the WSO2 API Manager Store, try https://wso2apim/store in your browser.'
-echo 'To access the WSO2 API Manager Analytics management console, try https://wso2apim-analytics/carbon in your browser.'

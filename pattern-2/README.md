@@ -75,9 +75,7 @@ on creating the required databases for the deployment.
 Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
 the following files:
 
-* `<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/datasources/analytics-datasources.xml`
-* `<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/datasources/master-datasources.xml`
-* `<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/datasources/stats-datasources.xml`
+* `<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/conf/worker/deployment.yaml`
 * `<KUBERNETES_HOME>/pattern-2/confs/apim-gateway/datasources/master-datasources.xml`
 * `<KUBERNETES_HOME>/pattern-2/confs/apim-km/datasources/master-datasources.xml`
 * `<KUBERNETES_HOME>/pattern-2/confs/apim-pubstore-tm-1/datasources/master-datasources.xml`
@@ -152,7 +150,6 @@ Update each Kubernetes Persistent Volume resource with the corresponding NFS ser
 Then, deploy the persistent volume resource and volume claim as follows:
 
 ```
-kubectl create -f <KUBERNETES_HOME>/pattern-2/apim-analytics/wso2apim-analytics-volume-claims.yaml
 kubectl create -f <KUBERNETES_HOME>/pattern-2/apim-gw/wso2apim-gateway-volume-claim.yaml
 kubectl create -f <KUBERNETES_HOME>/pattern-2/volumes/persistent-volumes.yaml
 ```
@@ -165,8 +162,7 @@ kubectl create configmap apim-gateway-conf-axis2 --from-file=<KUBERNETES_HOME>/p
 kubectl create configmap apim-gateway-conf-datasources --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-gateway/datasources/
 kubectl create configmap apim-gateway-conf-identity --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-gateway/identity/
 
-kubectl create configmap apim-analytics-conf --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/
-kubectl create configmap apim-analytics-conf-datasources --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/datasources/
+kubectl create configmap apim-analytics-conf-worker --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/conf/worker
 
 kubectl create configmap apim-pubstore-tm-1-conf --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-pubstore-tm-1/
 kubectl create configmap apim-pubstore-tm-1-conf-axis2 --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-pubstore-tm-1/axis2/
@@ -212,7 +208,6 @@ Finally, deploy the WSO2 API Manager Kubernetes Ingress resources as follows:
 ```
 kubectl create -f <KUBERNETES_HOME>/pattern-2/ingresses/wso2apim-gateway-ingress.yaml
 kubectl create -f <KUBERNETES_HOME>/pattern-2/ingresses/wso2apim-ingress.yaml
-kubectl create -f <KUBERNETES_HOME>/pattern-2/ingresses/wso2apim-analytics-ingress.yaml
 ```
 
 ##### 10. Access Management Consoles.
@@ -232,19 +227,17 @@ e.g.
 ```
 NAME                                  HOSTS                    ADDRESS          PORTS      AGE
 wso2apim-ingress                      wso2apim                 <EXTERNAL-IP>    80, 443    7m 
-wso2apim-analytics-ingress            wso2apim-analytics       <EXTERNAL-IP>    80, 443    7m
 wso2apim-gateway-ingress              wso2apim-gateway         <EXTERNAL-IP>    80, 443    6m
 ```
 
 b. Add the above host as an entry in /etc/hosts file as follows:
 
 ```
-<EXTERNAL-IP>	wso2apim-analytics
 <EXTERNAL-IP>	wso2apim
 <EXTERNAL-IP>	wso2apim-gateway
 ```
 
-c. Try navigating to `https://wso2apim/carbon` and `https://wso2apim-analytics/carbon` from your favorite browser.
+c. Try navigating to `https://wso2apim/carbon` from your favorite browser.
 
 ##### 11. Scale up using `kubectl scale`.
 

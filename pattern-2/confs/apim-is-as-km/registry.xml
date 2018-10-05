@@ -48,7 +48,7 @@
     </mount>
     <mount path="/_system/config" overwrite="true">
         <instanceId>gov</instanceId>
-        <targetPath>/_system/config</targetPath>
+        <targetPath>/_system/is_km/config</targetPath>
     </mount>
 
    <handler class="org.wso2.carbon.identity.entitlement.policy.finder.registry.RegistryPolicyHandler">
