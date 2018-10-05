@@ -76,9 +76,7 @@ Provide appropriate connection URLs, corresponding to the created external datab
 the following files:
 
 * `<KUBERNETES_HOME>/pattern-1/confs/apim/datasources/master-datasources.xml`
-* `<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/datasources/analytics-datasources.xml`
-* `<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/datasources/master-datasources.xml`
-* `<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/datasources/stats-datasources.xml`
+* `<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/conf/worker/deployment.yaml`
 
 Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN44x/Configuring+master-datasources.xml) on configuring data sources.
 
@@ -150,7 +148,6 @@ Then, deploy the persistent volume resource and volume claim as follows:
 
 ```
 kubectl create -f <KUBERNETES_HOME>/pattern-1/apim/wso2apim-volume-claim.yaml
-kubectl create -f <KUBERNETES_HOME>/pattern-1/apim-analytics/wso2apim-analytics-volume-claims.yaml
 kubectl create -f <KUBERNETES_HOME>/pattern-1/volumes/persistent-volumes.yaml
 ```
     
@@ -160,8 +157,7 @@ kubectl create -f <KUBERNETES_HOME>/pattern-1/volumes/persistent-volumes.yaml
 kubectl create configmap apim-conf --from-file=<KUBERNETES_HOME>/pattern-1/confs/apim/
 kubectl create configmap apim-conf-datasources --from-file=<KUBERNETES_HOME>/pattern-1/confs/apim/datasources/
 
-kubectl create configmap apim-analytics-conf --from-file=<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/
-kubectl create configmap apim-analytics-conf-datasources --from-file=<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/datasources/
+kubectl create configmap apim-analytics-conf-worker --from-file=<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/conf/worker
 ```
 
 ##### 8. Create Kubernetes Services and Deployments for WSO2 API Manager and Analytics.
@@ -183,13 +179,12 @@ please refer the official documentation, [NGINX Ingress Controller Installation 
 Finally, deploy the WSO2 API Manager Kubernetes Ingress resources as follows:
 
 ```
-kubectl create -f <KUBERNETES_HOME>/pattern-1/ingresses/wso2apim-analytics-ingress.yaml
 kubectl create -f <KUBERNETES_HOME>/pattern-1/ingresses/wso2apim-ingress.yaml
 ```
 
 ##### 10. Access Management Consoles.
 
-Default deployment will expose `wso2apim`, `wso2apim-gateway` and `wso2apim-analytics` hosts.
+Default deployment will expose `wso2apim` and `wso2apim-gateway hosts.
 
 To access the console in the environment,
 
@@ -203,19 +198,17 @@ e.g.
 
 ```
 NAME                                             HOSTS                       ADDRESS         PORTS     AGE
-wso2apim-with-analytics-apim-analytics-ingress   wso2apim-analytics          <EXTERNAL-IP>   80, 443   6m
 wso2apim-with-analytics-apim-ingress             wso2apim,wso2apim-gateway   <EXTERNAL-IP>   80, 443   7m
 ```
 
 b. Add the above host as an entry in /etc/hosts file as follows:
 
   ```
-  <EXTERNAL-IP>	wso2apim-analytics
   <EXTERNAL-IP>	wso2apim
   <EXTERNAL-IP>	wso2apim-gateway
   ```
 
-c. Try navigating to `https://wso2apim/carbon` and `https://wso2apim-analytics/carbon` from your favorite browser.
+c. Try navigating to `https://wso2apim/carbon` from your favorite browser.
 
 ##### 11. Scale up using `kubectl scale`.
 
