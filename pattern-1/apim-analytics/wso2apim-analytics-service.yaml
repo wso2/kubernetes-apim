@@ -38,4 +38,4 @@ spec:
       name: thrift-ssl
       port: 7712
       protocol: TCP
-    
+
