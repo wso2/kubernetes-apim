@@ -49,6 +49,13 @@ spec:
           initialDelaySeconds: 150
           periodSeconds: 10
         imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "2000m"
+          limits:
+            memory: "3Gi"
+            cpu: "3000m"
         ports:
         -
           containerPort: 8280
