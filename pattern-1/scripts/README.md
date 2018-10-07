@@ -101,7 +101,7 @@ In a **production grade setup**,
 Change directory to `<KUBERNETES_HOME>/pattern-1/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
 
 ```
-./deploy.sh --wso2-username=<WSO2_USERNAME> --wso2-password=<WSO2_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
+./deploy.sh --wso2-username=<WSO2_USERNAME> --wso2-password=<WSO2_PASSWORD>
 ```
 
 * A Kubernetes Secret named `wso2creds` in the cluster to authenticate with the [`WSO2 Docker Registry`](https://docker.wso2.com), to pull the required images.
@@ -110,9 +110,7 @@ The following details need to be replaced in the relevant command.
 `WSO2_USERNAME`: Your WSO2 username<br>
 `WSO2_PASSWORD`: Your WSO2 password
 
-* A Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
-
-`K8S_CLUSTER_ADMIN_PASSWORD`: Kubernetes cluster admin password
+* **Note**: The user should possess appropriate permissions to create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 
 >To un-deploy, be on the same directory and execute the `undeploy.sh` shell script on the terminal.
 
