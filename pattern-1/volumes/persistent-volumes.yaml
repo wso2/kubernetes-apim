@@ -27,38 +27,3 @@ spec:
   nfs:
     server: <NFS_SERVER_IP>
     path: "<NFS_LOCATION_PATH>"
-
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: wso2apim-with-analytics-apim-analytics-data-pv
-  labels:
-    purpose: apim-analytics-data
-spec:
-  capacity:
-    storage: 20Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"
-
----
-
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: wso2apim-with-analytics-apim-analytics-pv
-  labels:
-    purpose: apim-analytics
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"
