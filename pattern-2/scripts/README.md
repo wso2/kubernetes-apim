@@ -1,6 +1,6 @@
 # Kubernetes Test Resources for deployment of WSO2 API Manager with a separate Gateway and a separate Key Manager
 
-Kubernetes Test Resources for [WSO2 API Manager deployment pattern 2](https://docs.wso2.com/display/AM220/Deployment+Patterns#DeploymentPatterns-Pattern2) contain artifacts,
+Kubernetes Test Resources for [WSO2 API Manager deployment pattern 2](https://docs.wso2.com/display/AM260/Deployment+Patterns#DeploymentPatterns-Pattern2) contain artifacts,
 which can be used to test the core Kubernetes resources provided for a deployment of WSO2 API Manager with a separate Gateway and a separate Key Manager along with WSO2 API Manager Analytics support.
 
 ## Contents
@@ -91,9 +91,6 @@ In a **production grade setup**,
   Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
   the following files:
   
-  * `<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/datasources/analytics-datasources.xml`
-  * `<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/datasources/master-datasources.xml`
-  * `<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/datasources/stats-datasources.xml`
   * `<KUBERNETES_HOME>/pattern-2/confs/apim-gateway/datasources/master-datasources.xml`
   * `<KUBERNETES_HOME>/pattern-2/confs/apim-km/datasources/master-datasources.xml`
   * `<KUBERNETES_HOME>/pattern-2/confs/apim-pubstore-tm-1/datasources/master-datasources.xml`

@@ -93,7 +93,7 @@
 
         <datasource>
             <name>WSO2AM_STATS_DB</name>
-            <description>The datasource used for setting statistics to API Manager</description>
+            <description>The datasource used for getting statistics to API Manager</description>
             <jndiConfig>
                 <name>jdbc/WSO2AM_STATS_DB</name>
             </jndiConfig>
@@ -108,7 +108,6 @@
                     <testOnBorrow>true</testOnBorrow>
                     <validationQuery>SELECT 1</validationQuery>
                     <validationInterval>30000</validationInterval>
-                    <defaultAutoCommit>false</defaultAutoCommit>
                 </configuration>
             </definition>
         </datasource>
