@@ -23,19 +23,26 @@ spec:
   ports:
     # ports that this service should serve on
     -
-      name: servlet-http
-      protocol: TCP
-      port: 9764
-    -
-      name: servlet-https
-      protocol: TCP
-      port: 9444
-    -
-      name: thrift
+      name: 'thrift'
       port: 7612
       protocol: TCP
     -
-      name: thrift-ssl
+      name: 'thrift-ssl'
       port: 7712
       protocol: TCP
-
+    -
+      name: 'rest-api-port-1'
+      protocol: TCP
+      port: 9444
+    -
+      name: 'rest-api-port-2'
+      protocol: TCP
+      port: 9091
+    -
+      name: 'rest-api-port-3'
+      protocol: TCP
+      port: 7071
+    -
+      name: 'rest-api-port-4'
+      protocol: TCP
+      port: 7444

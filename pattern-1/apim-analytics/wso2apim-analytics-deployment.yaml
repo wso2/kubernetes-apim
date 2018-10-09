@@ -48,7 +48,7 @@ spec:
         readinessProbe:
           exec:
             command:
-              - /bin/bash
+              - /bin/sh
               - -c
               - nc -z localhost 7712
           initialDelaySeconds: 250
@@ -73,7 +73,15 @@ spec:
         -
           containerPort: 7712
           protocol: "TCP"
-
+        -
+          containerPort: 9091
+          protocol: "TCP"
+        -
+          containerPort: 7071
+          protocol: "TCP"
+        -
+          containerPort: 7444
+          protocol: "TCP"
         volumeMounts:
         - name: apim-analytics-conf-worker
           mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
