@@ -47,7 +47,7 @@
     </mount>
     <mount path="/_system/config" overwrite="true">
         <instanceId>gov</instanceId>
-        <targetPath>/_system/config</targetPath>
+        <targetPath>/_system/gw/config</targetPath>
     </mount>
 
     <!-- This handler provides the feature to add a simlink to a given resource -->

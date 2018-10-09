@@ -33,11 +33,11 @@ spec:
     spec:
       containers:
       - name: wso2apim-pubstore-tm
-        image: docker.wso2.com/wso2am:2.5.0
+        image: docker.wso2.com/wso2am:2.6.0
         livenessProbe:
           exec:
             command:
-            - /bin/bash
+            - /bin/sh
             - -c
             - nc -z localhost 9443
           initialDelaySeconds: 300
@@ -45,12 +45,18 @@ spec:
         readinessProbe:
           exec:
             command:
-              - /bin/bash
+              - /bin/sh
               - -c
               - nc -z localhost 9443
           initialDelaySeconds: 300
           periodSeconds: 10
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         imagePullPolicy: Always
+        securityContext:
+          runAsUser: 802
         ports:
         -
           containerPort: 8280
@@ -81,13 +87,13 @@ spec:
           protocol: "TCP"
         volumeMounts:
         - name: apim-pubstore-tm-2-conf
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: apim-pubstore-tm-2-conf-axis2
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/axis2
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
         - name: apim-pubstore-tm-2-conf-datasources
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/datasources
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
         - name: apim-pubstore-tm-2-conf-identity
-          mountPath: /home/wso2carbon/kubernetes-volumes/am/conf/identity
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds

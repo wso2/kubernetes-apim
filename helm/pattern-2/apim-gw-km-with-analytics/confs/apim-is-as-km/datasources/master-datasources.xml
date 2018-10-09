@@ -38,28 +38,6 @@
                     <url>jdbc:mysql://wso2apim-pattern-2-rdbms-service-mysql:3306/WSO2AM_APIMGT_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
-                    <defaultAutoCommit>false</defaultAutoCommit>
-                    <driverClassName>com.mysql.jdbc.Driver</driverClassName>
-                    <maxActive>50</maxActive>
-                    <maxWait>60000</maxWait>
-                    <testOnBorrow>true</testOnBorrow>
-                    <validationQuery>SELECT 1</validationQuery>
-                    <validationInterval>30000</validationInterval>
-                </configuration>
-            </definition>
-        </datasource>
-
-        <datasource>
-            <name>WSO2UM_DB</name>
-            <description>The datasource used by user manager</description>
-            <jndiConfig>
-                <name>jdbc/WSO2UM_DB</name>
-            </jndiConfig>
-            <definition type="RDBMS">
-                <configuration>
-                    <url>jdbc:mysql://wso2apim-pattern-2-rdbms-service-mysql:3306/WSO2AM_COMMON_DB?autoReconnect=true&amp;useSSL=false</url>
-                    <username>wso2carbon</username>
-                    <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
                     <maxActive>50</maxActive>
                     <maxWait>60000</maxWait>
@@ -92,14 +70,14 @@
         </datasource>
 
         <datasource>
-            <name>WSO2AM_STATS_DB</name>
-            <description>The datasource used for setting statistics to API Manager</description>
+            <name>WSO2UM_DB</name>
+            <description>The datasource used by user manager</description>
             <jndiConfig>
-                <name>jdbc/WSO2AM_STATS_DB</name>
+                <name>jdbc/WSO2UM_DB</name>
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2apim-pattern-2-rdbms-service-mysql:3306/WSO2AM_STAT_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <url>jdbc:mysql://wso2apim-pattern-2-rdbms-service-mysql:3306/WSO2AM_COMMON_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -108,10 +86,30 @@
                     <testOnBorrow>true</testOnBorrow>
                     <validationQuery>SELECT 1</validationQuery>
                     <validationInterval>30000</validationInterval>
-                    <defaultAutoCommit>false</defaultAutoCommit>
                 </configuration>
             </definition>
         </datasource>
+
+         <datasource>
+            <name>WSO2AM_STATS_DB</name>
+            <description>The datasource used for getting statistics to API Manager</description>
+            <jndiConfig>
+                <name>jdbc/WSO2AM_STATS_DB</name>
+            </jndiConfig>
+            <definition type="RDBMS">
+                <configuration>
+                    <url>jdbc:h2:<!-- Full path to JDBC database -->;AUTO_SERVER=TRUE</url>
+                    <username>wso2carbon</username>
+                    <password>wso2carbon</password>
+                    <driverClassName>org.h2.Driver</driverClassName>
+                    <maxActive>50</maxActive>
+                    <maxWait>60000</maxWait>
+                    <testOnBorrow>true</testOnBorrow>
+                    <validationQuery>SELECT 1</validationQuery>
+                    <validationInterval>30000</validationInterval>
+                </configuration>
+            </definition>
+         </datasource>
 
         <datasource>
             <name>WSO2_MB_STORE_DB</name>
@@ -134,7 +132,6 @@
                 </configuration>
             </definition>
         </datasource>
-
         <!-- For an explanation of the properties, see: http://people.apache.org/~fhanik/jdbc-pool/jdbc-pool.html -->
         <!--datasource>
             <name>SAMPLE_DATA_SOURCE</name>

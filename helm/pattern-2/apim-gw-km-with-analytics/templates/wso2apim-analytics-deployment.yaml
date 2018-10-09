@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-analytics
-        image: docker.wso2.com/wso2am-analytics:2.5.0
+        image: docker.wso2.com/wso2am-analytics-worker:2.6.0
         resources:
           limits:
             memory: "4Gi"
@@ -41,7 +41,7 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/bash
+            - /bin/sh
             - -c
             - nc -z localhost 7712
           initialDelaySeconds: 250
@@ -49,12 +49,18 @@ spec:
         readinessProbe:
           exec:
             command:
-              - /bin/bash
+              - /bin/sh
               - -c
               - nc -z localhost 7712
           initialDelaySeconds: 250
           periodSeconds: 10
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
         imagePullPolicy: Always
+        securityContext:
+          runAsUser: 802
         ports:
         -
           containerPort: 9764
@@ -69,72 +75,21 @@ spec:
           containerPort: 7712
           protocol: "TCP"
         -
-          containerPort: 11225
+          containerPort: 9091
           protocol: "TCP"
         -
-          containerPort: 10006
+          containerPort: 7071
           protocol: "TCP"
         -
-          containerPort: 11001
+          containerPort: 7444
           protocol: "TCP"
-        -
-          containerPort: 11002
-          protocol: "TCP"
-        -
-          containerPort: 11003
-          protocol: "TCP"
-        -
-          containerPort: 11501
-          protocol: "TCP"
-        -
-          containerPort: 8083
-          protocol: "TCP"
-        -
-          containerPort: 4041
-          protocol: "TCP"
-        -
-          containerPort: 10007
-          protocol: TCP
-        -
-          containerPort: 12501
-          protocol: TCP
-        -
-          containerPort: 13001
-          protocol: TCP
-        -
-          containerPort: 13501
-          protocol: TCP
-        -
-          containerPort: 14501
-          protocol: TCP
-        -
-          containerPort: 7078
-          protocol: TCP
-        -
-          containerPort: 6067
-          protocol: TCP
         volumeMounts:
-        - name: apim-analytics-conf
-          mountPath: /home/wso2carbon/kubernetes-volumes/am-analytics/conf
-        - name: apim-analytics-conf-datasources
-          mountPath: /home/wso2carbon/kubernetes-volumes/am-analytics/conf-datasources
-        - name: analytics-persistent-disk
-          mountPath: /home/wso2carbon/wso2am-analytics-2.5.0/repository/conf/analytics
-        - name: data-persistent-disk
-          mountPath: /home/wso2carbon/wso2am-analytics-2.5.0/repository/data
+        - name: apim-analytics-conf-worker
+          mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
       volumes:
-      - name: apim-analytics-conf
+      - name: apim-analytics-conf-worker
         configMap:
-          name: apim-analytics-conf
-      - name: apim-analytics-conf-datasources
-        configMap:
-          name: apim-analytics-conf-datasources
-      - name: analytics-persistent-disk
-        persistentVolumeClaim:
-          claimName: wso2apim-analytics-volume-claim
-      - name: data-persistent-disk
-        persistentVolumeClaim:
-          claimName: wso2apim-analytics-data-volume-claim
+          name: apim-analytics-conf-worker

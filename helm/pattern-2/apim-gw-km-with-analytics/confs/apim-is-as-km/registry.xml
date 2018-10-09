@@ -48,10 +48,16 @@
     </mount>
     <mount path="/_system/config" overwrite="true">
         <instanceId>gov</instanceId>
-        <targetPath>/_system/analytics_config</targetPath>
+        <targetPath>/_system/is_km/config</targetPath>
     </mount>
 
-   <!--<handler class="org.wso2.carbon.registry.extensions.handlers.SynapseRepositoryHandler">
+   <handler class="org.wso2.carbon.identity.entitlement.policy.finder.registry.RegistryPolicyHandler">
+ <filter class="org.wso2.carbon.identity.entitlement.policy.finder.registry.RegistryPolicyMediaTypeMatcher">
+ <property name="mediaType">application/xacml-policy+xml</property>
+ </filter>
+ </handler>
+
+ <!--<handler class="org.wso2.carbon.registry.extensions.handlers.SynapseRepositoryHandler">
         <filter class="org.wso2.carbon.registry.core.jdbc.handlers.filters.MediaTypeMatcher">
             <property name="mediaType">application/vnd.apache.synapse</property>
         </filter>
@@ -107,12 +113,13 @@
     </mount-->
 
     <indexingConfiguration>
+        <startIndexing>false</startIndexing>
         <startingDelayInSeconds>35</startingDelayInSeconds>
-        <indexingFrequencyInSeconds>3</indexingFrequencyInSeconds>
+        <indexingFrequencyInSeconds>5</indexingFrequencyInSeconds>
         <!--number of resources submit for given indexing thread -->
-        <batchSize>50</batchSize>
+        <batchSize>40</batchSize>
         <!--number of worker threads for indexing -->
-        <indexerPoolSize>50</indexerPoolSize>
+        <indexerPoolSize>40</indexerPoolSize>
         <!-- location storing the time the indexing took place-->
         <lastAccessTimeLocation>/_system/local/repository/components/org.wso2.carbon.registry/indexing/lastaccesstime</lastAccessTimeLocation>
         <!-- the indexers that implement the indexer interface for a relevant media type/(s) -->
@@ -127,7 +134,6 @@
             <indexer class="org.wso2.carbon.registry.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="application/(.)+\+json"/>
             <indexer class="org.wso2.carbon.registry.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="text/(.)+"/>
             <indexer class="org.wso2.carbon.registry.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="application/x-javascript"/>
-            <indexer class="org.wso2.carbon.registry.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="*"/>
         </indexers>
         <exclusions>
             <exclusion pathRegEx="/_system/config/repository/dashboards/gadgets/swfobject1-5/.*[.]html"/>

@@ -15,11 +15,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: apim-analytics-conf
+  name: apim-analytics-conf-worker
   namespace : {{ .Values.namespace }}
 data:
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/apim-analytics/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/apim-analytics/conf/worker/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}

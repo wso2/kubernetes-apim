@@ -13,7 +13,7 @@
 # limitations under the License.
 
 apiVersion: v1
-appVersion: "2.5.0-2"
+appVersion: "2.6.0-1"
 description: A Helm chart for the deployment of WSO2 API Manager with a separate Gateway and a separate Key Manager configurations
 name: apim-gw-km-with-analytics
-version: 2.5.0-2
+version: 2.6.0-1

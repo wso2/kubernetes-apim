@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
- Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -26,17 +26,17 @@
     <!--
        Product Name
     -->
-    <Name>WSO2 API Manager Analytics Server</Name>
+    <Name>WSO2 Identity Server</Name>
 
     <!--
        machine readable unique key to identify each product
     -->
-    <ServerKey>AM-Analytics</ServerKey>
+    <ServerKey>IS</ServerKey>
 
     <!--
        Product Version
     -->
-    <Version>2.1.1.SNAPSHOT</Version>
+    <Version>5.7.0</Version>
 
     <!--
        Host name or IP address of the machine hosting this server
@@ -44,12 +44,12 @@
        This is will become part of the End Point Reference of the
        services deployed on this server instance.
     -->
-    <HostName>wso2apim-analytics</HostName>
+    <HostName>wso2apim-is-as-km</HostName>
 
     <!--
     Host name to be used for the Carbon management console
     -->
-    <MgtHostName>wso2apim-analytics</MgtHostName>
+    <MgtHostName>wso2apim-is-as-km</MgtHostName>
 
     <!--
         The URL of the back end server. This is where the admin services are hosted and
@@ -58,7 +58,7 @@
        -->
     <ServerURL>local:/${carbon.context}/services/</ServerURL>
     <!--
-    <ServerURL>https://${carbon.local.ip}:${carbon.management.port}${carbon.context}/services/</ServerURL>
+    <ServerURL>https://localhost:${carbon.management.port}${carbon.context}/services/</ServerURL>
     -->
      <!--
      The URL of the index page. This is where the user will be redirected after signing in to the
@@ -73,8 +73,7 @@
     Ex : <Role>.*</Role> means this server can act any role
     -->
     <ServerRoles>
-        <Role>DataAnalyticsServer</Role>
-        <Role>ComplexEventProcessor</Role>
+        <Role>IdentityServer</Role>
     </ServerRoles>
 
     <!-- uncommnet this line to subscribe to a bam instance automatically -->
@@ -125,7 +124,7 @@
          the define value + Offset.
          e.g. Offset=2 and HTTPS port=9443 will set the effective HTTPS port to 9445
          -->
-        <Offset>1</Offset>
+        <Offset>0</Offset>
 
         <!-- The JMX Ports -->
         <JMX>
@@ -142,21 +141,21 @@
             <!-- Port which KDC (Kerberos Key Distribution Center) server runs -->
             <KDCServerPort>8000</KDCServerPort>
         </EmbeddedLDAP>
-
-	<!--
+	
+	<!-- 
              Override datasources JNDIproviderPort defined in bps.xml and datasources.properties files
 	-->
 	<!--<JNDIProviderPort>2199</JNDIProviderPort>-->
 	<!--Override receive port of thrift based entitlement service.-->
 	<ThriftEntitlementReceivePort>10500</ThriftEntitlementReceivePort>
 
-        <!--
-         This is the proxy port of the worker cluster. These need to be configured in a scenario where
-         manager node is not exposed through the load balancer through which the workers are exposed
-         therefore doesn't have a proxy port.
-        <WorkerHttpProxyPort>80</WorkerHttpProxyPort>
-        <WorkerHttpsProxyPort>443</WorkerHttpsProxyPort>
-        -->
+    <!--
+     This is the proxy port of the worker cluster. These need to be configured in a scenario where
+     manager node is not exposed through the load balancer through which the workers are exposed
+     therefore doesn't have a proxy port.
+    <WorkerHttpProxyPort>80</WorkerHttpProxyPort>
+    <WorkerHttpsProxyPort>443</WorkerHttpsProxyPort>
+    -->
 
     </Ports>
 
@@ -255,7 +254,7 @@
     <Tenant>
         <LoadingPolicy>
             <LazyLoading>
-                <IdleTime>153722867280912</IdleTime>
+                <IdleTime>30</IdleTime>
             </LazyLoading>
             <!-- <EagerLoading>
                    <Include>*,!foo.com,!bar.com</Include>
@@ -269,6 +268,8 @@
     <Cache>
         <!-- Default cache timeout in minutes -->
         <DefaultCacheTimeout>15</DefaultCacheTimeout>
+        <!-- Force all caches to act as local -->
+        <ForceLocalCache>false</ForceLocalCache>
     </Cache>
 
     <!--
@@ -324,9 +325,9 @@
         <clientAxis2XmlLocation>${carbon.home}/repository/conf/axis2/axis2_client.xml</clientAxis2XmlLocation>
         <!-- If this parameter is set, the ?wsdl on an admin service will not give the admin service wsdl. -->
         <HideAdminServiceWSDLs>true</HideAdminServiceWSDLs>
-
+	
 	<!--WARNING-Use With Care! Uncommenting bellow parameter would expose all AdminServices in HTTP transport.
-	With HTTP transport your credentials and data routed in public channels are vulnerable for sniffing attacks.
+	With HTTP transport your credentials and data routed in public channels are vulnerable for sniffing attacks. 
 	Use bellow parameter ONLY if your communication channels are confirmed to be secured by other means -->
         <!--HttpAdminServices>*</HttpAdminServices-->
 
@@ -347,10 +348,37 @@
         </Role>
     </ServiceUserRoles>
 
+    <!--
+       Configurations related to Carbon Crypto Service which is a crypto framework used inside Carbon products.
+    -->
+    <CryptoService>
+
+        <Enabled>true</Enabled>
+
+        <!-- The crypto provider which is used for internal data encryption and decryption -->
+        <InternalCryptoProviderClassName>org.wso2.carbon.crypto.provider.KeyStoreBasedInternalCryptoProvider</InternalCryptoProviderClassName>
+
+        <!--
+            The crypto provider which is used for the crypto needs which come when communicating with external parties.
+            e.g. Signing, Decrypting.
+        -->
+        <ExternalCryptoProviderClassName>org.wso2.carbon.core.encryption.KeyStoreBasedExternalCryptoProvider</ExternalCryptoProviderClassName>
+
+        <!--
+            The list of key resolvers which will be used based on the context when handling crypto with external parties.
+
+            e.g. Resolving the public key of an external entity.
+        -->
+        <KeyResolvers>
+            <KeyResolver className="org.wso2.carbon.crypto.defaultProvider.resolver.ContextIndependentKeyResolver" priority="-1"/>
+        </KeyResolvers>
+
+    </CryptoService>
+
     <!-- 
       Enable following config to allow Emails as usernames. 	
-    -->
-    <!--EnableEmailUserName>true</EnableEmailUserName-->
+    -->	    	
+    <!--EnableEmailUserName>true</EnableEmailUserName-->	
 
     <!--
       Security configurations
@@ -372,6 +400,23 @@
             <!-- Private Key password-->
             <KeyPassword>wso2carbon</KeyPassword>
         </KeyStore>
+
+        <!--
+            The KeyStore which is used for encrypting/decrypting internal data.
+            This block is read by Carbon Crypto Service.
+        -->
+        <InternalKeyStore>
+            <!-- Keystore file location-->
+            <Location>${carbon.home}/repository/resources/security/wso2carbon.jks</Location>
+            <!-- Keystore type (JKS/PKCS12 etc.)-->
+            <Type>JKS</Type>
+            <!-- Keystore password-->
+            <Password>wso2carbon</Password>
+            <!-- Private Key alias-->
+            <KeyAlias>wso2carbon</KeyAlias>
+            <!-- Private Key password-->
+            <KeyPassword>wso2carbon</KeyPassword>
+        </InternalKeyStore>
 
         <!--
             System wide trust-store which is used to maintain the certificates of all
@@ -398,12 +443,12 @@
                 exceptions at runtime.
             -->
             <!-- <Credential> -->
-                <!--
+                <!-- 
                     the pattern that would match a subset of URLs for which this authenticator
                     would be used
                 -->
                 <!-- <Pattern>regularExpression</Pattern> -->
-                <!--
+                <!-- 
                     the type of this authenticator. Allowed values are:
                     1. server
                     2. proxy
@@ -430,11 +475,13 @@
 	<!--Option to disable storing of tokens issued by STS-->
 	<DisableTokenStore>false</DisableTokenStore>
 
-        <!--
-         Security token store class name. If this is not set, default class will be
-         org.wso2.carbon.security.util.SecurityTokenStore
-        -->
-        <!--TokenStoreClassName>org.wso2.carbon.identity.sts.store.DBTokenStore</TokenStoreClassName-->
+ <STSCallBackHandlerName>org.wso2.carbon.identity.provider.AttributeCallbackHandler</STSCallBackHandlerName>
+
+	<!--
+	 Security token store class name. If this is not set, default class will be
+	 org.wso2.carbon.security.util.SecurityTokenStore
+	-->
+	<TokenStoreClassName>org.wso2.carbon.identity.sts.store.DBTokenStore</TokenStoreClassName>
 
         <XSSPreventionConfig>
             <Enabled>true</Enabled>
@@ -443,24 +490,12 @@
                 <!--Pattern></Pattern-->
             </Patterns>
         </XSSPreventionConfig>
-
-        <!-- Configurations to avoid Cross Site Request Forgery vulnerabilities -->
-        <CSRFPreventionConfig>
-            <!-- CSRFPreventionFilter configurations that adopts Synchronizer Token Pattern -->
-            <CSRFPreventionFilter>
-                <!-- Set below to true to enable the CSRFPreventionFilter -->
-                <Enabled>false</Enabled>
-                <!-- Url Pattern to skip application of CSRF protection-->
-                <SkipUrlPattern>(.*)(/images|/css|/js|/docs)(.*)</SkipUrlPattern>
-            </CSRFPreventionFilter>
-        </CSRFPreventionConfig>
-
-        <!-- Configuration to enable or disable CR and LF sanitization filter-->
-        <CRLFPreventionConfig>
-            <!--Set below to true to enable the CRLFPreventionFilter-->
-            <Enabled>true</Enabled>
-        </CRLFPreventionConfig>
     </Security>
+<HideMenuItemIds>
+<HideMenuItemId>claim_mgt_menu</HideMenuItemId>
+<HideMenuItemId>identity_mgt_emailtemplate_menu</HideMenuItemId>
+<HideMenuItemId>identity_security_questions_menu</HideMenuItemId>
+</HideMenuItemIds>
 
     <!--
        The temporary work directory
@@ -577,7 +612,7 @@
         </Processor>
     </HttpGetRequestProcessors>
 
-    <!-- Deployment Synchronizer Configuration. t Enabled value to true when running with "svn based" dep sync.
+    <!-- Deployment Synchronizer Configuration. Enable value to true when running with "svn based" dep sync.
 	In master nodes you need to set both AutoCommit and AutoCheckout to true
 	and in  worker nodes set only AutoCheckout to true.
     -->
@@ -591,16 +626,6 @@
         <SvnPassword>password</SvnPassword>
         <SvnUrlAppendTenantId>true</SvnUrlAppendTenantId>
     </DeploymentSynchronizer>
-
-    <!-- Deployment Synchronizer Configuration. Uncomment the following section when running with "registry based" dep sync.
-        In master nodes you need to set both AutoCommit and AutoCheckout to true
-        and in  worker nodes set only AutoCheckout to true.
-    -->
-    <!--<DeploymentSynchronizer>
-        <Enabled>true</Enabled>
-        <AutoCommit>false</AutoCommit>
-        <AutoCheckout>true</AutoCheckout>
-    </DeploymentSynchronizer>-->
 
     <!-- Mediation persistence configurations. Only valid if mediation features are available i.e. ESB -->
     <!--<MediationConfig>
@@ -617,7 +642,7 @@
     <ServerInitializers>
         <!--<Initializer></Initializer>-->
     </ServerInitializers>
-
+    
     <!--
     Indicates whether the Carbon Servlet is required by the system, and whether it should be
     registered
@@ -666,30 +691,30 @@
        Default Feature Repository of WSO2 Carbon.
     -->
     <FeatureRepository>
-        <RepositoryName>default repository</RepositoryName>
-        <RepositoryURL>http://product-dist.wso2.com/p2/carbon/releases/wilkes/</RepositoryURL>
+	    <RepositoryName>default repository</RepositoryName>
+	    <RepositoryURL>http://product-dist.wso2.com/p2/carbon/releases/wilkes/</RepositoryURL>
     </FeatureRepository>
 
     <!--
 	Configure API Management
    -->
    <APIManagement>
-
-	<!--Uses the embedded API Manager by default. If you want to use an external
+	
+	<!--Uses the embedded API Manager by default. If you want to use an external 
 	API Manager instance to manage APIs, configure below  externalAPIManager-->
-
+	
 	<Enabled>true</Enabled>
-
-	<!--Uncomment and configure API Gateway and
+	
+	<!--Uncomment and configure API Gateway and 
 	Publisher URLs to use external API Manager instance-->
-
+	
 	<!--ExternalAPIManager>
 
 		<APIGatewayURL>http://localhost:8281</APIGatewayURL>
 		<APIPublisherURL>http://localhost:8281/publisher</APIPublisherURL>
 
 	</ExternalAPIManager-->
-
+	
 	<LoadAPIContextsInServerStartup>true</LoadAPIContextsInServerStartup>
    </APIManagement>
 </Server>
