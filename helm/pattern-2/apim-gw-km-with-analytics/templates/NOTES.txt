@@ -1,5 +1,0 @@
-Thank you for installing WSO2 API Manager with Analytics.
-
-Your release is named {{ .Release.Name }}.
-
-Please refer the official documentation at https://docs.wso2.com/display/AM250
