@@ -17,7 +17,7 @@
 1. Provide permissions for the setup file to execute by running **chmod +x wso2am.sh**
 1. Run **./wso2am.sh --deploy** on your terminal. This will deploy WSO2 API Manager in your cluster. 
 
-1. Try navigating to https://< NODE-IP >:30596/carbon/ your favourite browser using username: admin and password: admin. Your < NODE-IP > will be provided at the end of the deployment. 
+1. Try navigating to https://< NODE-IP >:30443/carbon/ your favourite browser using username: admin and password: admin. Your < NODE-IP > will be provided at the end of the deployment. 
 1. We welcome you to try out WSO2 API Manager by following **< getting-start-link >**. 
 
 
