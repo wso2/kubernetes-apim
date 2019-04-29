@@ -1,6 +1,6 @@
 # Simplified setup for WSO2 kubernetes API Manager
 
-![WSO2 API Manager Deployment](apim_simple.png)
+![WSO2 API Manager Deployment](extra/apim_simple.png)
 
 ## Contents
 * Prerequisites
