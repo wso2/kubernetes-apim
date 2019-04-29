@@ -15,8 +15,76 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #--------------------------------------------------------------------------------
-IFS='' read -r -d '' deployment<<"EOF"
 
+set -e
+
+# bash variables
+k8s_obj_file="deployment.yaml"; str_sec=""
+WSO2_SUBSCRIPTION_USERNAME=''
+WSO2_SUBSCRIPTION_PASSWORD=''
+NODE_IP=''
+
+# bash functions
+function usage(){
+  echo "Usage: "
+  echo -e "-d, --deploy     Deploy WSO2 API Manager"
+  echo -e "-u, --undeploy   Undeploy WSO2 API Manager"
+  echo -e "-h, --help       Display usage instrusctions"
+}
+function undeploy(){
+  echoBold "Undeploying WSO2 API Manager ... \n"
+  kubectl delete -f deployment.yaml
+  exit 0
+}
+function echoBold () {
+    echo -en  $'\e[1m'"${1}"$'\e[0m'
+}
+
+function display_msg(){
+    msg=$@
+    echoBold "${msg}"
+    exit 1
+}
+
+function st(){
+  cycles=${1}
+  i=0
+  while [[ i -lt $cycles ]]
+  do
+    echoBold "* "
+    let "i=i+1"
+  done
+}
+function sp(){
+  cycles=${1}
+  i=0
+  while [[ i -lt $cycles ]]
+  do
+    echoBold " "
+    let "i=i+1"
+  done
+}
+function product_name(){
+  #wso2apim
+  echo -e "\n"
+  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; sp 1; st 3; sp 3; sp 8; sp 2; st 3; sp 1; sp 3; st 3; sp 3; st 5; sp 2; st 1; sp 8; st 1;
+  echo ""
+  st 1; sp 8; st 1; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 4; st 1; sp 2; sp 8; sp 1; st 1; sp 4; st 1; sp 3; st 1; sp 4; st 1; sp 2; sp 3; st 1; sp 6; st 2; sp 4; st 2;
+  echo ""
+  st 1; sp 3; st 1; sp 3; st 1; sp 2; st 1; sp 8; st 1; sp 6; st 1; sp 2; sp 6; st 1; sp 2; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp 4; st 1; sp 2; sp 3; st 1; sp 6; st 1; sp 1; st 1; sp 2; st 1; sp 1; st 1;
+  echo ""
+  st 1; sp 2; st 1; st 1; sp 2; st 1; sp 2; sp 1; st 3; sp 3; st 1; sp 6; st 1; sp 2; sp 4; st 1; sp 4; st 3; sp 2; st 5; sp 2; st 3; sp 3; sp 4; st 1; sp 6; st 1; sp 2; st 2; sp 2; st 1;
+  echo ""
+  st 1; sp 1; st 1; sp 2; st 1; sp 1; st 1; sp 2; sp 6; st 1; sp 2; st 1; sp 6; st 1; sp 2; sp 2; st 1; sp 6; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp  7; sp 4; st 1; sp 6; st 1; sp 3; st 1; sp 3; st 1;
+  echo ""
+  st 2; sp 4; st 2; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 8; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp 7; sp 4; st 1; sp 6; st 1; sp 8; st 1;
+  echo ""
+  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; st 4; sp 2; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp 7; st 5; sp 2; st 1; sp 8; st 1;
+  echo -e "\n"
+}
+function create_yaml(){
+
+cat > $k8s_obj_file << "EOF"
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -37,7 +105,11 @@ secrets:
 
 apiVersion: v1
 data:
-  .dockerconfigjson: "wso2.secret&auth.base64"
+EOF
+
+echo "  .dockerconfigjson: $str_sec" >> $k8s_obj_file
+
+cat >> $k8s_obj_file << "EOF"
 kind: Secret
 metadata:
   name: wso2creds
@@ -70,7 +142,11 @@ data:
                     <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
                     <Username>${admin.username}</Username>
                     <Password>${admin.password}</Password>
-                    <GatewayEndpoint>http://"wso2.k8s&node_ip":30243,https://"wso2.k8s&node_ip":30243</GatewayEndpoint>
+EOF
+
+echo '                    <GatewayEndpoint>http://'$NODE_IP':30243,https://'$NODE_IP':30243</GatewayEndpoint>' >> $k8s_obj_file
+
+cat >> $k8s_obj_file << "EOF"
                     <GatewayWSEndpoint>ws://${carbon.local.ip}:9099</GatewayWSEndpoint>
                 </Environment>
             </Environments>
@@ -144,8 +220,12 @@ data:
         <APIStore>
             <CompareCaseInsensitively>true</CompareCaseInsensitively>
             <DisplayURL>false</DisplayURL>
-            <URL>https://"wso2.k8s&node_ip":30443/store</URL>
-            <ServerURL>https://"wso2.k8s&node_ip":30443services/</ServerURL>
+EOF
+
+echo "            <URL>https://$NODE_IP:30443/store</URL>" >> $k8s_obj_file
+echo "            <ServerURL>https://$NODE_IP:30443services/</ServerURL>" >> $k8s_obj_file
+
+cat >> $k8s_obj_file << "EOF"
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
             <DisplayMultipleVersions>false</DisplayMultipleVersions>
@@ -402,8 +482,13 @@ data:
         <Name>WSO2 API Manager</Name>
         <ServerKey>AM</ServerKey>
         <Version>2.6.0</Version>
-        <HostName>"wso2.k8s&node_ip"</HostName>
-        <MgtHostName>"wso2.k8s&node_ip"</MgtHostName>
+EOF
+
+echo "        <HostName>$NODE_IP</HostName>" >> $k8s_obj_file
+
+echo "        <MgtHostName>$NODE_IP</MgtHostName>" >> $k8s_obj_file
+
+cat >> $k8s_obj_file << "EOF"
         <ServerURL>local:/${carbon.context}/services/</ServerURL>
         <ServerRoles>
             <Role>APIManager</Role>
@@ -3143,72 +3228,6 @@ spec:
 ---
 EOF
 
-set -e
-
-# bash variables
-k8s_obj_file="deployment.yaml"
-KUBECTL=`which kubectl`
-WSO2_SUBSCRIPTION_USERNAME=''
-WSO2_SUBSCRIPTION_PASSWORD=''
-NODE_IP=''
-
-# bash functions
-function usage(){
-  echo "Usage: "
-  echo -e "-d, --deploy     Deploy WSO2 API Manager"
-  echo -e "-u, --undeploy   Undeploy WSO2 API Manager"
-  echo -e "-h, --help       Display usage instrusctions"
-}
-function undeploy(){
-  echoBold "Undeploying WSO2 API Manager ... \n"
-  ${KUBECTL} delete -f deployment.yaml
-  exit 0
-}
-function echoBold () {
-    echo -en  $'\e[1m'"${1}"$'\e[0m'
-}
-
-function display_msg(){
-    msg=$@
-    echoBold "${msg}"
-    exit 1
-}
-
-function st(){
-  cycles=${1}
-  i=0
-  while [[ i -lt $cycles ]]
-  do
-    echoBold "* "
-    let "i=i+1"
-  done
-}
-function sp(){
-  cycles=${1}
-  i=0
-  while [[ i -lt $cycles ]]
-  do
-    echoBold " "
-    let "i=i+1"
-  done
-}
-function product_name(){
-  #wso2apim
-  echo -e "\n"
-  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; sp 1; st 3; sp 3; sp 8; sp 2; st 3; sp 1; sp 3; st 3; sp 3; st 5; sp 2; st 1; sp 8; st 1;
-  echo ""
-  st 1; sp 8; st 1; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 4; st 1; sp 2; sp 8; sp 1; st 1; sp 4; st 1; sp 3; st 1; sp 4; st 1; sp 2; sp 3; st 1; sp 6; st 2; sp 4; st 2;
-  echo ""
-  st 1; sp 3; st 1; sp 3; st 1; sp 2; st 1; sp 8; st 1; sp 6; st 1; sp 2; sp 6; st 1; sp 2; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp 4; st 1; sp 2; sp 3; st 1; sp 6; st 1; sp 1; st 1; sp 2; st 1; sp 1; st 1;
-  echo ""
-  st 1; sp 2; st 1; st 1; sp 2; st 1; sp 2; sp 1; st 3; sp 3; st 1; sp 6; st 1; sp 2; sp 4; st 1; sp 4; st 3; sp 2; st 5; sp 2; st 3; sp 3; sp 4; st 1; sp 6; st 1; sp 2; st 2; sp 2; st 1;
-  echo ""
-  st 1; sp 1; st 1; sp 2; st 1; sp 1; st 1; sp 2; sp 6; st 1; sp 2; st 1; sp 6; st 1; sp 2; sp 2; st 1; sp 6; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp  7; sp 4; st 1; sp 6; st 1; sp 3; st 1; sp 3; st 1;
-  echo ""
-  st 2; sp 4; st 2; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 8; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp 7; sp 4; st 1; sp 6; st 1; sp 8; st 1;
-  echo ""
-  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; st 4; sp 2; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp 7; st 5; sp 2; st 1; sp 8; st 1;
-  echo -e "\n"
 }
 function get_creds(){
   while [[ -z "$WSO2_SUBSCRIPTION_USERNAME" ]]
@@ -3241,11 +3260,11 @@ function validate_ip(){
         NODE_IP=$ip_check
       else
         IFS=''
-        echo "invalid_ip. please try again."
+        echo "Invalid IP. Please try again."
         NODE_IP=""
       fi
     else
-      echo "invalid_ip. please try again."
+      echo "Invalid IP. Please try again."
       NODE_IP=""
     fi
 }
@@ -3258,7 +3277,7 @@ function get_node_ip(){
       then
           NODE_IP=$(minikube ip)
       else
-        echo "We couldn't find your cluster node-ip."
+        echo "We could not find your cluster node-ip."
         while [[ -z "$NODE_IP" ]]
         do
               read -p "$(echo "Enter one of your cluster Node IPs to provision instant access to server: ")" NODE_IP
@@ -3367,7 +3386,7 @@ function progress_bar(){
 
 function deploy(){
     # checking for required command line tools
-    if [[ ! $(KUBECTL) ]]
+    if [[ ! $(which kubectl) ]]
     then
        display_msg "Please install Kubernetes command-line tool (kubectl) before you start with the setup\n"
     fi
@@ -3378,16 +3397,14 @@ function deploy(){
     fi
 
     echoBold "Checking for an enabled cluster... Your patience is appreciated... "
-    cluster_isReady=$(${KUBECTL} cluster-info) > /dev/null 2>&1  || true
+    cluster_isReady=$(kubectl cluster-info) > /dev/null 2>&1  || true
 
     if [[ ! $cluster_isReady == *"KubeDNS"* ]]
     then
-        display_msg "\nPlease enable your cluster before running the setup.\n\nIf you don't have a kubernetes cluster, follow the link below.\n  Link: https://kubernetes.io/docs/setup/\n\n"
+        display_msg "\nPlease enable your cluster before running the setup.\n\nIf you don't have a kubernetes cluster, follow: https://kubernetes.io/docs/setup/\n\n"
     fi
 
     echoBold "Done\n"
-    # copy kubernetes object yaml files to deployment.yaml
-    echo "$deployment" > ${k8s_obj_file}
 
     #displaying wso2 product name
     product_name
@@ -3403,32 +3420,31 @@ function deploy(){
     authb64=`echo -n $auth | base64`
 
     # create authorisation code
-    authstring='{"auths":{"docker.wso2.com":
-    {"username":"'${WSO2_SUBSCRIPTION_USERNAME}'",
-    "password":"'${WSO2_SUBSCRIPTION_PASSWORD}'",
-    "email":"'${WSO2_SUBSCRIPTION_USERNAME}'",
-    "auth":"'${authb64}'"}}}'
+    authstring='{"auths":{"docker.wso2.com":{"username":"'${WSO2_SUBSCRIPTION_USERNAME}'","password":"'${WSO2_SUBSCRIPTION_PASSWORD}'","email":"'${WSO2_SUBSCRIPTION_USERNAME}'","auth":"'${authb64}'"}}}'
 
     # encode in base64
     secdata=`echo -n $authstring | base64`
 
-    # add authorization code and node-ip to deployment.yaml
-    sed -i -e 's/"wso2.secret&auth.base64"/'$secdata'/g' deployment.yaml
-    sed -i -e 's/"wso2.k8s&node_ip"/'$NODE_IP'/g' deployment.yaml
+    for i in $secdata; do
+      str_sec=$str_sec$i
+    done
 
-    echoBold "\nDeploying wso2 API Manager ....\n"
+    echoBold "\nDeploying WSO2 API Manager ....\n"
 
-    # create kubernetes deployment
-    ${KUBECTL} create -f ${k8s_obj_file}
+    # create kubernetes object yaml
+    create_yaml
+
+    # Deploy wso2am
+    kubectl create -f $k8s_obj_file
 
     # waiting until deployment is ready
     progress_bar
-    echoBold "Successfully deployed WSO2 API Manager\n"
+    echoBold "Successfully deployed WSO2 API Manager.\n\n"
 
     echoBold "1. Try navigating to https://$NODE_IP:30443/carbon/ from your favourite browser using \n"
     echoBold "\tusername: admin\n"
     echoBold "\tpassword: admin\n"
-    echoBold "2. Follow <getting-started-link> to get started using WSO2 API Manager.\n\n"
+    echoBold "2. Follow <getting-started-link> to start using WSO2 API Manager.\n\n"
 }
 
 arg=$1
