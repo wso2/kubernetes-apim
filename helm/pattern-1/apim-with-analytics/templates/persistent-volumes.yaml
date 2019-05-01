@@ -47,3 +47,4 @@ spec:
   nfs:
     server: {{ .Values.serverIp }}
     path: {{ .Values.sharedTenantsLocationPath }}
+
