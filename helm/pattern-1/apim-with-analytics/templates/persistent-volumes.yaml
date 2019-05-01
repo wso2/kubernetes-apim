@@ -28,3 +28,22 @@ spec:
   nfs:
     server: {{ .Values.serverIp }}
     path: {{ .Values.sharedDeploymentLocationPath }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wso2apim-with-analytics-shared-tenants-pv
+  namespace : {{ .Values.namespace }}
+  labels:
+    purpose: apim-shared-tenants
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: {{ .Values.serverIp }}
+path: {{ .Values.sharedTenantsLocationPath }}
