@@ -27,3 +27,21 @@ spec:
   selector:
     matchLabels:
       purpose: apim-shared-deployment
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wso2apim-with-analytics-tenants-volume-claim
+  namespace : {{ .Values.namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""
+  selector:
+    matchLabels:
+      purpose: apim-shared-tenants
