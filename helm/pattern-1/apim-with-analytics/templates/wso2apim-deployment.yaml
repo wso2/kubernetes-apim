@@ -91,7 +91,7 @@ spec:
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: apim-conf-datasources
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
-          - name: apim-tenants-volume
+        - name: apim-tenants-volume
           mountPath: /home/wso2carbon/wso2am-2.6.0/repository/tenants
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
