@@ -15,12 +15,12 @@
 ## Quick Start Guide
 1. Download simplified kubernetes setup for WSO2 API Manager (either **wso2am.sh** or **wso2am_open.sh**).From this point forward the steps are being described for wso2am.sh. If you have downloaded wso2am_open.sh please substitute wso2am.sh with wso2am_open.sh for every command.  
 
-1. In the command line, move into the directory where you have downloaded the simplified kubernetes-apim setup. (Usually, the file would be in the “Downloads” directory unless you have changed the default directory to somewhere else.)
-1. Provide permissions for the setup file to execute by running **chmod +x wso2am.sh**
-1. Run **./wso2am.sh --deploy** on your terminal. This will deploy WSO2 API Manager in your cluster. 
+2. In the command line, move into the directory where you have downloaded the simplified kubernetes-apim setup. (Usually, the file would be in the “Downloads” directory unless you have changed the default directory to somewhere else.)
+3. Provide permissions for the setup file to execute by running **chmod +x wso2am.sh**
+4. Run **./wso2am.sh --deploy** on your terminal. This will deploy WSO2 API Manager in your cluster. 
 
-1. Try navigating to https://< NODE-IP >:30443/carbon/ your favourite browser using username: admin and password: admin. Your < NODE-IP > will be provided at the end of the deployment. 
-1. We welcome you to try out WSO2 API Manager by following **< getting-start-link >**. 
+5. Try navigating to https://< NODE-IP >:30443/carbon/ your favourite browser using username: admin and password: admin. Your < NODE-IP > will be provided at the end of the deployment. 
+6. We welcome you to try out WSO2 API Manager by following **[WSO2 API Manager - Quick Start Guide](https://docs.wso2.com/display/AM260/Quick+Start+Guide)**. 
 
 
 
