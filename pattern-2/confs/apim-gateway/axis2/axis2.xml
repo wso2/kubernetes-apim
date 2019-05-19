@@ -176,7 +176,7 @@
                           class="org.apache.axis2.json.JSONBadgerfishMessageFormatter"/>
         <messageFormatter contentType="text/javascript"
                           class="org.apache.axis2.json.JSONMessageFormatter"/>
-        <messageFormatter contentType="application/octet-streaml" 
+        <messageFormatter contentType="application/octet-stream" 
                           class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
 
         <!-- See https://wso2.org/jira/browse/ESBJAVA-1725 before enabling bellow line -->
@@ -677,7 +677,7 @@
                     is deemed to have left the cluster, it will be detected by the Group Membership
                     Service (GMS) using a TCP ping mechanism.
         -->
-        <parameter name="membershipScheme">kubernetes</parameter>
+        <parameter name="membershipScheme">multicast</parameter>
         <!--<parameter name="licenseKey">xxx</parameter>-->
         <!--<parameter name="mgtCenterURL">http://localhost:8081/mancenter/</parameter>-->
 
@@ -685,7 +685,7 @@
          The clustering domain/group. Nodes in the same group will belong to the same multicast
          domain. There will not be interference between nodes in different groups.
         -->
-        <parameter name="domain">wso2.am.domain</parameter>
+        <parameter name="domain">wso2.carbon.domain</parameter>
 
         <!-- The multicast address to be used -->
         <!--<parameter name="mcastAddress">228.0.0.4</parameter>-->
@@ -706,7 +706,7 @@
         -->
         <!-- The host name or IP address of this member -->
 
-        <parameter name="localMemberHost">am-gateway</parameter>
+        <parameter name="localMemberHost">127.0.0.1</parameter>
 
         <!--
             The bind adress of this member. The difference between localMemberHost & localMemberBindAddress
@@ -741,11 +741,16 @@
             <property name="subDomain" value="worker"/>
         </parameter>
 
-        <parameter name="membershipSchemeClassName">org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme</parameter>
-        <parameter name="KUBERNETES_NAMESPACE">wso2</parameter>
-        <parameter name="KUBERNETES_SERVICES">wso2apim-gateway-service</parameter>
-        <parameter name="KUBERNETES_MASTER_SKIP_SSL_VERIFICATION">true</parameter>
-        <parameter name="USE_DNS">false</parameter>
+        <!--
+           The list of static or well-known members. These entries will only be valid if the
+           "membershipScheme" above is set to "wka"
+        -->
+        <members>
+            <member>
+                <hostName>127.0.0.1</hostName>
+                <port>4000</port>
+            </member>
+        </members>
 
         <!--
         Enable the groupManagement entry if you need to run this node as a cluster manager.
