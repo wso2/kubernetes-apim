@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2apim-is-as-km-deployment
+  name: wso2apim-pattern-2-is-as-km-deployment
 spec:
   replicas: 1
   minReadySeconds: 30
@@ -24,10 +24,13 @@ spec:
       maxSurge: 1
       maxUnavailable: 0
     type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2apim-pattern-2-is-as-km
   template:
     metadata:
       labels:
-        deployment: wso2apim-is-as-km
+        deployment: wso2apim-pattern-2-is-as-km
     spec:
       containers:
       - name: wso2apim-is-as-km
@@ -35,10 +38,11 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/sh
-            - -c
-            - nc -z localhost 9443
-          initialDelaySeconds: 300
+              - /bin/sh
+              - -c
+              - nc -z localhost 9443
+          initialDelaySeconds: 240
+          failureThreshold: 3
           periodSeconds: 10
         readinessProbe:
           exec:
@@ -46,12 +50,20 @@ spec:
               - /bin/sh
               - -c
               - nc -z localhost 9443
-          initialDelaySeconds: 300
+          initialDelaySeconds: 240
+          failureThreshold: 3
           periodSeconds: 10
         lifecycle:
           preStop:
             exec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+        resources:
+          requests:
+            memory: 2Gi
+            cpu: 2000m
+          limits:
+            memory: 3Gi
+            cpu: 3000m
         imagePullPolicy: Always
         securityContext:
           runAsUser: 802
@@ -77,7 +89,7 @@ spec:
       volumes:
       - name: apim-is-as-km-storage-volume
         persistentVolumeClaim:
-          claimName: wso2apim-is-as-km-shared-server-volume-claim
+          claimName: wso2apim-pattern-2-is-as-km-shared-server-volume-claim
       - name: apim-is-as-km-conf
         configMap:
           name: apim-is-as-km-conf

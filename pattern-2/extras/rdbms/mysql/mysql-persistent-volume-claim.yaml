@@ -25,4 +25,4 @@ spec:
   storageClassName: ""
   selector:
     matchLabels:
-      purpose: apim-rdbms-data
+      purpose: wso2apim-pattern-2-apim-rdbms-data

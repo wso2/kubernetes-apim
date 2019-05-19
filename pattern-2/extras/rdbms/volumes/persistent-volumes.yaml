@@ -17,7 +17,7 @@ kind: PersistentVolume
 metadata:
   name: wso2apim-pattern-2-rdbms-pv
   labels:
-    purpose: apim-rdbms-data
+    purpose: wso2apim-pattern-2-apim-rdbms-data
 spec:
   capacity:
     storage: 20Gi

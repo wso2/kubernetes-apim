@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2apim-km-deployment
+  name: wso2apim-pattern-2-km-deployment
 spec:
   replicas: 1
   minReadySeconds: 30
@@ -24,10 +24,13 @@ spec:
       maxSurge: 1
       maxUnavailable: 0
     type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2apim-pattern-2-km
   template:
     metadata:
       labels:
-        deployment: wso2apim-km
+        deployment: wso2apim-pattern-2-km
     spec:
       containers:
       - name: wso2apim-km
@@ -35,10 +38,11 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/sh
-            - -c
-            - nc -z localhost 9443
-          initialDelaySeconds: 300
+              - /bin/sh
+              - -c
+              - nc -z localhost 9443
+          initialDelaySeconds: 240
+          failureThreshold: 3
           periodSeconds: 10
         readinessProbe:
           exec:
@@ -46,42 +50,29 @@ spec:
               - /bin/sh
               - -c
               - nc -z localhost 9443
-          initialDelaySeconds: 300
+          initialDelaySeconds: 240
+          failureThreshold: 3
           periodSeconds: 10
         lifecycle:
           preStop:
             exec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+        resources:
+          requests:
+            memory: 2Gi
+            cpu: 2000m
+          limits:
+            memory: 3Gi
+            cpu: 3000m
         imagePullPolicy: Always
         securityContext:
           runAsUser: 802
         ports:
         -
-          containerPort: 8280
-          protocol: "TCP"
-        -
-          containerPort: 8243
-          protocol: "TCP"
-        -
           containerPort: 9763
           protocol: "TCP"
         -
           containerPort: 9443
-          protocol: "TCP"
-        -
-          containerPort: 5672
-          protocol: "TCP"
-        -
-          containerPort: 9711
-          protocol: "TCP"
-        -
-          containerPort: 9611
-          protocol: "TCP"
-        -
-          containerPort: 7711
-          protocol: "TCP"
-        -
-          containerPort: 7611
           protocol: "TCP"
         volumeMounts:
         - name: apim-km-conf
@@ -90,8 +81,6 @@ spec:
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
         - name: apim-km-conf-datasources
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
-        - name: apim-km-conf-identity
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
@@ -105,6 +94,3 @@ spec:
       - name: apim-km-conf-datasources
         configMap:
           name: apim-km-conf-datasources
-      - name: apim-km-conf-identity
-        configMap:
-          name: apim-km-conf-identity
