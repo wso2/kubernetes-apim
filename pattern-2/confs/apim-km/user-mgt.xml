@@ -111,7 +111,7 @@
 	    -->
         <!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ActiveDirectoryUserStoreManager">
             <Property name="TenantManager">org.wso2.carbon.user.core.tenant.CommonHybridLDAPTenantManager</Property>
-            <Property name="ConnectionURL">ldaps://10.100.1.100:636</Property> 
+            <Property name="ConnectionURL">ldaps://10.100.1.100:636</Property>
             <Property name="ConnectionName">CN=admin,CN=Users,DC=WSO2,DC=Com</Property>
             <Property name="ConnectionPassword">A1b2c3d4</Property>
             <Property name="AnonymousBind">false</Property>
@@ -147,8 +147,8 @@
             <Property name="MultiAttributeSeparator">,</Property>
             <Property name="isADLDSRole">false</Property>
             <Property name="userAccountControl">512</Property>
-            <Property name="MaxUserNameListLength">100</Property>     
-            <Property name="MaxRoleNameListLength">100</Property>                     
+            <Property name="MaxUserNameListLength">100</Property>
+            <Property name="MaxRoleNameListLength">100</Property>
             <Property name="MembershipAttributeRange">1500</Property>
             <Property name="kdcEnabled">false</Property>
             <Property name="defaultRealmName">WSO2.ORG</Property>
@@ -216,41 +216,41 @@
         </AuthorizationManager>
     </Realm>
 </UserManager>
-<!--
+        <!--
 
-************* Description of some of the configuration properties used in user-mgt.xml *********************************
+        ************* Description of some of the configuration properties used in user-mgt.xml *********************************
 
-DomainName -
-    This property must be used by all secondary user store managers in multiple user store configuration.
-    DomainName is a unique identifier given to the user store. Users must provide both the domain name and
-    username at log-in as "DomainName\Username"
+        DomainName -
+            This property must be used by all secondary user store managers in multiple user store configuration.
+            DomainName is a unique identifier given to the user store. Users must provide both the domain name and
+            username at log-in as "DomainName\Username"
 
-UserRolesCacheEnabled -
-    This is to indicate whether to cache role list of a user. By default it is set to true.
-    You may need to disable it if user-roles are changed by external means and need to reflect
-    those changes in the carbon product immediately.
+        UserRolesCacheEnabled -
+            This is to indicate whether to cache role list of a user. By default it is set to true.
+            You may need to disable it if user-roles are changed by external means and need to reflect
+            those changes in the carbon product immediately.
 
-ReplaceEscapeCharactersAtUserLogin -
-    This is to configure whether escape characters in user name needs to be replaced at user login.
-    Currently the identified escape characters that needs to be replaced are '\' & '\\'
+        ReplaceEscapeCharactersAtUserLogin -
+            This is to configure whether escape characters in user name needs to be replaced at user login.
+            Currently the identified escape characters that needs to be replaced are '\' & '\\'
 
-UserDNPattern -
-    This property will be used when authenticating users. During authentication we do a bind. But if the user is login
-    with email address or some other property we need to first lookup LDAP and retrieve DN for the user.
-    This involves an additional step.  If UserDNPattern is specified the DN will be constructed using the pattern
-    specified in this property. Performance of this is much better than looking up DN and binding user.
+        UserDNPattern -
+            This property will be used when authenticating users. During authentication we do a bind. But if the user is login
+            with email address or some other property we need to first lookup LDAP and retrieve DN for the user.
+            This involves an additional step.  If UserDNPattern is specified the DN will be constructed using the pattern
+            specified in this property. Performance of this is much better than looking up DN and binding user.
 
-RoleDNPattern -
-    This property will be used when checking whether user has been assigned to a given role.
-    Rather than searching the role in search base, by using this property direct search can be done.
+        RoleDNPattern -
+            This property will be used when checking whether user has been assigned to a given role.
+            Rather than searching the role in search base, by using this property direct search can be done.
 
-PasswordHashMethod -
-    This says how the password should be stored. Allowed values are as follows,
-        SHA - Uses SHA digest method
-        MD5 - Uses MD 5 digest method
-        PLAIN_TEXT - Plain text passwords
-        In addition to above this supports all digest methods supported by http://docs.oracle.com/javase/6/docs/api/java/security/MessageDigest.html.
+        PasswordHashMethod -
+            This says how the password should be stored. Allowed values are as follows,
+                SHA - Uses SHA digest method
+                MD5 - Uses MD 5 digest method
+                PLAIN_TEXT - Plain text passwords
+                In addition to above this supports all digest methods supported by http://docs.oracle.com/javase/6/docs/api/java/security/MessageDigest.html.
 
-DisplayNameAttribute -
-    This is to have a dedicated LDAP attribute to display an entity(User/Role) in UI, in addition to the UserNameAttribute which is used for IS-UserStore interactions.
--->
+        DisplayNameAttribute -
+            This is to have a dedicated LDAP attribute to display an entity(User/Role) in UI, in addition to the UserNameAttribute which is used for IS-UserStore interactions.
+        -->

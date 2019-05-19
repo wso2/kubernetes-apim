@@ -162,13 +162,13 @@
         <!--messageFormatter contentType="application/json"
                           class="org.apache.axis2.json.JSONMessageFormatter"/-->
         <messageFormatter contentType="application/json"
-                                  class="org.apache.axis2.json.gson.JsonFormatter" />
+                          class="org.apache.axis2.json.gson.JsonFormatter" />
         <messageFormatter contentType="application/json/badgerfish"
                           class="org.apache.axis2.json.JSONBadgerfishMessageFormatter"/>
         <!--messageFormatter contentType="text/javascript"
                           class="org.apache.axis2.json.JSONMessageFormatter"/-->
         <messageFormatter contentType="text/javascript"
-                                  class="org.apache.axis2.json.gson.JsonFormatter" />
+                          class="org.apache.axis2.json.gson.JsonFormatter" />
 
         <!--messageFormatter contentType="application/x-www-form-urlencoded"
                         class="org.wso2.carbon.relay.ExpandingMessageFormatter"/-->
@@ -198,13 +198,13 @@
         <!--messageBuilder contentType="application/json"
                         class="org.apache.axis2.json.JSONOMBuilder"/-->
         <messageBuilder contentType="application/json"
-                                class="org.apache.axis2.json.gson.JsonBuilder" />
+                        class="org.apache.axis2.json.gson.JsonBuilder" />
         <messageBuilder contentType="application/json/badgerfish"
                         class="org.apache.axis2.json.JSONBadgerfishOMBuilder"/>
         <!--messageBuilder contentType="text/javascript"
                         class="org.apache.axis2.json.JSONOMBuilder"/-->
         <messageBuilder contentType="text/javascript"
-                                class="org.apache.axis2.json.gson.JsonBuilder" />
+                        class="org.apache.axis2.json.gson.JsonBuilder" />
 
         <!--messageBuilder contentType="application/xml"
      		        class="org.wso2.carbon.relay.BinaryRelayBuilder"/-->
@@ -587,7 +587,7 @@
         <phase name="PolicyDetermination"/>
         <phase name="MessageOut"/>
         <phase name="Security"/>
-	<phase name="Transport"/>
+        <phase name="Transport"/>
         <!--
            The MsgOutObservation phase is used to observe messages just before the
            responses are sent out. In this phase, we could do some things such as SOAP message
@@ -631,7 +631,7 @@
          The clustering domain/group. Nodes in the same group will belong to the same multicast
          domain. There will not be interference between nodes in different groups.
         -->
-        <parameter name="domain">wso2.carbon.domain</parameter>
+        <parameter name="domain">wso2.km.domain</parameter>
 
         <!-- The multicast address to be used -->
         <!--<parameter name="mcastAddress">228.0.0.4</parameter>-->
@@ -652,7 +652,7 @@
         -->
         <!-- The host name or IP address of this member -->
 
-        <parameter name="localMemberHost">wso2apim-is-km</parameter>
+        <parameter name="localMemberHost">is-km</parameter>
 
         <!--
             The bind adress of this member. The difference between localMemberHost & localMemberBindAddress
@@ -668,6 +668,12 @@
         contact this member
          -->
         <parameter name="localMemberPort">4000</parameter>
+
+        <parameter name="membershipSchemeClassName">org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme</parameter>
+        <parameter name="KUBERNETES_NAMESPACE">wso2</parameter>
+        <parameter name="KUBERNETES_SERVICES">wso2apim-pattern-2-km-service</parameter>
+        <parameter name="KUBERNETES_MASTER_SKIP_SSL_VERIFICATION">true</parameter>
+        <parameter name="USE_DNS">false</parameter>
 
         <!--
             The bind port of this member. The difference between localMemberPort & localMemberBindPort
@@ -687,11 +693,27 @@
             <property name="subDomain" value="worker"/>
         </parameter>
 
-	<parameter name="membershipSchemeClassName">org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme</parameter>
-        <parameter name="KUBERNETES_NAMESPACE">wso2</parameter>
-        <parameter name="KUBERNETES_SERVICES">wso2apim-km-service</parameter>
-        <parameter name="KUBERNETES_MASTER_SKIP_SSL_VERIFICATION">true</parameter>
-        <parameter name="USE_DNS">false</parameter>
+        <!--
+        Uncomment the following section to load custom Hazelcast data serializers.
+        -->
+        <!--
+        <parameter name="hazelcastSerializers">
+            <serializer typeClass="java.util.TreeSet">org.wso2.carbon.hazelcast.serializer.TreeSetSerializer
+            </serializer>
+            <serializer typeClass="java.util.Map">org.wso2.carbon.hazelcast.serializer.MapSerializer</serializer>
+        </parameter>
+        -->
+
+<!--        &lt;!&ndash;-->
+<!--           The list of static or well-known members. These entries will only be valid if the-->
+<!--           "membershipScheme" above is set to "wka"-->
+<!--        &ndash;&gt;-->
+<!--        <members>-->
+<!--            <member>-->
+<!--                <hostName>127.0.0.1</hostName>-->
+<!--                <port>4000</port>-->
+<!--            </member>-->
+<!--        </members>-->
 
         <!--
         Enable the groupManagement entry if you need to run this node as a cluster manager.
