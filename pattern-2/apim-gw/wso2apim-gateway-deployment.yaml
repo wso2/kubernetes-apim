@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2apim-gateway-deployment
+  name: wso2apim-pattern-2-gateway-deployment
 spec:
   replicas: 1
   minReadySeconds: 30
@@ -24,10 +24,13 @@ spec:
       maxSurge: 1
       maxUnavailable: 0
     type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2apim-pattern-2-gateway
   template:
     metadata:
       labels:
-        deployment: wso2apim-gateway
+        deployment: wso2apim-pattern-2-gateway
     spec:
       containers:
       - name: wso2apim-gateway
@@ -35,10 +38,11 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/sh
-            - -c
-            - nc -z localhost 8243
-          initialDelaySeconds: 300
+              - /bin/sh
+              - -c
+              - nc -z localhost 8243
+          initialDelaySeconds: 240
+          failureThreshold: 3
           periodSeconds: 10
         readinessProbe:
           exec:
@@ -46,12 +50,20 @@ spec:
               - /bin/sh
               - -c
               - nc -z localhost 8243
-          initialDelaySeconds: 300
+          initialDelaySeconds: 240
+          failureThreshold: 3
           periodSeconds: 10
         lifecycle:
           preStop:
             exec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+        resources:
+          requests:
+            memory: 2Gi
+            cpu: 2000m
+          limits:
+            memory: 3Gi
+            cpu: 3000m
         imagePullPolicy: Always
         securityContext:
           runAsUser: 802
@@ -68,21 +80,6 @@ spec:
         -
           containerPort: 9443
           protocol: "TCP"
-        -
-          containerPort: 5672
-          protocol: "TCP"
-        -
-          containerPort: 9711
-          protocol: "TCP"
-        -
-          containerPort: 9611
-          protocol: "TCP"
-        -
-          containerPort: 7711
-          protocol: "TCP"
-        -
-          containerPort: 7611
-          protocol: "TCP"
         volumeMounts:
         - name: apim-storage-volume
           mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server
@@ -90,26 +87,16 @@ spec:
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: apim-gateway-conf-axis2
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
-        - name: apim-gateway-conf-datasources
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
-        - name: apim-gateway-conf-identity
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
       volumes:
       - name: apim-storage-volume
         persistentVolumeClaim:
-          claimName: wso2apim-gateway-shared-server-volume-claim
+          claimName: wso2apim-pattern-2-gateway-shared-server-volume-claim
       - name: apim-gateway-conf
         configMap:
           name: apim-gateway-conf
       - name: apim-gateway-conf-axis2
         configMap:
           name: apim-gateway-conf-axis2
-      - name: apim-gateway-conf-datasources
-        configMap:
-          name: apim-gateway-conf-datasources
-      - name: apim-gateway-conf-identity
-        configMap:
-          name: apim-gateway-conf-identity

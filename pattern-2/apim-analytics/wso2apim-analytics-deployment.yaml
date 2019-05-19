@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2apim-analytics-deployment
+  name: wso2apim-pattern-2-analytics-worker-deployment
 spec:
   replicas: 1
   minReadySeconds: 30
@@ -24,63 +24,73 @@ spec:
       maxSurge: 1
       maxUnavailable: 0
     type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2apim-pattern-2-analytics
   template:
     metadata:
       labels:
-        deployment: wso2apim-analytics
+        deployment: wso2apim-pattern-2-analytics
     spec:
       containers:
-      - name: wso2apim-analytics
+      - name: wso2apim-analytics-worker
         image: docker.wso2.com/wso2am-analytics-worker:2.6.0
-        resources:
-          limits:
-            memory: "4Gi"
-          requests:
-            memory: "4Gi"
         livenessProbe:
           exec:
             command:
             - /bin/sh
             - -c
-            - nc -z localhost 7712
-          initialDelaySeconds: 250
+            - nc -z localhost 9444
+          initialDelaySeconds: 30
+          failureThreshold: 3
           periodSeconds: 10
         readinessProbe:
           exec:
             command:
               - /bin/sh
               - -c
-              - nc -z localhost 7712
-          initialDelaySeconds: 250
+              - nc -z localhost 9444
+          initialDelaySeconds: 30
+          failureThreshold: 3
           periodSeconds: 10
         lifecycle:
           preStop:
             exec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "2000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
         imagePullPolicy: Always
         securityContext:
           runAsUser: 802
         ports:
         -
-          containerPort: 9764
-          protocol: "TCP"
-        -
-          containerPort: 9444
+          containerPort: 7712
           protocol: "TCP"
         -
           containerPort: 7612
           protocol: "TCP"
         -
-          containerPort: 7712
+          containerPort: 9713
+          protocol: "TCP"
+        -
+          containerPort: 9613
           protocol: "TCP"
         -
           containerPort: 9091
           protocol: "TCP"
         -
-          containerPort: 7071
+          containerPort: 9444
           protocol: "TCP"
         -
           containerPort: 7444
+          protocol: "TCP"
+        -
+          containerPort: 7071
           protocol: "TCP"
         volumeMounts:
         - name: apim-analytics-conf-worker
