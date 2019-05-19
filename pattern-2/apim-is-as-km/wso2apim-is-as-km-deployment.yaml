@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-is-as-km
-        image: docker.wso2.com/wso2is-km:5.7.0
+        image: wso2/wso2is-km:5.7.0
         livenessProbe:
           exec:
             command:
@@ -83,8 +83,6 @@ spec:
         - name: apim-is-as-km-conf-datasources
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
       serviceAccountName: "wso2svc-account"
-      imagePullSecrets:
-      - name: wso2creds
       volumes:
       - name: apim-is-as-km-storage-volume
         persistentVolumeClaim:

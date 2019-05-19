@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-analytics-worker
-        image: docker.wso2.com/wso2am-analytics-worker:2.6.0
+        image: wso2/wso2am-analytics-worker:2.6.0
         livenessProbe:
           exec:
             command:
@@ -63,7 +63,6 @@ spec:
           limits:
             memory: "4Gi"
             cpu: "2000m"
-        imagePullPolicy: Always
         securityContext:
           runAsUser: 802
         ports:
