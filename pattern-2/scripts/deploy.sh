@@ -26,7 +26,7 @@ function echoBold () {
 }
 
 # create a new Kubernetes Namespace
-#${KUBERNETES_CLIENT} create namespace wso2
+${KUBERNETES_CLIENT} create namespace wso2
 
 # create a new service account in 'wso2' Kubernetes Namespace
 ${KUBERNETES_CLIENT} create serviceaccount wso2svc-account -n wso2
