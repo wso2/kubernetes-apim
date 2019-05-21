@@ -25,46 +25,85 @@ function echoBold () {
     ${ECHO} -e $'\e[1m'"${1}"$'\e[0m'
 }
 
-function usage () {
-    echoBold "This script automates the installation of WSO2 EI Integrator Analytics Kubernetes resources\n"
-    echoBold "Allowed arguments:\n"
-    echoBold "-h | --help"
-    echoBold "--wu | --wso2-username\t\tYour WSO2 username"
-    echoBold "--wp | --wso2-password\t\tYour WSO2 password"
-    echoBold "--cap | --cluster-admin-password\tKubernetes cluster admin password\n\n"
-}
+read -p "Do you have a WSO2 Subscription?(N/y)" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+ read -p "Enter Your WSO2 Username: " WSO2_SUBSCRIPTION_USERNAME
+ echo
+ read -s -p "Enter Your WSO2 Password: " WSO2_SUBSCRIPTION_PASSWORD
+ echo
+ HAS_SUBSCRIPTION=0
+ if ! grep -q "imagePullSecrets" ../apim-analytics/wso2apim-analytics-deployment.yaml; then
+     if ! sed -i.bak -e 's|wso2/|docker.wso2.com/|' \
+     ../apim-analytics/wso2apim-analytics-deployment.yaml \
+     ../apim-gw/wso2apim-gateway-deployment.yaml \
+     ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+     ../apim-km/wso2apim-km-deployment.yaml \
+     ../apim-pubstore-tm/wso2apim-pubstore-tm-1-deployment.yaml \
+     ../apim-pubstore-tm/wso2apim-pubstore-tm-2-deployment.yaml; then
+     echo "couldn't configure the docker.wso2.com"
+     exit 1
+     fi
+     if ! sed -i.bak -e '/serviceAccount/a \
+    \      imagePullSecrets:' \
+     ../apim-analytics/wso2apim-analytics-deployment.yaml \
+     ../apim-gw/wso2apim-gateway-deployment.yaml \
+     ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+     ../apim-km/wso2apim-km-deployment.yaml \
+     ../apim-pubstore-tm/wso2apim-pubstore-tm-1-deployment.yaml \
+     ../apim-pubstore-tm/wso2apim-pubstore-tm-2-deployment.yaml; then
+     echo "couldn't configure the \"imagePullSecrets:\""
+     exit 1
+     fi
+      if ! sed -i.bak -e '/imagePullSecrets/a \
+    \      - name: wso2creds' \
+     ../apim-analytics/wso2apim-analytics-deployment.yaml \
+     ../apim-gw/wso2apim-gateway-deployment.yaml \
+     ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+     ../apim-km/wso2apim-km-deployment.yaml \
+     ../apim-pubstore-tm/wso2apim-pubstore-tm-1-deployment.yaml \
+     ../apim-pubstore-tm/wso2apim-pubstore-tm-2-deployment.yaml; then
+     echo "couldn't configure the \"- name: wso2creds\""
+     exit 1
+     fi
+ fi
+elif [[ $REPLY =~ ^[Nn]$ || -z "$REPLY" ]]
+then
+ HAS_SUBSCRIPTION=1
+ if ! sed -i.bak -e '/imagePullSecrets:/d' -e '/- name: wso2creds/d' \
+     ../apim-analytics/wso2apim-analytics-deployment.yaml \
+     ../apim-gw/wso2apim-gateway-deployment.yaml \
+     ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+     ../apim-km/wso2apim-km-deployment.yaml \
+     ../apim-pubstore-tm/wso2apim-pubstore-tm-1-deployment.yaml \
+     ../apim-pubstore-tm/wso2apim-pubstore-tm-2-deployment.yaml; then
+     echo "couldn't configure the \"- name: wso2creds\""
+     exit 1
+ fi
+ if ! sed -i.bak -e 's|docker.wso2.com|wso2|' \
+     ../apim-analytics/wso2apim-analytics-deployment.yaml \
+     ../apim-gw/wso2apim-gateway-deployment.yaml \
+     ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+     ../apim-km/wso2apim-km-deployment.yaml \
+     ../apim-pubstore-tm/wso2apim-pubstore-tm-1-deployment.yaml \
+     ../apim-pubstore-tm/wso2apim-pubstore-tm-2-deployment.yaml; then
+  echo "couldn't configure the docker.wso2.com"
+  exit 1
+ fi
+else
+ echo "Invalid option"
+ exit 1
+fi
 
-WSO2_SUBSCRIPTION_USERNAME=''
-WSO2_SUBSCRIPTION_PASSWORD=''
-ADMIN_PASSWORD=''
+# remove backup files
+test -f ../apim/*.bak && rm ../apim/*.bak
+test -f ../apim-analytics/*.bak && rm ../apim-analytics/*.bak
+test -f ../apim-gw/*.bak && rm ../apim-gw/*.bak
+test -f ../apim-is-as-km/*.bak && rm ../apim-is-as-km/*.bak
+test -f ../apim-km/*.bak && rm ../apim-km/*.bak
+test -f ../apim-pubstore-tm/apim-pubstore-tm/wso2apim-pubstore-tm-1-deployment.yaml.bak && rm ../apim-pubstore-tm/*.bak
 
-# capture named arguments
-while [ "$1" != "" ]; do
-    PARAM=`echo $1 | awk -F= '{print $1}'`
-    VALUE=`echo $1 | awk -F= '{print $2}'`
-
-    case ${PARAM} in
-        -h | --help)
-            usage
-            exit 1
-            ;;
-        --wu | --wso2-username)
-            WSO2_SUBSCRIPTION_USERNAME=${VALUE}
-            ;;
-        --wp | --wso2-password)
-            WSO2_SUBSCRIPTION_PASSWORD=${VALUE}
-            ;;
-        --cap | --cluster-admin-password)
-            ADMIN_PASSWORD=${VALUE}
-            ;;
-        *)
-            echoBold "ERROR: unknown parameter \"${PARAM}\""
-            usage
-            exit 1
-            ;;
-    esac
-    shift
-done
 
 # create a new Kubernetes Namespace
 ${KUBECTL} create namespace wso2

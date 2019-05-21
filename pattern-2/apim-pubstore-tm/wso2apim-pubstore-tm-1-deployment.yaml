@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: wso2apim-pubstore-tm
-        image: docker.wso2.com/wso2am:2.6.0
+        image: wso2/wso2am:2.6.0
         livenessProbe:
           exec:
             command:
@@ -94,8 +94,6 @@ spec:
         - name: apim-pubstore-tm-1-conf-identity
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
       serviceAccountName: "wso2svc-account"
-      imagePullSecrets:
-      - name: wso2creds
       volumes:
       - name: apim-pubstore-tm-1-conf
         configMap:
