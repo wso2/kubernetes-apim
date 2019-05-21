@@ -10,9 +10,6 @@ which can be used to test the core Kubernetes resources provided for a deploymen
 
 ## Prerequisites
 
-* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active
-WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
-
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10)
 in order to run the steps provided in the following quick start guide.<br><br>
 
@@ -38,9 +35,9 @@ Git repository.<br>
 git clone https://github.com/wso2/kubernetes-apim.git
 ```
 
-##### 2. Deploy Kubernetes Ingress resource.
+##### 2. Deploy Kubernetes Ingress resources.
 
-The WSO2 API Manager Kubernetes Ingress resource uses the NGINX Ingress Controller.
+The WSO2 API Manager Kubernetes Ingress resource uses the NGINX Ingress Controller maintained by Kubernetes.
 
 In order to enable the NGINX Ingress controller in the desired cloud or on-premise environment,
 please refer the official documentation, [NGINX Ingress Controller Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/).
@@ -63,6 +60,28 @@ chmod -R 700 <directory_name>
 ```
 
 Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
+
+**Note**: By default, the deployment management script (i.e. `<KUBERNETES_HOME>/pattern-2/scripts/deploy.sh`) is configured to deploy
+WSO2 Identity Server as the Key Manager. If you are **not** using WSO2 Identity Server as the Key Manager, comment out the corresponding
+Kubernetes Persistent Volume resource.
+
+```
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wso2apim-pattern-2-is-as-km-server-pv
+  labels:
+    purpose: wso2apim-pattern-2-km-shared
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: <NFS_SERVER_IP>
+    path: "<NFS_LOCATION_PATH>"  
+```
 
 ##### 4. Setup product database(s).
 
@@ -91,10 +110,17 @@ In a **production grade setup**,
   Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
   the following files:
   
-  * `<KUBERNETES_HOME>/pattern-2/confs/apim-gateway/datasources/master-datasources.xml`
-  * `<KUBERNETES_HOME>/pattern-2/confs/apim-km/datasources/master-datasources.xml`
-  * `<KUBERNETES_HOME>/pattern-2/confs/apim-pubstore-tm-1/datasources/master-datasources.xml`
-  * `<KUBERNETES_HOME>/pattern-2/confs/apim-pubstore-tm-2/datasources/master-datasources.xml`
+    * `<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/conf/worker/deployment.yaml`
+    * `<KUBERNETES_HOME>/pattern-2/confs/apim-pub-store-tm-1/datasources/master-datasources.xml`
+    * `<KUBERNETES_HOME>/pattern-2/confs/apim-pub-store-tm-2/datasources/master-datasources.xml`
+
+    If you are using WSO2 API Manager's Key Manager profile, edit the following file.
+
+    * `<KUBERNETES_HOME>/pattern-2/confs/apim-km/datasources/master-datasources.xml`
+
+    Else, if you are using WSO2 Identity Server as Key Manager, edit the following file.
+
+    * `<KUBERNETES_HOME>/pattern-2/confs/apim-is-as-km/datasources/master-datasources.xml`
   
   Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN44x/Configuring+master-datasources.xml) on configuring data sources.
 
@@ -103,55 +129,101 @@ In a **production grade setup**,
 Change directory to `<KUBERNETES_HOME>/pattern-2/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
 
 ```
-./deploy.sh --wso2-username=<WSO2_USERNAME> --wso2-password=<WSO2_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
+./deploy.sh
 ```
 
-* A Kubernetes Secret named `wso2creds` in the cluster to authenticate with the [`WSO2 Docker Registry`](https://docker.wso2.com), to pull the required images.
-The following details need to be replaced in the relevant command.
+**Note**:
 
-`WSO2_USERNAME`: Your WSO2 username<br>
-`WSO2_PASSWORD`: Your WSO2 password
+* By default, the deployment management script (i.e. `<KUBERNETES_HOME>/pattern-2/scripts/deploy.sh`) is configured to deploy
+WSO2 Identity Server as the Key Manager.
 
-* A Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
+* If you desire to use WSO2 API Manager's Key Manager profile
 
-`K8S_CLUSTER_ADMIN_PASSWORD`: Kubernetes cluster admin password
+    * Uncomment the following Kubernetes client commands in the deployment management script.
+    
+    ```
+    # Kubernetes ConfigMaps for WSO2 API Manager's Key Manager profile
+    ${KUBERNETES_CLIENT} create configmap apim-km-conf --from-file=../confs/apim-km/
+    ${KUBERNETES_CLIENT} create configmap apim-km-conf-axis2 --from-file=../confs/apim-km/axis2/
+    ${KUBERNETES_CLIENT} create configmap apim-km-conf-datasources --from-file=../confs/apim-km/datasources/
+    
+    ...
+    
+    # Kubernetes Service for WSO2 API Manager's Key Manager profile
+    ${KUBERNETES_CLIENT} create -f ../apim-km/wso2apim-km-service.yaml
+    
+    ...
+    
+    # Kubernetes Deployment for WSO2 API Manager's Key Manager profile
+    ${KUBERNETES_CLIENT} create -f ../apim-km/wso2apim-km-deployment.yaml
+    ```
+    
+    * Comment out the following Kubernetes client commands in the deployment management script,
+    to avoid the deployment of WSO2 Identity Server as Key Manager.
+    
+    ```
+    # Kubernetes ConfigMaps for WSO2 Identity Server as Key Manager
+    ${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf --from-file=../confs/apim-is-as-km/
+    ${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf-axis2 --from-file=../confs/apim-is-as-km/axis2/
+    ${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf-datasources --from-file=../confs/apim-is-as-km/datasources/
+    
+    ...
+    
+    # Kubernetes Service for WSO2 Identity Server as Key Manager
+    ${KUBERNETES_CLIENT} create -f ../apim-is-as-km/wso2apim-is-as-km-service.yaml
+    
+    ...
+    
+    # Kubernetes Persistent Volume Claim for shaing runtime artifacts between WSO2 Identity Server as Key Manager pods
+    ${KUBERNETES_CLIENT} create -f ../apim-is-as-km/wso2apim-is-as-km-volume-claim.yaml
+    
+    ...
+    
+    # Kubernetes Deployment for WSO2 Identity Server as Key Manager
+    ${KUBERNETES_CLIENT} create -f ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml
+    ```
 
 >To un-deploy, be on the same directory and execute the `undeploy.sh` shell script on the terminal.
 
 ##### 6. Access Management Consoles.
 
-Default deployment will expose `wso2apim`, `wso2apim-gateway` and `wso2apim-analytics` hosts.
+Default deployment will expose `wso2apim` and `wso2apim-gateway` hosts.
 
 To access the console in the environment,
 
-1. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses (using `kubectl get ing`).
+a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
+
+  ```
+  kubectl get ing
+  ```
 
 e.g.
 
 ```
 NAME                                  HOSTS                    ADDRESS          PORTS      AGE
 wso2apim-ingress                      wso2apim                 <EXTERNAL-IP>    80, 443    7m 
-wso2apim-analytics-ingress            wso2apim-analytics       <EXTERNAL-IP>    80, 443    7m
 wso2apim-gateway-ingress              wso2apim-gateway         <EXTERNAL-IP>    80, 443    6m
 ```
 
-2. Add the above host as an entry in /etc/hosts file as follows:
+b. Add the above host as an entry in `/etc/hosts` file as follows:
 
 ```
-<EXTERNAL-IP>	wso2apim-analytics
 <EXTERNAL-IP>	wso2apim
 <EXTERNAL-IP>	wso2apim-gateway
 ```
 
-3. Try navigating to `https://wso2apim/carbon` and `https://wso2apim-analytics/carbon` from your favorite browser.
+c. Try navigating to `https://wso2apim/carbon` from your favorite browser.
 
-##### 7. Scale up using `kubectl scale`.
+##### 7. Scale up the Key Manager and Gateway profiles.
 
-Default deployment runs a single replica (or pod) of WSO2 API Manager Gateway. To scale this deployment into any `<n>` number of
-container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
+Default deployment runs a single replica (or pod) of Key Manager profile and WSO2 API Manager Gateway.
+To scale any of these profile deployments into any `<n>` number of container replicas, upon your requirement,
+simply run `kubectl scale` Kubernetes client command on the terminal.
+
+For example, the following command scales the WSO2 API Manager Gateway profile to the desired number of replicas.
 
 ```
 kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/pattern-2/apim-gw/wso2apim-gateway-deployment.yaml
 ```
 
-For example, If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
+If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
