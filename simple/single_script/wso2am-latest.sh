@@ -3455,7 +3455,7 @@ function deploy(){
         echoBold "1. Try navigating to https://$NODE_IP:30443/carbon/ from your favourite browser using \n"
         echoBold "\tusername: admin\n"
         echoBold "\tpassword: admin\n"
-        echoBold "2. Follow \"https://docs.wso2.com/display/AM210/Getting+Started\" to start using WSO2 API Manager.\n\n"
+        echoBold "2. Follow \"https://docs.wso2.com/display/AM260/Getting+Started\" to start using WSO2 API Manager.\n\n"
     fi
 }
 arg=$1
