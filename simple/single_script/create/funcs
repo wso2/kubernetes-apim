@@ -284,6 +284,7 @@ function deploy(){
     sed -i '' 's/"ip.node.k8s.&.wso2.apim"/'$NODE_IP'/g' $k8s_obj_file
     sed -i '' 's/"$nodeport.k8s.&.1.wso2apim"/'$NP_1'/g' $k8s_obj_file
     sed -i '' 's/"$nodeport.k8s.&.2.wso2apim"/'$NP_2'/g' $k8s_obj_file
+    sed -i '' 's/"$image.pull.@.wso2"/'$IMG_DEST'/g' $k8s_obj_file
 
     if ! test -f "$INPUT_DIR/infrastructure.properties"; then
         echoBold "\nDeploying WSO2 API Manager ....\n"

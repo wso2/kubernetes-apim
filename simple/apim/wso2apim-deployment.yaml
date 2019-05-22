@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: wso2apim-with-analytics-apim-worker
-          image: docker.wso2.com/wso2am:2.6.0
+          image: "$image.pull.@.wso2"/wso2am:2.6.0
           livenessProbe:
             exec:
               command:

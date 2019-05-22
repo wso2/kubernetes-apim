@@ -19,73 +19,23 @@
 set -e
 
 # bash variables
-NODE_IP=""
-k8s_obj_file="deployment.yaml"
+k8s_obj_file="deployment.yaml"; NODE_IP=''; str_sec=""
 
-# bash functions
-function usage(){
-  echo "Usage: "
-  echo -e "-d, --deploy     Deploy WSO2 API Manager"
-  echo -e "-u, --undeploy   Undeploy WSO2 API Manager"
-  echo -e "-h, --help       Display usage instrusctions"
-}
-function undeploy(){
-  echoBold "Undeploying WSO2 API Manager ... \n"
-  kubectl delete -f deployment.yaml
-  echo ""
-  exit 0
-}
+# wso2 subscription variables
+WUMUsername=''; WUMPassword=''
+IMG_DEST="docker.wso2.com"
 
-function display_msg(){
-    msg=$@
-    echoBold "${msg}"
-    exit 1
-}
+: ${namespace:="wso2"}
+: ${randomPort:="False"}; : ${NP_1:=30443}; : ${NP_2:=30243}
 
-function echoBold () {
-    echo -en $'\e[1m'"${1}"$'\e[0m'
-}
+# testgrid directory
+OUTPUT_DIR=$4; INPUT_DIR=$2
 
-function st(){
-  cycles=${1}
-  i=0
-  while [[ i -lt $cycles ]]
-  do
-    echoBold "* "
-    let "i=i+1"
-  done
-}
-function sp(){
-  cycles=${1}
-  i=0
-  while [[ i -lt $cycles ]]
-  do
-    echoBold " "
-    let "i=i+1"
-  done
-}
-
-function product_name(){
-  #wso2apim
-  echo -e "\n"
-  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; sp 1; st 3; sp 3; sp 8; sp 2; st 3; sp 1; sp 3; st 3; sp 3; st 5; sp 2; st 1; sp 8; st 1;
-  echo ""
-  st 1; sp 8; st 1; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 4; st 1; sp 2; sp 8; sp 1; st 1; sp 4; st 1; sp 3; st 1; sp 4; st 1; sp 2; sp 3; st 1; sp 6; st 2; sp 4; st 2;
-  echo ""
-  st 1; sp 3; st 1; sp 3; st 1; sp 2; st 1; sp 8; st 1; sp 6; st 1; sp 2; sp 6; st 1; sp 2; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp 4; st 1; sp 2; sp 3; st 1; sp 6; st 1; sp 1; st 1; sp 2; st 1; sp 1; st 1;
-  echo ""
-  st 1; sp 2; st 1; st 1; sp 2; st 1; sp 2; sp 1; st 3; sp 3; st 1; sp 6; st 1; sp 2; sp 4; st 1; sp 4; st 3; sp 2; st 5; sp 2; st 3; sp 3; sp 4; st 1; sp 6; st 1; sp 2; st 2; sp 2; st 1;
-  echo ""
-  st 1; sp 1; st 1; sp 2; st 1; sp 1; st 1; sp 2; sp 6; st 1; sp 2; st 1; sp 6; st 1; sp 2; sp 2; st 1; sp 6; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp  7; sp 4; st 1; sp 6; st 1; sp 3; st 1; sp 3; st 1;
-  echo ""
-  st 2; sp 4; st 2; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 8; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp 7; sp 4; st 1; sp 6; st 1; sp 8; st 1;
-  echo ""
-  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; st 4; sp 2; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp 7; st 5; sp 2; st 1; sp 8; st 1;
-  echo -e "\n"
-}
 function create_yaml(){
-cat > ${k8s_obj_file} << "EOF"
-
+cat > $k8s_obj_file << "EOF"
+EOF
+if [ "$namespace" == "wso2" ]; then
+cat > $k8s_obj_file << "EOF"
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -94,633 +44,630 @@ spec:
   finalizers:
     - kubernetes
 ---
-
+EOF
+fi
+cat >> $k8s_obj_file << "EOF"
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: wso2svc-account
-  namespace: wso2
+  namespace: "$ns.k8s.&.wso2.apim"
 secrets:
   - name: wso2svc-account-token-t7s49
 ---
-
 apiVersion: v1
 data:
-    api-manager.xml: |
-      <APIManager>
-          <DataSourceName>jdbc/WSO2AM_DB</DataSourceName>
-          <GatewayType>Synapse</GatewayType>
-          <EnableSecureVault>false</EnableSecureVault>
-          <AuthManager>
-              <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
-              <Username>${admin.username}</Username>
-              <Password>${admin.password}</Password>
-              <CheckPermissionsRemotely>false</CheckPermissionsRemotely>
-          </AuthManager>
-          <JWTConfiguration>
-              <JWTHeader>X-JWT-Assertion</JWTHeader>
-              <JWTGeneratorImpl>org.wso2.carbon.apimgt.keymgt.token.JWTGenerator</JWTGeneratorImpl>
-          </JWTConfiguration>
-          <APIGateway>
-              <Environments>
-                  <Environment type="hybrid" api-console="true">
-                      <Name>Production and Sandbox</Name>
-                      <Description>This is a hybrid gateway that handles both production and sandbox token traffic.</Description>
-                      <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
-                      <Username>${admin.username}</Username>
-                      <Password>${admin.password}</Password>
-EOF
-
-echo '                      <GatewayEndpoint>http://'$NODE_IP':30243,https://'$NODE_IP':30243</GatewayEndpoint>' >> ${k8s_obj_file}
-
-cat >> ${k8s_obj_file} << "EOF"
-                      <GatewayWSEndpoint>ws://${carbon.local.ip}:9099</GatewayWSEndpoint>
-                  </Environment>
-              </Environments>
-          </APIGateway>
-          <CacheConfigurations>
-              <EnableGatewayTokenCache>true</EnableGatewayTokenCache>
-              <EnableGatewayResourceCache>true</EnableGatewayResourceCache>
-              <EnableKeyManagerTokenCache>false</EnableKeyManagerTokenCache>
-              <EnableRecentlyAddedAPICache>false</EnableRecentlyAddedAPICache>
-              <EnableScopeCache>true</EnableScopeCache>
-              <EnablePublisherRoleCache>true</EnablePublisherRoleCache>
-              <EnableJWTClaimCache>true</EnableJWTClaimCache>
-          </CacheConfigurations>
-          <Analytics>
-              <Enabled>true</Enabled>
-              <StreamProcessorServerURL>tcp://wso2apim-with-analytics-apim-analytics-service:7612</StreamProcessorServerURL>
-              <StreamProcessorAuthServerURL>ssl://wso2apim-with-analytics-apim-analytics-service:7712</StreamProcessorAuthServerURL>
-              <StreamProcessorUsername>${admin.username}</StreamProcessorUsername>
-              <StreamProcessorPassword>${admin.password}</StreamProcessorPassword>
-              <StatsProviderImpl>org.wso2.carbon.apimgt.usage.client.impl.APIUsageStatisticsRestClientImpl</StatsProviderImpl>
-              <StreamProcessorRestApiURL>https://wso2apim-with-analytics-apim-analytics-service:7444</StreamProcessorRestApiURL>
-              <StreamProcessorRestApiUsername>${admin.username}</StreamProcessorRestApiUsername>
-              <StreamProcessorRestApiPassword>${admin.password}</StreamProcessorRestApiPassword>
-              <SkipEventReceiverConnection>false</SkipEventReceiverConnection>
-              <SkipWorkflowEventPublisher>false</SkipWorkflowEventPublisher>
-              <PublisherClass>org.wso2.carbon.apimgt.usage.publisher.APIMgtUsageDataBridgeDataPublisher</PublisherClass>
-              <PublishResponseMessageSize>false</PublishResponseMessageSize>
-              <Streams>
-                  <Request>
-                      <Name>org.wso2.apimgt.statistics.request</Name>
-                      <Version>3.0.0</Version>
-                  </Request>
-                  <Fault>
-                      <Name>org.wso2.apimgt.statistics.fault</Name>
-                      <Version>3.0.0</Version>
-                  </Fault>
-                  <Throttle>
-                      <Name>org.wso2.apimgt.statistics.throttle</Name>
-                      <Version>3.0.0</Version>
-                  </Throttle>
-                  <Workflow>
-                      <Name>org.wso2.apimgt.statistics.workflow</Name>
-                      <Version>1.0.0</Version>
-                  </Workflow>
-                  <AlertTypes>
-                      <Name>org.wso2.analytics.apim.alertStakeholderInfo</Name>
-                      <Version>1.0.1</Version>
-                  </AlertTypes>
-              </Streams>
-          </Analytics>
-          <APIKeyValidator>
-              <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
-              <Username>${admin.username}</Username>
-              <Password>${admin.password}</Password>
-              <KeyValidatorClientType>ThriftClient</KeyValidatorClientType>
-              <ThriftClientConnectionTimeOut>10000</ThriftClientConnectionTimeOut>
-              <EnableThriftServer>true</EnableThriftServer>
-              <ThriftServerHost>localhost</ThriftServerHost>
-              <KeyValidationHandlerClassName>org.wso2.carbon.apimgt.keymgt.handlers.DefaultKeyValidationHandler</KeyValidationHandlerClassName>
-          </APIKeyValidator>
-          <OAuthConfigurations>
-              <ApplicationTokenScope>am_application_scope</ApplicationTokenScope>
-              <TokenEndPointName>/oauth2/token</TokenEndPointName>
-              <RevokeAPIURL>https://localhost:${https.nio.port}/revoke</RevokeAPIURL>
-              <EncryptPersistedTokens>false</EncryptPersistedTokens>
-              <EnableTokenHashMode>false</EnableTokenHashMode>
-          </OAuthConfigurations>
-          <TierManagement>
-              <EnableUnlimitedTier>true</EnableUnlimitedTier>
-          </TierManagement>
-          <APIStore>
-              <CompareCaseInsensitively>true</CompareCaseInsensitively>
-              <DisplayURL>false</DisplayURL>
-EOF
-
-echo "              <URL>https://$NODE_IP:30443/store</URL>" >> ${k8s_obj_file}
-echo '              <ServerURL>https://'$NODE_IP':30443${carbon.context}services/</ServerURL>' >> ${k8s_obj_file}
-
-cat >> ${k8s_obj_file} << "EOF"
-              <Username>${admin.username}</Username>
-              <Password>${admin.password}</Password>
-              <DisplayMultipleVersions>false</DisplayMultipleVersions>
-              <DisplayAllAPIs>false</DisplayAllAPIs>
-              <DisplayComments>true</DisplayComments>
-              <DisplayRatings>true</DisplayRatings>
-          </APIStore>
-          <APIPublisher>
-              <DisplayURL>false</DisplayURL>
-              <URL>https://localhost:${mgt.transport.https.port}/publisher</URL>
-              <EnableAccessControl>true</EnableAccessControl>
-          </APIPublisher>
-          <CORSConfiguration>
-              <Enabled>true</Enabled>
-              <Access-Control-Allow-Origin>*</Access-Control-Allow-Origin>
-              <Access-Control-Allow-Methods>GET,PUT,POST,DELETE,PATCH,OPTIONS</Access-Control-Allow-Methods>
-              <Access-Control-Allow-Headers>authorization,Access-Control-Allow-Origin,Content-Type,SOAPAction</Access-Control-Allow-Headers>
-              <Access-Control-Allow-Credentials>false</Access-Control-Allow-Credentials>
-          </CORSConfiguration>
-          <RESTAPI>
-              <WhiteListedURIs>
-                  <WhiteListedURI>
-                      <URI>/api/am/publisher/{version}/swagger.json</URI>
-                      <HTTPMethods>GET,HEAD</HTTPMethods>
-                  </WhiteListedURI>
-                  <WhiteListedURI>
-                      <URI>/api/am/store/{version}/swagger.json</URI>
-                      <HTTPMethods>GET,HEAD</HTTPMethods>
-                  </WhiteListedURI>
-                  <WhiteListedURI>
-                      <URI>/api/am/admin/{version}/swagger.json</URI>
-                      <HTTPMethods>GET,HEAD</HTTPMethods>
-                  </WhiteListedURI>
-                  <WhiteListedURI>
-                      <URI>/api/am/store/{version}/apis</URI>
-                      <HTTPMethods>GET,HEAD</HTTPMethods>
-                  </WhiteListedURI>
-                  <WhiteListedURI>
-                      <URI>/api/am/store/{version}/apis/{apiId}</URI>
-                      <HTTPMethods>GET,HEAD</HTTPMethods>
-                  </WhiteListedURI>
-                  <WhiteListedURI>
-                      <URI>/api/am/store/{version}/apis/{apiId}/swagger</URI>
-                      <HTTPMethods>GET,HEAD</HTTPMethods>
-                  </WhiteListedURI>
-                  <WhiteListedURI>
-                      <URI>/api/am/store/{version}/apis/{apiId}/documents</URI>
-                      <HTTPMethods>GET,HEAD</HTTPMethods>
-                  </WhiteListedURI>
-                  <WhiteListedURI>
-                      <URI>/api/am/store/{version}/apis/{apiId}/documents/{documentId}</URI>
-                      <HTTPMethods>GET,HEAD</HTTPMethods>
-                  </WhiteListedURI>
-                  <WhiteListedURI>
-                      <URI>/api/am/store/{version}/apis/{apiId}/documents/{documentId}/content</URI>
-                      <HTTPMethods>GET,HEAD</HTTPMethods>
-                  </WhiteListedURI>
-                  <WhiteListedURI>
-                      <URI>/api/am/store/{version}/apis/{apiId}/thumbnail</URI>
-                      <HTTPMethods>GET,HEAD</HTTPMethods>
-                  </WhiteListedURI>
-                  <WhiteListedURI>
-                      <URI>/api/am/store/{version}/tags</URI>
-                      <HTTPMethods>GET,HEAD</HTTPMethods>
-                  </WhiteListedURI>
-                  <WhiteListedURI>
-                      <URI>/api/am/store/{version}/tiers/{tierLevel}</URI>
-                      <HTTPMethods>GET,HEAD</HTTPMethods>
-                  </WhiteListedURI>
-                  <WhiteListedURI>
-                      <URI>/api/am/store/{version}/tiers/{tierLevel}/{tierName}</URI>
-                      <HTTPMethods>GET,HEAD</HTTPMethods>
-                  </WhiteListedURI>
-              </WhiteListedURIs>
-              <ETagSkipList>
-                  <ETagSkipURI>
-                      <URI>/api/am/store/{version}/apis</URI>
-                      <HTTPMethods>GET</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/store/{version}/apis/generate-sdk</URI>
-                      <HTTPMethods>POST</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/store/{version}/apis/{apiId}/documents</URI>
-                      <HTTPMethods>GET</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/store/{version}/applications</URI>
-                      <HTTPMethods>GET</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/store/{version}/applications/generate-keys</URI>
-                      <HTTPMethods>POST</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/store/{version}/subscriptions</URI>
-                      <HTTPMethods>GET,POST</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/store/{version}/tags</URI>
-                      <HTTPMethods>GET</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/store/{version}/tiers/{tierLevel}</URI>
-                      <HTTPMethods>GET</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/store/{version}/tiers/{tierLevel}/{tierName}</URI>
-                      <HTTPMethods>GET</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/apis</URI>
-                      <HTTPMethods>GET,POST</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/apis/{apiId}</URI>
-                      <HTTPMethods>GET,DELETE,PUT</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/apis/{apiId}/swagger</URI>
-                      <HTTPMethods>GET,PUT</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/apis/{apiId}/thumbnail</URI>
-                      <HTTPMethods>GET,POST</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/apis/{apiId}/change-lifecycle</URI>
-                      <HTTPMethods>POST</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/apis/{apiId}/copy-api</URI>
-                      <HTTPMethods>POST</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/applications/{applicationId}</URI>
-                      <HTTPMethods>GET</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/apis/{apiId}/documents</URI>
-                      <HTTPMethods>GET,POST</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/apis/{apiId}/documents/{documentId}/content</URI>
-                      <HTTPMethods>GET,POST</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/apis/{apiId}/documents/{documentId}</URI>
-                      <HTTPMethods>GET,PUT,DELETE</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/environments</URI>
-                      <HTTPMethods>GET</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/subscriptions</URI>
-                      <HTTPMethods>GET</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/subscriptions/block-subscription</URI>
-                      <HTTPMethods>POST</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/subscriptions/{subscriptionId}</URI>
-                      <HTTPMethods>GET</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/subscriptions/unblock-subscription</URI>
-                      <HTTPMethods>POST</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/tiers/{tierLevel}</URI>
-                      <HTTPMethods>GET,POST</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/tiers/{tierLevel}/{tierName}</URI>
-                      <HTTPMethods>GET,PUT,DELETE</HTTPMethods>
-                  </ETagSkipURI>
-                  <ETagSkipURI>
-                      <URI>/api/am/publisher/{version}/tiers/update-permission</URI>
-                      <HTTPMethods>POST</HTTPMethods>
-                  </ETagSkipURI>
-              </ETagSkipList>
-          </RESTAPI>
-          <ThrottlingConfigurations>
-              <EnableAdvanceThrottling>true</EnableAdvanceThrottling>
-              <TrafficManager>
-                  <Type>Binary</Type>
-                  <ReceiverUrlGroup>tcp://${carbon.local.ip}:${receiver.url.port}</ReceiverUrlGroup>
-                  <AuthUrlGroup>ssl://${carbon.local.ip}:${auth.url.port}</AuthUrlGroup>
-                  <Username>${admin.username}</Username>
-                  <Password>${admin.password}</Password>
-              </TrafficManager>
-              <DataPublisher>
-                  <Enabled>true</Enabled>
-                  <DataPublisherPool>
-                      <MaxIdle>1000</MaxIdle>
-                      <InitIdleCapacity>200</InitIdleCapacity>
-                  </DataPublisherPool>
-                  <DataPublisherThreadPool>
-                      <CorePoolSize>200</CorePoolSize>
-                      <MaxmimumPoolSize>1000</MaxmimumPoolSize>
-                      <KeepAliveTime>200</KeepAliveTime>
-                  </DataPublisherThreadPool>
-              </DataPublisher>
-              <PolicyDeployer>
-                  <Enabled>true</Enabled>
-                  <ServiceURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServiceURL>
-                  <Username>${admin.username}</Username>
-                  <Password>${admin.password}</Password>
-              </PolicyDeployer>
-              <BlockCondition>
-                  <Enabled>true</Enabled>
-              </BlockCondition>
-              <JMSConnectionDetails>
-                  <Enabled>true</Enabled>
-                  <JMSConnectionParameters>
-                      <transport.jms.ConnectionFactoryJNDIName>TopicConnectionFactory</transport.jms.ConnectionFactoryJNDIName>
-                      <transport.jms.DestinationType>topic</transport.jms.DestinationType>
-                      <java.naming.factory.initial>org.wso2.andes.jndi.PropertiesFileInitialContextFactory</java.naming.factory.initial>
-                      <connectionfactory.TopicConnectionFactory>amqp://${admin.username}:${admin.password}@clientid/carbon?brokerlist='tcp://${carbon.local.ip}:${jms.port}'</connectionfactory.TopicConnectionFactory>
-                  </JMSConnectionParameters>
-              </JMSConnectionDetails>=
-              <EnableUnlimitedTier>true</EnableUnlimitedTier>
-              <EnableHeaderConditions>false</EnableHeaderConditions>
-              <EnableJWTClaimConditions>false</EnableJWTClaimConditions>
-              <EnableQueryParamConditions>false</EnableQueryParamConditions>
-          </ThrottlingConfigurations>
-          <WorkflowConfigurations>
-              <Enabled>false</Enabled>
-              <ServerUrl>https://localhost:9445/bpmn</ServerUrl>
-              <ServerUser>${admin.username}</ServerUser>
-              <ServerPassword>${admin.password}</ServerPassword>
-              <WorkflowCallbackAPI>https://localhost:${mgt.transport.https.port}/api/am/publisher/v0.14/workflows/update-workflow-status</WorkflowCallbackAPI>
-              <TokenEndPoint>https://localhost:${https.nio.port}/token</TokenEndPoint>
-              <DCREndPoint>https://localhost:${mgt.transport.https.port}/client-registration/v0.14/register</DCREndPoint>
-              <DCREndPointUser>${admin.username}</DCREndPointUser>
-              <DCREndPointPassword>${admin.password}</DCREndPointPassword>
-          </WorkflowConfigurations>
-          <SwaggerCodegen>
-              <ClientGeneration>
-                  <GroupId>org.wso2</GroupId>
-                  <ArtifactId>org.wso2.client.</ArtifactId>
-                  <ModelPackage>org.wso2.client.model.</ModelPackage>
-                  <ApiPackage>org.wso2.client.api.</ApiPackage>
-                  <SupportedLanguages>java,android</SupportedLanguages>
-              </ClientGeneration>
-          </SwaggerCodegen>
-      </APIManager>
-    carbon.xml: |
-      <?xml version="1.0" encoding="ISO-8859-1"?>
-      <Server xmlns="http://wso2.org/projects/carbon/carbon.xml">
-          <Name>WSO2 API Manager</Name>
-          <ServerKey>AM</ServerKey>
-          <Version>2.6.0</Version>
-EOF
-
-echo "          <HostName>$NODE_IP</HostName>" >> ${k8s_obj_file}
-echo "          <MgtHostName>$NODE_IP</MgtHostName>" >> ${k8s_obj_file}
-
-cat >> ${k8s_obj_file} << "EOF"
-          <ServerURL>local:/${carbon.context}/services/</ServerURL>
-          <ServerRoles>
-              <Role>APIManager</Role>
-          </ServerRoles>
-          <Package>org.wso2.carbon</Package>
-          <WebContextRoot>/</WebContextRoot>
-          <ItemsPerPage>15</ItemsPerPage>
-          <Ports>
-              <Offset>0</Offset>
-              <JMX>
-                  <RMIRegistryPort>9999</RMIRegistryPort>
-                  <RMIServerPort>11111</RMIServerPort>
-              </JMX>
-              <EmbeddedLDAP>
-                  <LDAPServerPort>10389</LDAPServerPort>
-                  <KDCServerPort>8000</KDCServerPort>
-              </EmbeddedLDAP>
-              <ThriftEntitlementReceivePort>10500</ThriftEntitlementReceivePort>
-          </Ports>
-          <JNDI>
-              <DefaultInitialContextFactory>org.wso2.carbon.tomcat.jndi.CarbonJavaURLContextFactory</DefaultInitialContextFactory>
-              <Restrictions>
-                  <AllTenants>
-                      <UrlContexts>
-                          <UrlContext>
-                              <Scheme>java</Scheme>
-                          </UrlContext>
-                      </UrlContexts>
-                  </AllTenants>
-              </Restrictions>
-          </JNDI>
-          <IsCloudDeployment>false</IsCloudDeployment>
-          <EnableMetering>false</EnableMetering>
-          <MaxThreadExecutionTime>600</MaxThreadExecutionTime>
-          <GhostDeployment>
-              <Enabled>false</Enabled>
-          </GhostDeployment>
-          <Tenant>
-              <LoadingPolicy>
-                  <LazyLoading>
-                      <IdleTime>30</IdleTime>
-                  </LazyLoading>
-              </LoadingPolicy>
-          </Tenant>
-          <Cache>
-              <DefaultCacheTimeout>15</DefaultCacheTimeout>
-              <ForceLocalCache>false</ForceLocalCache>
-          </Cache>
-          <Axis2Config>
-              <RepositoryLocation>${carbon.home}/repository/deployment/server/</RepositoryLocation>
-              <DeploymentUpdateInterval>15</DeploymentUpdateInterval>
-              <ConfigurationFile>${carbon.home}/repository/conf/axis2/axis2.xml</ConfigurationFile>
-              <ServiceGroupContextIdleTime>30000</ServiceGroupContextIdleTime>
-              <ClientRepositoryLocation>${carbon.home}/repository/deployment/client/</ClientRepositoryLocation>
-              <clientAxis2XmlLocation>${carbon.home}/repository/conf/axis2/axis2_client.xml</clientAxis2XmlLocation>
-              <HideAdminServiceWSDLs>true</HideAdminServiceWSDLs>
-          </Axis2Config>
-          <ServiceUserRoles>
-              <Role>
-                  <Name>admin</Name>
-                  <Description>Default Administrator Role</Description>
-              </Role>
-              <Role>
-                  <Name>user</Name>
-                  <Description>Default User Role</Description>
-              </Role>
-          </ServiceUserRoles>
-          <CryptoService>
-              <Enabled>true</Enabled>
-              <InternalCryptoProviderClassName>org.wso2.carbon.crypto.provider.KeyStoreBasedInternalCryptoProvider</InternalCryptoProviderClassName>
-              <ExternalCryptoProviderClassName>org.wso2.carbon.core.encryption.KeyStoreBasedExternalCryptoProvider</ExternalCryptoProviderClassName>
-              <KeyResolvers>
-                  <KeyResolver className="org.wso2.carbon.crypto.defaultProvider.resolver.ContextIndependentKeyResolver" priority="-1"/>
-              </KeyResolvers>
-          </CryptoService>
-          <Security>
-              <KeyStore>
-                  <Location>${carbon.home}/repository/resources/security/wso2carbon.jks</Location>
-                  <Type>JKS</Type>
-                  <Password>wso2carbon</Password>
-                  <KeyAlias>wso2carbon</KeyAlias>
-                  <KeyPassword>wso2carbon</KeyPassword>
-              </KeyStore>
-              <InternalKeyStore>
-                  <Location>${carbon.home}/repository/resources/security/wso2carbon.jks</Location>
-                  <Type>JKS</Type>
-                  <Password>wso2carbon</Password>
-                  <KeyAlias>wso2carbon</KeyAlias>
-                  <KeyPassword>wso2carbon</KeyPassword>
-              </InternalKeyStore>
-              <TrustStore>
-                  <Location>${carbon.home}/repository/resources/security/client-truststore.jks</Location>
-                  <Type>JKS</Type>
-                  <Password>wso2carbon</Password>
-              </TrustStore>
-              <NetworkAuthenticatorConfig>
-              </NetworkAuthenticatorConfig>
-              <TomcatRealm>UserManager</TomcatRealm>
-              <DisableTokenStore>false</DisableTokenStore>
-              <XSSPreventionConfig>
-                  <Enabled>true</Enabled>
-                  <Rule>allow</Rule>
-                  <Patterns>
-                  </Patterns>
-              </XSSPreventionConfig>
-          </Security>
-          <HideMenuItemIds>
-              <HideMenuItemId>claim_mgt_menu</HideMenuItemId>
-              <HideMenuItemId>identity_mgt_emailtemplate_menu</HideMenuItemId>
-              <HideMenuItemId>identity_security_questions_menu</HideMenuItemId>
-          </HideMenuItemIds>
-          <WorkDirectory>${carbon.home}/tmp/work</WorkDirectory>
-          <HouseKeeping>
-              <AutoStart>true</AutoStart>
-              <Interval>10</Interval>
-              <MaxTempFileLifetime>30</MaxTempFileLifetime>
-          </HouseKeeping>
-          <FileUploadConfig>
-              <TotalFileSizeLimit>100</TotalFileSizeLimit>
-              <Mapping>
-                  <Actions>
-                      <Action>keystore</Action>
-                      <Action>certificate</Action>
-                      <Action>*</Action>
-                  </Actions>
-                  <Class>org.wso2.carbon.ui.transports.fileupload.AnyFileUploadExecutor</Class>
-              </Mapping>
-              <Mapping>
-                  <Actions>
-                      <Action>jarZip</Action>
-                  </Actions>
-                  <Class>org.wso2.carbon.ui.transports.fileupload.JarZipUploadExecutor</Class>
-              </Mapping>
-              <Mapping>
-                  <Actions>
-                      <Action>dbs</Action>
-                  </Actions>
-                  <Class>org.wso2.carbon.ui.transports.fileupload.DBSFileUploadExecutor</Class>
-              </Mapping>
-              <Mapping>
-                  <Actions>
-                      <Action>tools</Action>
-                  </Actions>
-                  <Class>org.wso2.carbon.ui.transports.fileupload.ToolsFileUploadExecutor</Class>
-              </Mapping>
-              <Mapping>
-                  <Actions>
-                      <Action>toolsAny</Action>
-                  </Actions>
-                  <Class>org.wso2.carbon.ui.transports.fileupload.ToolsAnyFileUploadExecutor</Class>
-              </Mapping>
-          </FileUploadConfig>
-          <HttpGetRequestProcessors>
-              <Processor>
-                  <Item>info</Item>
-                  <Class>org.wso2.carbon.core.transports.util.InfoProcessor</Class>
-              </Processor>
-              <Processor>
-                  <Item>wsdl</Item>
-                  <Class>org.wso2.carbon.core.transports.util.Wsdl11Processor</Class>
-              </Processor>
-              <Processor>
-                  <Item>wsdl2</Item>
-                  <Class>org.wso2.carbon.core.transports.util.Wsdl20Processor</Class>
-              </Processor>
-              <Processor>
-                  <Item>xsd</Item>
-                  <Class>org.wso2.carbon.core.transports.util.XsdProcessor</Class>
-              </Processor>
-          </HttpGetRequestProcessors>
-          <DeploymentSynchronizer>
-              <Enabled>false</Enabled>
-              <AutoCommit>false</AutoCommit>
-              <AutoCheckout>true</AutoCheckout>
-              <RepositoryType>svn</RepositoryType>
-              <SvnUrl>http://svnrepo.example.com/repos/</SvnUrl>
-              <SvnUser>username</SvnUser>
-              <SvnPassword>password</SvnPassword>
-              <SvnUrlAppendTenantId>true</SvnUrlAppendTenantId>
-          </DeploymentSynchronizer>
-          <ServerInitializers>
-          </ServerInitializers>
-          <RequireCarbonServlet>${require.carbon.servlet}</RequireCarbonServlet>
-          <StatisticsReporterDisabled>true</StatisticsReporterDisabled>
-          <FeatureRepository>
-              <RepositoryName>default repository</RepositoryName>
-              <RepositoryURL>http://product-dist.wso2.com/p2/carbon/releases/wilkes/</RepositoryURL>
-          </FeatureRepository>
-          <APIManagement>
-              <Enabled>true</Enabled>
-              <LoadAPIContextsInServerStartup>true</LoadAPIContextsInServerStartup>
-          </APIManagement>
-      </Server>
-    user-mgt.xml: |
-      <?xml version="1.0" encoding="UTF-8"?>
-      <UserManager>
-          <Realm>
-              <Configuration>
-                  <AddAdmin>true</AddAdmin>
-                  <AdminRole>admin</AdminRole>
-                  <AdminUser>
-                      <UserName>admin</UserName>
-                      <Password>admin</Password>
-                  </AdminUser>
-                  <EveryOneRoleName>everyone</EveryOneRoleName>
-                  <Property name="isCascadeDeleteEnabled">true</Property>
-                  <Property name="initializeNewClaimManager">true</Property>
-                  <Property name="dataSource">jdbc/WSO2UM_DB</Property>
-              </Configuration>
-              <UserStoreManager class="org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager">
-                  <Property name="TenantManager">org.wso2.carbon.user.core.tenant.JDBCTenantManager</Property>
-                  <Property name="ReadOnly">false</Property>
-                  <Property name="ReadGroups">true</Property>
-                  <Property name="WriteGroups">true</Property>
-                  <Property name="UsernameJavaRegEx">^[\S]{3,30}$</Property>
-                  <Property name="UsernameJavaScriptRegEx">^[\S]{3,30}$</Property>
-                  <Property name="UsernameJavaRegExViolationErrorMsg">Username pattern policy violated</Property>
-                  <Property name="PasswordJavaRegEx">^[\S]{5,30}$</Property>
-                  <Property name="PasswordJavaScriptRegEx">^[\S]{5,30}$</Property>
-                  <Property name="PasswordJavaRegExViolationErrorMsg">Password length should be within 5 to 30 characters</Property>
-                  <Property name="RolenameJavaRegEx">^[\S]{3,30}$</Property>
-                  <Property name="RolenameJavaScriptRegEx">^[\S]{3,30}$</Property>
-                  <Property name="CaseInsensitiveUsername">true</Property>
-                  <Property name="SCIMEnabled">false</Property>
-                  <Property name="IsBulkImportSupported">true</Property>
-                  <Property name="PasswordDigest">SHA-256</Property>
-                  <Property name="StoreSaltedPassword">true</Property>
-                  <Property name="MultiAttributeSeparator">,</Property>
-                  <Property name="MaxUserNameListLength">100</Property>
-                  <Property name="MaxRoleNameListLength">100</Property>
-                  <Property name="UserRolesCacheEnabled">true</Property>
-                  <Property name="UserNameUniqueAcrossTenants">false</Property>
-              </UserStoreManager>
-                    <AuthorizationManager class="org.wso2.carbon.user.core.authorization.JDBCAuthorizationManager">
-                  <Property name="AdminRoleManagementPermissions">/permission</Property>
-                  <Property name="AuthorizationCacheEnabled">true</Property>
-                  <Property name="GetAllRolesOfUserEnabled">false</Property>
-              </AuthorizationManager>
-          </Realm>
-      </UserManager>
+  .dockerconfigjson: "$string.&.secret.auth.data"
+kind: Secret
+metadata:
+  name: wso2creds
+  namespace: "$ns.k8s.&.wso2.apim"
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+data:
+  api-manager.xml: |
+    <APIManager>
+        <DataSourceName>jdbc/WSO2AM_DB</DataSourceName>
+        <GatewayType>Synapse</GatewayType>
+        <EnableSecureVault>false</EnableSecureVault>
+        <AuthManager>
+            <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
+            <Username>${admin.username}</Username>
+            <Password>${admin.password}</Password>
+            <CheckPermissionsRemotely>false</CheckPermissionsRemotely>
+        </AuthManager>
+        <JWTConfiguration>
+            <JWTHeader>X-JWT-Assertion</JWTHeader>
+            <JWTGeneratorImpl>org.wso2.carbon.apimgt.keymgt.token.JWTGenerator</JWTGeneratorImpl>
+        </JWTConfiguration>
+        <APIGateway>
+            <Environments>
+                <Environment type="hybrid" api-console="true">
+                    <Name>Production and Sandbox</Name>
+                    <Description>This is a hybrid gateway that handles both production and sandbox token traffic.</Description>
+                    <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
+                    <Username>${admin.username}</Username>
+                    <Password>${admin.password}</Password>
+                    <GatewayEndpoint>http://"ip.node.k8s.&.wso2.apim":"$nodeport.k8s.&.2.wso2apim",https://"ip.node.k8s.&.wso2.apim":"$nodeport.k8s.&.2.wso2apim"</GatewayEndpoint>
+                    <GatewayWSEndpoint>ws://${carbon.local.ip}:9099</GatewayWSEndpoint>
+                </Environment>
+            </Environments>
+        </APIGateway>
+        <CacheConfigurations>
+            <EnableGatewayTokenCache>true</EnableGatewayTokenCache>
+            <EnableGatewayResourceCache>true</EnableGatewayResourceCache>
+            <EnableKeyManagerTokenCache>false</EnableKeyManagerTokenCache>
+            <EnableRecentlyAddedAPICache>false</EnableRecentlyAddedAPICache>
+            <EnableScopeCache>true</EnableScopeCache>
+            <EnablePublisherRoleCache>true</EnablePublisherRoleCache>
+            <EnableJWTClaimCache>true</EnableJWTClaimCache>
+        </CacheConfigurations>
+        <Analytics>
+            <Enabled>true</Enabled>
+            <StreamProcessorServerURL>tcp://wso2apim-with-analytics-apim-analytics-service:7612</StreamProcessorServerURL>
+            <StreamProcessorAuthServerURL>ssl://wso2apim-with-analytics-apim-analytics-service:7712</StreamProcessorAuthServerURL>
+            <StreamProcessorUsername>${admin.username}</StreamProcessorUsername>
+            <StreamProcessorPassword>${admin.password}</StreamProcessorPassword>
+            <StatsProviderImpl>org.wso2.carbon.apimgt.usage.client.impl.APIUsageStatisticsRestClientImpl</StatsProviderImpl>
+            <StreamProcessorRestApiURL>https://wso2apim-with-analytics-apim-analytics-service:7444</StreamProcessorRestApiURL>
+            <StreamProcessorRestApiUsername>${admin.username}</StreamProcessorRestApiUsername>
+            <StreamProcessorRestApiPassword>${admin.password}</StreamProcessorRestApiPassword>
+            <SkipEventReceiverConnection>false</SkipEventReceiverConnection>
+            <SkipWorkflowEventPublisher>false</SkipWorkflowEventPublisher>
+            <PublisherClass>org.wso2.carbon.apimgt.usage.publisher.APIMgtUsageDataBridgeDataPublisher</PublisherClass>
+            <PublishResponseMessageSize>false</PublishResponseMessageSize>
+            <Streams>
+                <Request>
+                    <Name>org.wso2.apimgt.statistics.request</Name>
+                    <Version>3.0.0</Version>
+                </Request>
+                <Fault>
+                    <Name>org.wso2.apimgt.statistics.fault</Name>
+                    <Version>3.0.0</Version>
+                </Fault>
+                <Throttle>
+                    <Name>org.wso2.apimgt.statistics.throttle</Name>
+                    <Version>3.0.0</Version>
+                </Throttle>
+                <Workflow>
+                    <Name>org.wso2.apimgt.statistics.workflow</Name>
+                    <Version>1.0.0</Version>
+                </Workflow>
+                <AlertTypes>
+                    <Name>org.wso2.analytics.apim.alertStakeholderInfo</Name>
+                    <Version>1.0.1</Version>
+                </AlertTypes>
+            </Streams>
+        </Analytics>
+        <APIKeyValidator>
+            <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
+            <Username>${admin.username}</Username>
+            <Password>${admin.password}</Password>
+            <KeyValidatorClientType>ThriftClient</KeyValidatorClientType>
+            <ThriftClientConnectionTimeOut>10000</ThriftClientConnectionTimeOut>
+            <EnableThriftServer>true</EnableThriftServer>
+            <ThriftServerHost>localhost</ThriftServerHost>
+            <KeyValidationHandlerClassName>org.wso2.carbon.apimgt.keymgt.handlers.DefaultKeyValidationHandler</KeyValidationHandlerClassName>
+        </APIKeyValidator>
+        <OAuthConfigurations>
+            <ApplicationTokenScope>am_application_scope</ApplicationTokenScope>
+            <TokenEndPointName>/oauth2/token</TokenEndPointName>
+            <RevokeAPIURL>https://localhost:${https.nio.port}/revoke</RevokeAPIURL>
+            <EncryptPersistedTokens>false</EncryptPersistedTokens>
+            <EnableTokenHashMode>false</EnableTokenHashMode>
+        </OAuthConfigurations>
+        <TierManagement>
+            <EnableUnlimitedTier>true</EnableUnlimitedTier>
+        </TierManagement>
+        <APIStore>
+            <CompareCaseInsensitively>true</CompareCaseInsensitively>
+            <DisplayURL>false</DisplayURL>
+            <URL>https://"ip.node.k8s.&.wso2.apim":"$nodeport.k8s.&.1.wso2apim"/store</URL>
+            <ServerURL>https://"ip.node.k8s.&.wso2.apim":"$nodeport.k8s.&.2.wso2apim"${carbon.context}services/</ServerURL>
+            <Username>${admin.username}</Username>
+            <Password>${admin.password}</Password>
+            <DisplayMultipleVersions>false</DisplayMultipleVersions>
+            <DisplayAllAPIs>false</DisplayAllAPIs>
+            <DisplayComments>true</DisplayComments>
+            <DisplayRatings>true</DisplayRatings>
+        </APIStore>
+        <APIPublisher>
+            <DisplayURL>false</DisplayURL>
+            <URL>https://localhost:${mgt.transport.https.port}/publisher</URL>
+            <EnableAccessControl>true</EnableAccessControl>
+        </APIPublisher>
+        <CORSConfiguration>
+            <Enabled>true</Enabled>
+            <Access-Control-Allow-Origin>*</Access-Control-Allow-Origin>
+            <Access-Control-Allow-Methods>GET,PUT,POST,DELETE,PATCH,OPTIONS</Access-Control-Allow-Methods>
+            <Access-Control-Allow-Headers>authorization,Access-Control-Allow-Origin,Content-Type,SOAPAction</Access-Control-Allow-Headers>
+            <Access-Control-Allow-Credentials>false</Access-Control-Allow-Credentials>
+        </CORSConfiguration>
+        <RESTAPI>
+            <WhiteListedURIs>
+                <WhiteListedURI>
+                    <URI>/api/am/publisher/{version}/swagger.json</URI>
+                    <HTTPMethods>GET,HEAD</HTTPMethods>
+                </WhiteListedURI>
+                <WhiteListedURI>
+                    <URI>/api/am/store/{version}/swagger.json</URI>
+                    <HTTPMethods>GET,HEAD</HTTPMethods>
+                </WhiteListedURI>
+                <WhiteListedURI>
+                    <URI>/api/am/admin/{version}/swagger.json</URI>
+                    <HTTPMethods>GET,HEAD</HTTPMethods>
+                </WhiteListedURI>
+                <WhiteListedURI>
+                    <URI>/api/am/store/{version}/apis</URI>
+                    <HTTPMethods>GET,HEAD</HTTPMethods>
+                </WhiteListedURI>
+                <WhiteListedURI>
+                    <URI>/api/am/store/{version}/apis/{apiId}</URI>
+                    <HTTPMethods>GET,HEAD</HTTPMethods>
+                </WhiteListedURI>
+                <WhiteListedURI>
+                    <URI>/api/am/store/{version}/apis/{apiId}/swagger</URI>
+                    <HTTPMethods>GET,HEAD</HTTPMethods>
+                </WhiteListedURI>
+                <WhiteListedURI>
+                    <URI>/api/am/store/{version}/apis/{apiId}/documents</URI>
+                    <HTTPMethods>GET,HEAD</HTTPMethods>
+                </WhiteListedURI>
+                <WhiteListedURI>
+                    <URI>/api/am/store/{version}/apis/{apiId}/documents/{documentId}</URI>
+                    <HTTPMethods>GET,HEAD</HTTPMethods>
+                </WhiteListedURI>
+                <WhiteListedURI>
+                    <URI>/api/am/store/{version}/apis/{apiId}/documents/{documentId}/content</URI>
+                    <HTTPMethods>GET,HEAD</HTTPMethods>
+                </WhiteListedURI>
+                <WhiteListedURI>
+                    <URI>/api/am/store/{version}/apis/{apiId}/thumbnail</URI>
+                    <HTTPMethods>GET,HEAD</HTTPMethods>
+                </WhiteListedURI>
+                <WhiteListedURI>
+                    <URI>/api/am/store/{version}/tags</URI>
+                    <HTTPMethods>GET,HEAD</HTTPMethods>
+                </WhiteListedURI>
+                <WhiteListedURI>
+                    <URI>/api/am/store/{version}/tiers/{tierLevel}</URI>
+                    <HTTPMethods>GET,HEAD</HTTPMethods>
+                </WhiteListedURI>
+                <WhiteListedURI>
+                    <URI>/api/am/store/{version}/tiers/{tierLevel}/{tierName}</URI>
+                    <HTTPMethods>GET,HEAD</HTTPMethods>
+                </WhiteListedURI>
+            </WhiteListedURIs>
+            <ETagSkipList>
+                <ETagSkipURI>
+                    <URI>/api/am/store/{version}/apis</URI>
+                    <HTTPMethods>GET</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/store/{version}/apis/generate-sdk</URI>
+                    <HTTPMethods>POST</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/store/{version}/apis/{apiId}/documents</URI>
+                    <HTTPMethods>GET</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/store/{version}/applications</URI>
+                    <HTTPMethods>GET</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/store/{version}/applications/generate-keys</URI>
+                    <HTTPMethods>POST</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/store/{version}/subscriptions</URI>
+                    <HTTPMethods>GET,POST</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/store/{version}/tags</URI>
+                    <HTTPMethods>GET</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/store/{version}/tiers/{tierLevel}</URI>
+                    <HTTPMethods>GET</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/store/{version}/tiers/{tierLevel}/{tierName}</URI>
+                    <HTTPMethods>GET</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/apis</URI>
+                    <HTTPMethods>GET,POST</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/apis/{apiId}</URI>
+                    <HTTPMethods>GET,DELETE,PUT</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/apis/{apiId}/swagger</URI>
+                    <HTTPMethods>GET,PUT</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/apis/{apiId}/thumbnail</URI>
+                    <HTTPMethods>GET,POST</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/apis/{apiId}/change-lifecycle</URI>
+                    <HTTPMethods>POST</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/apis/{apiId}/copy-api</URI>
+                    <HTTPMethods>POST</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/applications/{applicationId}</URI>
+                    <HTTPMethods>GET</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/apis/{apiId}/documents</URI>
+                    <HTTPMethods>GET,POST</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/apis/{apiId}/documents/{documentId}/content</URI>
+                    <HTTPMethods>GET,POST</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/apis/{apiId}/documents/{documentId}</URI>
+                    <HTTPMethods>GET,PUT,DELETE</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/environments</URI>
+                    <HTTPMethods>GET</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/subscriptions</URI>
+                    <HTTPMethods>GET</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/subscriptions/block-subscription</URI>
+                    <HTTPMethods>POST</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/subscriptions/{subscriptionId}</URI>
+                    <HTTPMethods>GET</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/subscriptions/unblock-subscription</URI>
+                    <HTTPMethods>POST</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/tiers/{tierLevel}</URI>
+                    <HTTPMethods>GET,POST</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/tiers/{tierLevel}/{tierName}</URI>
+                    <HTTPMethods>GET,PUT,DELETE</HTTPMethods>
+                </ETagSkipURI>
+                <ETagSkipURI>
+                    <URI>/api/am/publisher/{version}/tiers/update-permission</URI>
+                    <HTTPMethods>POST</HTTPMethods>
+                </ETagSkipURI>
+            </ETagSkipList>
+        </RESTAPI>
+        <ThrottlingConfigurations>
+            <EnableAdvanceThrottling>true</EnableAdvanceThrottling>
+            <TrafficManager>
+                <Type>Binary</Type>
+                <ReceiverUrlGroup>tcp://${carbon.local.ip}:${receiver.url.port}</ReceiverUrlGroup>
+                <AuthUrlGroup>ssl://${carbon.local.ip}:${auth.url.port}</AuthUrlGroup>
+                <Username>${admin.username}</Username>
+                <Password>${admin.password}</Password>
+            </TrafficManager>
+            <DataPublisher>
+                <Enabled>true</Enabled>
+                <DataPublisherPool>
+                    <MaxIdle>1000</MaxIdle>
+                    <InitIdleCapacity>200</InitIdleCapacity>
+                </DataPublisherPool>
+                <DataPublisherThreadPool>
+                    <CorePoolSize>200</CorePoolSize>
+                    <MaxmimumPoolSize>1000</MaxmimumPoolSize>
+                    <KeepAliveTime>200</KeepAliveTime>
+                </DataPublisherThreadPool>
+            </DataPublisher>
+            <PolicyDeployer>
+                <Enabled>true</Enabled>
+                <ServiceURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServiceURL>
+                <Username>${admin.username}</Username>
+                <Password>${admin.password}</Password>
+            </PolicyDeployer>
+            <BlockCondition>
+                <Enabled>true</Enabled>
+            </BlockCondition>
+            <JMSConnectionDetails>
+                <Enabled>true</Enabled>
+                <JMSConnectionParameters>
+                    <transport.jms.ConnectionFactoryJNDIName>TopicConnectionFactory</transport.jms.ConnectionFactoryJNDIName>
+                    <transport.jms.DestinationType>topic</transport.jms.DestinationType>
+                    <java.naming.factory.initial>org.wso2.andes.jndi.PropertiesFileInitialContextFactory</java.naming.factory.initial>
+                    <connectionfactory.TopicConnectionFactory>amqp://${admin.username}:${admin.password}@clientid/carbon?brokerlist='tcp://${carbon.local.ip}:${jms.port}'</connectionfactory.TopicConnectionFactory>
+                </JMSConnectionParameters>
+            </JMSConnectionDetails>=
+            <EnableUnlimitedTier>true</EnableUnlimitedTier>
+            <EnableHeaderConditions>false</EnableHeaderConditions>
+            <EnableJWTClaimConditions>false</EnableJWTClaimConditions>
+            <EnableQueryParamConditions>false</EnableQueryParamConditions>
+        </ThrottlingConfigurations>
+        <WorkflowConfigurations>
+            <Enabled>false</Enabled>
+            <ServerUrl>https://localhost:9445/bpmn</ServerUrl>
+            <ServerUser>${admin.username}</ServerUser>
+            <ServerPassword>${admin.password}</ServerPassword>
+            <WorkflowCallbackAPI>https://localhost:${mgt.transport.https.port}/api/am/publisher/v0.14/workflows/update-workflow-status</WorkflowCallbackAPI>
+            <TokenEndPoint>https://localhost:${https.nio.port}/token</TokenEndPoint>
+            <DCREndPoint>https://localhost:${mgt.transport.https.port}/client-registration/v0.14/register</DCREndPoint>
+            <DCREndPointUser>${admin.username}</DCREndPointUser>
+            <DCREndPointPassword>${admin.password}</DCREndPointPassword>
+        </WorkflowConfigurations>
+        <SwaggerCodegen>
+            <ClientGeneration>
+                <GroupId>org.wso2</GroupId>
+                <ArtifactId>org.wso2.client.</ArtifactId>
+                <ModelPackage>org.wso2.client.model.</ModelPackage>
+                <ApiPackage>org.wso2.client.api.</ApiPackage>
+                <SupportedLanguages>java,android</SupportedLanguages>
+            </ClientGeneration>
+        </SwaggerCodegen>
+    </APIManager>
+  carbon.xml: |
+    <?xml version="1.0" encoding="ISO-8859-1"?>
+    <Server xmlns="http://wso2.org/projects/carbon/carbon.xml">
+        <Name>WSO2 API Manager</Name>
+        <ServerKey>AM</ServerKey>
+        <Version>2.6.0</Version>
+        <HostName>"ip.node.k8s.&.wso2.apim"</HostName>
+        <MgtHostName>"ip.node.k8s.&.wso2.apim"</MgtHostName>
+        <ServerURL>local:/${carbon.context}/services/</ServerURL>
+        <ServerRoles>
+            <Role>APIManager</Role>
+        </ServerRoles>
+        <Package>org.wso2.carbon</Package>
+        <WebContextRoot>/</WebContextRoot>
+        <ItemsPerPage>15</ItemsPerPage>
+        <Ports>
+            <Offset>0</Offset>
+            <JMX>
+                <RMIRegistryPort>9999</RMIRegistryPort>
+                <RMIServerPort>11111</RMIServerPort>
+            </JMX>
+            <EmbeddedLDAP>
+                <LDAPServerPort>10389</LDAPServerPort>
+                <KDCServerPort>8000</KDCServerPort>
+            </EmbeddedLDAP>
+            <ThriftEntitlementReceivePort>10500</ThriftEntitlementReceivePort>
+        </Ports>
+        <JNDI>
+            <DefaultInitialContextFactory>org.wso2.carbon.tomcat.jndi.CarbonJavaURLContextFactory</DefaultInitialContextFactory>
+            <Restrictions>
+                <AllTenants>
+                    <UrlContexts>
+                        <UrlContext>
+                            <Scheme>java</Scheme>
+                        </UrlContext>
+                    </UrlContexts>
+                </AllTenants>
+            </Restrictions>
+        </JNDI>
+        <IsCloudDeployment>false</IsCloudDeployment>
+        <EnableMetering>false</EnableMetering>
+        <MaxThreadExecutionTime>600</MaxThreadExecutionTime>
+        <GhostDeployment>
+            <Enabled>false</Enabled>
+        </GhostDeployment>
+        <Tenant>
+            <LoadingPolicy>
+                <LazyLoading>
+                    <IdleTime>30</IdleTime>
+                </LazyLoading>
+            </LoadingPolicy>
+        </Tenant>
+        <Cache>
+            <DefaultCacheTimeout>15</DefaultCacheTimeout>
+            <ForceLocalCache>false</ForceLocalCache>
+        </Cache>
+        <Axis2Config>
+            <RepositoryLocation>${carbon.home}/repository/deployment/server/</RepositoryLocation>
+            <DeploymentUpdateInterval>15</DeploymentUpdateInterval>
+            <ConfigurationFile>${carbon.home}/repository/conf/axis2/axis2.xml</ConfigurationFile>
+            <ServiceGroupContextIdleTime>30000</ServiceGroupContextIdleTime>
+            <ClientRepositoryLocation>${carbon.home}/repository/deployment/client/</ClientRepositoryLocation>
+            <clientAxis2XmlLocation>${carbon.home}/repository/conf/axis2/axis2_client.xml</clientAxis2XmlLocation>
+            <HideAdminServiceWSDLs>true</HideAdminServiceWSDLs>
+        </Axis2Config>
+        <ServiceUserRoles>
+            <Role>
+                <Name>admin</Name>
+                <Description>Default Administrator Role</Description>
+            </Role>
+            <Role>
+                <Name>user</Name>
+                <Description>Default User Role</Description>
+            </Role>
+        </ServiceUserRoles>
+        <CryptoService>
+            <Enabled>true</Enabled>
+            <InternalCryptoProviderClassName>org.wso2.carbon.crypto.provider.KeyStoreBasedInternalCryptoProvider</InternalCryptoProviderClassName>
+            <ExternalCryptoProviderClassName>org.wso2.carbon.core.encryption.KeyStoreBasedExternalCryptoProvider</ExternalCryptoProviderClassName>
+            <KeyResolvers>
+                <KeyResolver className="org.wso2.carbon.crypto.defaultProvider.resolver.ContextIndependentKeyResolver" priority="-1"/>
+            </KeyResolvers>
+        </CryptoService>
+        <Security>
+            <KeyStore>
+                <Location>${carbon.home}/repository/resources/security/wso2carbon.jks</Location>
+                <Type>JKS</Type>
+                <Password>wso2carbon</Password>
+                <KeyAlias>wso2carbon</KeyAlias>
+                <KeyPassword>wso2carbon</KeyPassword>
+            </KeyStore>
+            <InternalKeyStore>
+                <Location>${carbon.home}/repository/resources/security/wso2carbon.jks</Location>
+                <Type>JKS</Type>
+                <Password>wso2carbon</Password>
+                <KeyAlias>wso2carbon</KeyAlias>
+                <KeyPassword>wso2carbon</KeyPassword>
+            </InternalKeyStore>
+            <TrustStore>
+                <Location>${carbon.home}/repository/resources/security/client-truststore.jks</Location>
+                <Type>JKS</Type>
+                <Password>wso2carbon</Password>
+            </TrustStore>
+            <NetworkAuthenticatorConfig>
+            </NetworkAuthenticatorConfig>
+            <TomcatRealm>UserManager</TomcatRealm>
+            <DisableTokenStore>false</DisableTokenStore>
+            <XSSPreventionConfig>
+                <Enabled>true</Enabled>
+                <Rule>allow</Rule>
+                <Patterns>
+                </Patterns>
+            </XSSPreventionConfig>
+        </Security>
+        <HideMenuItemIds>
+            <HideMenuItemId>claim_mgt_menu</HideMenuItemId>
+            <HideMenuItemId>identity_mgt_emailtemplate_menu</HideMenuItemId>
+            <HideMenuItemId>identity_security_questions_menu</HideMenuItemId>
+        </HideMenuItemIds>
+        <WorkDirectory>${carbon.home}/tmp/work</WorkDirectory>
+        <HouseKeeping>
+            <AutoStart>true</AutoStart>
+            <Interval>10</Interval>
+            <MaxTempFileLifetime>30</MaxTempFileLifetime>
+        </HouseKeeping>
+        <FileUploadConfig>
+            <TotalFileSizeLimit>100</TotalFileSizeLimit>
+            <Mapping>
+                <Actions>
+                    <Action>keystore</Action>
+                    <Action>certificate</Action>
+                    <Action>*</Action>
+                </Actions>
+                <Class>org.wso2.carbon.ui.transports.fileupload.AnyFileUploadExecutor</Class>
+            </Mapping>
+            <Mapping>
+                <Actions>
+                    <Action>jarZip</Action>
+                </Actions>
+                <Class>org.wso2.carbon.ui.transports.fileupload.JarZipUploadExecutor</Class>
+            </Mapping>
+            <Mapping>
+                <Actions>
+                    <Action>dbs</Action>
+                </Actions>
+                <Class>org.wso2.carbon.ui.transports.fileupload.DBSFileUploadExecutor</Class>
+            </Mapping>
+            <Mapping>
+                <Actions>
+                    <Action>tools</Action>
+                </Actions>
+                <Class>org.wso2.carbon.ui.transports.fileupload.ToolsFileUploadExecutor</Class>
+            </Mapping>
+            <Mapping>
+                <Actions>
+                    <Action>toolsAny</Action>
+                </Actions>
+                <Class>org.wso2.carbon.ui.transports.fileupload.ToolsAnyFileUploadExecutor</Class>
+            </Mapping>
+        </FileUploadConfig>
+        <HttpGetRequestProcessors>
+            <Processor>
+                <Item>info</Item>
+                <Class>org.wso2.carbon.core.transports.util.InfoProcessor</Class>
+            </Processor>
+            <Processor>
+                <Item>wsdl</Item>
+                <Class>org.wso2.carbon.core.transports.util.Wsdl11Processor</Class>
+            </Processor>
+            <Processor>
+                <Item>wsdl2</Item>
+                <Class>org.wso2.carbon.core.transports.util.Wsdl20Processor</Class>
+            </Processor>
+            <Processor>
+                <Item>xsd</Item>
+                <Class>org.wso2.carbon.core.transports.util.XsdProcessor</Class>
+            </Processor>
+        </HttpGetRequestProcessors>
+        <DeploymentSynchronizer>
+            <Enabled>false</Enabled>
+            <AutoCommit>false</AutoCommit>
+            <AutoCheckout>true</AutoCheckout>
+            <RepositoryType>svn</RepositoryType>
+            <SvnUrl>http://svnrepo.example.com/repos/</SvnUrl>
+            <SvnUser>username</SvnUser>
+            <SvnPassword>password</SvnPassword>
+            <SvnUrlAppendTenantId>true</SvnUrlAppendTenantId>
+        </DeploymentSynchronizer>
+        <ServerInitializers>
+        </ServerInitializers>
+        <RequireCarbonServlet>${require.carbon.servlet}</RequireCarbonServlet>
+        <StatisticsReporterDisabled>true</StatisticsReporterDisabled>
+        <FeatureRepository>
+            <RepositoryName>default repository</RepositoryName>
+            <RepositoryURL>http://product-dist.wso2.com/p2/carbon/releases/wilkes/</RepositoryURL>
+        </FeatureRepository>
+        <APIManagement>
+            <Enabled>true</Enabled>
+            <LoadAPIContextsInServerStartup>true</LoadAPIContextsInServerStartup>
+        </APIManagement>
+    </Server>
+  user-mgt.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <UserManager>
+        <Realm>
+            <Configuration>
+                <AddAdmin>true</AddAdmin>
+                <AdminRole>admin</AdminRole>
+                <AdminUser>
+                    <UserName>admin</UserName>
+                    <Password>admin</Password>
+                </AdminUser>
+                <EveryOneRoleName>everyone</EveryOneRoleName>
+                <Property name="isCascadeDeleteEnabled">true</Property>
+                <Property name="initializeNewClaimManager">true</Property>
+                <Property name="dataSource">jdbc/WSO2UM_DB</Property>
+            </Configuration>
+            <UserStoreManager class="org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager">
+                <Property name="TenantManager">org.wso2.carbon.user.core.tenant.JDBCTenantManager</Property>
+                <Property name="ReadOnly">false</Property>
+                <Property name="ReadGroups">true</Property>
+                <Property name="WriteGroups">true</Property>
+                <Property name="UsernameJavaRegEx">^[\S]{3,30}$</Property>
+                <Property name="UsernameJavaScriptRegEx">^[\S]{3,30}$</Property>
+                <Property name="UsernameJavaRegExViolationErrorMsg">Username pattern policy violated</Property>
+                <Property name="PasswordJavaRegEx">^[\S]{5,30}$</Property>
+                <Property name="PasswordJavaScriptRegEx">^[\S]{5,30}$</Property>
+                <Property name="PasswordJavaRegExViolationErrorMsg">Password length should be within 5 to 30 characters</Property>
+                <Property name="RolenameJavaRegEx">^[\S]{3,30}$</Property>
+                <Property name="RolenameJavaScriptRegEx">^[\S]{3,30}$</Property>
+                <Property name="CaseInsensitiveUsername">true</Property>
+                <Property name="SCIMEnabled">false</Property>
+                <Property name="IsBulkImportSupported">true</Property>
+                <Property name="PasswordDigest">SHA-256</Property>
+                <Property name="StoreSaltedPassword">true</Property>
+                <Property name="MultiAttributeSeparator">,</Property>
+                <Property name="MaxUserNameListLength">100</Property>
+                <Property name="MaxRoleNameListLength">100</Property>
+                <Property name="UserRolesCacheEnabled">true</Property>
+                <Property name="UserNameUniqueAcrossTenants">false</Property>
+            </UserStoreManager>
+                  <AuthorizationManager class="org.wso2.carbon.user.core.authorization.JDBCAuthorizationManager">
+                <Property name="AdminRoleManagementPermissions">/permission</Property>
+                <Property name="AuthorizationCacheEnabled">true</Property>
+                <Property name="GetAllRolesOfUserEnabled">false</Property>
+            </AuthorizationManager>
+        </Realm>
+    </UserManager>
 kind: ConfigMap
 metadata:
   name: apim-conf
-  namespace: wso2
+  namespace: "$ns.k8s.&.wso2.apim"
 ---
-
 apiVersion: v1
 data:
   master-datasources.xml: |
@@ -838,9 +785,8 @@ data:
 kind: ConfigMap
 metadata:
   name: apim-conf-datasources
-  namespace: wso2
+  namespace: "$ns.k8s.&.wso2.apim"
 ---
-
 apiVersion: v1
 data:
   deployment.yaml: |
@@ -1164,9 +1110,8 @@ data:
 kind: ConfigMap
 metadata:
   name: apim-analytics-conf-worker
-  namespace: wso2
+  namespace: "$ns.k8s.&.wso2.apim"
 ---
-
 apiVersion: v1
 data:
   init.sql: |
@@ -2899,35 +2844,31 @@ data:
 kind: ConfigMap
 metadata:
   name: mysql-dbscripts
-  namespace: wso2
+  namespace: "$ns.k8s.&.wso2.apim"
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
   name: wso2apim-with-analytics-rdbms-service
-  namespace: wso2
+  namespace: "$ns.k8s.&.wso2.apim"
 spec:
   type: ClusterIP
   selector:
     deployment: wso2apim-with-analytics-mysql
-    pod: wso2am
   ports:
     - name: mysql-port
       port: 3306
       targetPort: 3306
       protocol: TCP
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
   name: wso2apim-with-analytics-apim-analytics-service
-  namespace: wso2
+  namespace: "$ns.k8s.&.wso2.apim"
 spec:
   selector:
     deployment: wso2apim-with-analytics-apim-analytics
-    pod: wso2am
   ports:
     -
       name: 'thrift'
@@ -2954,19 +2895,16 @@ spec:
       protocol: TCP
       port: 7444
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
   name: wso2apim-with-analytics-apim-service
-  namespace: wso2
+  namespace: "$ns.k8s.&.wso2.apim"
   labels:
     deployment: wso2apim-with-analytics-apim
-    pod: wso2am
 spec:
   selector:
     deployment: wso2apim-with-analytics-apim
-    pod: wso2am
   type: NodePort
   ports:
     -
@@ -2976,8 +2914,8 @@ spec:
     -
       name: pass-through-https
       protocol: TCP
-      nodePort: 30243
       port: 8243
+      nodePort: "$nodeport.k8s.&.2.wso2apim"
     -
       name: servlet-http
       protocol: TCP
@@ -2985,26 +2923,25 @@ spec:
     -
       name: servlet-https
       protocol: TCP
-      nodePort: 30443
+      nodePort: "$nodeport.k8s.&.1.wso2apim"
       port: 9443
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2apim-with-analytics-mysql-deployment
-  namespace: wso2
+  namespace: "$ns.k8s.&.wso2.apim"
 spec:
   replicas: 1
   selector:
     matchLabels:
       deployment: wso2apim-with-analytics-mysql
-      pod: wso2am
+      product: wso2am
   template:
     metadata:
       labels:
         deployment: wso2apim-with-analytics-mysql
-        pod: wso2am
+        product: wso2am
     spec:
       containers:
         - name: wso2apim-with-analytics-mysql
@@ -3032,19 +2969,18 @@ spec:
             name: mysql-dbscripts
       serviceAccountName: 'wso2svc-account'
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2apim-with-analytics-apim-analytics-deployment
-  namespace: wso2
+  namespace: "$ns.k8s.&.wso2.apim"
 spec:
   replicas: 1
   minReadySeconds: 30
   selector:
     matchLabels:
       deployment: wso2apim-with-analytics-apim-analytics
-      pod: wso2am
+      product: wso2am
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -3054,11 +2990,11 @@ spec:
     metadata:
       labels:
         deployment: wso2apim-with-analytics-apim-analytics
-        pod: wso2am
+        product: wso2am
     spec:
       containers:
         - name: wso2apim-with-analytics-apim-analytics
-          image: wso2/wso2am-analytics-worker
+          image: "$image.pull.@.wso2"/wso2am-analytics-worker:2.6.0
           resources:
             limits:
               memory: '2Gi'
@@ -3124,19 +3060,18 @@ spec:
           configMap:
             name: apim-analytics-conf-worker
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2apim-with-analytics-apim
-  namespace: wso2
+  namespace: "$ns.k8s.&.wso2.apim"
 spec:
   replicas: 1
   minReadySeconds: 30
   selector:
     matchLabels:
       deployment: wso2apim-with-analytics-apim
-      pod: wso2am
+      product: wso2am
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -3146,11 +3081,11 @@ spec:
     metadata:
       labels:
         deployment: wso2apim-with-analytics-apim
-        pod: wso2am
+        product: wso2am
     spec:
       containers:
         - name: wso2apim-with-analytics-apim-worker
-          image: wso2/wso2am
+          image: "$image.pull.@.wso2"/wso2am:2.6.0
           livenessProbe:
             exec:
               command:
@@ -3218,6 +3153,85 @@ spec:
 ---
 EOF
 }
+
+# bash functions
+function usage(){
+  echo "Usage: "
+  echo -e "-d, --deploy     Deploy WSO2 API Manager"
+  echo -e "-u, --undeploy   Undeploy WSO2 API Manager"
+  echo -e "-h, --help       Display usage instrusctions"
+}
+function undeploy(){
+  echoBold "Undeploying WSO2 API Manager ... \n"
+  kubectl delete -f deployment.yaml
+  exit 0
+}
+function echoBold () {
+    echo -en  $'\e[1m'"${1}"$'\e[0m'
+}
+
+function display_msg(){
+    msg=$@
+    echoBold "${msg}"
+    exit 1
+}
+
+function st(){
+  cycles=${1}
+  i=0
+  while [[ i -lt $cycles ]]
+  do
+    echoBold "* "
+    let "i=i+1"
+  done
+}
+function sp(){
+  cycles=${1}
+  i=0
+  while [[ i -lt $cycles ]]
+  do
+    echoBold " "
+    let "i=i+1"
+  done
+}
+function product_name(){
+  #wso2apim
+  echo -e "\n"
+  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; sp 1; st 3; sp 3; sp 8; sp 2; st 3; sp 1; sp 3; st 3; sp 3; st 5; sp 2; st 1; sp 8; st 1;
+  echo ""
+  st 1; sp 8; st 1; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 4; st 1; sp 2; sp 8; sp 1; st 1; sp 4; st 1; sp 3; st 1; sp 4; st 1; sp 2; sp 3; st 1; sp 6; st 2; sp 4; st 2;
+  echo ""
+  st 1; sp 3; st 1; sp 3; st 1; sp 2; st 1; sp 8; st 1; sp 6; st 1; sp 2; sp 6; st 1; sp 2; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp 4; st 1; sp 2; sp 3; st 1; sp 6; st 1; sp 1; st 1; sp 2; st 1; sp 1; st 1;
+  echo ""
+  st 1; sp 2; st 1; st 1; sp 2; st 1; sp 2; sp 1; st 3; sp 3; st 1; sp 6; st 1; sp 2; sp 4; st 1; sp 4; st 3; sp 2; st 5; sp 2; st 3; sp 3; sp 4; st 1; sp 6; st 1; sp 2; st 2; sp 2; st 1;
+  echo ""
+  st 1; sp 1; st 1; sp 2; st 1; sp 1; st 1; sp 2; sp 6; st 1; sp 2; st 1; sp 6; st 1; sp 2; sp 2; st 1; sp 6; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp  7; sp 4; st 1; sp 6; st 1; sp 3; st 1; sp 3; st 1;
+  echo ""
+  st 2; sp 4; st 2; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 8; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp 7; sp 4; st 1; sp 6; st 1; sp 8; st 1;
+  echo ""
+  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; st 4; sp 2; sp 8; st 1; sp 6; st 1; sp 2; st 1; sp 7; st 5; sp 2; st 1; sp 8; st 1;
+  echo -e "\n"
+}
+function get_creds(){
+  while [[ -z "$WUMUsername" ]]
+  do
+        read -p "$(echoBold "Enter your WSO2 subscription username: ")" WUMUsername
+        if [[ -z "$WUMUsername" ]]
+        then
+           echo "wso2-subscription-username cannot be empty"
+        fi
+  done
+
+  while [[ -z "$WUMPassword" ]]
+  do
+        read -sp "$(echoBold "Enter your WSO2 subscription password: ")" WUMPassword
+        echo ""
+        if [[ -z "$WUMPassword" ]]
+        then
+          echo "wso2-subscription-password cannot be empty"
+        fi
+  done
+}
 function validate_ip(){
     ip_check=$1
     if [[ $ip_check =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
@@ -3237,7 +3251,6 @@ function validate_ip(){
       NODE_IP=""
     fi
 }
-
 function get_node_ip(){
   NODE_IP=$(kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="ExternalIP")].address}')
 
@@ -3263,11 +3276,24 @@ function get_node_ip(){
   set -- $NODE_IP; NODE_IP=$1
 }
 
+function get_nodePorts(){
+  LOWER=30000; UPPER=32767;
+  if [ "$randomPort" == "True" ]; then
+    NP_1=0; NP_2=0;
+    while [ $NP_1 -lt $LOWER ] || [ $NP_2 -lt $LOWER ]
+    do
+      NP_1=$RANDOM; NP_2=$RANDOM
+      let "NP_1 %= $UPPER"; let "NP_2 %= $UPPER"
+    done
+  fi
+  echo -e "[INFO] nodePorts  are set to $NP_1 and $NP_2"
+}
 function progress_bar(){
-  dep_status=$(kubectl get deployments -n wso2 -o jsonpath='{.items[?(@.spec.selector.matchLabels.pod=="wso2am")].status.conditions[?(@.type=="Available")].status}')
-  pod_status=$(kubectl get pods -n wso2 -o jsonpath='{.items[?(@.metadata.labels.pod=="wso2am")].status.conditions[*].status}')
 
-  num_true_const=0; progress_unit="";num_true=0;time_proc=0
+  dep_status=$(kubectl get deployments -n wso2 -o jsonpath='{.items[?(@.spec.selector.matchLabels.product=="wso2am")].status.conditions[?(@.type=="Available")].status}')
+  pod_status=$(kubectl get pods -n wso2 -o jsonpath='{.items[?(@.metadata.labels.product=="wso2am")].status.conditions[*].status}')
+
+  num_true_const=0; progress_unit="";num_true=0; time_proc=0;
 
   arr_dep=($dep_status); arr_pod=($pod_status)
 
@@ -3281,11 +3307,10 @@ function progress_bar(){
       sleep 4
 
       num_true=0
-      dep_status=$(kubectl get deployments -n wso2 -o jsonpath='{.items[?(@.spec.selector.matchLabels.pod=="wso2am")].status.conditions[?(@.type=="Available")].status}')
-      pod_status=$(kubectl get pods -n wso2 -o jsonpath='{.items[?(@.metadata.labels.pod=="wso2am")].status.conditions[*].status}')
+      dep_status=$(kubectl get deployments -n wso2 -o jsonpath='{.items[?(@.spec.selector.matchLabels.product=="wso2am")].status.conditions[?(@.type=="Available")].status}')
+      pod_status=$(kubectl get pods -n wso2 -o jsonpath='{.items[?(@.metadata.labels.product=="wso2am")].status.conditions[*].status}')
 
       arr_dep=($dep_status); arr_pod=($pod_status); let "length_total= ${#arr_pod[@]} + ${#arr_dep[@]}";
-
 
       for ele_dep in $dep_status
       do
@@ -3302,6 +3327,7 @@ function progress_bar(){
               let "num_true=num_true+1"
           fi
       done
+
       printf "Processing WSO2 API Manager ... |"
 
       printf "%-$((5 * ${length_total-1}))s| $(($num_true_const * 100/ $length_total))"; echo -en ' % \r'
@@ -3310,7 +3336,7 @@ function progress_bar(){
       s=$(printf "%-$((5 * ${num_true_const}))s" "H")
       echo -en "${s// /H}"
 
-      printf "%-$((5 * $(($length_total - $num_true_const))))s| $((100 * $(($num_true_const))/ $length_total))"; echo -en ' % \r'
+      printf "%-$((5 * $(($length_total - $num_true_const))))s| $((100 * $(($num_true_const))/ $length_total))"; echo -en ' %\r '
 
       if [ $num_true -ne $num_true_const ]
       then
@@ -3326,8 +3352,8 @@ function progress_bar(){
           done
           num_true_const=$num_true
           time_proc=0
-      else
-          let "time_proc=time_proc + 5"
+        else
+            let "time_proc=time_proc + 5"
       fi
 
       printf "Processing WSO2 API Manager ... |"
@@ -3344,9 +3370,10 @@ function progress_bar(){
 
       if [[ $time_proc -gt 250 ]]
       then
-          echoBold "\nSomething went wrong! Please Follow <FAQ> for more information\n"
+          echoBold "\n\nSomething went wrong! Please Follow < FAQ-Link > for more information\n"
           exit 2
       fi
+
   done
 
   echo -e "\n"
@@ -3354,52 +3381,85 @@ function progress_bar(){
 }
 
 function deploy(){
-    #cheking for required command line tools
+    #checking for required command line tools
     if [[ ! $(which kubectl) ]]
     then
-        display_msg "Please install Kubernetes command-line tool (kubectl)"
+       display_msg "Please install Kubernetes command-line tool (kubectl) before you start with the setup\n"
+    fi
+
+    if [[ ! $(which base64) ]]
+    then
+       display_msg "Please install base64 before you start with the setup\n"
     fi
 
     echoBold "Checking for an enabled cluster... Your patience is appreciated... "
     cluster_isReady=$(kubectl cluster-info) > /dev/null 2>&1  || true
 
-    if [[ ! $cluster_isReady == *"KubeDNS"* ]]
+    if [[ ! $cluster_isReady == *"DNS"* ]]
     then
         display_msg "\nPlease enable your cluster before running the setup.\n\nIf you don't have a kubernetes cluster, follow: https://kubernetes.io/docs/setup/\n\n"
     fi
 
     echoBold "Done\n"
-    # copy kubernetes object yaml files to deployment.yaml
-    echo "$deployment" > ${k8s_obj_file}
+
     #displaying wso2 product name
     product_name
 
-    # getting cluster node ip
+    # check if testgrid
+    if test -f "$INPUT_DIR/infrastructure.properties"; then
+      source $INPUT_DIR/infrastructure.properties
+    else
+      get_creds
+    fi
+
+    # get node-ip
     get_node_ip
 
-    #create kubernetes object yaml
+    # create and encode username/password pair
+    auth="$WUMUsername:$WUMPassword"
+    authb64=`echo -n $auth | base64`
+
+    # create authorisation code
+    authstring='{"auths":{"docker.wso2.com":{"username":"'${WUMUsername}'","password":"'${WUMPassword}'","email":"'${WUMUsername}'","auth":"'${authb64}'"}}}'
+
+    # encode in base64
+    secdata=`echo -n $authstring | base64`
+
+    for i in $secdata; do
+      str_sec=$str_sec$i
+    done
+
+    get_nodePorts
+
+    # create kubernetes object yaml
     create_yaml
 
-    echoBold "Deploying WSO2 Identity Server...\n"
+    # replace necessary variables
+    sed -i '' 's/"$ns.k8s.&.wso2.apim"/'$namespace'/g' $k8s_obj_file
+    sed -i '' 's/"$string.&.secret.auth.data"/'$secdata'/g' $k8s_obj_file
+    sed -i '' 's/"ip.node.k8s.&.wso2.apim"/'$NODE_IP'/g' $k8s_obj_file
+    sed -i '' 's/"$nodeport.k8s.&.1.wso2apim"/'$NP_1'/g' $k8s_obj_file
+    sed -i '' 's/"$nodeport.k8s.&.2.wso2apim"/'$NP_2'/g' $k8s_obj_file
+    sed -i '' 's/"$image.pull.@.wso2"/'$IMG_DEST'/g' $k8s_obj_file
 
-    # create kubernetes deployment
-    kubectl create -f ${k8s_obj_file}
+    if ! test -f "$INPUT_DIR/infrastructure.properties"; then
+        echoBold "\nDeploying WSO2 API Manager ....\n"
 
-    # waiting until the deployment is ready.
-    progress_bar
+        # Deploy wso2am
+        kubectl create -f $k8s_obj_file
 
-    echoBold "Successfully deployed WSO2 Identity Server.\n\n"
+        # waiting until deployment is ready
+        progress_bar
+        echoBold "Successfully deployed WSO2 API Manager.\n\n"
 
-    echoBold "1. Try navigating to https://$NODE_IP:30443/carbon/ from your favourite browser using \n"
-    echoBold "\tusername: admin\n"
-    echoBold "\tpassword: admin\n"
-    echoBold "2. Follow <getting-started-link> to start using WSO2 Identity Server.\n\n "
+        echoBold "1. Try navigating to https://$NODE_IP:30443/carbon/ from your favourite browser using \n"
+        echoBold "\tusername: admin\n"
+        echoBold "\tpassword: admin\n"
+        echoBold "2. Follow \"https://docs.wso2.com/display/AM210/Getting+Started\" to start using WSO2 API Manager.\n\n"
+    fi
 }
-
 arg=$1
-arg=$1
-if [[ -z $arg ]]
-then
+if [[ -z $arg ]]; then
     echoBold "Expected parameter is missing\n"
     usage
 else
@@ -3414,7 +3474,7 @@ else
         usage
         ;;
       *)
-        echoBold "Invalid parameter\n"
+        echoBold "Invalid parameter : $arg\n"
         usage
         ;;
     esac
