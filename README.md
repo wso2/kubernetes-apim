@@ -12,18 +12,18 @@ This repository contains Kubernetes and Helm resources required for,
 In order to deploy Kubernetes resources for each deployment pattern, follow the **Quick Start Guide**s for each deployment pattern
 given below:
 
-* [WSO2 API Manager pattern 1](pattern-1/README.md)
+* [WSO2 API Manager pattern 1](advance/pattern-1/README.md)
 
-* [WSO2 API Manager pattern 2](pattern-2/README.md)
+* [WSO2 API Manager pattern 2](advance/pattern-2/README.md)
 
 ## Deploy Helm resources
 
 In order to deploy Helm resources for each deployment pattern, follow the **Quick Start Guide**s for each deployment pattern
 given below:
 
-* [WSO2 API Manager pattern 1](helm/pattern-1/README.md)
+* [WSO2 API Manager pattern 1](advance/helm/pattern-1/README.md)
 
-* [WSO2 API Manager pattern 2](helm/pattern-2/README.md)
+* [WSO2 API Manager pattern 2](advance/helm/pattern-2/README.md)
 
 ## How to update configurations
 
@@ -43,18 +43,18 @@ a. In order to apply the updated configurations, WSO2 product server instances n
 corresponding to the product deployment, if they are already deployed.
 
 b. Create and export a directory within the NFS server instance.
-   
+
 c. Add the additional configuration files, third-party libraries, OSGi bundles and security related artifacts, into appropriate
 folders matching that of the relevant WSO2 product home folder structure, within the previously created directory.
 
 d. Grant ownership to `wso2carbon` user and `wso2` group, for the directory created in step (b).
-      
+
    ```
    sudo chown -R wso2carbon:wso2 <directory_name>
    ```
-      
+
 e. Grant read-write-execute permissions to the `wso2carbon` user, for the directory created in step (b).
-      
+
    ```
    chmod -R 700 <directory_name>
    ```
