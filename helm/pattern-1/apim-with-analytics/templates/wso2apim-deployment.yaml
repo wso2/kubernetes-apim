@@ -32,7 +32,11 @@ spec:
     spec:
       containers:
         - name: wso2apim-with-analytics-apim-worker
+          {{- if or (eq .Values.username "") (eq .Values.password "") }}
+          image: wso2/wso2am:2.6.0
+          {{- else }}
           image: docker.wso2.com/wso2am:2.6.0
+          {{- end }}
           livenessProbe:
             exec:
               command:
