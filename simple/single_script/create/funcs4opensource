@@ -219,7 +219,7 @@ function deploy(){
     echoBold "Checking for an enabled cluster... Your patience is appreciated... "
     cluster_isReady=$(kubectl cluster-info) > /dev/null 2>&1  || true
 
-    if [[ ! $cluster_isReady == *"KubeDNS"* ]]
+    if [[ ! $cluster_isReady == *"DNS"* ]]
     then
         display_msg "\nPlease enable your cluster before running the setup.\n\nIf you don't have a kubernetes cluster, follow: https://kubernetes.io/docs/setup/\n\n"
     fi
