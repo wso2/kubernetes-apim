@@ -3,9 +3,9 @@
 IS_OPEN_SOURCE=False
 
 if $IS_OPEN_SOURCE; then
-  SCRIPT="../wso2am-ga-new.sh"
+  SCRIPT="../wso2am-ga.sh"
 else
-  SCRIPT="../wso2am-latest-new.sh"
+  SCRIPT="../wso2am-latest.sh"
 fi
 
 cat > $SCRIPT << "EOF"
