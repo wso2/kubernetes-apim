@@ -1,11 +1,11 @@
 #!/bin/bash
 
-IS_OPEN_SOURCE=true
+IS_OPEN_SOURCE=False
 
 if $IS_OPEN_SOURCE; then
-  SCRIPT="wso2am-ga.sh"
+  SCRIPT="../wso2am-ga-new.sh"
 else
-  SCRIPT="wso2am-latest.sh"
+  SCRIPT="../wso2am-latest-new.sh"
 fi
 
 cat > $SCRIPT << "EOF"
@@ -48,7 +48,7 @@ fi
 cat >> $SCRIPT << "EOF"
 
 : ${namespace:="wso2"}
-: ${randomPort:=true}; : ${NP_1:=30443}; : ${NP_2:=30243}
+: ${randomPort:="False"}; : ${NP_1:=30443}; : ${NP_2:=30243}
 
 # testgrid directory
 OUTPUT_DIR=$4; INPUT_DIR=$2
@@ -60,31 +60,31 @@ echo 'cat > $k8s_obj_file << "EOF"' >> $SCRIPT
 echo 'EOF' >> $SCRIPT
 echo 'if [ "$namespace" == "wso2" ]; then' >> $SCRIPT
 echo 'cat > $k8s_obj_file << "EOF"' >> $SCRIPT
-cat ../pre-req/wso2-namespace.yaml >> $SCRIPT
+cat ../../pre-req/wso2-namespace.yaml >> $SCRIPT
 echo -e "EOF\nfi" >> $SCRIPT
 
 echo 'cat >> $k8s_obj_file << "EOF"'  >> $SCRIPT
-cat ../pre-req/wso2-serviceaccount.yaml >> $SCRIPT
+cat ../../pre-req/wso2-serviceaccount.yaml >> $SCRIPT
 if ! $IS_OPEN_SOURCE; then
-  cat ../pre-req/wso2-secret.yaml >> $SCRIPT
+  cat ../../pre-req/wso2-secret.yaml >> $SCRIPT
 fi
-cat ../configmaps/apim-conf.yaml >> $SCRIPT
-cat ../configmaps/apim-conf-datasources.yaml >> $SCRIPT
-cat ../configmaps/apim-analytics-conf-worker.yaml >> $SCRIPT
-cat ../configmaps/mysql-dbscripts.yaml >> $SCRIPT
-cat ../mysql/mysql-service.yaml >> $SCRIPT
-cat ../apim-analytics/apim-analytics-service.yaml >> $SCRIPT
-cat ../apim/wso2apim-service.yaml >> $SCRIPT
-cat ../mysql/mysql-deployment.yaml >> $SCRIPT
-cat ../apim-analytics/apim-analytics-deployment.yaml >> $SCRIPT
-cat ../apim/wso2apim-deployment.yaml >> $SCRIPT
+cat ../../configmaps/apim-conf.yaml >> $SCRIPT
+cat ../../configmaps/apim-conf-datasources.yaml >> $SCRIPT
+cat ../../configmaps/apim-analytics-conf-worker.yaml >> $SCRIPT
+cat ../../configmaps/mysql-dbscripts.yaml >> $SCRIPT
+cat ../../mysql/mysql-service.yaml >> $SCRIPT
+cat ../../apim-analytics/apim-analytics-service.yaml >> $SCRIPT
+cat ../../apim/wso2apim-service.yaml >> $SCRIPT
+cat ../../mysql/mysql-deployment.yaml >> $SCRIPT
+cat ../../apim-analytics/apim-analytics-deployment.yaml >> $SCRIPT
+cat ../../apim/wso2apim-deployment.yaml >> $SCRIPT
 
 echo -e "EOF\n}\n" >> $SCRIPT
 
 if $IS_OPEN_SOURCE; then
   cat funcs4opensource >> $SCRIPT
 else
-  cat functions >> $SCRIPT
+  cat funcs >> $SCRIPT
 fi
 
 cat >> $SCRIPT << "EOF"
