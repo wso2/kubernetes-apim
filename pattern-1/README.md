@@ -12,8 +12,9 @@ This consists of a scalable deployment of WSO2 API Manager with WSO2 API Manager
 
 ## Prerequisites
 
-* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active
-WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
+* In order to use Docker images with WSO2 updates, you need an active WSO2 subscription. If you do not possess an active WSO2
+  subscription, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).
+  Otherwise, you can proceed with Docker images which are created using GA releases.<br><br>
 
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10)
 in order to run the steps provided in the following quick start guide.<br><br>
@@ -53,19 +54,42 @@ Then, switch the context to new `wso2` namespace.
 kubectl config set-context $(kubectl config current-context) --namespace=wso2
 ```
 
-##### 3. Create a Kubernetes Secret for pulling the required Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com).
+##### 3. [Optional] If you are using Docker images with WSO2 updates, perform the following changes.
 
-Create a Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
+* Change the Docker image names such that each Kubernetes Deployment use WSO2 product Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com).
 
-```
-kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<WSO2_USERNAME> --docker-password=<WSO2_PASSWORD> --docker-email=<WSO2_USERNAME>
-```
+  Change the Docker image name, i.e. the `image` attribute under the [container specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#container-v1-core)
+  of each Kubernetes Deployment resource.
+  
+  For example, change the default `wso2/wso2am:2.6.0` WSO2 API Manager Docker image available at [DockerHub](https://hub.docker.com/u/wso2/) to
+  `docker.wso2.com/wso2am:2.6.0` WSO2 API Manager Docker image available at [`WSO2 Docker Registry`](https://docker.wso2.com).
 
-`WSO2_USERNAME`: Your WSO2 username<br>
-`WSO2_PASSWORD`: Your WSO2 password
+* Create a Kubernetes Secret for pulling the required Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com).
 
-Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
-for further details.
+  Create a Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
+
+  ```
+  kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<WSO2_USERNAME> --docker-password=<WSO2_PASSWORD> --docker-email=<WSO2_USERNAME>
+  ```
+
+  `WSO2_USERNAME`: Your WSO2 username<br>
+  `WSO2_PASSWORD`: Your WSO2 password
+
+  Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
+  for further details.
+    
+  Also, add the created `wso2creds` Kubernetes Secret as an entry to Kubernetes Deployment resources. Please add the following entry
+  under the [Kubernetes Pod Specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#podspec-v1-core) `PodSpec` in each Deployment resource.
+    
+  ```
+  imagePullSecrets:
+  - name: wso2creds
+  ```
+
+The Kubernetes Deployment definition file(s) that need to be updated are as follows:
+
+* `<KUBERNETES_HOME>/pattern-1/apim-analytics/wso2apim-analytics-deployment.yaml`
+* `<KUBERNETES_HOME>/pattern-2/apim/wso2apim-deployment.yaml`
 
 ##### 4. Setup product database(s).
 
@@ -120,10 +144,8 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
 ##### 5. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 
 ```
-kubectl create --username=admin --password=<K8S_CLUSTER_ADMIN_PASSWORD> -f <KUBERNETES_HOME>/rbac/rbac.yaml
+kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ```
-
-`K8S_CLUSTER_ADMIN_PASSWORD`: Kubernetes cluster admin password
 
 ##### 6. Setup a Network File System (NFS) to be used for persistent storage.
 
@@ -171,7 +193,7 @@ kubectl create -f <KUBERNETES_HOME>/pattern-1/apim/wso2apim-service.yaml
 
 ##### 9. Deploy Kubernetes Ingress resource.
 
-The WSO2 API Manager Kubernetes Ingress resource uses the NGINX Ingress Controller.
+The WSO2 API Manager Kubernetes Ingress resource uses the NGINX Ingress Controller maintained by Kubernetes..
 
 In order to enable the NGINX Ingress controller in the desired cloud or on-premise environment,
 please refer the official documentation, [NGINX Ingress Controller Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/).
@@ -184,7 +206,7 @@ kubectl create -f <KUBERNETES_HOME>/pattern-1/ingresses/wso2apim-ingress.yaml
 
 ##### 10. Access Management Consoles.
 
-Default deployment will expose `wso2apim` and `wso2apim-gateway hosts.
+Default deployment will expose `wso2apim` and `wso2apim-gateway` hosts.
 
 To access the console in the environment,
 
@@ -210,13 +232,15 @@ b. Add the above host as an entry in /etc/hosts file as follows:
 
 c. Try navigating to `https://wso2apim/carbon` from your favorite browser.
 
-##### 11. Scale up using `kubectl scale`.
+##### 11. Scale up the WSO2 API Manager.
 
 Default deployment runs a single replica (or pod) of WSO2 API Manager. To scale this deployment into any `<n>` number of
-container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
+container replicas, upon your requirement, simply run `kubectl scale` Kubernetes client command on the terminal.
+
+For example, the following command scales the WSO2 API Manager to the desired number of replicas.
 
 ```
 kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/pattern-1/apim/wso2apim-deployment.yaml
 ```
 
-For example, If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
+If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
