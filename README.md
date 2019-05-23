@@ -18,6 +18,10 @@ of WSO2 API Manager.*
 * [Update product configurations](ManageConfigurations.md)
 * [Introduce additional artifacts](ManageArtifacts.md)
 
+## Changelog
+
+**Change log** from previous v2.6.0.2 release: [View Here](CHANGELOG.md)
+
 ## Reporting issues
 
 We encourage you to report any issues and documentation faults regarding Kubernetes and Helm resources
