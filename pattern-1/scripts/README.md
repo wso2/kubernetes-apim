@@ -10,9 +10,6 @@ which can be used to test the core Kubernetes resources provided for a scalable 
 
 ## Prerequisites
 
-* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active
-WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
-
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10)
 in order to run the steps provided in the following quick start guide.<br><br>
 
@@ -40,7 +37,7 @@ git clone https://github.com/wso2/kubernetes-apim.git
 
 ##### 2. Deploy Kubernetes Ingress resource.
 
-The WSO2 API Manager Kubernetes Ingress resource uses the NGINX Ingress Controller.
+The WSO2 API Manager Kubernetes Ingress resource uses the NGINX Ingress Controller maintained by Kubernetes.
 
 In order to enable the NGINX Ingress controller in the desired cloud or on-premise environment,
 please refer the official documentation, [NGINX Ingress Controller Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/).
@@ -98,27 +95,17 @@ In a **production grade setup**,
 
 ##### 5. Deploy Kubernetes resources.
 
-Change directory to `<KUBERNETES_HOME>/pattern-1/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
+Change directory to `<KUBERNETES_HOME>/pattern-1/scripts` and execute the `deploy.sh` shell script on the terminal.
 
 ```
-./deploy.sh --wso2-username=<WSO2_USERNAME> --wso2-password=<WSO2_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
+./deploy.sh
 ```
-
-* A Kubernetes Secret named `wso2creds` in the cluster to authenticate with the [`WSO2 Docker Registry`](https://docker.wso2.com), to pull the required images.
-The following details need to be replaced in the relevant command.
-
-`WSO2_USERNAME`: Your WSO2 username<br>
-`WSO2_PASSWORD`: Your WSO2 password
-
-* A Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
-
-`K8S_CLUSTER_ADMIN_PASSWORD`: Kubernetes cluster admin password
 
 >To un-deploy, be on the same directory and execute the `undeploy.sh` shell script on the terminal.
 
 ##### 6. Access Management Consoles.
 
-Default deployment will expose `wso2apim`, `wso2apim-gateway` and `wso2apim-analytics` hosts.
+Default deployment will expose `wso2apim` and `wso2apim-gateway` hosts.
 
 To access the console in the environment,
 
@@ -128,28 +115,27 @@ e.g.
 
 ```
 NAME                                             HOSTS                       ADDRESS         PORTS     AGE
-wso2apim-with-analytics-apim-analytics-ingress   wso2apim-analytics          <EXTERNAL-IP>   80, 443   6m
 wso2apim-with-analytics-apim-ingress             wso2apim,wso2apim-gateway   <EXTERNAL-IP>   80, 443   7m
 ```
 
 2. Add the above host as an entry in /etc/hosts file as follows:
 
 ```
-<EXTERNAL-IP>	wso2apim-analytics
 <EXTERNAL-IP>	wso2apim
 <EXTERNAL-IP>	wso2apim-gateway
 ```
 
-3. Try navigating to `https://wso2apim/carbon` and `https://wso2apim-analytics/carbon` from your favorite browser.
+3. Try navigating to `https://wso2apim/carbon` from your favorite browser.
 
-##### 7. Scale up using `kubectl scale`.
+##### 7. Scale up the WSO2 API Manager.
 
 Default deployment runs a single replica (or pod) of WSO2 API Manager. To scale this deployment into any `<n>` number of
-container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
+container replicas, upon your requirement, simply run `kubectl scale` Kubernetes client command on the terminal.
+
+For example, the following command scales the WSO2 API Manager to the desired number of replicas.
 
 ```
 kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/pattern-1/apim/wso2apim-deployment.yaml
 ```
 
-For example, If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
-    
+If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
