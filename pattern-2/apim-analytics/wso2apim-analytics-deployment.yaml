@@ -94,8 +94,6 @@ spec:
         - name: apim-analytics-conf-worker
           mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
       serviceAccountName: "wso2svc-account"
-      imagePullSecrets:
-      - name: wso2creds
       volumes:
       - name: apim-analytics-conf-worker
         configMap:
