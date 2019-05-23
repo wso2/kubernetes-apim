@@ -12,18 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2apim-with-analytics-apim-analytics-deployment
 spec:
   replicas: 1
-  minReadySeconds: 30
   strategy:
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
     type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2apim-with-analytics-apim-analytics
   template:
     metadata:
       labels:
@@ -31,32 +33,36 @@ spec:
     spec:
       containers:
       - name: wso2apim-with-analytics-apim-analytics
-        image: docker.wso2.com/wso2am-analytics-worker:2.6.0
-        resources:
-          limits:
-            memory: "4Gi"
-          requests:
-            memory: "4Gi"
+        image: wso2/wso2am-analytics-worker:2.6.0
         livenessProbe:
           exec:
             command:
-            - /bin/sh
-            - -c
-            - nc -z localhost 7712
-          initialDelaySeconds: 250
+              - /bin/sh
+              - -c
+              - nc -z localhost 9444
+          initialDelaySeconds: 30
+          failureThreshold: 3
           periodSeconds: 10
         readinessProbe:
           exec:
             command:
               - /bin/sh
               - -c
-              - nc -z localhost 7712
-          initialDelaySeconds: 250
+              - nc -z localhost 9444
+          initialDelaySeconds: 30
+          failureThreshold: 3
           periodSeconds: 10
         lifecycle:
           preStop:
             exec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "2000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
         imagePullPolicy: Always
         securityContext:
           runAsUser: 802
@@ -86,8 +92,6 @@ spec:
         - name: apim-analytics-conf-worker
           mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
       serviceAccountName: "wso2svc-account"
-      imagePullSecrets:
-      - name: wso2creds
       volumes:
       - name: apim-analytics-conf-worker
         configMap:
