@@ -101,7 +101,7 @@ Else, if you are using WSO2 Identity Server as Key Manager, edit the following f
 
 * `<KUBERNETES_HOME>/pattern-2/apim-is-as-km/wso2apim-is-as-km-deployment.yaml`
 
-##### 5. Setup product database(s).
+##### 4. Setup product database(s).
 
 Setup the external product databases. Please refer to WSO2 API Manager's [official documentation](https://docs.wso2.com/display/AM260/Installing+and+Configuring+the+Databases)
 on creating the required databases for the deployment.
@@ -160,13 +160,13 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     kubectl create -f <KUBERNETES_HOME>/pattern-2/extras/rdbms/mysql/mysql-deployment.yaml
     ```
     
-##### 6. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
+##### 5. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 
 ```
 kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ```
 
-##### 7. Setup a Network File System (NFS) to be used for persistent storage.
+##### 6. Setup a Network File System (NFS) to be used for persistent storage.
 
 Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
 `<KUBERNETES_HOME>/pattern-2/volumes/persistent-volumes.yaml` file.
@@ -234,7 +234,7 @@ kubectl create -f <KUBERNETES_HOME>/pattern-2/apim-is-as-km/wso2apim-is-as-km-vo
 kubectl create -f <KUBERNETES_HOME>/pattern-2/volumes/persistent-volumes.yaml
 ```
     
-##### 8. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster.
+##### 7. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster.
 
 ```
 kubectl create configmap apim-analytics-conf-worker --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/conf/worker
@@ -264,7 +264,7 @@ kubectl create configmap apim-is-as-km-conf-axis2 --from-file=<KUBERNETES_HOME>/
 kubectl create configmap apim-is-as-km-conf-datasources --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-is-as-km/datasources/
 ```
 
-##### 9. Create Kubernetes Services for WSO2 API Manager and Analytics.
+##### 8. Create Kubernetes Services for WSO2 API Manager and Analytics.
 
 ```
 kubectl create -f <KUBERNETES_HOME>/pattern-2/apim-analytics/wso2apim-analytics-service.yaml
@@ -286,7 +286,7 @@ Else, if you are using WSO2 Identity Server as Key Manager, deploy the following
 kubectl create -f <KUBERNETES_HOME>/pattern-2/apim-is-as-km/wso2apim-is-as-km-service.yaml
 ```
 
-##### 10. Create Kubernetes Deployments for WSO2 API Manager and Analytics.
+##### 9. Create Kubernetes Deployments for WSO2 API Manager and Analytics.
 
 * Create the Kubernetes Deployment for WSO2 API Manager Analytics Worker profile.
 
@@ -340,7 +340,7 @@ kubectl create -f <KUBERNETES_HOME>/pattern-2/apim-gw/wso2apim-gateway-deploymen
 
 Ensure the Kubernetes pod for WSO2 API Manager's Gateway profile is up and running and ready to serve requests.
 
-##### 11. Deploy Kubernetes Ingress resources.
+##### 10. Deploy Kubernetes Ingress resources.
 
 The WSO2 API Manager Kubernetes Ingress resources uses the NGINX Ingress Controller maintained by Kubernetes.
 
@@ -354,7 +354,7 @@ kubectl create -f <KUBERNETES_HOME>/pattern-2/ingresses/wso2apim-gateway-ingress
 kubectl create -f <KUBERNETES_HOME>/pattern-2/ingresses/wso2apim-ingress.yaml
 ```
 
-##### 12. Access Management Consoles.
+##### 11. Access Management Consoles.
 
 Default deployment will expose `wso2apim` and `wso2apim-gateway` hosts.
 
@@ -383,7 +383,7 @@ b. Add the above host as an entry in `/etc/hosts` file as follows:
 
 c. Try navigating to `https://wso2apim/carbon` from your favorite browser.
 
-##### 13. Scale up the Key Manager and Gateway profiles.
+##### 12. Scale up the Key Manager and Gateway profiles.
 
 Default deployment runs a single replica (or pod) of Key Manager profile and WSO2 API Manager Gateway.
 To scale any of these profile deployments into any `<n>` number of container replicas, upon your requirement,
