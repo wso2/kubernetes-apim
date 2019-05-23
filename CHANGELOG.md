@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ## [Unreleased]
 
 ### Added
+- Kubernetes resources for a simplified, WSO2 API Manager with Analytics deployment
 - Define Kubernetes Deployment resource requests and limits
 - Integrate support in Kubernetes resources for users with and without WSO2 subscriptions
 - Integrate support in Helm resources for users with and without WSO2 subscriptions
