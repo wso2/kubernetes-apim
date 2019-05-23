@@ -16,43 +16,24 @@
 # limitations under the License
 # ------------------------------------------------------------------------
 
-# methods
-
-set -e
-
 ECHO=`which echo`
-KUBECTL=`which kubectl`
+KUBERNETES_CLIENT=`which kubectl`
 
 # methods
 function echoBold () {
     ${ECHO} $'\e[1m'"${1}"$'\e[0m'
 }
 
+# delete the created Kubernetes Namespace
+${KUBERNETES_CLIENT} delete namespace wso2
+
 # persistent storage
-echoBold 'Deleting persistent volume and volume claim...'
-${KUBECTL} delete -f ../apim/wso2apim-volume-claim.yaml
-${KUBECTL} delete -f ../volumes/persistent-volumes.yaml
-
-# WSO2 Identity Server
-echoBold 'Deleting WSO2 API Manager with Analytics deployment...'
-${KUBECTL} delete -f ../apim/wso2apim-service.yaml
-${KUBECTL} delete -f ../apim-analytics/wso2apim-analytics-service.yaml
-${KUBECTL} delete -f ../apim/wso2apim-deployment.yaml
-${KUBECTL} delete -f ../apim-analytics/wso2apim-analytics-deployment.yaml
-sleep 1m
-
-# MySQL
-echoBold 'Deleting the MySQL deployment...'
-${KUBECTL} delete -f ../extras/rdbms/mysql/mysql-service.yaml
-${KUBECTL} delete -f ../extras/rdbms/mysql/mysql-deployment.yaml
-${KUBECTL} delete -f ../extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
-${KUBECTL} delete -f ../extras/rdbms/volumes/persistent-volumes.yaml
+echoBold 'Deleting persistent storage...'
+${KUBERNETES_CLIENT} delete -f ../volumes/persistent-volumes.yaml
+${KUBERNETES_CLIENT} delete -f ../extras/rdbms/volumes/persistent-volumes.yaml
 sleep 50s
 
-# delete the created Kubernetes Namespace
-${KUBECTL} delete namespace wso2
-
 # switch the context to default namespace
-${KUBECTL} config set-context $(kubectl config current-context) --namespace=default
+${KUBERNETES_CLIENT} config set-context $(kubectl config current-context) --namespace=default
 
 echoBold 'Finished'
