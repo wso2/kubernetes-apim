@@ -189,10 +189,8 @@ kubectl create -f <KUBERNETES_HOME>/pattern-2/volumes/persistent-volumes.yaml
 kubectl create configmap apim-analytics-conf-worker --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/conf/worker
 
 kubectl create configmap apim-pub-store-tm-1-conf --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-pub-store-tm-1/
-kubectl create configmap apim-pub-store-tm-1-conf-axis2 --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-pub-store-tm-1/axis2/
 kubectl create configmap apim-pub-store-tm-1-conf-datasources --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-pub-store-tm-1/datasources/
 kubectl create configmap apim-pub-store-tm-2-conf --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-pub-store-tm-2/
-kubectl create configmap apim-pub-store-tm-2-conf-axis2 --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-pub-store-tm-2/axis2/
 kubectl create configmap apim-pub-store-tm-2-conf-datasources --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-pub-store-tm-2/datasources/
 
 kubectl create configmap apim-gateway-conf --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-gateway/
