@@ -12,6 +12,10 @@ This consists of a deployment of WSO2 API Manager with a separate Gateway and a 
 
 ## Prerequisites
 
+* In order to use Docker images with WSO2 updates, you need an active WSO2 subscription. If you do not possess an active WSO2
+  subscription, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).
+  Otherwise, you can proceed with Docker images which are created using GA releases.<br><br>
+
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 in order to run the steps provided in the following quick start guide.<br><br>
 
@@ -50,7 +54,54 @@ Then, switch the context to new `wso2` namespace.
 kubectl config set-context $(kubectl config current-context) --namespace=wso2
 ```
 
-##### 3. Setup product database(s).
+##### 3. [Optional] If you are using Docker images with WSO2 updates, perform the following changes.
+
+* Change the Docker image names such that each Kubernetes Deployment use WSO2 product Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com).
+
+  Change the Docker image name, i.e. the `image` attribute under the [container specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#container-v1-core)
+  of each Kubernetes Deployment resource.
+  
+  For example, change the default `wso2/wso2am:2.6.0` WSO2 API Manager Docker image available at [DockerHub](https://hub.docker.com/u/wso2/) to
+  `docker.wso2.com/wso2am:2.6.0` WSO2 API Manager Docker image available at [`WSO2 Docker Registry`](https://docker.wso2.com).
+
+* Create a Kubernetes Secret for pulling the required Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com).
+
+  Create a Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
+
+  ```
+  kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<WSO2_USERNAME> --docker-password=<WSO2_PASSWORD> --docker-email=<WSO2_USERNAME>
+  ```
+
+  `WSO2_USERNAME`: Your WSO2 username<br>
+  `WSO2_PASSWORD`: Your WSO2 password
+
+  Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
+  for further details.
+    
+  Also, add the created `wso2creds` Kubernetes Secret as an entry to Kubernetes Deployment resources. Please add the following entry
+  under the [Kubernetes Pod Specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#podspec-v1-core) `PodSpec` in each Deployment resource.
+    
+  ```
+  imagePullSecrets:
+  - name: wso2creds
+  ```
+
+The Kubernetes Deployment definition file(s) that need to be updated are as follows:
+
+* `<KUBERNETES_HOME>/pattern-2/apim-analytics/wso2apim-analytics-deployment.yaml`
+* `<KUBERNETES_HOME>/pattern-2/apim-gw/wso2apim-gateway-deployment.yaml`
+* `<KUBERNETES_HOME>/pattern-2/apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml`
+* `<KUBERNETES_HOME>/pattern-2/apim-pub-store-tm/wso2apim-pub-store-tm-2-deployment.yaml`
+
+If you are using WSO2 API Manager's Key Manager profile, edit the following file.
+
+* `<KUBERNETES_HOME>/pattern-2/apim-km/wso2apim-km-deployment.yaml`
+
+Else, if you are using WSO2 Identity Server as Key Manager, edit the following file.
+
+* `<KUBERNETES_HOME>/pattern-2/apim-is-as-km/wso2apim-is-as-km-deployment.yaml`
+
+##### 5. Setup product database(s).
 
 Setup the external product databases. Please refer to WSO2 API Manager's [official documentation](https://docs.wso2.com/display/AM260/Installing+and+Configuring+the+Databases)
 on creating the required databases for the deployment.
@@ -109,13 +160,13 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     kubectl create -f <KUBERNETES_HOME>/pattern-2/extras/rdbms/mysql/mysql-deployment.yaml
     ```
     
-##### 4. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
+##### 6. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 
 ```
 kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ```
 
-##### 5. Setup a Network File System (NFS) to be used for persistent storage.
+##### 7. Setup a Network File System (NFS) to be used for persistent storage.
 
 Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
 `<KUBERNETES_HOME>/pattern-2/volumes/persistent-volumes.yaml` file.
@@ -183,7 +234,7 @@ kubectl create -f <KUBERNETES_HOME>/pattern-2/apim-is-as-km/wso2apim-is-as-km-vo
 kubectl create -f <KUBERNETES_HOME>/pattern-2/volumes/persistent-volumes.yaml
 ```
     
-##### 6. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster.
+##### 8. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster.
 
 ```
 kubectl create configmap apim-analytics-conf-worker --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/conf/worker
@@ -213,7 +264,7 @@ kubectl create configmap apim-is-as-km-conf-axis2 --from-file=<KUBERNETES_HOME>/
 kubectl create configmap apim-is-as-km-conf-datasources --from-file=<KUBERNETES_HOME>/pattern-2/confs/apim-is-as-km/datasources/
 ```
 
-##### 7. Create Kubernetes Services for WSO2 API Manager and Analytics.
+##### 9. Create Kubernetes Services for WSO2 API Manager and Analytics.
 
 ```
 kubectl create -f <KUBERNETES_HOME>/pattern-2/apim-analytics/wso2apim-analytics-service.yaml
@@ -235,7 +286,7 @@ Else, if you are using WSO2 Identity Server as Key Manager, deploy the following
 kubectl create -f <KUBERNETES_HOME>/pattern-2/apim-is-as-km/wso2apim-is-as-km-service.yaml
 ```
 
-##### 8. Create Kubernetes Deployments for WSO2 API Manager and Analytics.
+##### 10. Create Kubernetes Deployments for WSO2 API Manager and Analytics.
 
 * Create the Kubernetes Deployment for WSO2 API Manager Analytics Worker profile.
 
@@ -289,7 +340,7 @@ kubectl create -f <KUBERNETES_HOME>/pattern-2/apim-gw/wso2apim-gateway-deploymen
 
 Ensure the Kubernetes pod for WSO2 API Manager's Gateway profile is up and running and ready to serve requests.
 
-##### 9. Deploy Kubernetes Ingress resources.
+##### 11. Deploy Kubernetes Ingress resources.
 
 The WSO2 API Manager Kubernetes Ingress resources uses the NGINX Ingress Controller maintained by Kubernetes.
 
@@ -303,7 +354,7 @@ kubectl create -f <KUBERNETES_HOME>/pattern-2/ingresses/wso2apim-gateway-ingress
 kubectl create -f <KUBERNETES_HOME>/pattern-2/ingresses/wso2apim-ingress.yaml
 ```
 
-##### 10. Access Management Consoles.
+##### 12. Access Management Consoles.
 
 Default deployment will expose `wso2apim` and `wso2apim-gateway` hosts.
 
@@ -332,7 +383,7 @@ b. Add the above host as an entry in `/etc/hosts` file as follows:
 
 c. Try navigating to `https://wso2apim/carbon` from your favorite browser.
 
-##### 11. Scale up the Key Manager and Gateway profiles.
+##### 13. Scale up the Key Manager and Gateway profiles.
 
 Default deployment runs a single replica (or pod) of Key Manager profile and WSO2 API Manager Gateway.
 To scale any of these profile deployments into any `<n>` number of container replicas, upon your requirement,
