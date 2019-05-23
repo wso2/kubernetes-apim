@@ -8,7 +8,8 @@
 ## Prerequisites
 
 * In order to use WSO2 Helm resources, you need an active WSO2 subscription. If you do not possess an active WSO2
-  subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
+  subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription)
+  . Otherwise you can proceed with docker images which are created using GA releases.<br><br>
 
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Helm](https://github.com/kubernetes/helm/blob/master/docs/install.md)
 (and Tiller) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10) in order to run the 
@@ -70,7 +71,8 @@ Grant read-write-execute permissions to the `wso2carbon` user, for each of the p
 a. The default product configurations are available at `<HELM_HOME>/apim-with-analytics/confs` folder. Change the
 configurations as necessary.
 
-b. Open the `<HELM_HOME>/apim-with-analytics/values.yaml` and provide the following values.
+b. Open the `<HELM_HOME>/apim-with-analytics/values.yaml` and provide the following values. If you do not have active 
+WSO2 subscription do not change the parameters `username`, `password` and `email`.
 
 | Parameter                       | Description                                                                               |
 |---------------------------------|-------------------------------------------------------------------------------------------|

@@ -32,7 +32,11 @@ spec:
     spec:
       containers:
       - name: wso2apim-analytics
+        {{- if or (eq .Values.username "") (eq .Values.password "") }}
+        image: wso2/wso2am-analytics-worker:2.6.0
+        {{- else }}
         image: docker.wso2.com/wso2am-analytics-worker:2.6.0
+        {{- end }}
         resources:
           limits:
             memory: "4Gi"

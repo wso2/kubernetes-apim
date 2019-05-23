@@ -32,7 +32,11 @@ spec:
     spec:
       containers:
       - name: wso2apim-is-as-km
+        {{- if or (eq .Values.username "") (eq .Values.password "") }}
+        image: wso2/wso2is-km:5.7.0
+        {{- else }}
         image: docker.wso2.com/wso2is-km:5.7.0
+        {{- end }}
         livenessProbe:
           exec:
             command:
