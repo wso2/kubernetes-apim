@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # ------------------------------------------------------------------------
 # Copyright 2017 WSO2, Inc. (http://wso2.com)
 #
@@ -18,12 +19,104 @@
 set -e
 
 ECHO=`which echo`
+GREP=`which grep`
 KUBERNETES_CLIENT=`which kubectl`
+SED=`which sed`
+TEST=`which test`
 
 # methods
 function echoBold () {
     ${ECHO} -e $'\e[1m'"${1}"$'\e[0m'
 }
+
+read -p "Do you have a WSO2 Subscription? (Y/N)" -n 1 -r
+${ECHO}
+
+if [[ ${REPLY} =~ ^[Yy]$ ]]; then
+    read -p "Enter Your WSO2 Username: " WSO2_SUBSCRIPTION_USERNAME
+    ${ECHO}
+    read -s -p "Enter Your WSO2 Password: " WSO2_SUBSCRIPTION_PASSWORD
+    ${ECHO}
+
+    HAS_SUBSCRIPTION=0
+
+    if ! ${GREP} -q "imagePullSecrets" \
+    ../apim-analytics/wso2apim-analytics-deployment.yaml \
+    ../apim-gw/wso2apim-gateway-deployment.yaml \
+    ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+    ../apim-km/wso2apim-km-deployment.yaml \
+    ../apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml \
+    ../apim-pub-store-tm/wso2apim-pub-store-tm-2-deployment.yaml; then
+
+        if ! ${SED} -i.bak -e 's|wso2/|docker.wso2.com/|' \
+        ../apim-analytics/wso2apim-analytics-deployment.yaml \
+        ../apim-gw/wso2apim-gateway-deployment.yaml \
+        ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+        ../apim-km/wso2apim-km-deployment.yaml \
+        ../apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml \
+        ../apim-pub-store-tm/wso2apim-pub-store-tm-2-deployment.yaml; then
+            echoBold "Could not configure to use the Docker image available at WSO2 Private Docker Registry (docker.wso2.com)"
+            exit 1
+        fi
+
+        if ! ${SED} -i.bak -e '/serviceAccount/a \      imagePullSecrets:' \
+        ../apim-analytics/wso2apim-analytics-deployment.yaml \
+        ../apim-gw/wso2apim-gateway-deployment.yaml \
+        ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+        ../apim-km/wso2apim-km-deployment.yaml \
+        ../apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml \
+        ../apim-pub-store-tm/wso2apim-pub-store-tm-2-deployment.yaml; then
+            echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
+            exit 1
+        fi
+
+
+        if ! ${SED} -i.bak -e '/imagePullSecrets/a \      - name: wso2creds' \
+        ../apim-analytics/wso2apim-analytics-deployment.yaml \
+        ../apim-gw/wso2apim-gateway-deployment.yaml \
+        ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+        ../apim-km/wso2apim-km-deployment.yaml \
+        ../apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml \
+        ../apim-pub-store-tm/wso2apim-pub-store-tm-2-deployment.yaml; then
+            echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
+            exit 1
+        fi
+    fi
+elif [[ ${REPLY} =~ ^[Nn]$ || -z "${REPLY}" ]]; then
+     HAS_SUBSCRIPTION=1
+
+     if ! ${SED} -i.bak -e '/imagePullSecrets:/d' -e '/- name: wso2creds/d' \
+     ../apim-analytics/wso2apim-analytics-deployment.yaml \
+     ../apim-gw/wso2apim-gateway-deployment.yaml \
+     ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+     ../apim-km/wso2apim-km-deployment.yaml \
+     ../apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml \
+     ../apim-pub-store-tm/wso2apim-pub-store-tm-2-deployment.yaml; then
+         echoBold "Failed to remove the Kubernetes Docker image pull secret"
+         exit 1
+     fi
+
+    if ! ${SED} -i.bak -e 's|docker.wso2.com|wso2|' \
+     ../apim-analytics/wso2apim-analytics-deployment.yaml \
+     ../apim-gw/wso2apim-gateway-deployment.yaml \
+     ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+     ../apim-km/wso2apim-km-deployment.yaml \
+     ../apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml \
+     ../apim-pub-store-tm/wso2apim-pub-store-tm-2-deployment.yaml; then
+        echoBold "Could not configure to use the WSO2 Docker image available at DockerHub"
+        exit 1
+    fi
+else
+    echoBold "You have entered an invalid option."
+    exit 1
+fi
+
+# remove backed up files
+${TEST} -f ../apim-analytics/*.bak && rm ../apim-analytics/*.bak
+${TEST} -f ../apim-gw/*.bak && rm ../apim-gw/*.bak
+${TEST} -f ../apim-is-as-km/*.bak && rm ../apim-is-as-km/*.bak
+${TEST} -f ../apim-km/*.bak && rm ../apim-km/*.bak
+${TEST} -f ../apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml.bak && rm ../apim-pub-store-tm/*.bak
 
 # create a new Kubernetes Namespace
 ${KUBERNETES_CLIENT} create namespace wso2
@@ -50,10 +143,8 @@ ${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf-axis2 --from-file=../co
 ${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf-datasources --from-file=../confs/apim-is-as-km/datasources/
 # create the Kubernetes ConfigMaps for API Manager's Publisher-Store-TM
 ${KUBERNETES_CLIENT} create configmap apim-pub-store-tm-1-conf --from-file=../confs/apim-pub-store-tm-1/
-${KUBERNETES_CLIENT} create configmap apim-pub-store-tm-1-conf-axis2 --from-file=../confs/apim-pub-store-tm-1/axis2/
 ${KUBERNETES_CLIENT} create configmap apim-pub-store-tm-1-conf-datasources --from-file=../confs/apim-pub-store-tm-1/datasources/
 ${KUBERNETES_CLIENT} create configmap apim-pub-store-tm-2-conf --from-file=../confs/apim-pub-store-tm-2/
-${KUBERNETES_CLIENT} create configmap apim-pub-store-tm-2-conf-axis2 --from-file=../confs/apim-pub-store-tm-2/axis2/
 ${KUBERNETES_CLIENT} create configmap apim-pub-store-tm-2-conf-datasources --from-file=../confs/apim-pub-store-tm-2/datasources/
 # create the Kubernetes ConfigMaps for API Manager's Gateway
 ${KUBERNETES_CLIENT} create configmap apim-gateway-conf --from-file=../confs/apim-gateway/
