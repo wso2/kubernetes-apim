@@ -5,22 +5,28 @@ of WSO2 API Manager.*
 
 ## Kubernetes resources for API Management deployment patterns
 
-* [Deployment Pattern 1](pattern-1/README.md)
-* [Deployment Pattern 2](pattern-2/README.md)
+### Simple
+
+* [Deployment Single Node](advanced/simple/single-script/README.md)
+
+### Advanced
+
+* [Deployment Pattern 1](advanced/pattern-1/README.md)
+* [Deployment Pattern 2](advanced/pattern-2/README.md)
 
 ## Helm resources for API Management deployment patterns
 
-* [Deployment Pattern 1](helm/pattern-1/README.md)
-* [Deployment Pattern 2](helm/pattern-2/README.md)
+* [Deployment Pattern 1](advanced/helm/pattern-1/README.md)
+* [Deployment Pattern 2](advanced/helm/pattern-2/README.md)
 
 ## Advanced topics
 
-* [Update product configurations](ManageConfigurations.md)
-* [Introduce additional artifacts](ManageArtifacts.md)
+* [Update product configurations](advanced/ManageConfigurations.md)
+* [Introduce additional artifacts](advanced/ManageArtifacts.md)
 
 ## Changelog
 
-**Change log** from previous v2.6.0.2 release: [View Here](CHANGELOG.md)
+**Change log** from previous v2.6.0.2 release: [View Here](advanced/CHANGELOG.md)
 
 ## Reporting issues
 
