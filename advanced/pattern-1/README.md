@@ -60,7 +60,7 @@ kubectl config set-context $(kubectl config current-context) --namespace=wso2
 
   Change the Docker image name, i.e. the `image` attribute under the [container specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#container-v1-core)
   of each Kubernetes Deployment resource.
-  
+
   For example, change the default `wso2/wso2am:2.6.0` WSO2 API Manager Docker image available at [DockerHub](https://hub.docker.com/u/wso2/) to
   `docker.wso2.com/wso2am:2.6.0` WSO2 API Manager Docker image available at [`WSO2 Docker Registry`](https://docker.wso2.com).
 
@@ -77,10 +77,10 @@ kubectl config set-context $(kubectl config current-context) --namespace=wso2
 
   Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
   for further details.
-    
+
   Also, add the created `wso2creds` Kubernetes Secret as an entry to Kubernetes Deployment resources. Please add the following entry
   under the [Kubernetes Pod Specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#podspec-v1-core) `PodSpec` in each Deployment resource.
-    
+
   ```
   imagePullSecrets:
   - name: wso2creds
@@ -88,8 +88,8 @@ kubectl config set-context $(kubectl config current-context) --namespace=wso2
 
 The Kubernetes Deployment definition file(s) that need to be updated are as follows:
 
-* `<KUBERNETES_HOME>/pattern-1/apim-analytics/wso2apim-analytics-deployment.yaml`
-* `<KUBERNETES_HOME>/pattern-2/apim/wso2apim-deployment.yaml`
+* `<KUBERNETES_HOME>/advanced/pattern-1/apim-analytics/wso2apim-analytics-deployment.yaml`
+* `<KUBERNETES_HOME>/advanced/pattern-2/apim/wso2apim-deployment.yaml`
 
 ##### 4. Setup product database(s).
 
@@ -99,48 +99,48 @@ on creating the required databases for the deployment.
 Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
 the following files:
 
-* `<KUBERNETES_HOME>/pattern-1/confs/apim/datasources/master-datasources.xml`
-* `<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/conf/worker/deployment.yaml`
+* `<KUBERNETES_HOME>/advanced/pattern-1/confs/apim/datasources/master-datasources.xml`
+* `<KUBERNETES_HOME>/advanced/pattern-1/confs/apim-analytics/conf/worker/deployment.yaml`
 
 Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN44x/Configuring+master-datasources.xml) on configuring data sources.
 
 **Note**:
 
 * For **evaluation purposes**, you can use Kubernetes resources provided in the directory<br>
-`<KUBERNETES_HOME>/pattern-1/extras/rdbms/mysql` for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
+`<KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/mysql` for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
 **not recommended** for a production setup.
 
 * For using these Kubernetes resources,
 
     first create a Kubernetes ConfigMap for passing database script(s) to the deployment.
-    
+
     ```
-    kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/pattern-1/extras/confs/mysql/dbscripts/
+    kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/advanced/pattern-1/extras/confs/mysql/dbscripts/
     ```
-    
+
     Here, a Network File System (NFS) is needed to be used for persisting MySQL DB data.
-    
+
     Create and export a directory within the NFS server instance.
-    
+
     Provide read-write-execute permissions to other users for the created folder.
-    
+
     Update the Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported,
-    NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml`.
-    
+    NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml`.
+
     Deploy the persistent volume resource and volume claim as follows:
-    
+
     ```
-    kubectl create -f <KUBERNETES_HOME>/pattern-1/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
-    kubectl create -f <KUBERNETES_HOME>/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml
+    kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+    kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml
     ```
 
     Then, create a Kubernetes service (accessible only within the Kubernetes cluster), followed by the MySQL Kubernetes deployment, as follows:
-    
+
     ```
-    kubectl create -f <KUBERNETES_HOME>/pattern-1/extras/rdbms/mysql/mysql-service.yaml
-    kubectl create -f <KUBERNETES_HOME>/pattern-1/extras/rdbms/mysql/mysql-deployment.yaml
+    kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/mysql/mysql-service.yaml
+    kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/mysql/mysql-deployment.yaml
     ```
-    
+
 ##### 5. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 
 ```
@@ -150,7 +150,7 @@ kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ##### 6. Setup a Network File System (NFS) to be used for persistent storage.
 
 Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
-`<KUBERNETES_HOME>/pattern-1/volumes/persistent-volumes.yaml` file.
+`<KUBERNETES_HOME>/advanced/pattern-1/volumes/persistent-volumes.yaml` file.
 
 Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
@@ -169,26 +169,26 @@ Update each Kubernetes Persistent Volume resource with the corresponding NFS ser
 Then, deploy the persistent volume resource and volume claim as follows:
 
 ```
-kubectl create -f <KUBERNETES_HOME>/pattern-1/apim/wso2apim-volume-claim.yaml
-kubectl create -f <KUBERNETES_HOME>/pattern-1/volumes/persistent-volumes.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/apim/wso2apim-volume-claim.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/volumes/persistent-volumes.yaml
 ```
-    
+
 ##### 7. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster.
 
 ```
-kubectl create configmap apim-conf --from-file=<KUBERNETES_HOME>/pattern-1/confs/apim/
-kubectl create configmap apim-conf-datasources --from-file=<KUBERNETES_HOME>/pattern-1/confs/apim/datasources/
+kubectl create configmap apim-conf --from-file=<KUBERNETES_HOME>/advanced/pattern-1/confs/apim/
+kubectl create configmap apim-conf-datasources --from-file=<KUBERNETES_HOME>/advanced/pattern-1/confs/apim/datasources/
 
-kubectl create configmap apim-analytics-conf-worker --from-file=<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/conf/worker
+kubectl create configmap apim-analytics-conf-worker --from-file=<KUBERNETES_HOME>/advanced/pattern-1/confs/apim-analytics/conf/worker
 ```
 
 ##### 8. Create Kubernetes Services and Deployments for WSO2 API Manager and Analytics.
 
 ```
-kubectl create -f <KUBERNETES_HOME>/pattern-1/apim-analytics/wso2apim-analytics-deployment.yaml
-kubectl create -f <KUBERNETES_HOME>/pattern-1/apim-analytics/wso2apim-analytics-service.yaml
-kubectl create -f <KUBERNETES_HOME>/pattern-1/apim/wso2apim-deployment.yaml
-kubectl create -f <KUBERNETES_HOME>/pattern-1/apim/wso2apim-service.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/apim-analytics/wso2apim-analytics-deployment.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/apim-analytics/wso2apim-analytics-service.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/apim/wso2apim-deployment.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/apim/wso2apim-service.yaml
 ```
 
 ##### 9. Deploy Kubernetes Ingress resource.
@@ -201,7 +201,7 @@ please refer the official documentation, [NGINX Ingress Controller Installation 
 Finally, deploy the WSO2 API Manager Kubernetes Ingress resources as follows:
 
 ```
-kubectl create -f <KUBERNETES_HOME>/pattern-1/ingresses/wso2apim-ingress.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/ingresses/wso2apim-ingress.yaml
 ```
 
 ##### 10. Access Management Consoles.
@@ -240,7 +240,7 @@ container replicas, upon your requirement, simply run `kubectl scale` Kubernetes
 For example, the following command scales the WSO2 API Manager to the desired number of replicas.
 
 ```
-kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/pattern-1/apim/wso2apim-deployment.yaml
+kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/advanced/pattern-1/apim/wso2apim-deployment.yaml
 ```
 
 If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
