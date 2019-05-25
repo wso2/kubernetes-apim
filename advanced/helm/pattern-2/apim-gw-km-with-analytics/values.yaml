@@ -1,0 +1,12 @@
+username: ""
+password: ""
+email: ""
+
+namespace: "wso2"
+svcaccount: "wso2svc-account"
+serverIp: ""
+sharedDeploymentLocationPath: ""
+isKMLocationPath: ""
+
+
+
