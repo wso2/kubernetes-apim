@@ -37,7 +37,7 @@ Add the `wso2carbon` user to the group `wso2`.
 >In the context of this document, <br>
 >* `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-apim`](https://github.com/wso2/kubernetes-apim/)
 Git repository. <br>
->* `HELM_HOME` will refer to `<KUBERNETES_HOME>/helm/pattern-1`. <br>
+>* `HELM_HOME` will refer to `<KUBERNETES_HOME>/advanced/helm/pattern-1`. <br>
 
 ##### 1. Clone Kubernetes Resources for WSO2 API Manager Git repository.
 

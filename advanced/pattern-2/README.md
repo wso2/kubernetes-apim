@@ -3,7 +3,7 @@
 Core Kubernetes resources for [WSO2 API Manager deployment pattern 2](https://docs.wso2.com/display/AM220/Deployment+Patterns#DeploymentPatterns-Pattern2).
 This consists of a deployment of WSO2 API Manager with a separate Gateway and a separate Key Manager along with WSO2 API Manager Analytics support.
 
-![WSO2 API Manager pattern 2 deployment](advanced/pattern-2/.png)
+![WSO2 API Manager pattern 2 deployment](pattern-2.png)
 
 ## Contents
 
