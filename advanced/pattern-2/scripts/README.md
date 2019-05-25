@@ -45,7 +45,7 @@ please refer the official documentation, [NGINX Ingress Controller Installation 
 ##### 3. Setup a Network File System (NFS) to be used for persistent storage.
 
 Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
-`<KUBERNETES_HOME>/pattern-2/volumes/persistent-volumes.yaml` file.
+`<KUBERNETES_HOME>/advanced/pattern-2/volumes/persistent-volumes.yaml` file.
 
 Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
@@ -61,7 +61,7 @@ chmod -R 700 <directory_name>
 
 Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
 
-**Note**: By default, the deployment management script (i.e. `<KUBERNETES_HOME>/pattern-2/scripts/deploy.sh`) is configured to deploy
+**Note**: By default, the deployment management script (i.e. `<KUBERNETES_HOME>/advanced/pattern-2/scripts/deploy.sh`) is configured to deploy
 WSO2 Identity Server as the Key Manager. If you are **not** using WSO2 Identity Server as the Key Manager, comment out the corresponding
 Kubernetes Persistent Volume resource.
 
@@ -87,7 +87,7 @@ spec:
 
 For **evaluation purposes**,
 
-* You can use Kubernetes resources provided in the directory `<KUBERNETES_HOME>/pattern-2/extras/rdbms/mysql`
+* You can use Kubernetes resources provided in the directory `<KUBERNETES_HOME>/advanced/pattern-2/extras/rdbms/mysql`
 for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
 **not recommended** for a production setup.
 
@@ -100,7 +100,7 @@ for deploying the product databases, using MySQL in Kubernetes. However, this ap
   Provide read-write-execute permissions to other users for the created folder.
         
   Update the Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported,
-  NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/pattern-2/extras/rdbms/volumes/persistent-volumes.yaml`.
+  NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/advanced/pattern-2/extras/rdbms/volumes/persistent-volumes.yaml`.
     
 In a **production grade setup**,
 
@@ -110,23 +110,23 @@ In a **production grade setup**,
   Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
   the following files:
   
-    * `<KUBERNETES_HOME>/pattern-2/confs/apim-analytics/conf/worker/deployment.yaml`
-    * `<KUBERNETES_HOME>/pattern-2/confs/apim-pub-store-tm-1/datasources/master-datasources.xml`
-    * `<KUBERNETES_HOME>/pattern-2/confs/apim-pub-store-tm-2/datasources/master-datasources.xml`
+    * `<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-analytics/conf/worker/deployment.yaml`
+    * `<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-pub-store-tm-1/datasources/master-datasources.xml`
+    * `<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-pub-store-tm-2/datasources/master-datasources.xml`
 
     If you are using WSO2 API Manager's Key Manager profile, edit the following file.
 
-    * `<KUBERNETES_HOME>/pattern-2/confs/apim-km/datasources/master-datasources.xml`
+    * `<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-km/datasources/master-datasources.xml`
 
     Else, if you are using WSO2 Identity Server as Key Manager, edit the following file.
 
-    * `<KUBERNETES_HOME>/pattern-2/confs/apim-is-as-km/datasources/master-datasources.xml`
+    * `<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-is-as-km/datasources/master-datasources.xml`
   
   Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN44x/Configuring+master-datasources.xml) on configuring data sources.
 
 ##### 5. Deploy Kubernetes resources.
 
-Change directory to `<KUBERNETES_HOME>/pattern-2/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
+Change directory to `<KUBERNETES_HOME>/advanced/pattern-2/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
 
 ```
 ./deploy.sh
@@ -134,7 +134,7 @@ Change directory to `<KUBERNETES_HOME>/pattern-2/scripts` and execute the `deplo
 
 **Note**:
 
-* By default, the deployment management script (i.e. `<KUBERNETES_HOME>/pattern-2/scripts/deploy.sh`) is configured to deploy
+* By default, the deployment management script (i.e. `<KUBERNETES_HOME>/advanced/pattern-2/scripts/deploy.sh`) is configured to deploy
 WSO2 Identity Server as the Key Manager.
 
 * If you desire to use WSO2 API Manager's Key Manager profile
@@ -223,7 +223,7 @@ simply run `kubectl scale` Kubernetes client command on the terminal.
 For example, the following command scales the WSO2 API Manager Gateway profile to the desired number of replicas.
 
 ```
-kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/pattern-2/apim-gw/wso2apim-gateway-deployment.yaml
+kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/advanced/pattern-2/apim-gw/wso2apim-gateway-deployment.yaml
 ```
 
 If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
