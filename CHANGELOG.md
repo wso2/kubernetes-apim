@@ -3,6 +3,11 @@ All notable changes to this project 2.6.x per each release will be documented in
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [v2.6.0.4] - 2018-05-27
+
+### Changed
+- Fix an issue which comments out Kubernetes client commands in the deployment management script of WSO2 API Manager deployment pattern 2
+
 ## [v2.6.0.3] - 2018-05-25
 
 ### Added
@@ -26,4 +31,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Kubernetes resources for WSO2 API Management deployment patterns 1 and 2
 - Helm resources for WSO2 API Management deployment patterns 1 and 2
 
-[v2.6.0.3]: https://github.com/wso2/kubernetes-apim/compare/v2.6.0.2...v2.6.0.3
+[v2.6.0.4]: https://github.com/wso2/kubernetes-apim/compare/v2.6.0.3...v2.6.0.4
