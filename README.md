@@ -25,8 +25,7 @@ of WSO2 API Manager.*
 * [Introduce additional artifacts](advanced/ManageArtifacts.md)
 
 ## Changelog
-
-**Change log** from previous v2.6.0.2 release: [View Here](advanced/CHANGELOG.md)
+**Change log** from previous v2.6.0.3 release: [View Here](advanced/CHANGELOG.md)
 
 ## Reporting issues
 

@@ -45,7 +45,7 @@ please refer the official documentation, [NGINX Ingress Controller Installation 
 ##### 3. Setup a Network File System (NFS) to be used for persistent storage.
 
 Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
-`<KUBERNETES_HOME>/pattern-1/volumes/persistent-volumes.yaml` file.
+`<KUBERNETES_HOME>/advanced/pattern-1/volumes/persistent-volumes.yaml` file.
 
 Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
@@ -65,7 +65,7 @@ Update each Kubernetes Persistent Volume resource with the corresponding NFS ser
 
 For **evaluation purposes**,
 
-* You can use Kubernetes resources provided in the directory `<KUBERNETES_HOME>/pattern-1/extras/rdbms/mysql`
+* You can use Kubernetes resources provided in the directory `<KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/mysql`
 for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
 **not recommended** for a production setup.
 
@@ -78,7 +78,7 @@ for deploying the product databases, using MySQL in Kubernetes. However, this ap
   Provide read-write-execute permissions to other users for the created folder.
         
   Update the Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported,
-  NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml`.
+  NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml`.
     
 In a **production grade setup**,
 
@@ -88,14 +88,14 @@ In a **production grade setup**,
   Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
   the following files:
   
-  * `<KUBERNETES_HOME>/pattern-1/confs/apim/datasources/master-datasources.xml`
-  * `<KUBERNETES_HOME>/pattern-1/confs/apim-analytics/conf/worker/deployment.yml`
+  * `<KUBERNETES_HOME>/advanced/pattern-1/confs/apim/datasources/master-datasources.xml`
+  * `<KUBERNETES_HOME>/advanced/pattern-1/confs/apim-analytics/conf/worker/deployment.yml`
   
   Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN44x/Configuring+master-datasources.xml) on configuring data sources.
 
 ##### 5. Deploy Kubernetes resources.
 
-Change directory to `<KUBERNETES_HOME>/pattern-1/scripts` and execute the `deploy.sh` shell script on the terminal.
+Change directory to `<KUBERNETES_HOME>/advanced/pattern-1/scripts` and execute the `deploy.sh` shell script on the terminal.
 
 ```
 ./deploy.sh
@@ -135,7 +135,7 @@ container replicas, upon your requirement, simply run `kubectl scale` Kubernetes
 For example, the following command scales the WSO2 API Manager to the desired number of replicas.
 
 ```
-kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/pattern-1/apim/wso2apim-deployment.yaml
+kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/advanced/pattern-1/apim/wso2apim-deployment.yaml
 ```
 
 If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.

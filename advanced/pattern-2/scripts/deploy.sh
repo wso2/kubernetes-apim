@@ -59,28 +59,58 @@ if [[ ${REPLY} =~ ^[Yy]$ ]]; then
             exit 1
         fi
 
-        if ! ${SED} -i.bak -e '/serviceAccount/a \      imagePullSecrets:' \
-        ../apim-analytics/wso2apim-analytics-deployment.yaml \
-        ../apim-gw/wso2apim-gateway-deployment.yaml \
-        ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
-        ../apim-km/wso2apim-km-deployment.yaml \
-        ../apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml \
-        ../apim-pub-store-tm/wso2apim-pub-store-tm-2-deployment.yaml; then
-            echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
-            exit 1
-        fi
+        case "`uname`" in
+            Darwin*)
+                if ! ${SED} -i.bak -e '/serviceAccount/a \
+                      \      imagePullSecrets:' \
+                ../apim-analytics/wso2apim-analytics-deployment.yaml \
+                ../apim-gw/wso2apim-gateway-deployment.yaml \
+                ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+                ../apim-km/wso2apim-km-deployment.yaml \
+                ../apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml \
+                ../apim-pub-store-tm/wso2apim-pub-store-tm-2-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
+                    exit 1
+                fi
 
 
-        if ! ${SED} -i.bak -e '/imagePullSecrets/a \      - name: wso2creds' \
-        ../apim-analytics/wso2apim-analytics-deployment.yaml \
-        ../apim-gw/wso2apim-gateway-deployment.yaml \
-        ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
-        ../apim-km/wso2apim-km-deployment.yaml \
-        ../apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml \
-        ../apim-pub-store-tm/wso2apim-pub-store-tm-2-deployment.yaml; then
-            echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
-            exit 1
-        fi
+                if ! ${SED} -i.bak -e '/imagePullSecrets/a \
+                      \      - name: wso2creds' \
+                ../apim-analytics/wso2apim-analytics-deployment.yaml \
+                ../apim-gw/wso2apim-gateway-deployment.yaml \
+                ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+                ../apim-km/wso2apim-km-deployment.yaml \
+                ../apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml \
+                ../apim-pub-store-tm/wso2apim-pub-store-tm-2-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
+                    exit 1
+                fi;;
+
+            *)
+
+                if ! ${SED} -i.bak -e '/serviceAccount/a \      imagePullSecrets:' \
+                ../apim-analytics/wso2apim-analytics-deployment.yaml \
+                ../apim-gw/wso2apim-gateway-deployment.yaml \
+                ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+                ../apim-km/wso2apim-km-deployment.yaml \
+                ../apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml \
+                ../apim-pub-store-tm/wso2apim-pub-store-tm-2-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
+                    exit 1
+                fi
+
+
+                if ! ${SED} -i.bak -e '/imagePullSecrets/a \      - name: wso2creds' \
+                ../apim-analytics/wso2apim-analytics-deployment.yaml \
+                ../apim-gw/wso2apim-gateway-deployment.yaml \
+                ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+                ../apim-km/wso2apim-km-deployment.yaml \
+                ../apim-pub-store-tm/wso2apim-pub-store-tm-1-deployment.yaml \
+                ../apim-pub-store-tm/wso2apim-pub-store-tm-2-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
+                    exit 1
+                fi;;
+        esac
     fi
 elif [[ ${REPLY} =~ ^[Nn]$ || -z "${REPLY}" ]]; then
      HAS_SUBSCRIPTION=1
@@ -126,6 +156,11 @@ ${KUBERNETES_CLIENT} create serviceaccount wso2svc-account -n wso2
 
 # switch the context to new 'wso2' namespace
 ${KUBERNETES_CLIENT} config set-context $(${KUBERNETES_CLIENT} config current-context) --namespace=wso2
+
+if [[ ${HAS_SUBSCRIPTION} -eq 0 ]]; then
+    # create a Kubernetes Secret for passing WSO2 Private Docker Registry credentials
+    ${KUBERNETES_CLIENT} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${WSO2_SUBSCRIPTION_USERNAME} --docker-password=${WSO2_SUBSCRIPTION_PASSWORD} --docker-email=${WSO2_SUBSCRIPTION_USERNAME}
+fi
 
 # create Kubernetes Role and Role Binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
 ${KUBERNETES_CLIENT} create -f ../../rbac/rbac.yaml

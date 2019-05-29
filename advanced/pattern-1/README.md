@@ -193,7 +193,7 @@ kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/apim/wso2apim-service.yam
 
 ##### 9. Deploy Kubernetes Ingress resource.
 
-The WSO2 API Manager Kubernetes Ingress resource uses the NGINX Ingress Controller maintained by Kubernetes..
+The WSO2 API Manager Kubernetes Ingress resource uses the NGINX Ingress Controller maintained by Kubernetes.
 
 In order to enable the NGINX Ingress controller in the desired cloud or on-premise environment,
 please refer the official documentation, [NGINX Ingress Controller Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/).
