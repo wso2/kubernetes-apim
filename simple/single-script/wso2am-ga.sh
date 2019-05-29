@@ -155,7 +155,7 @@ data:
             <CompareCaseInsensitively>true</CompareCaseInsensitively>
             <DisplayURL>false</DisplayURL>
             <URL>https://"ip.node.k8s.&.wso2.apim":"$nodeport.k8s.&.1.wso2apim"/store</URL>
-            <ServerURL>https://"ip.node.k8s.&.wso2.apim":"$nodeport.k8s.&.2.wso2apim"${carbon.context}services/</ServerURL>
+            <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
             <DisplayMultipleVersions>false</DisplayMultipleVersions>
@@ -3341,7 +3341,7 @@ function progress_bar(){
 
       if [[ $time_proc -gt 250 ]]
       then
-          echoBold "\n\nSomething went wrong! Please Follow < FAQ-Link > for more information\n"
+          echoBold "\n\nSomething went wrong! Please Follow \"https://docs.google.com/document/d/1BqRmTFu8qJG32g018mgpdgmmLuhJDDK1WgJhnL5hYe8/edit?usp=sharing\" for more information\n"
           exit 2
       fi
 

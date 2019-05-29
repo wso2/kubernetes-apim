@@ -214,7 +214,7 @@ function progress_bar(){
 
       if [[ $time_proc -gt 250 ]]
       then
-          echoBold "\n\nSomething went wrong! Please Follow < FAQ-Link > for more information\n"
+          echoBold "\n\nSomething went wrong! Please Follow \"https://docs.google.com/document/d/1BqRmTFu8qJG32g018mgpdgmmLuhJDDK1WgJhnL5hYe8/edit?usp=sharing\" for more information\n"
           exit 2
       fi
 
