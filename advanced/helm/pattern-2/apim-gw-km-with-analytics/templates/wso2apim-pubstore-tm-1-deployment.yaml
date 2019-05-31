@@ -99,8 +99,10 @@ spec:
         - name: apim-pubstore-tm-1-conf-identity
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
       serviceAccountName: "wso2svc-account"
+      {{ if and (not (eq .Values.username "")) (not (eq .Values.password "")) }}
       imagePullSecrets:
       - name: wso2creds
+      {{ end }}
       volumes:
       - name: apim-pubstore-tm-1-conf
         configMap:
