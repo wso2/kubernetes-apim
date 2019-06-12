@@ -1,7 +1,7 @@
 # Kubernetes Test Resources for deployment of WSO2 API Manager with a separate Gateway and a separate Key Manager
 
-Kubernetes Test Resources for [WSO2 API Manager deployment pattern 2](https://docs.wso2.com/display/AM260/Deployment+Patterns#DeploymentPatterns-Pattern2) contain artifacts,
-which can be used to test the core Kubernetes resources provided for a deployment of WSO2 API Manager with a separate Gateway and a separate Key Manager along with WSO2 API Manager Analytics support.
+Kubernetes Test Resources for [WSO2 API Manager deployment pattern 3](https://docs.wso2.com/display/AM260/Deployment+Patterns#DeploymentPatterns-Pattern3) contain artifacts,
+which can be used to test the core Kubernetes resources provided for a fully distributed deployment of WSO2 API Manager with WSO2 API Manager Analytics support.
 
 ## Contents
 
@@ -45,7 +45,7 @@ please refer the official documentation, [NGINX Ingress Controller Installation 
 ##### 3. Setup a Network File System (NFS) to be used for persistent storage.
 
 Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
-`<KUBERNETES_HOME>/advanced/pattern-2/volumes/persistent-volumes.yaml` file.
+`<KUBERNETES_HOME>/advanced/pattern-3/volumes/persistent-volumes.yaml` file.
 
 Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
@@ -61,7 +61,7 @@ chmod -R 700 <directory_name>
 
 Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
 
-**Note**: By default, the deployment management script (i.e. `<KUBERNETES_HOME>/advanced/pattern-2/scripts/deploy.sh`) is configured to deploy
+**Note**: By default, the deployment management script (i.e. `<KUBERNETES_HOME>/advanced/pattern-3/scripts/deploy.sh`) is configured to deploy
 WSO2 Identity Server as the Key Manager. If you are **not** using WSO2 Identity Server as the Key Manager, comment out the corresponding
 Kubernetes Persistent Volume resource.
 
@@ -69,9 +69,9 @@ Kubernetes Persistent Volume resource.
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wso2apim-pattern-2-is-as-km-server-pv
+  name: wso2apim-pattern-3-is-as-km-server-pv
   labels:
-    purpose: wso2apim-pattern-2-km-shared
+    purpose: wso2apim-pattern-3-km-shared
 spec:
   capacity:
     storage: 1Gi
@@ -87,7 +87,7 @@ spec:
 
 For **evaluation purposes**,
 
-* You can use Kubernetes resources provided in the directory `<KUBERNETES_HOME>/advanced/pattern-2/extras/rdbms/mysql`
+* You can use Kubernetes resources provided in the directory `<KUBERNETES_HOME>/advanced/pattern-3/extras/rdbms/mysql`
 for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
 **not recommended** for a production setup.
 
@@ -100,7 +100,7 @@ for deploying the product databases, using MySQL in Kubernetes. However, this ap
   Provide read-write-execute permissions to other users for the created folder.
         
   Update the Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported,
-  NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/advanced/pattern-2/extras/rdbms/volumes/persistent-volumes.yaml`.
+  NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/advanced/pattern-3/extras/rdbms/volumes/persistent-volumes.yaml`.
     
 In a **production grade setup**,
 
@@ -110,23 +110,23 @@ In a **production grade setup**,
   Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
   the following files:
   
-    * `<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-analytics/conf/worker/deployment.yaml`
-    * `<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-pub-store-tm-1/datasources/master-datasources.xml`
-    * `<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-pub-store-tm-2/datasources/master-datasources.xml`
+    * `<KUBERNETES_HOME>/advanced/pattern-3/confs/apim-analytics/conf/worker/deployment.yaml`
+    * `<KUBERNETES_HOME>/advanced/pattern-3/confs/apim-publisher/datasources/master-datasources.xml`
+    * `<KUBERNETES_HOME>/advanced/pattern-3/confs/apim-store/datasources/master-datasources.xml`
 
     If you are using WSO2 API Manager's Key Manager profile, edit the following file.
 
-    * `<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-km/datasources/master-datasources.xml`
+    * `<KUBERNETES_HOME>/advanced/pattern-3/confs/apim-km/datasources/master-datasources.xml`
 
     Else, if you are using WSO2 Identity Server as Key Manager, edit the following file.
 
-    * `<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-is-as-km/datasources/master-datasources.xml`
+    * `<KUBERNETES_HOME>/advanced/pattern-3/confs/apim-is-as-km/datasources/master-datasources.xml`
   
   Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN44x/Configuring+master-datasources.xml) on configuring data sources.
 
 ##### 5. Deploy Kubernetes resources.
 
-Change directory to `<KUBERNETES_HOME>/advanced/pattern-2/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
+Change directory to `<KUBERNETES_HOME>/advanced/pattern-3/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
 
 ```
 ./deploy.sh
@@ -134,7 +134,7 @@ Change directory to `<KUBERNETES_HOME>/advanced/pattern-2/scripts` and execute t
 
 **Note**:
 
-* By default, the deployment management script (i.e. `<KUBERNETES_HOME>/advanced/pattern-2/scripts/deploy.sh`) is configured to deploy
+* By default, the deployment management script (i.e. `<KUBERNETES_HOME>/advanced/pattern-3/scripts/deploy.sh`) is configured to deploy
 WSO2 Identity Server as the Key Manager.
 
 * If you desire to use WSO2 API Manager's Key Manager profile
@@ -144,7 +144,6 @@ WSO2 Identity Server as the Key Manager.
     ```
     # Kubernetes ConfigMaps for WSO2 API Manager's Key Manager profile
     ${KUBERNETES_CLIENT} create configmap apim-km-conf --from-file=../confs/apim-km/
-    ${KUBERNETES_CLIENT} create configmap apim-km-conf-axis2 --from-file=../confs/apim-km/axis2/
     ${KUBERNETES_CLIENT} create configmap apim-km-conf-datasources --from-file=../confs/apim-km/datasources/
     
     ...
@@ -164,7 +163,6 @@ WSO2 Identity Server as the Key Manager.
     ```
     # Kubernetes ConfigMaps for WSO2 Identity Server as Key Manager
     ${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf --from-file=../confs/apim-is-as-km/
-    ${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf-axis2 --from-file=../confs/apim-is-as-km/axis2/
     ${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf-datasources --from-file=../confs/apim-is-as-km/datasources/
     
     ...
@@ -187,7 +185,7 @@ WSO2 Identity Server as the Key Manager.
 
 ##### 6. Access Management Consoles.
 
-Default deployment will expose `wso2apim` and `wso2apim-gateway` hosts.
+Default deployment will expose `wso2apim-publisher`, `wso2apim-publisher` and `wso2apim-gateway` hosts.
 
 To access the console in the environment,
 
@@ -200,30 +198,31 @@ a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing do
 e.g.
 
 ```
-NAME                                  HOSTS                    ADDRESS          PORTS      AGE
-wso2apim-ingress                      wso2apim                 <EXTERNAL-IP>    80, 443    7m 
-wso2apim-gateway-ingress              wso2apim-gateway         <EXTERNAL-IP>    80, 443    6m
+NAME                                  HOSTS                                ADDRESS          PORTS      AGE
+wso2apim-ingress                      wso2apim-publisher,wso2apim-store    <EXTERNAL-IP>    80, 443    7m
+wso2apim-gateway-ingress              wso2apim-gateway                     <EXTERNAL-IP>    80, 443    6m
 ```
 
 b. Add the above host as an entry in `/etc/hosts` file as follows:
 
 ```
-<EXTERNAL-IP>	wso2apim
+<EXTERNAL-IP>	wso2apim-publisher
+<EXTERNAL-IP>	wso2apim-store
 <EXTERNAL-IP>	wso2apim-gateway
 ```
 
-c. Try navigating to `https://wso2apim/carbon` from your favorite browser.
+c. Try navigating to `https://wso2apim-publisher/carbon` from your favorite browser.
 
-##### 7. Scale up the Key Manager and Gateway profiles.
+##### 7. Scale up the Key Manager, Publisher, Store and Gateway profiles.
 
-Default deployment runs a single replica (or pod) of Key Manager profile and WSO2 API Manager Gateway.
+Default deployment runs a single replica (or pod) for each of the profiles - Key Manager, Publisher, Store and Gateway.
 To scale any of these profile deployments into any `<n>` number of container replicas, upon your requirement,
 simply run `kubectl scale` Kubernetes client command on the terminal.
 
 For example, the following command scales the WSO2 API Manager Gateway profile to the desired number of replicas.
 
 ```
-kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/advanced/pattern-2/apim-gw/wso2apim-gateway-deployment.yaml
+kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/advanced/pattern-3/apim-gateway/wso2apim-gateway-deployment.yaml
 ```
 
 If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
