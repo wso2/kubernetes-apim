@@ -3,6 +3,7 @@ All notable changes to this project 2.6.x per each release will be documented in
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+<<<<<<< HEAD
 ## [v2.6.0.6] - 2019-06-20
 
 ### Added
@@ -10,6 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Added resources for deployment of kubernetes manifests and helm charts on AKS using Azurefiles as persistent storage instead of NFS.
 
 ## [v2.6.0.5] - 2019-06-13
+=======
+## [v2.6.0.5] - 2018-06-13
+>>>>>>> Update change log with v2.6.0.5 release
 
 ### Added
 - Kubernetes resources for WSO2 API Management deployment pattern 3
@@ -18,7 +22,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Fix an issue with creating WSO2 Subscription Kubernetes Secret in WSO2 API Management Helm resources
 (see [issue](https://github.com/wso2/kubernetes-apim/issues/190))
 
+<<<<<<< HEAD
 ## [v2.6.0.4] - 2019-05-27
+=======
+## [v2.6.0.4] - 2018-05-27
+>>>>>>> Update change log with v2.6.0.5 release
 
 ### Changed
 - Fix an issue which comments out Kubernetes client commands in the deployment management script of WSO2 API Manager deployment pattern 2
