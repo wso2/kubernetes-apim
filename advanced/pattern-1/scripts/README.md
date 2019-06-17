@@ -19,10 +19,12 @@ in order to run the steps provided in the following quick start guide.<br><br>
 In the NFS server instance, create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802`.
 Add the `wso2carbon` user to the group `wso2`.
 
-```
-groupadd --system -g 802 wso2
-useradd --system -g 802 -u 802 wso2carbon
-```
+  ```
+  groupadd --system -g 802 wso2
+  useradd --system -g 802 -u 802 wso2carbon
+  ```
+
+  > If you are using AKS(Azure Kubernetes Service) as the kubernetes provider, it is possible to use Azurefiles for persistent storage instead of an NFS. If doing so, skip this step.
 
 ## Quick Start Guide
 
@@ -43,6 +45,8 @@ In order to enable the NGINX Ingress controller in the desired cloud or on-premi
 please refer the official documentation, [NGINX Ingress Controller Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/).
 
 ##### 3. Setup a Network File System (NFS) to be used for persistent storage.
+
+> If you are using AKS(Azure Kubernetes Service) as the kubernetes provider, it is possible to use Azurefiles for persistent storage instead of an NFS. If doing so, skip this step.
 
 Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
 `<KUBERNETES_HOME>/advanced/pattern-1/volumes/persistent-volumes.yaml` file.
@@ -71,6 +75,8 @@ for deploying the product databases, using MySQL in Kubernetes. However, this ap
 
 * For using these Kubernetes resources,
 
+  > If you are using AKS(Azure Kubernetes Service) as the kubernetes provider, it is possible to use Azurefiles for persistent storage instead of an NFS. If doing so, skip this step.
+  
   Here, a Network File System (NFS) is needed to be used for persisting MySQL DB data.    
   
   Create and export a directory within the NFS server instance.
@@ -95,13 +101,17 @@ In a **production grade setup**,
 
 ##### 5. Deploy Kubernetes resources.
 
-Change directory to `<KUBERNETES_HOME>/advanced/pattern-1/scripts` and execute the `deploy.sh` shell script on the terminal.
+Change directory to `<KUBERNETES_HOME>/advanced/pattern-1/scripts` and execute the `deploy.sh` or kubernetes provider specific shell script on the terminal.
 
 ```
 ./deploy.sh
 ```
+or
+```
+./deploy-azure.sh
+```
 
->To un-deploy, be on the same directory and execute the `undeploy.sh` shell script on the terminal.
+>To un-deploy, be on the same directory and execute the `undeploy.sh` or kubernetes provider specific undeploy shell script on the terminal.
 
 ##### 6. Access Management Consoles.
 

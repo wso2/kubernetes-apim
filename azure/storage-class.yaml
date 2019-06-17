@@ -1,4 +1,4 @@
-# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,22 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: PersistentVolumeClaim
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
 metadata:
-  name: wso2apim-is-as-km-shared-server-volume-claim
-  namespace : {{ .Values.namespace }}
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  {{- if (.Values.cloudProvider) and eq .Values.cloudProvider "Azure" }}
-  storageClassName: azurefile
-  {{- else }}
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: apim-is-as-km-shared-server
-  {{- end }}
+  name: azurefile
+provisioner: kubernetes.io/azure-file
+mountOptions:
+  - dir_mode=0777
+  - file_mode=0777
+  - uid=802
+  - gid=802
+parameters:
+  skuName: Standard_LRS
