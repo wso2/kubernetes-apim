@@ -25,10 +25,11 @@ in order to run the steps provided in the following quick start guide.<br><br>
 In the NFS server instance, create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802`.
 Add the `wso2carbon` user to the group `wso2`.
 
-```
-groupadd --system -g 802 wso2
-useradd --system -g 802 -u 802 wso2carbon
-```
+  ```
+  groupadd --system -g 802 wso2
+  useradd --system -g 802 -u 802 wso2carbon
+  ```
+  > If you are using AKS(Azure Kubernetes Service) as the kubernetes provider, it is possible to use Azurefiles for persistent storage instead of an NFS. If doing so, skip this step.
 
 ## Quick Start Guide
 
@@ -118,21 +119,32 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/advanced/pattern-1/extras/confs/mysql/dbscripts/
     ```
 
-    Here, a Network File System (NFS) is needed to be used for persisting MySQL DB data.
+  Here, one of the following storage options is required to persist MySQL DB data.
 
-    Create and export a directory within the NFS server instance.
+  * Using Azurefiles on AKS,
+      ```
+      kubectl apply -f <KUBERNETES_HOME>/azure/rbac.yaml
+      kubectl apply -f <KUBERNETES_HOME>/azure/mysql-storage-class.yaml
+      kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/mysql/mysql-persistent-volume-claim-azure.yaml
+      ```
 
-    Provide read-write-execute permissions to other users for the created folder.
+  * Using NFS
 
-    Update the Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported,
-    NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml`.
+      Here, a Network File System (NFS) is needed to be used for persisting MySQL DB data.
 
-    Deploy the persistent volume resource and volume claim as follows:
+      Create and export a directory within the NFS server instance.
 
-    ```
-    kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
-    kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml
-    ```
+      Provide read-write-execute permissions to other users for the created folder.
+
+      Update the Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported,
+      NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml`.
+
+      Deploy the persistent volume resource and volume claim as follows:
+
+      ```
+      kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+      kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/extras/rdbms/volumes/persistent-volumes.yaml
+      ```
 
     Then, create a Kubernetes service (accessible only within the Kubernetes cluster), followed by the MySQL Kubernetes deployment, as follows:
 
@@ -147,31 +159,41 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
 kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ```
 
-##### 6. Setup a Network File System (NFS) to be used for persistent storage.
+##### 6. Setup persistent storage.
 
-Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
-`<KUBERNETES_HOME>/advanced/pattern-1/volumes/persistent-volumes.yaml` file.
+* Using Azurefiles,
+  ```
+  kubectl apply -f <KUBERNETES_HOME>/azure/rbac.yaml
+  kubectl apply -f <KUBERNETES_HOME>/azure/storage-class.yaml
+  kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/apim/wso2apim-volume-claim-azure.yaml
+  ```
 
-Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
-```
-sudo chown -R wso2carbon:wso2 <directory_name>
-```
+* Using a Network File System (NFS),
 
-Grant read-write-execute permissions to the `wso2carbon` user, for each of the previously created directories.
+  Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
+  `<KUBERNETES_HOME>/advanced/pattern-1/volumes/persistent-volumes.yaml` file.
 
-```
-chmod -R 700 <directory_name>
-```
+  Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
-Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
+  ```
+  sudo chown -R wso2carbon:wso2 <directory_name>
+  ```
 
-Then, deploy the persistent volume resource and volume claim as follows:
+  Grant read-write-execute permissions to the `wso2carbon` user, for each of the previously created directories.
 
-```
-kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/apim/wso2apim-volume-claim.yaml
-kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/volumes/persistent-volumes.yaml
-```
+  ```
+  chmod -R 700 <directory_name>
+  ```
+
+  Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
+
+  Then, deploy the persistent volume resource and volume claim as follows:
+
+  ```
+  kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/apim/wso2apim-volume-claim.yaml
+  kubectl create -f <KUBERNETES_HOME>/advanced/pattern-1/volumes/persistent-volumes.yaml
+  ```
 
 ##### 7. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster.
 
