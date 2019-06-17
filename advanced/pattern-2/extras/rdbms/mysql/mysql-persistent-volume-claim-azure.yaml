@@ -1,4 +1,4 @@
-# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,19 +15,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wso2apim-is-as-km-shared-server-volume-claim
-  namespace : {{ .Values.namespace }}
+  name: wso2apim-pattern-2-rdbms-volume-claim
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
+  storageClassName: azurefilemysql
   resources:
     requests:
-      storage: 1Gi
-  {{- if (.Values.cloudProvider) and eq .Values.cloudProvider "Azure" }}
-  storageClassName: azurefile
-  {{- else }}
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: apim-is-as-km-shared-server
-  {{- end }}
+      storage: 20Gi
