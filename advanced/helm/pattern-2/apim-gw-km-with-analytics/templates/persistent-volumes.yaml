@@ -1,3 +1,4 @@
+{{- if (not .Values.cloudProvider) and eq .Values.cloudProvider "Azure" }}
 # Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,3 +47,4 @@ spec:
   nfs:
     server: {{ .Values.serverIp }}
     path: {{ .Values.isKMLocationPath }}
+{{- end }}

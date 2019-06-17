@@ -15,41 +15,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wso2apim-with-analytics-apim-deployment-volume-claim
-  namespace : {{ .Values.namespace }}
+  name: wso2apim-pattern-2-apim-shared-server-volume-claim
 spec:
   accessModes:
     - ReadWriteMany
+  storageClassName: azurefile
   resources:
     requests:
       storage: 1Gi
-  {{- if (.Values.cloudProvider) and eq .Values.cloudProvider "Azure" }}
-  storageClassName: azurefile
-  {{- else }}
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: apim-shared-deployment
-  {{- end }}
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: wso2apim-with-analytics-tenants-volume-claim
-  namespace : {{ .Values.namespace }}
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  {{- if (.Values.cloudProvider) and eq .Values.cloudProvider "Azure" }}
-  storageClassName: azurefile
-  {{ else }}
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: apim-shared-tenants
-  {{- end -}}
