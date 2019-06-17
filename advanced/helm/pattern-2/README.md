@@ -80,7 +80,7 @@ a. The default product configurations are available at `<HELM_HOME>/apim-gw-km-w
 configurations as necessary.
 
 b. Open the `<HELM_HOME>/apim-gw-km-with-analytics/values.yaml` and provide the following values. If you do not have active 
-WSO2 subscription do not change the parameters `username`, `password` and `email`.
+WSO2 subscription do not change the parameters `username`, `password` and `email`. Ignore `serverIP`, `sharedDeploymentLocationPath` and `isKMLocationPath` if an NFS is not used.
 
 | Parameter                       | Description                                                                               |
 |---------------------------------|-------------------------------------------------------------------------------------------|
