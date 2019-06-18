@@ -108,7 +108,7 @@ Change directory to `<KUBERNETES_HOME>/advanced/pattern-1/scripts` and execute t
 ```
 or
 ```
-./deploy-azure.sh
+./azure-deploy.sh
 ```
 
 >To un-deploy, be on the same directory and execute the `undeploy.sh` or kubernetes provider specific undeploy shell script on the terminal.
