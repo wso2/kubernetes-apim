@@ -62,8 +62,7 @@ git clone https://github.com/wso2/kubernetes-apim.git
   resources defined in the `<HELM_HOME>/apim-with-analytics-conf/values.yaml` file:
 
   * `sharedDeploymentLocationPath`
-  * `analyticsDataLocationPath`
-  * `analyticsLocationPath`
+  * `sharedTenantsLocationPath`
 
   Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
@@ -83,7 +82,7 @@ a. The default product configurations are available at `<HELM_HOME>/apim-with-an
 configurations as necessary.
 
 b. Open the `<HELM_HOME>/apim-with-analytics/values.yaml` and provide the following values. If you do not have active 
-WSO2 subscription do not change the parameters `username`, `password` and `email`. Ignore `serverIP` and `sharedDeploymentLocationPath` if an NFS is not used.
+WSO2 subscription do not change the parameters `username`, `password` and `email`. Ignore `serverIP`, `sharedDeploymentLocationPath` and `sharedTenantsLocationPath` if an NFS is not used.
 
 | Parameter                       | Description                                                                               |
 |---------------------------------|-------------------------------------------------------------------------------------------|
