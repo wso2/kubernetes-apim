@@ -18,8 +18,8 @@ metadata:
   name: azurefile
 provisioner: kubernetes.io/azure-file
 mountOptions:
-  - dir_mode=0777
-  - file_mode=0777
+  - dir_mode=0700
+  - file_mode=0700
   - uid=802
   - gid=802
 parameters:
