@@ -139,7 +139,7 @@ Change directory to `<KUBERNETES_HOME>/advanced/pattern-3/scripts` and execute t
 ```
 or
 ```
-./deploy-azure.sh
+./azure-deploy.sh
 ```
 
 **Note**:
