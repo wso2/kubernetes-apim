@@ -25,10 +25,11 @@ in order to run the steps provided in the following quick start guide.<br><br>
 In the NFS server instance, create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802`.
 Add the `wso2carbon` user to the group `wso2`.
 
-```
-groupadd --system -g 802 wso2
-useradd --system -g 802 -u 802 wso2carbon
-```
+  ```
+  groupadd --system -g 802 wso2
+  useradd --system -g 802 -u 802 wso2carbon
+  ```
+  > If you are using AKS(Azure Kubernetes Service) as the kubernetes provider, it is possible to use Azurefiles for persistent storage instead of an NFS. If doing so, skip this step.
 
 ## Quick Start Guide
 
@@ -139,21 +140,30 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/advanced/pattern-3/extras/confs/mysql/dbscripts/
     ```
 
-    Here, a Network File System (NFS) is needed to be used for persisting MySQL DB data.
+    Here, one of the following storage options is required to persist MySQL DB data.
 
-    Create and export a directory within the NFS server instance.
+    * Using Azurefiles on AKS,
+        ```
+        kubectl apply -f <KUBERNETES_HOME>/azure/rbac.yaml
+        kubectl apply -f <KUBERNETES_HOME>/azure/mysql-storage-class.yaml
+        kubectl create -f <KUBERNETES_HOME>/advanced/pattern-3/extras/rdbms/mysql/mysql-persistent-volume-claim-azure.yaml
+        ```
 
-    Provide read-write-execute permissions to other users for the created folder.
+    * Using NFS
 
-    Update the Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported,
-    NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/advanced/pattern-3/extras/rdbms/volumes/persistent-volumes.yaml`.
+      Create and export a directory within the NFS server instance.
 
-    Deploy the persistent volume resource and volume claim as follows:
+      Provide read-write-execute permissions to other users for the created folder.
 
-    ```
-    kubectl create -f <KUBERNETES_HOME>/advanced/pattern-3/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
-    kubectl create -f <KUBERNETES_HOME>/advanced/pattern-3/extras/rdbms/volumes/persistent-volumes.yaml
-    ```
+      Update the Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported,
+      NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/advanced/pattern-3/extras/rdbms/volumes/persistent-volumes.yaml`.
+
+      Deploy the persistent volume resource and volume claim as follows:
+
+      ```
+      kubectl create -f <KUBERNETES_HOME>/advanced/pattern-3/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+      kubectl create -f <KUBERNETES_HOME>/advanced/pattern-3/extras/rdbms/volumes/persistent-volumes.yaml
+      ```
 
     Then, create a Kubernetes service (accessible only within the Kubernetes cluster), followed by the MySQL Kubernetes deployment, as follows:
 
