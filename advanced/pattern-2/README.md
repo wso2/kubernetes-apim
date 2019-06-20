@@ -25,10 +25,11 @@ in order to run the steps provided in the following quick start guide.<br><br>
 In the NFS server instance, create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802`.
 Add the `wso2carbon` user to the group `wso2`.
 
-```
-groupadd --system -g 802 wso2
-useradd --system -g 802 -u 802 wso2carbon
-```
+  ```
+  groupadd --system -g 802 wso2
+  useradd --system -g 802 -u 802 wso2carbon
+  ```  
+  > If you are using AKS(Azure Kubernetes Service) as the kubernetes provider, it is possible to use Azurefiles for persistent storage instead of an NFS. If doing so, skip this step.
 
 ## Quick Start Guide
 
@@ -137,21 +138,30 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/advanced/pattern-2/extras/confs/mysql/dbscripts/
     ```
 
-    Here, a Network File System (NFS) is needed to be used for persisting MySQL DB data.
+    Here, one of the following storage options is required to persist MySQL DB data.
 
-    Create and export a directory within the NFS server instance.
+    * Using Azurefiles on AKS,
+        ```
+        kubectl apply -f <KUBERNETES_HOME>/azure/rbac.yaml
+        kubectl apply -f <KUBERNETES_HOME>/azure/mysql-storage-class.yaml
+        kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/extras/rdbms/mysql/mysql-persistent-volume-claim-azure.yaml
+        ```
 
-    Provide read-write-execute permissions to other users for the created folder.
+    * Using NFS
 
-    Update the Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported,
-    NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/advanced/pattern-2/extras/rdbms/volumes/persistent-volumes.yaml`.
+      Create and export a directory within the NFS server instance.
 
-    Deploy the persistent volume resource and volume claim as follows:
+      Provide read-write-execute permissions to other users for the created folder.
 
-    ```
-    kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
-    kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/extras/rdbms/volumes/persistent-volumes.yaml
-    ```
+      Update the Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported,
+      NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/advanced/pattern-2/extras/rdbms/volumes/persistent-volumes.yaml`.
+
+      Deploy the persistent volume resource and volume claim as follows:
+
+      ```
+      kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+      kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/extras/rdbms/volumes/persistent-volumes.yaml
+      ```
 
     Then, create a Kubernetes service (accessible only within the Kubernetes cluster), followed by the MySQL Kubernetes deployment, as follows:
 
@@ -166,72 +176,84 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
 kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ```
 
-##### 6. Setup a Network File System (NFS) to be used for persistent storage.
+##### 6. Setup persistent storage.
 
-Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
-`<KUBERNETES_HOME>/advanced/pattern-2/volumes/persistent-volumes.yaml` file.
+* Using Azurefiles,
+  ```
+  kubectl apply -f <KUBERNETES_HOME>/azure/rbac.yaml
+  kubectl apply -f <KUBERNETES_HOME>/azure/storage-class.yaml
+  kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/apim-is-as-km/wso2apim-is-as-km-volume-claim-azure.yaml
+  kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/apim-gw/wso2apim-gateway-volume-claim-azure.yaml
+  kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/apim-pub-store-tm/wso2apim-pub-store-tm-volume-claim-azure.yaml
+  ```
 
-Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
-```
-sudo chown -R wso2carbon:wso2 <directory_name>
-```
+* Using a Network File System (NFS),
 
-Grant read-write-execute permissions to the `wso2carbon` user, for each of the previously created directories.
+  Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
+  `<KUBERNETES_HOME>/advanced/pattern-2/volumes/persistent-volumes.yaml` file.
 
-```
-chmod -R 700 <directory_name>
-```
+  Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
-Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
+  ```
+  sudo chown -R wso2carbon:wso2 <directory_name>
+  ```
 
-**Note**: If you are **not** using WSO2 Identity Server as the Key Manager, comment out the corresponding Kubernetes Persistent Volume resource.
+  Grant read-write-execute permissions to the `wso2carbon` user, for each of the previously created directories.
 
-```
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: wso2apim-advanced/pattern-2/-is-as-km-server-pv
-  labels:
-    purpose: wso2apim-advanced/pattern-2/-km-shared
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"  
-```
+  ```
+  chmod -R 700 <directory_name>
+  ```
 
-Then, deploy the Kubernetes Persistent Volume and Volume Claim resources as follows:
+  Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
 
-* Kubernetes Persistent Volume Claim resource for the shared volume mount for runtime artifacts created at
-`<APIM_HOME>/repository/deployment/server` directory in Gateway profile deployment.
+  **Note**: If you are **not** using WSO2 Identity Server as the Key Manager, comment out the corresponding Kubernetes Persistent Volume resource.
 
-```
-kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/apim-gw/wso2apim-gateway-volume-claim.yaml
-```
+  ```
+  apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: wso2apim-advanced/pattern-2/-is-as-km-server-pv
+    labels:
+      purpose: wso2apim-advanced/pattern-2/-km-shared
+  spec:
+    capacity:
+      storage: 1Gi
+    accessModes:
+      - ReadWriteMany
+    persistentVolumeReclaimPolicy: Retain
+    nfs:
+      server: <NFS_SERVER_IP>
+      path: "<NFS_LOCATION_PATH>"  
+  ```
 
-* Kubernetes Persistent Volume Claim resource for the shared volume mount for runtime artifacts created at
-`<APIM_HOME>/repository/deployment/server` directory in Publisher-Store-Traffic-Manager profile deployment.
+  Then, deploy the Kubernetes Persistent Volume and Volume Claim resources as follows:
 
-```
-kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/apim-pub-store-tm/wso2apim-pub-store-tm-volume-claim.yaml
-```
+  * Kubernetes Persistent Volume Claim resource for the shared volume mount for runtime artifacts created at
+  `<APIM_HOME>/repository/deployment/server` directory in Gateway profile deployment.
 
-* [Optional] If you are using WSO2 Identity Server as the Key Manager, Kubernetes Persistent Volume Claim resource for the
-shared volume mount for runtime artifacts created at `<IS_KM_HOME>/repository/deployment/server` directory in Key Manager profile deployment.
+  ```
+  kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/apim-gw/wso2apim-gateway-volume-claim.yaml
+  ```
 
-```
-kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/apim-is-as-km/wso2apim-is-as-km-volume-claim.yaml
-```
+  * Kubernetes Persistent Volume Claim resource for the shared volume mount for runtime artifacts created at
+  `<APIM_HOME>/repository/deployment/server` directory in Publisher-Store-Traffic-Manager profile deployment.
 
-* Kubernetes Persistent Volume resources for the above Volume Claims created.
+  ```
+  kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/apim-pub-store-tm/wso2apim-pub-store-tm-volume-claim.yaml
+  ```
 
-```
-kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/volumes/persistent-volumes.yaml
+  * [Optional] If you are using WSO2 Identity Server as the Key Manager, Kubernetes Persistent Volume Claim resource for the
+  shared volume mount for runtime artifacts created at `<IS_KM_HOME>/repository/deployment/server` directory in Key Manager profile deployment.
+
+  ```
+  kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/apim-is-as-km/wso2apim-is-as-km-volume-claim.yaml
+  ```
+
+  * Kubernetes Persistent Volume resources for the above Volume Claims created.
+
+  ```
+  kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/volumes/persistent-volumes.yaml
 ```
 
 ##### 7. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster.
