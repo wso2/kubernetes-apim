@@ -3,6 +3,12 @@ All notable changes to this project 2.6.x per each release will be documented in
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [v2.6.0.6] - 2018-06-20
+
+### Added
+
+- Added resources for deployment of kubernetes manifests and helm charts on AKS using Azurefiles as persistent storage instead of NFS.
+
 ## [v2.6.0.5] - 2018-06-13
 
 ### Added
@@ -40,4 +46,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Kubernetes resources for WSO2 API Management deployment patterns 1 and 2
 - Helm resources for WSO2 API Management deployment patterns 1 and 2
 
-[v2.6.0.4]: https://github.com/wso2/kubernetes-apim/compare/v2.6.0.3...v2.6.0.4
+[v2.6.0.6]: https://github.com/wso2/kubernetes-apim/compare/v2.6.0.5...v2.6.0.6
