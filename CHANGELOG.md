@@ -4,14 +4,21 @@ All notable changes to this project 2.6.x per each release will be documented in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## [v2.6.0.6] - 2019-06-20
+=======
+## [v2.6.0.6] - 2018-06-20
+>>>>>>> Adding v2.6.0.6 to changelog
 
 ### Added
 
 - Added resources for deployment of kubernetes manifests and helm charts on AKS using Azurefiles as persistent storage instead of NFS.
 
+<<<<<<< HEAD
 ## [v2.6.0.5] - 2019-06-13
 =======
+=======
+>>>>>>> Adding v2.6.0.6 to changelog
 ## [v2.6.0.5] - 2018-06-13
 >>>>>>> Update change log with v2.6.0.5 release
 
