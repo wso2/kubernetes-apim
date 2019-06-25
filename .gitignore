@@ -20,6 +20,9 @@ hs_err_pid*
 .idea/
 *.iml
 
+#Atom
+.DS_Store
+
 rat.txt
 target/
 wso2*/scripts
