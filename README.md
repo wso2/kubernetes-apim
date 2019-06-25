@@ -13,6 +13,7 @@ of WSO2 API Manager.*
 
 * [Deployment Pattern 1](advanced/pattern-1/README.md)
 * [Deployment Pattern 2](advanced/pattern-2/README.md)
+* [Deployment Pattern 3](advanced/pattern-3/README.md)
 
 ## Helm resources for API Management deployment patterns
 
@@ -25,7 +26,7 @@ of WSO2 API Manager.*
 * [Introduce additional artifacts](advanced/ManageArtifacts.md)
 
 ## Changelog
-**Change log** from previous v2.6.0.3 release: [View Here](advanced/CHANGELOG.md)
+**Change log** from previous v2.6.0.6 release: [View Here](CHANGELOG.md)
 
 ## Reporting issues
 

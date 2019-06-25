@@ -30,7 +30,8 @@ Add the `wso2carbon` user to the group `wso2`.
    groupadd --system -g 802 wso2
    useradd --system -g 802 -u 802 wso2carbon
   ```  
-  
+    > If you are using AKS(Azure Kubernetes Service) as the kubernetes provider, it is possible to use Azurefiles for persistent storage instead of an NFS. If doing so, skip this step.
+
 ## Quick Start Guide
 
 >In the context of this document, <br>
@@ -44,25 +45,34 @@ Git repository. <br>
 git clone https://github.com/wso2/kubernetes-apim.git
 ```
 
-##### 2. Setup a Network File System (NFS) to be used for persistent storage.
+##### 2. Setup persistent storage.
 
-Create and export unique directories within the NFS server instance for each of the following Kubernetes Persistent Volume
-resources defined in the `<HELM_HOME>/apim-gw-km-with-analytics-conf/values.yaml` file:
-
-* `sharedDeploymentLocationPath`
-* `isKMLocationPath`
-
-Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
-
+* Using Azurefiles,
+  
+  Add the following parameter and value to the values.yaml.
   ```
-  sudo chown -R wso2carbon:wso2 <directory_name>
+  cloudProvider: Azure
   ```
 
-Grant read-write-execute permissions to the `wso2carbon` user, for each of the previously created directories.
+* Using a Network File System (NFS),
 
-  ```
-  chmod -R 700 <directory_name>
-  ```
+  Create and export unique directories within the NFS server instance for each of the following Kubernetes Persistent Volume
+  resources defined in the `<HELM_HOME>/apim-gw-km-with-analytics-conf/values.yaml` file:
+
+  * `sharedDeploymentLocationPath`
+  * `isKMLocationPath`
+
+  Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
+
+    ```
+    sudo chown -R wso2carbon:wso2 <directory_name>
+    ```
+
+  Grant read-write-execute permissions to the `wso2carbon` user, for each of the previously created directories.
+
+    ```
+    chmod -R 700 <directory_name>
+    ```
   
 ##### 3. Provide configurations.
 
@@ -70,7 +80,7 @@ a. The default product configurations are available at `<HELM_HOME>/apim-gw-km-w
 configurations as necessary.
 
 b. Open the `<HELM_HOME>/apim-gw-km-with-analytics/values.yaml` and provide the following values. If you do not have active 
-WSO2 subscription do not change the parameters `username`, `password` and `email`.
+WSO2 subscription do not change the parameters `username`, `password` and `email`. Ignore `serverIP`, `sharedDeploymentLocationPath` and `isKMLocationPath` if an NFS is not used.
 
 | Parameter                       | Description                                                                               |
 |---------------------------------|-------------------------------------------------------------------------------------------|

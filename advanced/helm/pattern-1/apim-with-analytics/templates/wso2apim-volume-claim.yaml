@@ -23,10 +23,14 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  {{- if (.Values.cloudProvider) and eq .Values.cloudProvider "Azure" }}
+  storageClassName: azurefile
+  {{- else }}
   storageClassName: ""
   selector:
     matchLabels:
       purpose: apim-shared-deployment
+  {{- end }}
 
 ---
 
@@ -41,7 +45,11 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  {{- if (.Values.cloudProvider) and eq .Values.cloudProvider "Azure" }}
+  storageClassName: azurefile
+  {{ else }}
   storageClassName: ""
   selector:
     matchLabels:
       purpose: apim-shared-tenants
+  {{- end -}}
