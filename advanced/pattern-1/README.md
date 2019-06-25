@@ -1,7 +1,7 @@
 # Kubernetes Resources for deployment of WSO2 API Manager with WSO2 API Manager Analytics
 
 Core Kubernetes resources for [WSO2 API Manager deployment pattern 1](https://docs.wso2.com/display/AM220/Deployment+Patterns#DeploymentPatterns-Pattern1).
-This consists of a scalable deployment of WSO2 API Manager with WSO2 API Manager Analytics support.
+This is a deployment of WSO2 API Manager with WSO2 API Manager Analytics support.
 
 ![WSO2 API Manager deployment with WSO2 API Manager Analytics support](pattern-1.png)
 
@@ -253,16 +253,3 @@ b. Add the above host as an entry in /etc/hosts file as follows:
   ```
 
 c. Try navigating to `https://wso2apim/carbon` from your favorite browser.
-
-##### 11. Scale up the WSO2 API Manager.
-
-Default deployment runs a single replica (or pod) of WSO2 API Manager. To scale this deployment into any `<n>` number of
-container replicas, upon your requirement, simply run `kubectl scale` Kubernetes client command on the terminal.
-
-For example, the following command scales the WSO2 API Manager to the desired number of replicas.
-
-```
-kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/advanced/pattern-1/apim/wso2apim-deployment.yaml
-```
-
-If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
