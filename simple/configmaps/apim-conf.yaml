@@ -322,7 +322,7 @@ data:
                     <java.naming.factory.initial>org.wso2.andes.jndi.PropertiesFileInitialContextFactory</java.naming.factory.initial>
                     <connectionfactory.TopicConnectionFactory>amqp://${admin.username}:${admin.password}@clientid/carbon?brokerlist='tcp://${carbon.local.ip}:${jms.port}'</connectionfactory.TopicConnectionFactory>
                 </JMSConnectionParameters>
-            </JMSConnectionDetails>=
+            </JMSConnectionDetails>
             <EnableUnlimitedTier>true</EnableUnlimitedTier>
             <EnableHeaderConditions>false</EnableHeaderConditions>
             <EnableJWTClaimConditions>false</EnableJWTClaimConditions>

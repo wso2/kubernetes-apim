@@ -379,7 +379,7 @@ data:
                     <java.naming.factory.initial>org.wso2.andes.jndi.PropertiesFileInitialContextFactory</java.naming.factory.initial>
                     <connectionfactory.TopicConnectionFactory>amqp://${admin.username}:${admin.password}@clientid/carbon?brokerlist='tcp://${carbon.local.ip}:${jms.port}'</connectionfactory.TopicConnectionFactory>
                 </JMSConnectionParameters>
-            </JMSConnectionDetails>=
+            </JMSConnectionDetails>
             <EnableUnlimitedTier>true</EnableUnlimitedTier>
             <EnableHeaderConditions>false</EnableHeaderConditions>
             <EnableJWTClaimConditions>false</EnableJWTClaimConditions>
@@ -3390,12 +3390,12 @@ function deploy(){
     create_yaml
 
     # replace necessary variables
-    sed -i '' 's/"$ns.k8s.&.wso2.apim"/'$namespace'/g' $k8s_obj_file
-    sed -i '' 's/"$string.&.secret.auth.data"/'$secdata'/g' $k8s_obj_file
-    sed -i '' 's/"ip.node.k8s.&.wso2.apim"/'$NODE_IP'/g' $k8s_obj_file
-    sed -i '' 's/"$nodeport.k8s.&.1.wso2apim"/'$NP_1'/g' $k8s_obj_file
-    sed -i '' 's/"$nodeport.k8s.&.2.wso2apim"/'$NP_2'/g' $k8s_obj_file
-    sed -i '' 's/"$image.pull.@.wso2"/'$IMG_DEST'/g' $k8s_obj_file
+    sed -i.bak 's/"$ns.k8s.&.wso2.apim"/'$namespace'/g' $k8s_obj_file
+    sed -i.bak 's/"$string.&.secret.auth.data"/'$secdata'/g' $k8s_obj_file
+    sed -i.bak 's/"ip.node.k8s.&.wso2.apim"/'$NODE_IP'/g' $k8s_obj_file
+    sed -i.bak 's/"$nodeport.k8s.&.1.wso2apim"/'$NP_1'/g' $k8s_obj_file
+    sed -i.bak 's/"$nodeport.k8s.&.2.wso2apim"/'$NP_2'/g' $k8s_obj_file
+    sed -i.bak 's/"$image.pull.@.wso2"/'$IMG_DEST'/g' $k8s_obj_file
 
     if ! test -f "$INPUT_DIR/infrastructure.properties"; then
         echoBold "\nDeploying WSO2 API Manager ....\n"
