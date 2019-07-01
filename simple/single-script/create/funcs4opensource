@@ -6,8 +6,9 @@ function usage(){
   echo -e "-h, --help       Display usage instrusctions"
 }
 function undeploy(){
-  echoBold "Undeploying WSO2 API Manager ... \n"
-  kubectl delete -f deployment.yaml
+  echo "Undeploying WSO2 API Manager ..."
+  kubectl delete ns $namespace
+  echo "Done."
   exit 0
 }
 function echoBold () {
