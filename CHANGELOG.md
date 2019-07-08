@@ -47,3 +47,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Helm resources for WSO2 API Management deployment patterns 1 and 2
 
 [v2.6.0.6]: https://github.com/wso2/kubernetes-apim/compare/v2.6.0.5...v2.6.0.6
+
