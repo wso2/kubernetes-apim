@@ -41,11 +41,13 @@ if [[ ${REPLY} =~ ^[Yy]$ ]]; then
     HAS_SUBSCRIPTION=0
 
     if ! ${GREP} -q "imagePullSecrets" \
-    ../apim/wso2apim-deployment.yaml \
+    ../apim/wso2apim-1-deployment.yaml \
+    ../apim/wso2apim-2-deployment.yaml \
     ../apim-analytics/wso2apim-analytics-deployment.yaml; then
 
         if ! ${SED} -i.bak -e 's|wso2/|docker.wso2.com/|' \
-        ../apim/wso2apim-deployment.yaml \
+        ../apim/wso2apim-1-deployment.yaml \
+        ../apim/wso2apim-2-deployment.yaml \
         ../apim-analytics/wso2apim-analytics-deployment.yaml; then
             echoBold "Could not configure to use the Docker image available at WSO2 Private Docker Registry (docker.wso2.com)"
             exit 1
@@ -55,7 +57,8 @@ if [[ ${REPLY} =~ ^[Yy]$ ]]; then
             Darwin*)
                 if ! ${SED} -i.bak -e '/serviceAccount/a \
                       \      imagePullSecrets:' \
-                ../apim/wso2apim-deployment.yaml \
+                ../apim/wso2apim-1-deployment.yaml \
+                ../apim/wso2apim-2-deployment.yaml \
                 ../apim-analytics/wso2apim-analytics-deployment.yaml; then
                     echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
                     exit 1
@@ -63,21 +66,24 @@ if [[ ${REPLY} =~ ^[Yy]$ ]]; then
 
                 if ! ${SED} -i.bak -e '/imagePullSecrets/a \
                       \      - name: wso2creds' \
-                ../apim/wso2apim-deployment.yaml \
+                ../apim/wso2apim-1-deployment.yaml \
+                ../apim/wso2apim-2-deployment.yaml \
                 ../apim-analytics/wso2apim-analytics-deployment.yaml; then
                     echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
                     exit 1
                 fi;;
             *)
                 if ! ${SED} -i.bak -e '/serviceAccount/a \      imagePullSecrets:' \
-                ../apim/wso2apim-deployment.yaml \
+                ../apim/wso2apim-1-deployment.yaml \
+                ../apim/wso2apim-2-deployment.yaml \
                 ../apim-analytics/wso2apim-analytics-deployment.yaml; then
                     echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
                     exit 1
                 fi
 
                 if ! ${SED} -i.bak -e '/imagePullSecrets/a \      - name: wso2creds' \
-                ../apim/wso2apim-deployment.yaml \
+                ../apim/wso2apim-1-deployment.yaml \
+                ../apim/wso2apim-2-deployment.yaml \
                 ../apim-analytics/wso2apim-analytics-deployment.yaml; then
                     echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
                     exit 1
@@ -88,14 +94,16 @@ elif [[ ${REPLY} =~ ^[Nn]$ || -z "${REPLY}" ]]; then
     HAS_SUBSCRIPTION=1
 
     if ! ${SED} -i.bak -e '/imagePullSecrets:/d' -e '/- name: wso2creds/d' \
-    ../apim/wso2apim-deployment.yaml \
+    ../apim/wso2apim-1-deployment.yaml \
+    ../apim/wso2apim-2-deployment.yaml \
     ../apim-analytics/wso2apim-analytics-deployment.yaml; then
          echoBold "Failed to remove the Kubernetes Docker image pull secret"
          exit 1
     fi
 
     if ! ${SED} -i.bak -e 's|docker.wso2.com|wso2|' \
-    ../apim/wso2apim-deployment.yaml \
+    ../apim/wso2apim-1-deployment.yaml \
+    ../apim/wso2apim-2-deployment.yaml \
     ../apim-analytics/wso2apim-analytics-deployment.yaml; then
         echoBold "Could not configure to use the WSO2 Docker image available at DockerHub"
         exit 1
@@ -106,7 +114,7 @@ else
 fi
 
 # remove backed up files
-${TEST} -f ../apim/*.bak && rm ../apim/*.bak
+${TEST} -f ../apim/wso2apim-1-deployment.yaml.bak && rm ../apim/*.bak
 ${TEST} -f ../apim-analytics/*.bak && rm ../apim-analytics/*.bak
 
 # create a new Kubernetes Namespace
@@ -127,8 +135,10 @@ fi
 ${KUBERNETES_CLIENT} create -f ../../rbac/rbac.yaml
 
 echoBold 'Creating ConfigMaps...'
-${KUBERNETES_CLIENT} create configmap apim-conf --from-file=../confs/apim/
-${KUBERNETES_CLIENT} create configmap apim-conf-datasources --from-file=../confs/apim/datasources/
+${KUBERNETES_CLIENT} create configmap apim-1-conf --from-file=../confs/apim-1/
+${KUBERNETES_CLIENT} create configmap apim-1-conf-datasources --from-file=../confs/apim-1/datasources/
+${KUBERNETES_CLIENT} create configmap apim-2-conf --from-file=../confs/apim-2/
+${KUBERNETES_CLIENT} create configmap apim-2-conf-datasources --from-file=../confs/apim-2/datasources/
 ${KUBERNETES_CLIENT} create configmap apim-analytics-conf-worker --from-file=../confs/apim-analytics/conf/worker/
 ${KUBERNETES_CLIENT} create configmap mysql-dbscripts --from-file=../extras/confs/rdbms/mysql/dbscripts/
 
@@ -150,11 +160,16 @@ sleep 200s
 
 echoBold 'Deploying WSO2 API Manager...'
 ${KUBERNETES_CLIENT} create -f ../apim/wso2apim-volume-claim.yaml
-${KUBERNETES_CLIENT} create -f ../apim/wso2apim-deployment.yaml
+#${KUBERNETES_CLIENT} create -f ../apim/wso2apim-deployment.yaml
+${KUBERNETES_CLIENT} create -f ../apim/wso2apim-1-deployment.yaml
+${KUBERNETES_CLIENT} create -f ../apim/wso2apim-2-deployment.yaml
 ${KUBERNETES_CLIENT} create -f ../apim/wso2apim-service.yaml
+${KUBERNETES_CLIENT} create -f ../apim/wso2apim-1-service.yaml
+${KUBERNETES_CLIENT} create -f ../apim/wso2apim-2-service.yaml
 sleep 10s
 
 echoBold 'Deploying Ingresses...'
 ${KUBERNETES_CLIENT} create -f ../ingresses/wso2apim-ingress.yaml
+${KUBERNETES_CLIENT} create -f ../ingresses/wso2apim-gateway-ingress.yaml
 
 echoBold 'Finished'
