@@ -19,7 +19,7 @@
 set -e
 
 # bash variables
-k8s_obj_file="deployment.yaml"; NODE_IP=''; str_sec=""
+k8s_obj_file="deployment.yaml"; NODE_IP='';
 
 # wso2 subscription variables
 WUMUsername=''; WUMPassword=''
@@ -3392,7 +3392,6 @@ function deploy(){
 
     # replace necessary variables
     sed -i.bak 's/"$ns.k8s.&.wso2.apim"/'$namespace'/g' $k8s_obj_file
-    sed -i.bak 's/"$string.&.secret.auth.data"/'$secdata'/g' $k8s_obj_file
     sed -i.bak 's/"ip.node.k8s.&.wso2.apim"/'$NODE_IP'/g' $k8s_obj_file
     sed -i.bak 's/"$nodeport.k8s.&.1.wso2apim"/'$NP_1'/g' $k8s_obj_file
     sed -i.bak 's/"$nodeport.k8s.&.2.wso2apim"/'$NP_2'/g' $k8s_obj_file
