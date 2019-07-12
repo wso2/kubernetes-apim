@@ -160,7 +160,6 @@ sleep 200s
 
 echoBold 'Deploying WSO2 API Manager...'
 ${KUBERNETES_CLIENT} create -f ../apim/wso2apim-volume-claim.yaml
-#${KUBERNETES_CLIENT} create -f ../apim/wso2apim-deployment.yaml
 ${KUBERNETES_CLIENT} create -f ../apim/wso2apim-1-deployment.yaml
 ${KUBERNETES_CLIENT} create -f ../apim/wso2apim-2-deployment.yaml
 ${KUBERNETES_CLIENT} create -f ../apim/wso2apim-service.yaml
