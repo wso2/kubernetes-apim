@@ -24,8 +24,14 @@ function echoBold () {
     ${ECHO} $'\e[1m'"${1}"$'\e[0m'
 }
 
+# delete the created Kubernetes Deployments
+${KUBERNETES_CLIENT} delete -f ../apim/wso2apim-1-deployment.yaml
+${KUBERNETES_CLIENT} delete -f ../apim/wso2apim-2-deployment.yaml
+${KUBERNETES_CLIENT} delete -f ../apim-analytics/wso2apim-analytics-deployment.yaml
+sleep 30s
+
 # delete the created Kubernetes Namespace
-${KUBERNETES_CLIENT} delete namespace wso2
+${KUBERNETES_CLIENT} delete ns wso2
 
 # persistent storage
 echoBold 'Deleting persistent storage...'
