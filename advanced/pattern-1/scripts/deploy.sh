@@ -29,7 +29,7 @@ function echoBold () {
     ${ECHO} -e $'\e[1m'"${1}"$'\e[0m'
 }
 
-read -p "Do you have a WSO2 Subscription? (Y/N)" -n 1 -r
+read -p "Do you have a WSO2 Subscription? (y/N)" -n 1 -r
 ${ECHO}
 
 if [[ ${REPLY} =~ ^[Yy]$ ]]; then
@@ -131,9 +131,6 @@ if [[ ${HAS_SUBSCRIPTION} -eq 0 ]]; then
     ${KUBERNETES_CLIENT} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${WSO2_SUBSCRIPTION_USERNAME} --docker-password=${WSO2_SUBSCRIPTION_PASSWORD} --docker-email=${WSO2_SUBSCRIPTION_USERNAME}
 fi
 
-# create Kubernetes Role and Role Binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
-${KUBERNETES_CLIENT} create -f ../../rbac/rbac.yaml
-
 echoBold 'Creating ConfigMaps...'
 ${KUBERNETES_CLIENT} create configmap apim-1-conf --from-file=../confs/apim-1/
 ${KUBERNETES_CLIENT} create configmap apim-1-conf-datasources --from-file=../confs/apim-1/datasources/
@@ -148,7 +145,6 @@ ${KUBERNETES_CLIENT} create -f ../extras/rdbms/mysql/mysql-persistent-volume-cla
 ${KUBERNETES_CLIENT} create -f ../extras/rdbms/volumes/persistent-volumes.yaml
 ${KUBERNETES_CLIENT} create -f ../extras/rdbms/mysql/mysql-deployment.yaml
 ${KUBERNETES_CLIENT} create -f ../extras/rdbms/mysql/mysql-service.yaml
-sleep 10s
 
 echoBold 'Deploying persistent storage resources...'
 ${KUBERNETES_CLIENT} create -f ../volumes/persistent-volumes.yaml
@@ -156,19 +152,22 @@ ${KUBERNETES_CLIENT} create -f ../volumes/persistent-volumes.yaml
 echoBold 'Deploying WSO2 API Manager Analytics...'
 ${KUBERNETES_CLIENT} create -f ../apim-analytics/wso2apim-analytics-deployment.yaml
 ${KUBERNETES_CLIENT} create -f ../apim-analytics/wso2apim-analytics-service.yaml
-sleep 200s
 
 echoBold 'Deploying WSO2 API Manager...'
+echoBold 'Deploying WSO2 API Manager Instance One...'
 ${KUBERNETES_CLIENT} create -f ../apim/wso2apim-volume-claim.yaml
 ${KUBERNETES_CLIENT} create -f ../apim/wso2apim-1-deployment.yaml
-${KUBERNETES_CLIENT} create -f ../apim/wso2apim-2-deployment.yaml
-${KUBERNETES_CLIENT} create -f ../apim/wso2apim-service.yaml
 ${KUBERNETES_CLIENT} create -f ../apim/wso2apim-1-service.yaml
+sleep 120s
+echoBold 'Deploying WSO2 API Manager Instance Two...'
+${KUBERNETES_CLIENT} create -f ../apim/wso2apim-2-deployment.yaml
 ${KUBERNETES_CLIENT} create -f ../apim/wso2apim-2-service.yaml
-sleep 10s
+${KUBERNETES_CLIENT} create -f ../apim/wso2apim-service.yaml
+sleep 120s
 
 echoBold 'Deploying Ingresses...'
 ${KUBERNETES_CLIENT} create -f ../ingresses/wso2apim-ingress.yaml
 ${KUBERNETES_CLIENT} create -f ../ingresses/wso2apim-gateway-ingress.yaml
+sleep 60s
 
 echoBold 'Finished'

@@ -31,6 +31,10 @@ spec:
       labels:
         deployment: wso2apim-with-analytics-apim-analytics
     spec:
+      initContainers:
+      - name: init-apim-analytics-db
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-with-analytics-rdbms-service 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       containers:
       - name: wso2apim-with-analytics-apim-analytics
         image: wso2/wso2am-analytics-worker:2.6.0
