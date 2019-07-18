@@ -1,4 +1,4 @@
-# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,26 +12,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2apim-with-analytics-apim-deployment
+  name: wso2apim-with-analytics-apim-2
   namespace : {{ .Values.namespace }}
 spec:
   replicas: 1
-  minReadySeconds: 30
   strategy:
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
     type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2apim-with-analytics-apim
+      node: wso2apim-with-analytics-apim-2
   template:
     metadata:
       labels:
         deployment: wso2apim-with-analytics-apim
+        node: wso2apim-with-analytics-apim-2
     spec:
+      initContainers:
+        - name: init-apim-db
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-with-analytics-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        - name: init-apim-analytics
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2apim-with-analytics-apim-analytics-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+        - name: init-apim
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Instance One deployment"; while ! nc -z wso2apim-with-analytics-apim-1-service 9711; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Instance One has started";']
       containers:
-        - name: wso2apim-with-analytics-apim-worker
+        - name: wso2apim-with-analytics-apim
           {{- if or (eq .Values.username "") (eq .Values.password "") }}
           image: wso2/wso2am:2.6.0
           {{- else }}
@@ -43,7 +57,8 @@ spec:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9443
-            initialDelaySeconds: 150
+            initialDelaySeconds: 240
+            failureThreshold: 3
             periodSeconds: 10
           readinessProbe:
             exec:
@@ -51,15 +66,21 @@ spec:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9443
-            initialDelaySeconds: 150
+            initialDelaySeconds: 240
+            failureThreshold: 3
             periodSeconds: 10
           lifecycle:
             preStop:
               exec:
                 command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+          resources:
+            requests:
+              memory: 2Gi
+              cpu: 2000m
+            limits:
+              memory: 3Gi
+              cpu: 3000m
           imagePullPolicy: Always
-          securityContext:
-            runAsUser: 802
           ports:
             -
               containerPort: 8280
@@ -73,40 +94,25 @@ spec:
             -
               containerPort: 9443
               protocol: "TCP"
-            -
-              containerPort: 5672
-              protocol: "TCP"
-            -
-              containerPort: 9711
-              protocol: "TCP"
-            -
-              containerPort: 9611
-              protocol: "TCP"
-            -
-              containerPort: 7711
-              protocol: "TCP"
-            -
-              containerPort: 7611
-              protocol: "TCP"
           volumeMounts:
             - name: apim-storage-volume
               mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server
-            - name: apim-conf
+            - name: apim-2-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-            - name: apim-conf-datasources
+            - name: apim-2-conf-datasources
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
       serviceAccountName: "wso2svc-account"
       {{ if and (not (eq .Values.username "")) (not (eq .Values.password "")) }}
       imagePullSecrets:
-      - name: wso2creds
+        - name: wso2creds
       {{ end }}
       volumes:
         - name: apim-storage-volume
           persistentVolumeClaim:
             claimName: wso2apim-with-analytics-apim-deployment-volume-claim
-        - name: apim-conf
+        - name: apim-2-conf
           configMap:
-            name: apim-conf
-        - name: apim-conf-datasources
+            name: apim-2-conf
+        - name: apim-2-conf-datasources
           configMap:
-            name: apim-conf-datasources
+            name: apim-2-conf-datasources
