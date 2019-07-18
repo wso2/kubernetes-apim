@@ -27,7 +27,6 @@ spec:
   tls:
   - hosts:
     - wso2apim
-    - wso2apim-gateway
   rules:
   - host: wso2apim
     http:
@@ -36,10 +35,3 @@ spec:
         backend:
           serviceName: wso2apim-with-analytics-apim-service
           servicePort: 9443
-  - host: wso2apim-gateway
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: wso2apim-with-analytics-apim-service
-          servicePort: 8243

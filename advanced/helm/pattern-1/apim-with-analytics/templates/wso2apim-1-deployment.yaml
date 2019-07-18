@@ -1,4 +1,4 @@
-# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2apim-with-analytics-apim-analytics-deployment
+  name: wso2apim-with-analytics-apim-1
   namespace : {{ .Values.namespace }}
 spec:
   replicas: 1
@@ -26,30 +26,35 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2apim-with-analytics-apim-analytics
+      deployment: wso2apim-with-analytics-apim
+      node: wso2apim-with-analytics-apim-1
   template:
     metadata:
       labels:
-        deployment: wso2apim-with-analytics-apim-analytics
+        deployment: wso2apim-with-analytics-apim
+        node: wso2apim-with-analytics-apim-1
     spec:
       initContainers:
-        - name: init-apim-analytics-db
+        - name: init-apim-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-with-analytics-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        - name: init-apim-analytics
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2apim-with-analytics-apim-analytics-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       containers:
-        - name: wso2apim-with-analytics-apim-analytics
+        - name: wso2apim-with-analytics-apim
           {{- if or (eq .Values.username "") (eq .Values.password "") }}
-          image: wso2/wso2am-analytics-worker:2.6.0
+          image: wso2/wso2am:2.6.0
           {{- else }}
-          image: docker.wso2.com/wso2am-analytics-worker:2.6.0
+          image: docker.wso2.com/wso2am:2.6.0
           {{- end }}
           livenessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 9444
-            initialDelaySeconds: 30
+                - nc -z localhost 9443
+            initialDelaySeconds: 240
             failureThreshold: 3
             periodSeconds: 10
           readinessProbe:
@@ -57,55 +62,54 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 9444
-            initialDelaySeconds: 30
+                - nc -z localhost 9443
+            initialDelaySeconds: 240
             failureThreshold: 3
             periodSeconds: 10
           lifecycle:
             preStop:
               exec:
-                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
           resources:
             requests:
-              memory: "4Gi"
-              cpu: "2000m"
+              memory: 2Gi
+              cpu: 2000m
             limits:
-              memory: "4Gi"
-              cpu: "2000m"
+              memory: 3Gi
+              cpu: 3000m
           imagePullPolicy: Always
-          securityContext:
-            runAsUser: 802
           ports:
             -
-              containerPort: 9764
+              containerPort: 8280
               protocol: "TCP"
             -
-              containerPort: 9444
+              containerPort: 8243
               protocol: "TCP"
             -
-              containerPort: 7612
+              containerPort: 9763
               protocol: "TCP"
             -
-              containerPort: 7712
-              protocol: "TCP"
-            -
-              containerPort: 9091
-              protocol: "TCP"
-            -
-              containerPort: 7071
-              protocol: "TCP"
-            -
-              containerPort: 7444
+              containerPort: 9443
               protocol: "TCP"
           volumeMounts:
-            - name: apim-analytics-conf-worker
-              mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
+            - name: apim-storage-volume
+              mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server
+            - name: apim-1-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+            - name: apim-1-conf-datasources
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
       serviceAccountName: "wso2svc-account"
       {{ if and (not (eq .Values.username "")) (not (eq .Values.password "")) }}
       imagePullSecrets:
         - name: wso2creds
       {{ end }}
       volumes:
-        - name: apim-analytics-conf-worker
+        - name: apim-storage-volume
+          persistentVolumeClaim:
+            claimName: wso2apim-with-analytics-apim-deployment-volume-claim
+        - name: apim-1-conf
           configMap:
-            name: apim-analytics-conf-worker
+            name: apim-1-conf
+        - name: apim-1-conf-datasources
+          configMap:
+            name: apim-1-conf-datasources
