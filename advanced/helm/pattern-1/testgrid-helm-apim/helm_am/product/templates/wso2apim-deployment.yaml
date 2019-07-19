@@ -1,0 +1,108 @@
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wso2apim-with-analytics-apim-deployment-1
+  namespace : {{ .Values.namespace }}
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        deployment: wso2apim-with-analytics-apim
+        node: wso2apim-pattern-1-tm-1
+    spec:
+      containers:
+        - name: wso2apim-with-analytics-apim-worker
+          {{- if or (eq .Values.username "") (eq .Values.password "") }}
+          image: wso2/wso2am:2.6.0
+          {{- else }}
+          image: docker.wso2.com/wso2am:2.6.0
+          {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: 150
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: 150
+            periodSeconds: 10
+          lifecycle:
+            preStop:
+              exec:
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+          imagePullPolicy: Always
+          securityContext:
+            runAsUser: 802
+          ports:
+            -
+              containerPort: 8280
+              protocol: "TCP"
+            -
+              containerPort: 8243
+              protocol: "TCP"
+            -
+              containerPort: 9763
+              protocol: "TCP"
+            -
+              containerPort: 9443
+              protocol: "TCP"
+            -
+              containerPort: 5672
+              protocol: "TCP"
+            -
+              containerPort: 9711
+              protocol: "TCP"
+            -
+              containerPort: 9611
+              protocol: "TCP"
+            -
+              containerPort: 7711
+              protocol: "TCP"
+            -
+              containerPort: 7611
+              protocol: "TCP"
+          volumeMounts:
+            - name: apim-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+            - name: apim-conf-datasources
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
+      serviceAccountName: "wso2svc-account"
+      {{ if and (not (eq .Values.username "")) (not (eq .Values.password "")) }}
+      imagePullSecrets:
+      - name: wso2creds
+      {{ end }}
+      volumes:
+        - name: apim-conf
+          configMap:
+            name: apim-conf
+        - name: apim-conf-datasources
+          configMap:
+            name: apim-conf-datasources

@@ -1,0 +1,9 @@
+username: ""
+password: ""
+email: ""
+
+namespace: "wso2"
+svcaccount: "wso2svc-account"
+dbType: "mysql"
+operatingSystem: "OPERATING_SYSTEM"
+jdkType: "JDK_TYPE"

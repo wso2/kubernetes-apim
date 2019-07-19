@@ -1,0 +1,96 @@
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apim-conf-datasources
+  namespace : {{ .Values.namespace }}
+data:
+  {{- if eq .Values.dbType "mysql" }}
+    {{- $reg_dburl := "jdbc:mysql://wso2-rdbms-service-mysql:3306/WSO2AM_COMMON_DB?autoReconnect=true&amp;useSSL=false" }}
+    {{- $user_dburl := "jdbc:mysql://wso2-rdbms-service-mysql:3306/WSO2AM_COMMON_DB?autoReconnect=true&amp;useSSL=false" }}
+    {{- $apimgt_dburl := "jdbc:mysql://wso2-rdbms-service-mysql:3306/WSO2AM_APIMGT_DB?autoReconnect=true&amp;useSSL=false" }}
+    {{- $db_driver_class_name := "com.mysql.jdbc.Driver" }}
+    {{- $db_validation_query := "SELECT 1" }}
+    {{- $db_username := "wso2carbon" }}
+    {{- $db_password := "wso2carbon" }}
+    {{- $file := .Files }}
+    {{- range $path, $byte := .Files.Glob "confs/apim/datasources/*" }}
+    {{- $list := $path | splitList "/"}}
+    {{- $length := len $list }}
+    {{- $last := add $length -1 }}
+    {{ index $list $last }}: |-
+      {{- range $line := $file.Lines $path }}
+        {{ $line | replace "DB_USERNAME" $db_username | replace "DB_PASSWORD" $db_password | replace "REGDB_URL" $reg_dburl | replace "USERDB_URL" $user_dburl | replace "APIMGTDB_URL" $apimgt_dburl | replace "DRIVER_CLASSNAME" $db_driver_class_name | replace "VALIDATION_QUERY" $db_validation_query }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- if eq .Values.dbType "oracle" }}
+    {{- $reg_dburl := "jdbc:oracle:thin:@CF_RDS_URL:1521/WSO2ISDB" }}
+    {{- $user_dburl := "jdbc:oracle:thin:@CF_RDS_URL:1521/WSO2ISDB" }}
+    {{- $apimgt_dburl := "jdbc:oracle:thin:@CF_RDS_URL:1521/WSO2ISDB" }}
+    {{- $db_driver_class_name := "oracle.jdbc.OracleDriver" }}
+    {{- $db_validation_query := "SELECT 1 FROM DUAL" }}
+    {{- $db_username := "wso2carbon" }}
+    {{- $db_password := "wso2carbon" }}
+    {{- $file := .Files }}
+    {{- range $path, $byte := .Files.Glob "confs/apim/datasources/*" }}
+    {{- $list := $path | splitList "/"}}
+    {{- $length := len $list }}
+    {{- $last := add $length -1 }}
+    {{ index $list $last }}: |-
+      {{- range $line := $file.Lines $path }}
+        {{ $line | replace "DB_USERNAME" $db_username | replace "DB_PASSWORD" $db_password | replace "REGDB_URL" $reg_dburl | replace "USERDB_URL" $user_dburl | replace "APIMGTDB_URL" $apimgt_dburl | replace "DRIVER_CLASSNAME" $db_driver_class_name | replace "VALIDATION_QUERY" $db_validation_query }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- if eq .Values.dbType "mssql" }}
+    {{- $reg_dburl := "jdbc:sqlserver://wso2is-rdbms-service-mssql-linux:1433;databaseName=WSO2AM_COMMON_DB;SendStringParametersAsUnicode=false" }}
+    {{- $user_dburl := "jdbc:sqlserver://wso2is-rdbms-service-mssql-linux:1433;databaseName=WSO2AM_COMMON_DB;SendStringParametersAsUnicode=false" }}
+    {{- $apimgt_dburl := "jdbc:sqlserver://wso2is-rdbms-service-mssql-linux:1433;databaseName=WSO2AM_APIMGT_DB;SendStringParametersAsUnicode=false" }}
+    {{- $db_driver_class_name := "com.microsoft.sqlserver.jdbc.SQLServerDriver" }}
+    {{- $db_validation_query := "SELECT 1" }}
+    {{- $db_username := "wso2carbon" }}
+    {{- $db_password := "wso2carbon!" }}
+    {{- $file := .Files }}
+    {{- range $path, $byte := .Files.Glob "confs/apim/datasources/*" }}
+    {{- $list := $path | splitList "/"}}
+    {{- $length := len $list }}
+    {{- $last := add $length -1 }}
+    {{ index $list $last }}: |-
+      {{- range $line := $file.Lines $path }}
+        {{ $line | replace "DB_USERNAME" $db_username | replace "DB_PASSWORD" $db_password | replace "REGDB_URL" $reg_dburl | replace "USERDB_URL" $user_dburl | replace "APIMGTDB_URL" $apimgt_dburl | replace "DRIVER_CLASSNAME" $db_driver_class_name | replace "VALIDATION_QUERY" $db_validation_query }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- if eq .Values.dbType "postgres" }}
+    {{- $reg_dburl := "jdbc:postgresql://wso2is-rdbms-service-postgresql:5432/wso2am_common_db" }}
+    {{- $user_dburl := "jdbc:postgresql://wso2is-rdbms-service-postgresql:5432/wso2am_common_db" }}
+    {{- $apimgt_dburl := "jdbc:postgresql://wso2is-rdbms-service-postgresql:5432/wso2am_apimgt_db" }}
+    {{- $db_driver_class_name := "org.postgresql.Driver" }}
+    {{- $db_validation_query := "SELECT 1; COMMIT" }}
+    {{- $db_username := "wso2carbon" }}
+    {{- $db_password := "wso2carbon" }}
+    {{- $file := .Files }}
+    {{- range $path, $byte := .Files.Glob "confs/apim/datasources/*" }}
+    {{- $list := $path | splitList "/"}}
+    {{- $length := len $list }}
+    {{- $last := add $length -1 }}
+    {{ index $list $last }}: |-
+      {{- range $line := $file.Lines $path }}
+        {{ $line | replace "DB_USERNAME" $db_username | replace "DB_PASSWORD" $db_password | replace "REGDB_URL" $reg_dburl | replace "USERDB_URL" $user_dburl | replace "APIMGTDB_URL" $apimgt_dburl | replace "DRIVER_CLASSNAME" $db_driver_class_name | replace "VALIDATION_QUERY" $db_validation_query }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
