@@ -29,7 +29,7 @@ Add the `wso2carbon` user to the group `wso2`.
   groupadd --system -g 802 wso2
   useradd --system -g 802 -u 802 wso2carbon
   ```  
-  > If you are using AKS(Azure Kubernetes Service) as the kubernetes provider, it is possible to use Azurefiles for persistent storage instead of an NFS. If doing so, skip this step.
+> If you are using AKS(Azure Kubernetes Service) as the kubernetes provider, it is possible to use Azurefiles for persistent storage instead of an NFS. If doing so, skip this step.
 
 ## Quick Start Guide
 
@@ -179,6 +179,7 @@ kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ##### 6. Setup persistent storage.
 
 * Using Azurefiles,
+
   ```
   kubectl apply -f <KUBERNETES_HOME>/azure/rbac.yaml
   kubectl apply -f <KUBERNETES_HOME>/azure/storage-class.yaml
@@ -207,15 +208,15 @@ kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 
   Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
 
-  **Note**: If you are **not** using WSO2 Identity Server as the Key Manager, comment out the corresponding Kubernetes Persistent Volume resource.
+  **Note**: If you are using WSO2 Identity Server as the Key Manager, uncomment the corresponding Kubernetes Persistent Volume resource.
 
   ```
   apiVersion: v1
   kind: PersistentVolume
   metadata:
-    name: wso2apim-advanced/pattern-2/-is-as-km-server-pv
+    name: wso2apim-pattern-2-is-as-km-server-pv
     labels:
-      purpose: wso2apim-advanced/pattern-2/-km-shared
+      purpose: wso2apim-pattern-2-km-shared
   spec:
     capacity:
       storage: 1Gi
@@ -254,7 +255,7 @@ kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 
   ```
   kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/volumes/persistent-volumes.yaml
-```
+  ```
 
 ##### 7. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster.
 
