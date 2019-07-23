@@ -15,11 +15,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: apim-gateway-conf-datasources
-  namespace : {{ .Values.namespace }}
+  name: apim-pub-store-tm-1-conf-datasources
+  namespace : {{ .Values.kubernetes.namespace }}
 data:
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/apim-gateway/datasources/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/apim-pub-store-tm-1/datasources/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}

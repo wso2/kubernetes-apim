@@ -1,12 +1,14 @@
-username: ""
-password: ""
-email: ""
+wso2:
+  subscription:
+    username: ""
+    password: ""
+  deployment:
+    persistentRuntimeArtifacts:
+      nfsServerIP: ""
+      sharedPubStoreTMLocationPath: ""
+      sharedGatewayLocationPath: ""
+      sharedISKMLocationPath: ""
 
-namespace: "wso2"
-svcaccount: "wso2svc-account"
-serverIp: ""
-sharedDeploymentLocationPath: ""
-isKMLocationPath: ""
-
-
-
+kubernetes:
+  namespace: "wso2"
+  svcaccount: "wso2svc-account"

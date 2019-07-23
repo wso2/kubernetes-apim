@@ -15,34 +15,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2apim-pubstore-tm-1
-  namespace : {{ .Values.namespace }}
+  name: wso2apim-service
+  namespace : {{ .Values.kubernetes.namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    node: pubstore-tm-1
+    deployment: wso2apim-pattern-2-pub-store-tm
   ports:
     # ports that this service should serve on
-    -
-      name: jms-tcp
-      protocol: TCP
-      port: 5672
-    -
-      name: binary-secure
-      protocol: TCP
-      port: 9711
-    -
-      name: binary
-      protocol: TCP
-      port: 9611
-    -
-      name: thrift-secure
-      protocol: TCP
-      port: 7711
-    -
-      name: thrift
-      protocol: TCP
-      port: 7611
     -
       name: servlet-http
       protocol: TCP

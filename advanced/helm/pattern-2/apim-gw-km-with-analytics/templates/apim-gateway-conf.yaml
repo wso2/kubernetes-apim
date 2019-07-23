@@ -16,7 +16,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: apim-gateway-conf
-  namespace : {{ .Values.namespace }}
+  namespace : {{ .Values.kubernetes.namespace }}
 data:
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/apim-gateway/*" }}

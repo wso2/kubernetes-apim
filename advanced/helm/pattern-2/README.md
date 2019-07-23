@@ -18,10 +18,12 @@ steps provided in the following quick start guide.<br><br>
 * An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/).<br><br>
 
 * Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/). This can
- be easily done via 
+ be easily done via
+ 
   ```
   helm install stable/nginx-ingress --name nginx-wso2apim-gw-km-with-analytics --set rbac.create=true
   ```
+
 * A pre-configured Network File System (NFS) to be used as the persistent volume for artifact sharing and persistence.
 In the NFS server instance, create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802`.
 Add the `wso2carbon` user to the group `wso2`.
@@ -30,7 +32,7 @@ Add the `wso2carbon` user to the group `wso2`.
    groupadd --system -g 802 wso2
    useradd --system -g 802 -u 802 wso2carbon
   ```  
-    > If you are using AKS(Azure Kubernetes Service) as the kubernetes provider, it is possible to use Azurefiles for persistent storage instead of an NFS. If doing so, skip this step.
+> If you are using AKS(Azure Kubernetes Service) as the kubernetes provider, it is possible to use Azurefiles for persistent storage instead of an NFS. If doing so, skip this step.
 
 ## Quick Start Guide
 
@@ -47,11 +49,14 @@ git clone https://github.com/wso2/kubernetes-apim.git
 
 ##### 2. Setup persistent storage.
 
-* Using Azurefiles,
+* Using Azure Files,
   
-  Add the following parameter and value to the values.yaml.
+  Add the following parameter and value to the `<HELM_HOME>/apim-gw-km-with-analytics/values.yaml`.
   ```
-  cloudProvider: Azure
+  wso2:
+    deployment:
+      persistentRuntimeArtifacts:
+        cloudProvider: Azure
   ```
 
 * Using a Network File System (NFS),
@@ -59,8 +64,9 @@ git clone https://github.com/wso2/kubernetes-apim.git
   Create and export unique directories within the NFS server instance for each of the following Kubernetes Persistent Volume
   resources defined in the `<HELM_HOME>/apim-gw-km-with-analytics-conf/values.yaml` file:
 
-  * `sharedDeploymentLocationPath`
-  * `isKMLocationPath`
+  * `wso2.deployment.persistentRuntimeArtifacts.sharedPubStoreTMLocationPath`
+  * `wso2.deployment.persistentRuntimeArtifacts.sharedGatewayLocationPath`
+  * `wso2.deployment.persistentRuntimeArtifacts.sharedISKMLocationPath`
 
   Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
@@ -79,25 +85,32 @@ git clone https://github.com/wso2/kubernetes-apim.git
 a. The default product configurations are available at `<HELM_HOME>/apim-gw-km-with-analytics/confs` folder. Change the
 configurations as necessary.
 
-b. Open the `<HELM_HOME>/apim-gw-km-with-analytics/values.yaml` and provide the following values. If you do not have active 
-WSO2 subscription do not change the parameters `username`, `password` and `email`. Ignore `serverIP`, `sharedDeploymentLocationPath` and `isKMLocationPath` if an NFS is not used.
+b. Open the `<HELM_HOME>/apim-gw-km-with-analytics/values.yaml` and provide the following values.
 
-| Parameter                       | Description                                                                               |
-|---------------------------------|-------------------------------------------------------------------------------------------|
-| `username`                      | Your WSO2 username                                                                        |
-| `password`                      | Your WSO2 password                                                                        |
-| `email`                         | Docker email                                                                              |
-| `namespace`                     | Kubernetes Namespace in which the resources are deployed*                                  |
-| `svcaccount`                    | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
-| `serverIp`                      | NFS Server IP                                                                             |
-| `sharedDeploymentLocationPath`  | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for APIM   |
-| `isKMLocationPath`              | NFS shared deployment directory (`<APIM_IS_KM_HOME>/repository/deployment`) location for IS_AS_KM |
+If you do not have active WSO2 subscription do not change the parameters `wso2.deployment.username` and `wso2.deployment.password`.
 
-*Provide the same kubernetes namespace used in configuring the `<parameter name="KUBERNETES_NAMESPACE">` element in following `axis2.xml` files
-* `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-gateway/axis2/axis2.xml`
+If a Network File System (NFS) is not used as the mode of persistent storage and artifact synchronization, leave the values of the following
+attributes empty.
+
+  * `wso2.deployment.persistentRuntimeArtifacts.nfsServerIP`
+  * `wso2.deployment.persistentRuntimeArtifacts.sharedPubStoreTMLocationPath`
+  * `wso2.deployment.persistentRuntimeArtifacts.sharedGatewayLocationPath`
+  * `wso2.deployment.persistentRuntimeArtifacts.sharedISKMLocationPath`
+
+| Parameter                                                                   | Description                                                                               |
+|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| `wso2.deployment.username`                                                  | Your WSO2 username                                                                        |
+| `wso2.deployment.password`                                                  | Your WSO2 password                                                                        |                                                                        |
+| `wso2.deployment.persistentRuntimeArtifacts.nfsServerIP`                    | NFS Server IP                                                                             |
+| `wso2.deployment.persistentRuntimeArtifacts.sharedPubStoreTMLocationPath`   | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for API Manager in Pub-Store-TM deployment   |
+| `wso2.deployment.persistentRuntimeArtifacts.sharedGatewayLocationPath`      | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for API Manager in Gateway deployment  |
+| `wso2.deployment.persistentRuntimeArtifacts.sharedISKMLocationPath`         | NFS shared deployment directory (`<APIM_IS_KM_HOME>/repository/deployment`) location for Identity Server as Key Manager. Applicable only if you are using Identity Server as the Key Manager |
+| `kubernetes.namespace`                                                      | Kubernetes Namespace in which the resources are deployed                                  |
+| `kubernetes.svcaccount`                                                     | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
+
+Provide the same Kubernetes Namespace (i.e. represented by `kubernetes.namespace`) used in configuring the `<parameter name="KUBERNETES_NAMESPACE">` element in following `axis2.xml` file:
+
 * `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-is-as-km/axis2/axis2.xml`
-* `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-pubstore-tm-1/axis2/axis2.xml`
-* `<HELM_HOME>/apim-gw-km-with-analytics/confs/apim-pubstore-tm-2/axis2/axis2.xml`
 
 ##### 4. Deploy product database(s) using MySQL in Kubernetes.
 

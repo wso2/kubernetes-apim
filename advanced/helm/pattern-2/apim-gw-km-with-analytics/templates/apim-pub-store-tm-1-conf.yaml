@@ -15,11 +15,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: apim-gateway-conf-identity
-  namespace : {{ .Values.namespace }}
+  name: apim-pub-store-tm-1-conf
+  namespace : {{ .Values.kubernetes.namespace }}
 data:
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/apim-gateway/identity/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/apim-pub-store-tm-1/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
