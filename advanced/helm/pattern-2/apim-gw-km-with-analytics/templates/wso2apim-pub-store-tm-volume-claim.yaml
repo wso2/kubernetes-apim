@@ -1,4 +1,4 @@
-# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,18 +13,21 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: ConfigMap
+kind: PersistentVolumeClaim
 metadata:
-  name: apim-pubstore-tm-1-conf-datasources
-  namespace : {{ .Values.namespace }}
-data:
-  {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/apim-pubstore-tm-1/datasources/*" }}
-  {{- $list := $path | splitList "/"}}
-  {{- $length := len $list }}
-  {{- $last := add $length -1 }}
-  {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
-    {{- end }}
+  name: wso2apim-pattern-2-apim-shared-server-volume-claim
+  namespace : {{ .Values.kubernetes.namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  {{- if (.Values.cloudProvider) and eq .Values.cloudProvider "Azure" }}
+  storageClassName: azurefile
+  {{- else }}
+  storageClassName: ""
   {{- end }}
+  selector:
+    matchLabels:
+      purpose: wso2apim-pattern-2-apim-shared

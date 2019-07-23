@@ -12,85 +12,103 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2apim-is-as-km-deployment
-  namespace : {{ .Values.namespace }}
+  name: wso2apim-pattern-2-is-as-km-deployment
+  namespace : {{ .Values.kubernetes.namespace }}
 spec:
   replicas: 1
-  minReadySeconds: 30
   strategy:
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
     type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2apim-pattern-2-is-as-km
   template:
     metadata:
       labels:
-        deployment: wso2apim-is-as-km
+        deployment: wso2apim-pattern-2-is-as-km
     spec:
+      initContainers:
+        - name: init-apim-db
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-pattern-2-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        - name: init-apim-analytics
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2apim-pattern-2-analytics-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       containers:
-      - name: wso2apim-is-as-km
-        {{- if or (eq .Values.username "") (eq .Values.password "") }}
-        image: wso2/wso2is-km:5.7.0
-        {{- else }}
-        image: docker.wso2.com/wso2is-km:5.7.0
-        {{- end }}
-        livenessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - nc -z localhost 9443
-          initialDelaySeconds: 300
-          periodSeconds: 10
-        readinessProbe:
-          exec:
-            command:
-              - /bin/sh
-              - -c
-              - nc -z localhost 9443
-          initialDelaySeconds: 300
-          periodSeconds: 10
-        lifecycle:
-          preStop:
+        - name: wso2apim-is-as-km
+          {{- if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
+          image: wso2/wso2is-km:5.7.0
+          {{- else }}
+          image: docker.wso2.com/wso2is-km:5.7.0
+          {{- end }}
+          livenessProbe:
             exec:
-              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
-        imagePullPolicy: Always
-        securityContext:
-          runAsUser: 802
-        ports:
-        -
-          containerPort: 9763
-          protocol: "TCP"
-        -
-          containerPort: 9443
-          protocol: "TCP"
-        volumeMounts:
-        - name: apim-is-as-km-storage-volume
-          mountPath: /home/wso2carbon/wso2is-km-5.7.0/repository/deployment
-        - name: apim-is-as-km-conf
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-        - name: apim-is-as-km-conf-axis2
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
-        - name: apim-is-as-km-conf-datasources
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: 240
+            failureThreshold: 3
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: 240
+            failureThreshold: 3
+            periodSeconds: 10
+          lifecycle:
+            preStop:
+              exec:
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+          resources:
+            requests:
+              memory: 2Gi
+              cpu: 2000m
+            limits:
+              memory: 3Gi
+              cpu: 3000m
+          imagePullPolicy: Always
+          securityContext:
+            runAsUser: 802
+          ports:
+            -
+              containerPort: 9763
+              protocol: "TCP"
+            -
+              containerPort: 9443
+              protocol: "TCP"
+          volumeMounts:
+            - name: apim-is-as-km-storage-volume
+              mountPath: /home/wso2carbon/wso2is-km-5.7.0/repository/deployment
+            - name: apim-is-as-km-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+            - name: apim-is-as-km-conf-axis2
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
+            - name: apim-is-as-km-conf-datasources
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
       serviceAccountName: "wso2svc-account"
-      {{ if and (not (eq .Values.username "")) (not (eq .Values.password "")) }}
+      {{ if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-      - name: wso2creds
+        - name: wso2creds
       {{ end }}
       volumes:
-      - name: apim-is-as-km-storage-volume
-        persistentVolumeClaim:
-          claimName: wso2apim-is-as-km-shared-server-volume-claim
-      - name: apim-is-as-km-conf
-        configMap:
-          name: apim-is-as-km-conf
-      - name: apim-is-as-km-conf-axis2
-        configMap:
-          name: apim-is-as-km-conf-axis2
-      - name: apim-is-as-km-conf-datasources
-        configMap:
-          name: apim-is-as-km-conf-datasources
+        - name: apim-is-as-km-storage-volume
+          persistentVolumeClaim:
+            claimName: wso2apim-pattern-2-is-as-km-shared-server-volume-claim
+        - name: apim-is-as-km-conf
+          configMap:
+            name: apim-is-as-km-conf
+        - name: apim-is-as-km-conf-axis2
+          configMap:
+            name: apim-is-as-km-conf-axis2
+        - name: apim-is-as-km-conf-datasources
+          configMap:
+            name: apim-is-as-km-conf-datasources

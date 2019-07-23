@@ -16,7 +16,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: apim-is-as-km-conf-axis2
-  namespace : {{ .Values.namespace }}
+  namespace : {{ .Values.kubernetes.namespace }}
 data:
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/apim-is-as-km/axis2/*" }}

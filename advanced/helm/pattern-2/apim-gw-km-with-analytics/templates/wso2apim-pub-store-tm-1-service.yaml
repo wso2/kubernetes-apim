@@ -15,12 +15,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2apim-pubstore-tm-2
-  namespace : {{ .Values.namespace }}
+  name: wso2apim-pattern-2-pub-store-tm-1-service
+  namespace : {{ .Values.kubernetes.namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    node: pubstore-tm-2
+    node: wso2apim-pattern-2-pub-store-tm-1
   ports:
     # ports that this service should serve on
     -
