@@ -16,7 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2apim-with-analytics-apim-analytics-deployment
-  namespace : {{ .Values.namespace }}
+  namespace : {{ .Values.kubernetes.namespace }}
 spec:
   replicas: 1
   strategy:
@@ -38,7 +38,7 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-with-analytics-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       containers:
         - name: wso2apim-with-analytics-apim-analytics
-          {{- if or (eq .Values.username "") (eq .Values.password "") }}
+          {{- if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
           image: wso2/wso2am-analytics-worker:2.6.0
           {{- else }}
           image: docker.wso2.com/wso2am-analytics-worker:2.6.0
@@ -101,7 +101,7 @@ spec:
             - name: apim-analytics-conf-worker
               mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
       serviceAccountName: "wso2svc-account"
-      {{ if and (not (eq .Values.username "")) (not (eq .Values.password "")) }}
+      {{ if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
         - name: wso2creds
       {{ end }}

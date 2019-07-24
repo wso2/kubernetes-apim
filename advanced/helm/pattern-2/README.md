@@ -100,11 +100,12 @@ attributes empty.
 | Parameter                                                                   | Description                                                                               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
 | `wso2.deployment.username`                                                  | Your WSO2 username                                                                        |
-| `wso2.deployment.password`                                                  | Your WSO2 password                                                                        |                                                                        |
+| `wso2.deployment.password`                                                  | Your WSO2 password                                                                        |
+| `wso2.deployment.defaultKeyManager`                                         | Set to `is` if WSO2 Identity Server is used as the Key Manager. If not defined, the deployment defaults to using WSO2 API Manager's Key Manager profile |
 | `wso2.deployment.persistentRuntimeArtifacts.nfsServerIP`                    | NFS Server IP                                                                             |
 | `wso2.deployment.persistentRuntimeArtifacts.sharedPubStoreTMLocationPath`   | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for API Manager in Pub-Store-TM deployment   |
 | `wso2.deployment.persistentRuntimeArtifacts.sharedGatewayLocationPath`      | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for API Manager in Gateway deployment  |
-| `wso2.deployment.persistentRuntimeArtifacts.sharedISKMLocationPath`         | NFS shared deployment directory (`<APIM_IS_KM_HOME>/repository/deployment`) location for Identity Server as Key Manager. Applicable only if you are using Identity Server as the Key Manager |
+| `wso2.deployment.persistentRuntimeArtifacts.sharedISKMLocationPath`         | NFS shared deployment directory (`<APIM_IS_KM_HOME>/repository/deployment`) location for Identity Server as Key Manager. Applicable only if you are using Identity Server as the Key Manager. |
 | `kubernetes.namespace`                                                      | Kubernetes Namespace in which the resources are deployed                                  |
 | `kubernetes.svcaccount`                                                     | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
 
