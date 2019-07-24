@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+{{- if (.Values.wso2.deployment.defaultKeyManager) and eq .Values.wso2.deployment.defaultKeyManager "is" }}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -28,3 +30,5 @@ data:
     {{ . }}
     {{- end }}
   {{- end }}
+
+{{- end }}

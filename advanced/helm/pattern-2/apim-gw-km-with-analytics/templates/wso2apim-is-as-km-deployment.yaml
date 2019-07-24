@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+{{- if (.Values.wso2.deployment.defaultKeyManager) and eq .Values.wso2.deployment.defaultKeyManager "is" }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -112,3 +114,5 @@ spec:
         - name: apim-is-as-km-conf-datasources
           configMap:
             name: apim-is-as-km-conf-datasources
+
+{{- end }}

@@ -1,4 +1,4 @@
-# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,17 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{- if (.Values.wso2.deployment.defaultKeyManager) and eq .Values.wso2.deployment.defaultKeyManager "is" }}
+{{- if (not .Values.wso2.deployment.defaultKeyManager) }}
 
 apiVersion: v1
 kind: Service
 metadata:
   name: wso2apim-pattern-2-km-service
-  namespace : {{ .Values.kubernetes.namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    deployment: wso2apim-pattern-2-is-as-km
+    deployment: wso2apim-pattern-2-km
   sessionAffinity: ClientIP
   ports:
     # ports that this service should serve on
@@ -35,4 +34,4 @@ spec:
       protocol: TCP
       port: 9443
 
-{{- end }}
+{{ end }}
