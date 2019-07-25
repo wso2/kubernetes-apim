@@ -27,7 +27,7 @@ of WSO2 API Manager.*
 
 ## Changelog
 
-**Change log** from previous v2.6.0.6 release: [View Here](CHANGELOG.md)
+**Change log** from previous v2.6.0.7 release: [View Here](CHANGELOG.md)
 
 ## Reporting issues
 
