@@ -29,142 +29,142 @@ function echoBold () {
     ${ECHO} -e $'\e[1m'"${1}"$'\e[0m'
 }
 
-#read -p "Do you have a WSO2 Subscription? (y/N)" -n 1 -r
-#${ECHO}
-#
-#if [[ ${REPLY} =~ ^[Yy]$ ]]; then
-#    read -p "Enter Your WSO2 Username: " WSO2_SUBSCRIPTION_USERNAME
-#    ${ECHO}
-#    read -s -p "Enter Your WSO2 Password: " WSO2_SUBSCRIPTION_PASSWORD
-#    ${ECHO}
-#
-#    HAS_SUBSCRIPTION=0
-#
-#    if ! ${GREP} -q "imagePullSecrets" \
-#    ../apim-analytics/wso2apim-analytics-deployment.yaml \
-#    ../apim-gateway/wso2apim-gateway-deployment.yaml \
-#    ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
-#    ../apim-km/wso2apim-km-deployment.yaml \
-#    ../apim-publisher/wso2apim-publisher-deployment.yaml \
-#    ../apim-store/wso2apim-store-deployment.yaml \
-#    ../apim-tm/wso2apim-tm-1-deployment.yaml \
-#    ../apim-tm/wso2apim-tm-2-deployment.yaml; then
-#
-#        if ! ${SED} -i.bak -e 's|wso2/|docker.wso2.com/|' \
-#        ../apim-analytics/wso2apim-analytics-deployment.yaml \
-#        ../apim-gateway/wso2apim-gateway-deployment.yaml \
-#        ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
-#        ../apim-km/wso2apim-km-deployment.yaml \
-#        ../apim-publisher/wso2apim-publisher-deployment.yaml \
-#        ../apim-store/wso2apim-store-deployment.yaml \
-#        ../apim-tm/wso2apim-tm-1-deployment.yaml \
-#        ../apim-tm/wso2apim-tm-2-deployment.yaml; then
-#            echoBold "Could not configure to use the Docker image available at WSO2 Private Docker Registry (docker.wso2.com)"
-#            exit 1
-#        fi
-#
-#        case "`uname`" in
-#            Darwin*)
-#                if ! ${SED} -i.bak -e '/serviceAccount/a \
-#                      \      imagePullSecrets:' \
-#                ../apim-analytics/wso2apim-analytics-deployment.yaml \
-#                ../apim-gateway/wso2apim-gateway-deployment.yaml \
-#                ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
-#                ../apim-km/wso2apim-km-deployment.yaml \
-#                ../apim-publisher/wso2apim-publisher-deployment.yaml \
-#                ../apim-store/wso2apim-store-deployment.yaml \
-#                ../apim-tm/wso2apim-tm-1-deployment.yaml \
-#                ../apim-tm/wso2apim-tm-2-deployment.yaml; then
-#                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
-#                    exit 1
-#                fi
-#
-#
-#                if ! ${SED} -i.bak -e '/imagePullSecrets/a \
-#                      \      - name: wso2creds' \
-#                ../apim-analytics/wso2apim-analytics-deployment.yaml \
-#                ../apim-gateway/wso2apim-gateway-deployment.yaml \
-#                ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
-#                ../apim-km/wso2apim-km-deployment.yaml \
-#                ../apim-publisher/wso2apim-publisher-deployment.yaml \
-#                ../apim-store/wso2apim-store-deployment.yaml \
-#                ../apim-tm/wso2apim-tm-1-deployment.yaml \
-#                ../apim-tm/wso2apim-tm-2-deployment.yaml; then
-#                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
-#                    exit 1
-#                fi;;
-#
-#            *)
-#
-#                if ! ${SED} -i.bak -e '/serviceAccount/a \      imagePullSecrets:' \
-#                ../apim-analytics/wso2apim-analytics-deployment.yaml \
-#                ../apim-gateway/wso2apim-gateway-deployment.yaml \
-#                ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
-#                ../apim-km/wso2apim-km-deployment.yaml \
-#                ../apim-publisher/wso2apim-publisher-deployment.yaml \
-#                ../apim-store/wso2apim-store-deployment.yaml \
-#                ../apim-tm/wso2apim-tm-1-deployment.yaml \
-#                ../apim-tm/wso2apim-tm-2-deployment.yaml; then
-#                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
-#                    exit 1
-#                fi
-#
-#
-#                if ! ${SED} -i.bak -e '/imagePullSecrets/a \      - name: wso2creds' \
-#                ../apim-analytics/wso2apim-analytics-deployment.yaml \
-#                ../apim-gateway/wso2apim-gateway-deployment.yaml \
-#                ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
-#                ../apim-km/wso2apim-km-deployment.yaml \
-#                ../apim-publisher/wso2apim-publisher-deployment.yaml \
-#                ../apim-store/wso2apim-store-deployment.yaml \
-#                ../apim-tm/wso2apim-tm-1-deployment.yaml \
-#                ../apim-tm/wso2apim-tm-2-deployment.yaml; then
-#                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
-#                    exit 1
-#                fi;;
-#        esac
-#    fi
-#elif [[ ${REPLY} =~ ^[Nn]$ || -z "${REPLY}" ]]; then
-#     HAS_SUBSCRIPTION=1
-#
-#     if ! ${SED} -i.bak -e '/imagePullSecrets:/d' -e '/- name: wso2creds/d' \
-#     ../apim-analytics/wso2apim-analytics-deployment.yaml \
-#     ../apim-gateway/wso2apim-gateway-deployment.yaml \
-#     ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
-#     ../apim-km/wso2apim-km-deployment.yaml \
-#     ../apim-publisher/wso2apim-publisher-deployment.yaml \
-#     ../apim-store/wso2apim-store-deployment.yaml \
-#     ../apim-tm/wso2apim-tm-1-deployment.yaml \
-#     ../apim-tm/wso2apim-tm-2-deployment.yaml; then
-#         echoBold "Failed to remove the Kubernetes Docker image pull secret"
-#         exit 1
-#     fi
-#
-#    if ! ${SED} -i.bak -e 's|docker.wso2.com|wso2|' \
-#     ../apim-analytics/wso2apim-analytics-deployment.yaml \
-#     ../apim-gateway/wso2apim-gateway-deployment.yaml \
-#     ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
-#     ../apim-km/wso2apim-km-deployment.yaml \
-#     ../apim-publisher/wso2apim-publisher-deployment.yaml \
-#     ../apim-store/wso2apim-store-deployment.yaml \
-#     ../apim-tm/wso2apim-tm-1-deployment.yaml \
-#     ../apim-tm/wso2apim-tm-2-deployment.yaml; then
-#        echoBold "Could not configure to use the WSO2 Docker image available at DockerHub"
-#        exit 1
-#    fi
-#else
-#    echoBold "You have entered an invalid option."
-#    exit 1
-#fi
-#
-## remove backed up files
-#${TEST} -f ../apim-analytics/*.bak && rm ../apim-analytics/*.bak
-#${TEST} -f ../apim-gateway/*.bak && rm ../apim-gateway/*.bak
-#${TEST} -f ../apim-is-as-km/*.bak && rm ../apim-is-as-km/*.bak
-#${TEST} -f ../apim-km/*.bak && rm ../apim-km/*.bak
-#${TEST} -f ../apim-publisher/*.bak && rm ../apim-publisher/*.bak
-#${TEST} -f ../apim-store/*.bak && rm ../apim-store/*.bak
-#${TEST} -f ../apim-tm/wso2apim-tm-1-deployment.yaml.bak && rm ../apim-tm/*.bak
+read -p "Do you have a WSO2 Subscription? (y/N)" -n 1 -r
+${ECHO}
+
+if [[ ${REPLY} =~ ^[Yy]$ ]]; then
+    read -p "Enter Your WSO2 Username: " WSO2_SUBSCRIPTION_USERNAME
+    ${ECHO}
+    read -s -p "Enter Your WSO2 Password: " WSO2_SUBSCRIPTION_PASSWORD
+    ${ECHO}
+
+    HAS_SUBSCRIPTION=0
+
+    if ! ${GREP} -q "imagePullSecrets" \
+    ../apim-analytics/wso2apim-analytics-deployment.yaml \
+    ../apim-gateway/wso2apim-gateway-deployment.yaml \
+    ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+    ../apim-km/wso2apim-km-deployment.yaml \
+    ../apim-publisher/wso2apim-publisher-deployment.yaml \
+    ../apim-store/wso2apim-store-deployment.yaml \
+    ../apim-tm/wso2apim-tm-1-deployment.yaml \
+    ../apim-tm/wso2apim-tm-2-deployment.yaml; then
+
+        if ! ${SED} -i.bak -e 's|wso2/|docker.wso2.com/|' \
+        ../apim-analytics/wso2apim-analytics-deployment.yaml \
+        ../apim-gateway/wso2apim-gateway-deployment.yaml \
+        ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+        ../apim-km/wso2apim-km-deployment.yaml \
+        ../apim-publisher/wso2apim-publisher-deployment.yaml \
+        ../apim-store/wso2apim-store-deployment.yaml \
+        ../apim-tm/wso2apim-tm-1-deployment.yaml \
+        ../apim-tm/wso2apim-tm-2-deployment.yaml; then
+            echoBold "Could not configure to use the Docker image available at WSO2 Private Docker Registry (docker.wso2.com)"
+            exit 1
+        fi
+
+        case "`uname`" in
+            Darwin*)
+                if ! ${SED} -i.bak -e '/serviceAccount/a \
+                      \      imagePullSecrets:' \
+                ../apim-analytics/wso2apim-analytics-deployment.yaml \
+                ../apim-gateway/wso2apim-gateway-deployment.yaml \
+                ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+                ../apim-km/wso2apim-km-deployment.yaml \
+                ../apim-publisher/wso2apim-publisher-deployment.yaml \
+                ../apim-store/wso2apim-store-deployment.yaml \
+                ../apim-tm/wso2apim-tm-1-deployment.yaml \
+                ../apim-tm/wso2apim-tm-2-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
+                    exit 1
+                fi
+
+
+                if ! ${SED} -i.bak -e '/imagePullSecrets/a \
+                      \      - name: wso2creds' \
+                ../apim-analytics/wso2apim-analytics-deployment.yaml \
+                ../apim-gateway/wso2apim-gateway-deployment.yaml \
+                ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+                ../apim-km/wso2apim-km-deployment.yaml \
+                ../apim-publisher/wso2apim-publisher-deployment.yaml \
+                ../apim-store/wso2apim-store-deployment.yaml \
+                ../apim-tm/wso2apim-tm-1-deployment.yaml \
+                ../apim-tm/wso2apim-tm-2-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
+                    exit 1
+                fi;;
+
+            *)
+
+                if ! ${SED} -i.bak -e '/serviceAccount/a \      imagePullSecrets:' \
+                ../apim-analytics/wso2apim-analytics-deployment.yaml \
+                ../apim-gateway/wso2apim-gateway-deployment.yaml \
+                ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+                ../apim-km/wso2apim-km-deployment.yaml \
+                ../apim-publisher/wso2apim-publisher-deployment.yaml \
+                ../apim-store/wso2apim-store-deployment.yaml \
+                ../apim-tm/wso2apim-tm-1-deployment.yaml \
+                ../apim-tm/wso2apim-tm-2-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
+                    exit 1
+                fi
+
+
+                if ! ${SED} -i.bak -e '/imagePullSecrets/a \      - name: wso2creds' \
+                ../apim-analytics/wso2apim-analytics-deployment.yaml \
+                ../apim-gateway/wso2apim-gateway-deployment.yaml \
+                ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+                ../apim-km/wso2apim-km-deployment.yaml \
+                ../apim-publisher/wso2apim-publisher-deployment.yaml \
+                ../apim-store/wso2apim-store-deployment.yaml \
+                ../apim-tm/wso2apim-tm-1-deployment.yaml \
+                ../apim-tm/wso2apim-tm-2-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
+                    exit 1
+                fi;;
+        esac
+    fi
+elif [[ ${REPLY} =~ ^[Nn]$ || -z "${REPLY}" ]]; then
+     HAS_SUBSCRIPTION=1
+
+     if ! ${SED} -i.bak -e '/imagePullSecrets:/d' -e '/- name: wso2creds/d' \
+     ../apim-analytics/wso2apim-analytics-deployment.yaml \
+     ../apim-gateway/wso2apim-gateway-deployment.yaml \
+     ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+     ../apim-km/wso2apim-km-deployment.yaml \
+     ../apim-publisher/wso2apim-publisher-deployment.yaml \
+     ../apim-store/wso2apim-store-deployment.yaml \
+     ../apim-tm/wso2apim-tm-1-deployment.yaml \
+     ../apim-tm/wso2apim-tm-2-deployment.yaml; then
+         echoBold "Failed to remove the Kubernetes Docker image pull secret"
+         exit 1
+     fi
+
+    if ! ${SED} -i.bak -e 's|docker.wso2.com|wso2|' \
+     ../apim-analytics/wso2apim-analytics-deployment.yaml \
+     ../apim-gateway/wso2apim-gateway-deployment.yaml \
+     ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml \
+     ../apim-km/wso2apim-km-deployment.yaml \
+     ../apim-publisher/wso2apim-publisher-deployment.yaml \
+     ../apim-store/wso2apim-store-deployment.yaml \
+     ../apim-tm/wso2apim-tm-1-deployment.yaml \
+     ../apim-tm/wso2apim-tm-2-deployment.yaml; then
+        echoBold "Could not configure to use the WSO2 Docker image available at DockerHub"
+        exit 1
+    fi
+else
+    echoBold "You have entered an invalid option."
+    exit 1
+fi
+
+# remove backed up files
+${TEST} -f ../apim-analytics/*.bak && rm ../apim-analytics/*.bak
+${TEST} -f ../apim-gateway/*.bak && rm ../apim-gateway/*.bak
+${TEST} -f ../apim-is-as-km/*.bak && rm ../apim-is-as-km/*.bak
+${TEST} -f ../apim-km/*.bak && rm ../apim-km/*.bak
+${TEST} -f ../apim-publisher/*.bak && rm ../apim-publisher/*.bak
+${TEST} -f ../apim-store/*.bak && rm ../apim-store/*.bak
+${TEST} -f ../apim-tm/wso2apim-tm-1-deployment.yaml.bak && rm ../apim-tm/*.bak
 
 # create a new Kubernetes Namespace
 ${KUBERNETES_CLIENT} create namespace wso2
@@ -175,10 +175,10 @@ ${KUBERNETES_CLIENT} create serviceaccount wso2svc-account -n wso2
 # switch the context to new 'wso2' namespace
 ${KUBERNETES_CLIENT} config set-context $(${KUBERNETES_CLIENT} config current-context) --namespace=wso2
 
-#if [[ ${HAS_SUBSCRIPTION} -eq 0 ]]; then
-#    # create a Kubernetes Secret for passing WSO2 Private Docker Registry credentials
-#    ${KUBERNETES_CLIENT} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${WSO2_SUBSCRIPTION_USERNAME} --docker-password=${WSO2_SUBSCRIPTION_PASSWORD} --docker-email=${WSO2_SUBSCRIPTION_USERNAME}
-#fi
+if [[ ${HAS_SUBSCRIPTION} -eq 0 ]]; then
+    # create a Kubernetes Secret for passing WSO2 Private Docker Registry credentials
+    ${KUBERNETES_CLIENT} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${WSO2_SUBSCRIPTION_USERNAME} --docker-password=${WSO2_SUBSCRIPTION_PASSWORD} --docker-email=${WSO2_SUBSCRIPTION_USERNAME}
+fi
 
 # create Kubernetes Role and Role Binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
 ${KUBERNETES_CLIENT} create -f ../../rbac/rbac.yaml

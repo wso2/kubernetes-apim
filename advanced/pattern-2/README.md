@@ -140,7 +140,7 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
 
     Here, one of the following storage options is required to persist MySQL DB data.
 
-    * Using Azurefiles on AKS,
+    * Using Azure Files on AKS,
         ```
         kubectl apply -f <KUBERNETES_HOME>/azure/rbac.yaml
         kubectl apply -f <KUBERNETES_HOME>/azure/mysql-storage-class.yaml

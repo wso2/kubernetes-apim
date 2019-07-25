@@ -40,7 +40,7 @@ spec:
         command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2apim-pattern-3-analytics-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       containers:
       - name: wso2apim-km
-        image: gcr.io/research-n-development-209206/wso2am:2.6.0
+        image: wso2/wso2am:2.6.0
         livenessProbe:
           exec:
             command:

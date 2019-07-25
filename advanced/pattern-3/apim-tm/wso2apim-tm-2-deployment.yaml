@@ -42,7 +42,7 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of Traffic Manager Instance One deployment"; while ! nc -z wso2apim-pattern-3-tm-1-service 9711; do sleep 1; printf "-"; done; echo -e "  >> Traffic Manager Instance One has started";']
       containers:
         - name: wso2apim-tm
-          image: gcr.io/research-n-development-209206/wso2am:2.6.0
+          image: wso2/wso2am:2.6.0
           livenessProbe:
             exec:
               command:
