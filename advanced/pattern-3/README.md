@@ -29,7 +29,7 @@ Add the `wso2carbon` user to the group `wso2`.
   groupadd --system -g 802 wso2
   useradd --system -g 802 -u 802 wso2carbon
   ```
-  > If you are using AKS(Azure Kubernetes Service) as the kubernetes provider, it is possible to use Azurefiles for persistent storage instead of an NFS. If doing so, skip this step.
+> If you are using AKS(Azure Kubernetes Service) as the kubernetes provider, it is possible to use Azurefiles for persistent storage instead of an NFS. If doing so, skip this step.
 
 ## Quick Start Guide
 
@@ -142,7 +142,7 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
 
     Here, one of the following storage options is required to persist MySQL DB data.
 
-    * Using Azurefiles on AKS,
+    * Using Azure Files on AKS,
         ```
         kubectl apply -f <KUBERNETES_HOME>/azure/rbac.yaml
         kubectl apply -f <KUBERNETES_HOME>/azure/mysql-storage-class.yaml
@@ -197,7 +197,7 @@ chmod -R 700 <directory_name>
 
 Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
 
-**Note**: If you are **not** using WSO2 Identity Server as the Key Manager, comment out the corresponding Kubernetes Persistent Volume resource.
+**Note**: If you are using WSO2 Identity Server as the Key Manager, uncomment the corresponding Kubernetes Persistent Volume resource.
 
 ```
 apiVersion: v1
@@ -419,9 +419,9 @@ b. Add the above host as an entry in `/etc/hosts` file as follows:
 
 c. Try navigating to `https://wso2apim-publisher/carbon` from your favorite browser.
 
-##### 12. Scale up the Key Manager, Publisher, Store and Gateway profiles.
+##### 12. Scale up the Key Manager and Gateway profiles.
 
-Default deployment runs a single replica (or pod) for each of the profiles - Key Manager, Publisher, Store and Gateway.
+Default deployment runs a single replica (or pod) for each of the profiles - Key Manager and Gateway.
 To scale any of these profile deployments into any `<n>` number of container replicas, upon your requirement,
 simply run `kubectl scale` Kubernetes client command on the terminal.
 
