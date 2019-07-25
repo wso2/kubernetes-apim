@@ -33,9 +33,13 @@ spec:
         deployment: wso2apim-pattern-3-tm
         node: wso2apim-pattern-3-tm-1
     spec:
+      initContainers:
+      - name: init-store
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Store deployment"; while ! nc -z wso2apim-pattern-3-store-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Store has started";']
       containers:
       - name: wso2apim-tm
-        image: wso2/wso2am:2.6.0
+        image: gcr.io/research-n-development-209206/wso2am:2.6.0
         livenessProbe:
           exec:
             command:
@@ -54,7 +58,7 @@ spec:
           initialDelaySeconds: 240
           failureThreshold: 3
           periodSeconds: 10
-        command: ["/home/wso2carbon/init.sh"]
+        command: ["/home/wso2carbon/docker-entrypoint.sh"]
         args: ["--optimize", "-Dprofile=traffic-manager"]
         lifecycle:
           preStop:

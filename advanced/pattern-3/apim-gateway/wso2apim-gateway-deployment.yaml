@@ -31,9 +31,22 @@ spec:
       labels:
         deployment: wso2apim-pattern-3-gateway
     spec:
+      initContainers:
+      - name: init-apim-analytics
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2apim-pattern-3-analytics-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+      - name: init-km
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Key Manager deployment"; while ! nc -z wso2apim-pattern-3-km-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Key Manager has started";']
+      - name: init-apim-tm-1
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Traffic Manager Instance One deployment"; while ! nc -z wso2apim-pattern-3-tm-1-service 9711; do sleep 1; printf "-"; done; echo -e "  >> Traffic Manager Instance One has started";']
+      - name: init-apim-tm-2
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Traffic Manager Instance Two deployment"; while ! nc -z wso2apim-pattern-3-tm-2-service 9711; do sleep 1; printf "-"; done; echo -e "  >> Traffic Manager Instance Two has started";']
       containers:
       - name: wso2apim-gateway
-        image: wso2/wso2am:2.6.0
+        image: gcr.io/research-n-development-209206/wso2am:2.6.0
         livenessProbe:
           exec:
             command:
@@ -52,8 +65,6 @@ spec:
           initialDelaySeconds: 240
           failureThreshold: 3
           periodSeconds: 10
-#        command: ["/home/wso2carbon/init.sh"]
-#        args: ["--optimize", "-Dprofile=gateway-worker"]
         lifecycle:
           preStop:
             exec:
