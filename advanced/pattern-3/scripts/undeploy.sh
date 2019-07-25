@@ -24,6 +24,22 @@ function echoBold () {
     ${ECHO} $'\e[1m'"${1}"$'\e[0m'
 }
 
+# delete the created Kubernetes Deployments
+${KUBERNETES_CLIENT} delete -f ../apim-gateway/wso2apim-gateway-deployment.yaml
+sleep 20s
+${KUBERNETES_CLIENT} delete -f ../apim-tm/wso2apim-tm-1-deployment.yaml
+${KUBERNETES_CLIENT} delete -f ../apim-tm/wso2apim-tm-2-deployment.yaml
+sleep 20s
+${KUBERNETES_CLIENT} delete -f ../apim-store/wso2apim-store-deployment.yaml
+sleep 20s
+${KUBERNETES_CLIENT} delete -f ../apim-publisher/wso2apim-publisher-deployment.yaml
+sleep 20s
+#${KUBERNETES_CLIENT} delete -f ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml
+${KUBERNETES_CLIENT} delete -f ../apim-km/wso2apim-km-deployment.yaml
+sleep 20s
+${KUBERNETES_CLIENT} delete -f ../apim-analytics/wso2apim-analytics-deployment.yaml
+sleep 20s
+
 # delete the created Kubernetes Namespace
 ${KUBERNETES_CLIENT} delete namespace wso2
 
