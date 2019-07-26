@@ -27,7 +27,7 @@ spec:
   storageClassName: azurefile
   {{- else }}
   storageClassName: ""
-  {{- end }}
   selector:
     matchLabels:
       purpose: wso2apim-pattern-2-gateway-shared
+  {{- end }}

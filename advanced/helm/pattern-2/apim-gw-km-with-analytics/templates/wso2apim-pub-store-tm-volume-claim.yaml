@@ -23,11 +23,11 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  {{- if (.Values.cloudProvider) and eq .Values.cloudProvider "Azure" }}
+  {{- if (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) and eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "Azure" }}
   storageClassName: azurefile
   {{- else }}
   storageClassName: ""
-  {{- end }}
   selector:
     matchLabels:
       purpose: wso2apim-pattern-2-apim-shared
+  {{- end }}
