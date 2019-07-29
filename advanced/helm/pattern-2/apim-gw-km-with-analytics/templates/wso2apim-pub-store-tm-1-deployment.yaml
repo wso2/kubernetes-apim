@@ -16,7 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2apim-pattern-2-pub-store-tm-1-deployment
-  namespace : {{ .Values.kubernetes.namespace }}
+  namespace : {{ .Release.Namespace }}
 spec:
   replicas: 1
   strategy:

@@ -16,7 +16,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: apim-pub-store-tm-2-conf-datasources
-  namespace : {{ .Values.kubernetes.namespace }}
+  namespace : {{ .Release.Namespace }}
 data:
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/apim-pub-store-tm-2/datasources/*" }}
