@@ -16,7 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2apim-with-analytics-apim-1
-  namespace : {{ .Values.kubernetes.namespace }}
+  namespace : {{ .Release.Namespace }}
 spec:
   replicas: 1
   strategy:
