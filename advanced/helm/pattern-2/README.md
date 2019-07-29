@@ -106,7 +106,6 @@ attributes empty.
 | `wso2.deployment.persistentRuntimeArtifacts.sharedPubStoreTMLocationPath`   | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for API Manager in Pub-Store-TM deployment   |
 | `wso2.deployment.persistentRuntimeArtifacts.sharedGatewayLocationPath`      | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for API Manager in Gateway deployment  |
 | `wso2.deployment.persistentRuntimeArtifacts.sharedISKMLocationPath`         | NFS shared deployment directory (`<APIM_IS_KM_HOME>/repository/deployment`) location for Identity Server as Key Manager. Applicable only if you are using Identity Server as the Key Manager. |
-| `kubernetes.namespace`                                                      | Kubernetes Namespace in which the resources are deployed                                  |
 | `kubernetes.svcaccount`                                                     | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
 
 Provide the same Kubernetes Namespace (i.e. represented by `kubernetes.namespace`) used in configuring the `<parameter name="KUBERNETES_NAMESPACE">` element in following `axis2.xml` file:
@@ -119,8 +118,6 @@ Provide the same Kubernetes Namespace (i.e. represented by `kubernetes.namespace
 helm install --name wso2apim-pattern-2-rdbms-service -f <HELM_HOME>/mysql/values.yaml stable/mysql --namespace <NAMESPACE>
 ```
 
-NAMESPACE should be same as in `step 3.b`.
-
 For a serious deployment (e.g. production grade setup), it is recommended to connect product instances to a user owned and managed RDBMS instance.
 
 ##### 5. Deploy WSO2 API Manager with a separate Gateway and a separate Key Manager.
@@ -128,8 +125,6 @@ For a serious deployment (e.g. production grade setup), it is recommended to con
 ```
 helm install --name <RELEASE_NAME> <HELM_HOME>/apim-gw-km-with-analytics --namespace <NAMESPACE>
 ```
-
-NAMESPACE should be same as in `step 3.b`.
 
 ##### 6. Access product management consoles.
 
