@@ -16,7 +16,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: wso2apim-with-analytics-apim-deployment-volume-claim
-  namespace : {{ .Values.kubernetes.namespace }}
+  namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
     - ReadWriteMany
