@@ -16,4 +16,4 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ .Values.kubernetes.svcaccount }}
-  namespace : {{ .Values.kubernetes.namespace }}
+  namespace : {{ .Release.Namespace }}

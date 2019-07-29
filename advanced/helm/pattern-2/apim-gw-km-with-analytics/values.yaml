@@ -24,5 +24,4 @@ wso2:
       sharedISKMLocationPath: ""
 
 kubernetes:
-  namespace: "wso2"
   svcaccount: "wso2svc-account"
