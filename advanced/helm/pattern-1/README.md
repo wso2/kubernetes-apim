@@ -91,7 +91,6 @@ WSO2 subscription do not change the parameters `username`, `password` and `email
 | `username`                      | Your WSO2 username                                                                        |
 | `password`                      | Your WSO2 password                                                                        |
 | `email`                         | Docker email                                                                              |
-| `namespace`                     | Kubernetes Namespace in which the resources are deployed                                  |
 | `svcaccount`                    | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
 | `serverIp`                      | NFS Server IP                                                                             |
 | `sharedDeploymentLocationPath`  | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for APIM   |
@@ -112,7 +111,6 @@ attributes empty.
 | `wso2.deployment.password`                                                  | Your WSO2 password                                                                        |                                                                        |
 | `wso2.deployment.persistentRuntimeArtifacts.nfsServerIP`                    | NFS Server IP                                                                             |
 | `wso2.deployment.persistentRuntimeArtifacts.sharedAPIMLocationPath`         | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for API Manager deployment   |
-| `kubernetes.namespace`                                                      | Kubernetes Namespace in which the resources are deployed                                  |
 | `kubernetes.svcaccount`                                                     | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
 
 
@@ -122,8 +120,6 @@ attributes empty.
 helm install --name wso2apim-with-analytics-rdbms-service -f <HELM_HOME>/mysql/values.yaml stable/mysql --namespace <NAMESPACE>
 ```
 
-NAMESPACE should be same as in `step 3.b`.
-
 For a serious deployment (e.g. production grade setup), it is recommended to connect product instances to a user owned and managed RDBMS instance.
 
 ##### 5. Deploy WSO2 API Manager with Analytics.
@@ -131,8 +127,6 @@ For a serious deployment (e.g. production grade setup), it is recommended to con
 ```
 helm install --name <RELEASE_NAME> <HELM_HOME>/apim-with-analytics --namespace <NAMESPACE>
 ```
-
-NAMESPACE should be same as in `step 3.b`.
 
 ##### 6. Access Management Console:
 
