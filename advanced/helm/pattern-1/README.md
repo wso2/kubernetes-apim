@@ -83,19 +83,6 @@ git clone https://github.com/wso2/kubernetes-apim.git
 a. The default product configurations are available at `<HELM_HOME>/apim-with-analytics/confs` folder. Change the
 configurations as necessary.
 
-b. Open the `<HELM_HOME>/apim-with-analytics/values.yaml` and provide the following values. If you do not have active 
-WSO2 subscription do not change the parameters `username`, `password` and `email`. Ignore `serverIP`, `sharedDeploymentLocationPath` and `sharedTenantsLocationPath` if an NFS is not used.
-
-| Parameter                       | Description                                                                               |
-|---------------------------------|-------------------------------------------------------------------------------------------|
-| `username`                      | Your WSO2 username                                                                        |
-| `password`                      | Your WSO2 password                                                                        |
-| `email`                         | Docker email                                                                              |
-| `namespace`                     | Kubernetes Namespace in which the resources are deployed                                  |
-| `svcaccount`                    | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
-| `serverIp`                      | NFS Server IP                                                                             |
-| `sharedDeploymentLocationPath`  | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for APIM   |
-
 b. Open the `<HELM_HOME>/apim-with-analytics/values.yaml` and provide the following values.
 
 If you do not have active WSO2 subscription do not change the parameters `wso2.deployment.username` and `wso2.deployment.password`.
@@ -106,14 +93,21 @@ attributes empty.
   * `wso2.deployment.persistentRuntimeArtifacts.nfsServerIP`
   * `wso2.deployment.persistentRuntimeArtifacts.sharedAPIMLocationPath`
 
-| Parameter                                                                   | Description                                                                               |
-|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
-| `wso2.deployment.username`                                                  | Your WSO2 username                                                                        |
-| `wso2.deployment.password`                                                  | Your WSO2 password                                                                        |                                                                        |
-| `wso2.deployment.persistentRuntimeArtifacts.nfsServerIP`                    | NFS Server IP                                                                             |
-| `wso2.deployment.persistentRuntimeArtifacts.sharedAPIMLocationPath`         | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for API Manager deployment   |
-| `kubernetes.namespace`                                                      | Kubernetes Namespace in which the resources are deployed                                  |
-| `kubernetes.svcaccount`                                                     | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
+| Parameter                                                                   | Description                                                                               | Default Value               |
+|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
+| `wso2.deployment.username`                                                  | Your WSO2 username                                                                        | ""                          |
+| `wso2.deployment.password`                                                  | Your WSO2 password                                                                        | ""                          |                                            |
+| `wso2.deployment.persistentRuntimeArtifacts.nfsServerIP`                    | NFS Server IP                                                                             | **None**                       | 
+| `wso2.deployment.persistentRuntimeArtifacts.sharedAPIMLocationPath`         | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for API Manager deployment   | **None**      |
+| `wso2.centralizedLogging.enabled`                                           | Enable Centralized logging for WSO2 components                                            | true                        |                                                                                         |                             |    
+| `wso2.centralizedLogging.logstash.imageTag`                                 | Logstash Sidecar container image tag                                                      | 7.2.0                       |  
+| `wso2.centralizedLogging.logstash.elasticsearch.username`                   | Elasticsearch username                                                                    | elastic                     |  
+| `wso2.centralizedLogging.logstash.elasticsearch.password`                   | Elasticsearch password                                                                    | changeme                    |  
+| `wso2.centralizedLogging.logstash.indexNodeID.wso2ApimNode1`                | Elasticsearch APIM Node 1 log index ID(index name: ${NODE_ID}-${NODE_IP})                 | wso2-apim-node-1            |  
+| `wso2.centralizedLogging.logstash.indexNodeID.wso2ApimNode2`                | Elasticsearch APIM Node 2 log index ID(index name: ${NODE_ID}-${NODE_IP})                 | wso2-apim-node-2            |  
+| `wso2.centralizedLogging.logstash.indexNodeID.wso2ApimAnalyticsWorkerNode`  | Elasticsearch APIM Analytics Worker Node log index ID(index name: ${NODE_ID}-${NODE_IP})  | wso2-apim-analytics-worker-node |  
+| `kubernetes.namespace`                                                      | Kubernetes Namespace in which the resources are deployed                                  | wso2                        |
+| `kubernetes.svcaccount`                                                     | Kubernetes Service Account in the `namespace` to which product instance pods are attached | wso2svc-account             |
 
 
 ##### 4. Deploy product database(s) using MySQL in Kubernetes.
@@ -125,16 +119,21 @@ helm install --name wso2apim-with-analytics-rdbms-service -f <HELM_HOME>/mysql/v
 NAMESPACE should be same as in `step 3.b`.
 
 For a serious deployment (e.g. production grade setup), it is recommended to connect product instances to a user owned and managed RDBMS instance.
+##### 5. Add elasticsearch Helm repository to download sub-charts required for Centralized logging.
+         
+```
+helm repo add elasticsearch https://helm.elastic.co
+```
 
-##### 5. Deploy WSO2 API Manager with Analytics.
+##### 6. Deploy WSO2 API Manager with Analytics.
 
 ```
-helm install --name <RELEASE_NAME> <HELM_HOME>/apim-with-analytics --namespace <NAMESPACE>
+helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/apim-with-analytics --namespace <NAMESPACE>
 ```
 
 NAMESPACE should be same as in `step 3.b`.
 
-##### 6. Access Management Console:
+##### 7. Access Management Console:
 
 a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
 
@@ -146,7 +145,9 @@ e.g.
 
 ```
 NAME                                             HOSTS                       ADDRESS         PORTS     AGE
-wso2apim-with-analytics-apim-ingress             wso2apim,wso2apim-gateway   <EXTERNAL-IP>   80, 443   7m
+wso2apim-with-analytics-apim-gateway-ingress     wso2apim-gateway            <EXTERNAL-IP>   80, 443   7m
+wso2apim-with-analytics-apim-ingress             wso2apim                    <EXTERNAL-IP>   80, 443   7m
+<RELEASE_NAME>-wso2am-kibana                     wso2am-kibana               <EXTERNAL-IP>   80, 443   7m
 ```
 
 b. Add the above host as an entry in /etc/hosts file as follows:
@@ -154,6 +155,7 @@ b. Add the above host as an entry in /etc/hosts file as follows:
   ```
   <EXTERNAL-IP>	wso2apim
   <EXTERNAL-IP>	wso2apim-gateway
+  <EXTERNAL-IP> wso2am-kibana
   ```
 
-c. Try navigating to `https://wso2apim/carbon` from your favorite browser.
+c. Try navigating to `https://wso2apim/carbon` and `https://wso2am-kibana` from your favorite browser.

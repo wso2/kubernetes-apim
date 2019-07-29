@@ -20,7 +20,33 @@ wso2:
     persistentRuntimeArtifacts:
       nfsServerIP: ""
       sharedAPIMLocationPath: ""
+  centralizedLogging:
+    enabled: true
+    logstash:
+      imageTag: 7.2.0
+      elasticsearch:
+        username: "elastic"
+        password: "changeme"
+      indexNodeID:
+        wso2ApimNode1: "wso2-apim-node-1"
+        wso2ApimNode2: "wso2-apim-node-2"
+        wso2ApimAnalyticsWorkerNode: "wso2-apim-analytics-worker-node"
 
 kubernetes:
   namespace: "wso2"
   svcaccount: "wso2svc-account"
+
+# Parameters required to configure Elasticsearch and Kibana sub-charts for centralized logging.
+elasticsearch:
+  clusterName: wso2-elasticsearch
+
+kibana:
+  nameOverride: "wso2am-kibana"
+  elasticsearchHosts: "http://wso2-elasticsearch-master:9200"
+  ingress:
+    enabled: true
+    hosts:
+      - wso2am-kibana
+    tls:
+    - hosts:
+      - wso2am-kibana
