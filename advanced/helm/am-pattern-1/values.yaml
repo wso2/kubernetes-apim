@@ -1,0 +1,108 @@
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+wso2:
+  mysql:
+    enabled: true
+    host: wso2am-mysql-db-service
+    port: "3306"
+    username: wso2carbon
+    password: wso2carbon
+    driverClass: com.mysql.jdbc.Driver
+    validationQuery: "SELECT 1"
+  subscription:
+    username: ""
+    password: ""
+  deployment:
+    persistentRuntimeArtifacts:
+      cloudProvider: "internal-nfs"
+      nfsServerIP: ""
+      sharedAPIMLocationPath: ""
+    wso2am:
+      imageName: "wso2am"
+      imageTag: "2.6.0"
+      replicas: 1
+      minReadySeconds: 75
+      strategy:
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 0
+      livenessProbe:
+        initialDelaySeconds: 250
+        periodSeconds: 10
+      readinessProbe:
+        initialDelaySeconds: 250
+        periodSeconds: 10
+      resources:
+        # These are the minimum resource recommendations for running WSO2 Identity server profiles
+        # as per official documentation (https://docs.wso2.com/display/IS580/Installation+Prerequisites).
+        requests:
+          memory: "2Gi"
+          cpu: "2000m"
+        limits:
+          memory: "3Gi"
+          cpu: "3000m"
+      imagePullPolicy: Always
+    wso2amAnalyticsWorker:
+      imageName: "wso2am-analytics-worker"
+      imageTag: "2.6.0"
+      replicas: 1
+      minReadySeconds: 75
+      strategy:
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 0
+      livenessProbe:
+        initialDelaySeconds: 100
+        periodSeconds: 10
+      readinessProbe:
+        initialDelaySeconds: 100
+        periodSeconds: 10
+      resources:
+        # These are the minimum resource recommendations for running WSO2 Stream Processor based server profiles
+        # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
+        requests:
+          memory: "4Gi"
+          cpu: "2000m"
+        # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
+        # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
+        # where necessary.
+        limits:
+          memory: "4Gi"
+          cpu: "2000m"
+      imagePullPolicy: Always
+  centralizedLogging:
+    enabled: false
+    logstash:
+      imageTag: 7.2.0
+      elasticsearch:
+        host: "wso2-elasticsearch-master:9200"
+        username: "elastic"
+        password: "changeme"
+      indexNodeID:
+        wso2AMNode1: "wso2am-node-1"
+        wso2AMNode2: "wso2am-node-2"
+        wso2AMAnalyticsWorkerNode: "wso2am-analytics-worker-node"
+      readinessProbe:
+        initialDelaySeconds: 20
+        periodSeconds: 30
+      livenessProbe:
+        initialDelaySeconds: 20
+        periodSeconds: 30
+
+tags:
+  internal-nfs: true
+
+kubernetes:
+  svcaccount: "wso2am-pattern-1-svc-account"

@@ -17,7 +17,7 @@ of WSO2 API Manager.*
 
 ## Helm resources for API Management deployment patterns
 
-* [Deployment Pattern 1](advanced/helm/pattern-1/README.md)
+* [Deployment Pattern 1](advanced/helm/am-pattern-1/README.md)
 * [Deployment Pattern 2](advanced/helm/pattern-2/README.md)
 
 ## Advanced topics
