@@ -1,0 +1,33 @@
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wso2am-pattern-1-am-1-conf
+  namespace : {{ .Release.Namespace }}
+data:
+  {{- $am_db_chach_id := printf "%s%s%s%s%s%s" .Values.wso2.mysql.username "@jdbc:mysql://" .Values.wso2.mysql.host ":" .Values.wso2.mysql.port "/WSO2AM_REG_DB" }}
+  {{- $gateway_hostname := printf "%s%s" .Release.Name "-gateway" }}
+  {{- $am_hostname := printf "%s%s" .Release.Name "-am" }}
+  {{- $file := .Files }}
+  {{- range $path, $byte := .Files.Glob "confs/am-1/*" }}
+  {{- $list := $path | splitList "/"}}
+  {{- $length := len $list }}
+  {{- $last := add $length -1 }}
+  {{ index $list $last }}: |-
+    {{- range $line := $file.Lines $path }}
+    {{ $line | replace "{{ GATEWAY_HOSTNAME }}" $gateway_hostname | replace "{{ AM_HOSTNAME }}" $am_hostname | replace "{{ AM_DB_CACHE_ID }}" $am_db_chach_id }}
+    {{- end }}
+  {{- end }}
