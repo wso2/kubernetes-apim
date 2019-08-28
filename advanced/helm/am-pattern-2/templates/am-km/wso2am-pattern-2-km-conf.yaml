@@ -26,8 +26,8 @@ data:
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
+    {{- range $line := $file.Lines $path }}
+      {{ . }}
     {{- end }}
   {{- end }}
 

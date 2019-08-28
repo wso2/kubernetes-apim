@@ -35,15 +35,14 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_APIMGT_DB?autoReconnect=true&amp;useSSL=false</url>
-                    <username>wso2carbon</username>
-                    <password>wso2carbon</password>
-                    <defaultAutoCommit>false</defaultAutoCommit>
-                    <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+                    <url>{{ APIMGT_DB_URL }}</url>
+                    <username>{{ DB_USERNAME }}</username>
+                    <password>{{ DB_PASSWORD }}</password>
+                    <driverClassName>{{ DRIVER_CLASSNAME }}</driverClassName>
                     <maxActive>50</maxActive>
                     <maxWait>60000</maxWait>
                     <testOnBorrow>true</testOnBorrow>
-                    <validationQuery>SELECT 1</validationQuery>
+                    <validationQuery>{{ VALIDATION_QUERY }}</validationQuery>
                     <validationInterval>30000</validationInterval>
                 </configuration>
             </definition>
@@ -57,14 +56,14 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_USER_DB?autoReconnect=true&amp;useSSL=false</url>
-                    <username>wso2carbon</username>
-                    <password>wso2carbon</password>
-                    <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+                    <url>{{ AMDB_URL }}</url>
+                    <username>{{ DB_USERNAME }}</username>
+                    <password>{{ DB_PASSWORD }}</password>
+                    <driverClassName>{{ DRIVER_CLASSNAME }}</driverClassName>
                     <maxActive>50</maxActive>
                     <maxWait>60000</maxWait>
                     <testOnBorrow>true</testOnBorrow>
-                    <validationQuery>SELECT 1</validationQuery>
+                    <validationQuery>{{ VALIDATION_QUERY }}</validationQuery>
                     <validationInterval>30000</validationInterval>
                 </configuration>
             </definition>
