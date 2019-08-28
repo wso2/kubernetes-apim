@@ -19,11 +19,12 @@ kind: Deployment
 metadata:
   name: wso2am-pattern-2-km-deployment
 spec:
-  replicas: 1
+  replicas: {{ default 1 .Values.wso2.deployment.wso2am.replicas }}
+  minReadySeconds: {{ default 75 .Values.wso2.deployment.wso2am.minReadySeconds }}
   strategy:
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      maxSurge: {{ default 1 .Values.wso2.deployment.wso2am.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ default 0 .Values.wso2.deployment.wso2am.strategy.rollingUpdate.maxUnavailable }}
     type: RollingUpdate
   selector:
     matchLabels:
@@ -53,29 +54,29 @@ spec:
               - /bin/sh
               - -c
               - nc -z localhost 9443
-          initialDelaySeconds: 240
+          initialDelaySeconds: {{ default 250 .Values.wso2.deployment.wso2am.livenessProbe.initialDelaySeconds }}
           failureThreshold: 3
-          periodSeconds: 10
+          periodSeconds: {{ default 10 .Values.wso2.deployment.wso2am.livenessProbe.periodSeconds }}
         readinessProbe:
           exec:
             command:
               - /bin/sh
               - -c
               - nc -z localhost 9443
-          initialDelaySeconds: 240
+          initialDelaySeconds: {{ default 250 .Values.wso2.deployment.wso2am.readinessProbe.initialDelaySeconds }}
           failureThreshold: 3
-          periodSeconds: 10
+          periodSeconds: {{ default 10 .Values.wso2.deployment.wso2am.readinessProbe.periodSeconds }}
         lifecycle:
           preStop:
             exec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         resources:
           requests:
-            memory: 2Gi
-            cpu: 2000m
+            memory: {{ default "2Gi" .Values.wso2.deployment.wso2am.resources.requests.memory }}
+            cpu: {{ default "2000m" .Values.wso2.deployment.wso2am.resources.requests.cpu }}
           limits:
-            memory: 3Gi
-            cpu: 3000m
+            memory: {{ default "3Gi" .Values.wso2.deployment.wso2am.resources.limits.memory }}
+            cpu: {{ default "3000m" .Values.wso2.deployment.wso2am.resources.limits.cpu }}
         imagePullPolicy: Always
         securityContext:
           runAsUser: 802

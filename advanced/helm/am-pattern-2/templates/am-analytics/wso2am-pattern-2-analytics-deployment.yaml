@@ -18,11 +18,12 @@ metadata:
   name: wso2am-pattern-2-analytics-worker-deployment
   namespace : {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ default 1 .Values.wso2.deployment.wso2amAnalyticsWorker.replicas }}
+  minReadySeconds: {{ default 75 .Values.wso2.deployment.wso2amAnalyticsWorker.minReadySeconds }}
   strategy:
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      maxSurge: {{ default 1 .Values.wso2.deployment.wso2amAnalyticsWorker.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ default 0 .Values.wso2.deployment.wso2amAnalyticsWorker.strategy.rollingUpdate.maxUnavailable }}
     type: RollingUpdate
   selector:
     matchLabels:
@@ -38,40 +39,44 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2am-mysql-db-service 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       containers:
         - name: wso2am-analytics-worker
-          {{- if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-          image: wso2/wso2am-analytics-worker:2.6.0
-          {{- else }}
-          image: docker.wso2.com/wso2am-analytics-worker:2.6.0
-          {{- end }}
+        {{- if .Values.wso2.deployment.wso2amAnalyticsWorker.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.dockerRegistry }}/{{ default "wso2am-analytics-worker" .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}
+        {{- $tag := .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
+        {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+        {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
+          image: wso2/{{ default "wso2am-analytics-worker" .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}:{{ default "2.6.0" .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
+        {{- else }}
+          image: docker.wso2.com/{{ default "wso2am-analytics-worker" .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}:{{ default "2.6.0" .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
+        {{- end }}
           livenessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9444
-            initialDelaySeconds: 30
+            initialDelaySeconds: {{ default 100 .Values.wso2.deployment.wso2amAnalyticsWorker.livenessProbe.initialDelaySeconds }}
             failureThreshold: 3
-            periodSeconds: 10
+            periodSeconds: {{ default 10 .Values.wso2.deployment.wso2amAnalyticsWorker.livenessProbe.periodSeconds }}
           readinessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9444
-            initialDelaySeconds: 30
+            initialDelaySeconds: {{ default 100 .Values.wso2.deployment.wso2amAnalyticsWorker.readinessProbe.initialDelaySeconds }}
             failureThreshold: 3
-            periodSeconds: 10
+            periodSeconds: {{ default 10 .Values.wso2.deployment.wso2amAnalyticsWorker.readinessProbe.periodSeconds }}
           lifecycle:
             preStop:
               exec:
                 command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
           resources:
             requests:
-              memory: "4Gi"
-              cpu: "2000m"
+              memory: {{ default "4Gi" .Values.wso2.deployment.wso2amAnalyticsWorker.resources.requests.memory }}
+              cpu: {{ default "2000m" .Values.wso2.deployment.wso2amAnalyticsWorker.resources.requests.cpu }}
             limits:
-              memory: "4Gi"
-              cpu: "2000m"
+              memory: {{ default "4Gi" .Values.wso2.deployment.wso2amAnalyticsWorker.resources.limits.memory }}
+              cpu: {{ default "2000m" .Values.wso2.deployment.wso2amAnalyticsWorker.resources.limits.cpu }}
           securityContext:
             runAsUser: 802
           ports:
