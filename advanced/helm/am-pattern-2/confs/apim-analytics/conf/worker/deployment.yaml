@@ -364,13 +364,13 @@ wso2.datasources:
       definition:
         type: RDBMS
         configuration:
-          jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2_PERMISSIONS_DB?useSSL=false'
-          username: wso2carbon
-          password: wso2carbon
-          driverClassName: com.mysql.jdbc.Driver
+          jdbcUrl: '{{ PERMISSIONS_DB_URL }}'
+          username: {{ DB_USERNAME }}
+          password: {{ DB_PASSWORD }}
+          driverClassName: {{ DRIVER_CLASSNAME }}
           maxPoolSize: 10
           idleTimeout: 60000
-          connectionTestQuery: SELECT 1
+          connectionTestQuery: {{ VALIDATION_QUERY }}
           validationTimeout: 30000
           isAutoCommit: false
 
@@ -414,13 +414,13 @@ wso2.datasources:
       definition:
         type: RDBMS
         configuration:
-          jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_ANALYTICS_DB?useSSL=false'
-          username: wso2carbon
-          password: wso2carbon
-          driverClassName: com.mysql.jdbc.Driver
+          jdbcUrl: '{{ ANALYTICS_DB_URL }}'
+          username: {{ DB_USERNAME }}
+          password: {{ DB_PASSWORD }}
+          driverClassName: {{ DRIVER_CLASSNAME }}
           maxPoolSize: 50
           idleTimeout: 60000
-          connectionTestQuery: SELECT 1
+          connectionTestQuery: {{ VALIDATION_QUERY }}
           validationTimeout: 30000
           isAutoCommit: false
 

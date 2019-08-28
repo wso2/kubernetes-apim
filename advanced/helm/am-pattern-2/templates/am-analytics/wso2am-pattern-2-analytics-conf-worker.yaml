@@ -18,13 +18,19 @@ metadata:
   name: apim-analytics-conf-worker
   namespace : {{ .Release.Namespace }}
 data:
+  {{- $analytics_dburl := printf "%s%s%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":" .Values.wso2.mysql.port "/WSO2AM_ANALYTICS_DB?useSSL=false" }}
+  {{- $permission_dburl := printf "%s%s%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":" .Values.wso2.mysql.port "/WSO2_PERMISSIONS_DB?useSSL=false" }}
+  {{- $db_driver_class_name := .Values.wso2.mysql.driverClass }}
+  {{- $db_validation_query := .Values.wso2.mysql.validationQuery }}
+  {{- $db_username := .Values.wso2.mysql.username }}
+  {{- $db_password := .Values.wso2.mysql.password }}
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/apim-analytics/conf/worker/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
+    {{- range $line := $file.Lines $path }}
+      {{ $line | replace "{{ DB_USERNAME }}" $db_username | replace "{{ DB_PASSWORD }}" $db_password | replace "{{ PERMISSIONS_DB_URL }}" $permission_dburl | replace "{{ ANALYTICS_DB_URL }}" $analytics_dburl | replace "{{ DRIVER_CLASSNAME }}" $db_driver_class_name | replace "{{ VALIDATION_QUERY }}" $db_validation_query }}
     {{- end }}
   {{- end }}
