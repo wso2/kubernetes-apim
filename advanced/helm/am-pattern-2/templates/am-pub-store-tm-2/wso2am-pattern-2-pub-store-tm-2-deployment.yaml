@@ -15,7 +15,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2apim-pattern-2-pub-store-tm-2-deployment
+  name: wso2am-pattern-2-pub-store-tm-2-deployment
   namespace : {{ .Release.Namespace }}
 spec:
   replicas: 1
@@ -26,29 +26,29 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2apim-pattern-2-pub-store-tm
-      node: wso2apim-pattern-2-pub-store-tm-2
+      deployment: wso2am-pattern-2-pub-store-tm
+      node: wso2am-pattern-2-pub-store-tm-2
   template:
     metadata:
       labels:
-        deployment: wso2apim-pattern-2-pub-store-tm
-        node: wso2apim-pattern-2-pub-store-tm-2
+        deployment: wso2am-pattern-2-pub-store-tm
+        node: wso2am-pattern-2-pub-store-tm-2
     spec:
       initContainers:
         - name: init-apim-db
           image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-pattern-2-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2am-mysql-db-service 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
         - name: init-apim-analytics
           image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2apim-pattern-2-analytics-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-2-analytics-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
         - name: init-km
           image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of Key Manager deployment"; while ! nc -z wso2apim-pattern-2-km-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Key Manager has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of Key Manager deployment"; while ! nc -z wso2am-pattern-2-km-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Key Manager has started";']
         - name: init-apim-pub-store-tm
           image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Pub-Store-TM Instance One deployment"; while ! nc -z wso2apim-pattern-2-pub-store-tm-1-service 9443; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Pub-Store-TM Instance One has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Pub-Store-TM Instance One deployment"; while ! nc -z wso2am-pattern-2-pub-store-tm-1-service 9443; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Pub-Store-TM Instance One has started";']
       containers:
-        - name: wso2apim-pub-store-tm
+        - name: wso2am-pub-store-tm
           {{- if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
           image: wso2/wso2am:2.6.0
           {{- else }}
@@ -115,7 +115,7 @@ spec:
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
             - name: apim-pub-store-tm-2-conf-datasources
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
-      serviceAccountName: "wso2svc-account"
+      serviceAccountName: "wso2am-pattern-2-svc-account"
       {{ if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
         - name: wso2creds
@@ -123,7 +123,7 @@ spec:
       volumes:
         - name: apim-storage-volume
           persistentVolumeClaim:
-            claimName: wso2apim-pattern-2-apim-shared-server-volume-claim
+            claimName: wso2am-pattern-2-apim-shared-server-volume-claim
         - name: apim-pub-store-tm-2-conf
           configMap:
             name: apim-pub-store-tm-2-conf
