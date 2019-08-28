@@ -44,12 +44,12 @@
        This is will become part of the End Point Reference of the
        services deployed on this server instance.
     -->
-    <HostName>wso2apim-gateway</HostName>
+    <HostName>wso2am-gateway</HostName>
 
     <!--
     Host name to be used for the Carbon management console
     -->
-    <MgtHostName>wso2apim-gateway</MgtHostName>
+    <MgtHostName>wso2am-gateway</MgtHostName>
 
     <!--
         The URL of the back end server. This is where the admin services are hosted and

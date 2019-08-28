@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: wso2apim-pattern-2-gateway-ingress
+  name: wso2am-pattern-2-gateway-ingress
   namespace : {{ .Release.Namespace }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
@@ -23,12 +23,12 @@ metadata:
 spec:
   tls:
     - hosts:
-        - wso2apim-gateway
+        - wso2am-gateway
   rules:
-    - host: wso2apim-gateway
+    - host: wso2am-gateway
       http:
         paths:
           - path: /
             backend:
-              serviceName: wso2apim-pattern-2-gateway-service
+              serviceName: wso2am-pattern-2-gateway-service
               servicePort: 8243

@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wso2apim-pattern-2-apim-shared-server-volume-claim
+  name: wso2am-pattern-2-apim-shared-server-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -23,11 +23,13 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  {{- if (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) and eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "Azure" }}
+  {{- if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "Azure") }}
   storageClassName: azurefile
-  {{- else }}
+  {{- else if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "internal-nfs") }}
+  storageClassName: nfs
+  {{- else if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "external-nfs") }}
   storageClassName: ""
   selector:
     matchLabels:
-      purpose: wso2apim-pattern-2-apim-shared
+      purpose: wso2am-pattern-2-apim-shared
   {{- end }}

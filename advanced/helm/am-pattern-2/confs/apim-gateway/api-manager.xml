@@ -151,7 +151,7 @@
 
              Ex - Multiple Receiver Groups with two receivers each
              {tcp://localhost:7612/,tcp://localhost:7613},{tcp://localhost:7712/,tcp://localhost:7713/} -->
-        <StreamProcessorServerURL>tcp://wso2apim-pattern-2-analytics-service:7612</StreamProcessorServerURL>
+        <StreamProcessorServerURL>tcp://wso2am-pattern-2-analytics-service:7612</StreamProcessorServerURL>
         <!--StreamProcessorAuthServerURL>{ssl://localhost:7712}</StreamProcessorAuthServerURL-->
         <!-- Administrator username to login to the remote StreamProcessor server. -->
         <StreamProcessorUsername>${admin.username}</StreamProcessorUsername>
@@ -162,7 +162,7 @@
         <StatsProviderImpl>org.wso2.carbon.apimgt.usage.client.impl.APIUsageStatisticsRestClientImpl</StatsProviderImpl>
 
         <!-- StreamProcessor REST API configuration -->
-        <StreamProcessorRestApiURL>https://wso2apim-pattern-2-analytics-service:7444</StreamProcessorRestApiURL>
+        <StreamProcessorRestApiURL>https://wso2am-pattern-2-analytics-service:7444</StreamProcessorRestApiURL>
         <StreamProcessorRestApiUsername>${admin.username}</StreamProcessorRestApiUsername>
         <StreamProcessorRestApiPassword>${admin.password}</StreamProcessorRestApiPassword>
 
@@ -212,7 +212,7 @@
     -->
     <APIKeyValidator>
         <!-- Server URL of the API key manager -->
-        <ServerURL>https://wso2apim-pattern-2-km-service:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
+        <ServerURL>https://wso2am-pattern-2-km-service:${mgt.transport.https.port}${carbon.context}services/</ServerURL>
 
         <!-- Admin username for API key manager. -->
         <Username>${admin.username}</Username>
@@ -558,8 +558,8 @@
         <EnableAdvanceThrottling>true</EnableAdvanceThrottling>
         <TrafficManager>
             <Type>Binary</Type>
-            <ReceiverUrlGroup>{tcp://wso2apim-pattern-2-pub-store-tm-1-service:9611},{tcp://wso2apim-pattern-2-pub-store-tm-2-service:9611}</ReceiverUrlGroup>
-            <AuthUrlGroup>{ssl://wso2apim-pattern-2-pub-store-tm-1-service:9711}, {ssl://wso2apim-pattern-2-pub-store-tm-2-service:9711}</AuthUrlGroup>
+            <ReceiverUrlGroup>{tcp://wso2am-pattern-2-pub-store-tm-1-service:9611},{tcp://wso2am-pattern-2-pub-store-tm-2-service:9611}</ReceiverUrlGroup>
+            <AuthUrlGroup>{ssl://wso2am-pattern-2-pub-store-tm-1-service:9711}, {ssl://wso2am-pattern-2-pub-store-tm-2-service:9711}</AuthUrlGroup>
             <Username>${admin.username}</Username>
             <Password>${admin.password}</Password>
         </TrafficManager>
@@ -594,7 +594,7 @@
                 <transport.jms.ConnectionFactoryJNDIName>TopicConnectionFactory</transport.jms.ConnectionFactoryJNDIName>
                 <transport.jms.DestinationType>topic</transport.jms.DestinationType>
                 <java.naming.factory.initial>org.wso2.andes.jndi.PropertiesFileInitialContextFactory</java.naming.factory.initial>
-                <connectionfactory.TopicConnectionFactory>amqp://admin:admin@clientID/carbon?failover='roundrobin'%26cyclecount='2'%26brokerlist='tcp://wso2apim-pattern-2-pub-store-tm-1-service:5672?retries='5'%26connectdelay='50';tcp://wso2apim-pattern-2-pub-store-tm-2-service:5672?retries='5'%26connectdelay='50''</connectionfactory.TopicConnectionFactory>
+                <connectionfactory.TopicConnectionFactory>amqp://admin:admin@clientID/carbon?failover='roundrobin'%26cyclecount='2'%26brokerlist='tcp://wso2am-pattern-2-pub-store-tm-1-service:5672?retries='5'%26connectdelay='50';tcp://wso2am-pattern-2-pub-store-tm-2-service:5672?retries='5'%26connectdelay='50''</connectionfactory.TopicConnectionFactory>
             </JMSConnectionParameters>
         </JMSConnectionDetails>
 

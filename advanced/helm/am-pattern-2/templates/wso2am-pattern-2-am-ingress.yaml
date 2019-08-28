@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: wso2apim-ingress
+  name: wso2am-ingress
   namespace : {{ .Release.Namespace }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
@@ -26,12 +26,12 @@ metadata:
 spec:
   tls:
     - hosts:
-        - wso2apim
+        - wso2am
   rules:
-    - host: wso2apim
+    - host: wso2am
       http:
         paths:
           - path: /
             backend:
-              serviceName: wso2apim-service
+              serviceName: wso2am-service
               servicePort: 9443
