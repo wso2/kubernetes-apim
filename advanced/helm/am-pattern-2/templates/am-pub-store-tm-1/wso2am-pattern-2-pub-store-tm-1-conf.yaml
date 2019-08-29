@@ -18,6 +18,8 @@ metadata:
   name: apim-pub-store-tm-1-conf
   namespace : {{ .Release.Namespace }}
 data:
+  {{- $am_hostname := printf "%s%s" .Release.Name "-am" }}
+  {{- $gateway_hostname := printf "%s%s" .Release.Name "-gateway" }}
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/apim-pub-store-tm-1/*" }}
   {{- $list := $path | splitList "/"}}
@@ -25,6 +27,6 @@ data:
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
     {{- range $line := $file.Lines $path }}
-      {{ . }}
+      {{ $line | replace "{{ GATEWAY_HOSTNAME }}" $gateway_hostname | replace "{{ AM_HOSTNAME }}" $am_hostname }}
     {{- end }}
   {{- end }}

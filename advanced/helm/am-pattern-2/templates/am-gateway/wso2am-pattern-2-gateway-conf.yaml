@@ -18,13 +18,14 @@ metadata:
   name: apim-gateway-conf
   namespace : {{ .Release.Namespace }}
 data:
+  {{- $gateway_hostname := printf "%s%s" .Release.Name "-gateway" }}
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/apim-gateway/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
+    {{- range $line := $file.Lines $path }}
+      {{ $line | replace "{{ GATEWAY_HOSTNAME }}" $gateway_hostname }}
     {{- end }}
   {{- end }}
