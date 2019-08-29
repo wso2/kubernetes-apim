@@ -28,7 +28,8 @@ wso2:
     persistentRuntimeArtifacts:
       cloudProvider: "internal-nfs"
       nfsServerIP: ""
-      sharedAPIMLocationPath: ""
+      sharedAPIMSynapseConfigsPath: ""
+      sharedAPIMExecutionPlansPath: ""
     wso2am:
       imageName: "wso2am"
       imageTag: "2.6.0"
@@ -55,6 +56,8 @@ wso2:
           cpu: "3000m"
       imagePullPolicy: Always
     wso2amAnalyticsWorker:
+      dockerRegistry: "gcr.io/research-n-development-209206"
+
       imageName: "wso2am-analytics-worker"
       imageTag: "2.6.0"
       replicas: 1

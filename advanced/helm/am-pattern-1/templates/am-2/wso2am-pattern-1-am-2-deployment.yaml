@@ -114,8 +114,10 @@ spec:
               containerPort: 9443
               protocol: "TCP"
           volumeMounts:
-            - name: am-storage-volume
-              mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server
+            - name: wso2am-pattern-1-shared-syanpase-configs-storage-volume
+              mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server/synapse-configs
+            - name: wso2am-pattern-1-shared-executionplans-storage-volume
+              mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server/executionplans
             - name: wso2am-pattern-1-am-2-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
             - name: wso2am-pattern-1-am-2-datasources-conf
@@ -177,9 +179,12 @@ spec:
       - name: wso2am-pattern-1-creds
       {{- end }}
       volumes:
-        - name: am-storage-volume
+        - name: wso2am-pattern-1-shared-syanpase-configs-storage-volume
           persistentVolumeClaim:
-            claimName: wso2am-pattern-1-am-volume-claim
+            claimName: wso2am-pattern-1-shared-syanpase-configs-volume-claim
+        - name: wso2am-pattern-1-shared-executionplans-storage-volume
+          persistentVolumeClaim:
+            claimName: wso2am-pattern-1-shared-executionplans-volume-claim
         - name: wso2am-pattern-1-am-2-conf
           configMap:
             name: wso2am-pattern-1-am-2-conf
