@@ -16,9 +16,9 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wso2am-pattern-1-shared-deployment-pv
+  name: wso2am-pattern-1-shared-syanpase-configs-pv
   labels:
-    purpose: wso2am-pattern-1-am-shared-deployment
+    purpose: wso2am-pattern-1-am-shared-syanpase-configs
 spec:
   capacity:
     storage: 1Gi
@@ -27,6 +27,24 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: {{ required "A valid .Values.wso2.deployment.persistentRuntimeArtifacts.nfsServerIP entry required!" .Values.wso2.deployment.persistentRuntimeArtifacts.nfsServerIP }}
-    path: {{ required "A valid .Values.wso2.deployment.persistentRuntimeArtifacts.sharedAPIMLocationPath entry required!" .Values.wso2.deployment.persistentRuntimeArtifacts.sharedAPIMLocationPath }}
+    path: {{ required "A valid .Values.wso2.deployment.persistentRuntimeArtifacts.sharedAPIMSynapseConfigsPath entry required!" .Values.wso2.deployment.persistentRuntimeArtifacts.sharedAPIMSynapseConfigsPath }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wso2am-pattern-1-shared-executionplans-pv
+  labels:
+    purpose: wso2am-pattern-1-am-shared-executionplans
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: {{ required "A valid .Values.wso2.deployment.persistentRuntimeArtifacts.nfsServerIP entry required!" .Values.wso2.deployment.persistentRuntimeArtifacts.nfsServerIP }}
+    path: {{ required "A valid .Values.wso2.deployment.persistentRuntimeArtifacts.sharedAPIMExecutionPlansPath entry required!" .Values.wso2.deployment.persistentRuntimeArtifacts.sharedAPIMExecutionPlansPath }}
 
 {{- end }}

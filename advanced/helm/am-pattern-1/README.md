@@ -149,6 +149,7 @@ If you do not have active WSO2 subscription do not change the parameters `wso2.d
 |-----------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.deployment.persistentRuntimeArtifacts.nfsServerIP`                    | NFS Server IP                                                                                                   | **Required**                | 
 | `wso2.deployment.persistentRuntimeArtifacts.sharedAPIMLocationPath`         | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for API Manager deployment       | **Required**                |
+| `wso2.deployment.wso2am.dockerRegistry`                                     | Location of the Docker Registry hosting the AM Docker image                                                     | -                           |
 | `wso2.deployment.wso2am.imageName`                                          | Image name for AM node                                                                                          | wso2am                      |
 | `wso2.deployment.wso2am.imageTag`                                           | Image tag for AM node                                                                                           | 2.6.0                       |
 | `wso2.deployment.wso2am.replicas`                                           | Number of replicas for AM node                                                                                  | 1                           |
@@ -166,10 +167,12 @@ If you do not have active WSO2 subscription do not change the parameters `wso2.d
 | `wso2.deployment.wso2am.resources.limits.cpu`                               | The maximum amount of CPU that should be allocated for a Pod                                                    | 3000m                       |
 
 ###### Analytics Worker Runtime Configurations
+
 | Parameter                                                                   | Description                                                                                                     | Default Value               |
 |-----------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.wso2amAnalyticsWorker.imageName`                           | Image name for AM-analytics-worker node                                                                         | wso2am-analytics-worker     |
-| `wso2.deployment.wso2amAnalyticsWorker.imageTag`                            | Image tag for AM-analytics-worker node                                                                          | 2.6.0                       |
+| `wso2.deployment.wso2amAnalyticsWorker.dockerRegistry`                      | Location of the Docker Registry hosting the AM Analytics Worker Docker image                                    | -                           |
+| `wso2.deployment.wso2amAnalyticsWorker.imageName`                           | Image name for AM Analytics Worker node                                                                         | wso2am-analytics-worker     |
+| `wso2.deployment.wso2amAnalyticsWorker.imageTag`                            | Image tag for AM Analytics Worker node                                                                          | 2.6.0                       |
 | `wso2.deployment.wso2amAnalyticsWorker.replicas`                            | Number of replicas for AM-analytics-worker node                                                                 | 1                           |
 | `wso2.deployment.wso2amAnalyticsWorker.minReadySeconds`                     | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentspec-v1-apps)     | 1  75                       |
 | `wso2.deployment.wso2amAnalyticsWorker.strategy.rollingUpdate.maxSurge`     | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentstrategy-v1-apps) | 2                           |  
