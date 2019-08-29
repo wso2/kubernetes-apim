@@ -56,6 +56,7 @@ git clone https://github.com/wso2/kubernetes-apim.git
 * Using an internal Network File System(NFS) server
 
     By default the internal NFS server is enabled. For production use, we recommend to use external NFS server. The internal NFS server is enabled with the following configuration,
+    
     ```
     wso2:
        deployment:
@@ -68,6 +69,7 @@ git clone https://github.com/wso2/kubernetes-apim.git
 * Using Azure Files,
   
   Add the following parameter and value to the `<HELM_HOME>/am-pattern-1/values.yaml`.
+  
   ```
   wso2:
     deployment:
@@ -147,8 +149,10 @@ If you do not have active WSO2 subscription do not change the parameters `wso2.d
 
 | Parameter                                                                   | Description                                                                                                     | Default Value               |
 |-----------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.persistentRuntimeArtifacts.nfsServerIP`                    | NFS Server IP                                                                                                   | **Required**                | 
-| `wso2.deployment.persistentRuntimeArtifacts.sharedAPIMLocationPath`         | NFS shared deployment directory (`<APIM_HOME>/repository/deployment`) location for API Manager deployment       | **Required**                |
+| `wso2.deployment.persistentRuntimeArtifacts.cloudProvider`                  | Persistent storage provider expected to be used for sharing persistent runtime artifacts                        | internal-nfs                | 
+| `wso2.deployment.persistentRuntimeArtifacts.nfsServerIP`                    | NFS Server IP (applicable when `cloudProvider` is `external-nfs`)                                               | **Required**                | 
+| `wso2.deployment.persistentRuntimeArtifacts.sharedAPIMSynapseConfigsPath`   | Exported location on external NFS Server to be mounted at `<APIM_HOME>/repository/deployment/server/synapse-configs` (applicable when `cloudProvider` is `external-nfs`) | **Required**                |
+| `wso2.deployment.persistentRuntimeArtifacts.sharedAPIMExecutionPlansPath`   | Exported location on external NFS Server to be mounted at `<APIM_HOME>/repository/deployment/server/executionplans` (applicable when `cloudProvider` is `external-nfs`) | **Required**                |
 | `wso2.deployment.wso2am.dockerRegistry`                                     | Location of the Docker Registry hosting the AM Docker image                                                     | -                           |
 | `wso2.deployment.wso2am.imageName`                                          | Image name for AM node                                                                                          | wso2am                      |
 | `wso2.deployment.wso2am.imageTag`                                           | Image tag for AM node                                                                                           | 2.6.0                       |
@@ -228,3 +232,39 @@ b. Add the above host as an entry in /etc/hosts file as follows:
   ```
 
 c. Try navigating to `https://<RELEASE_NAME>-am/carbon`, `https://<RELEASE_NAME>-am/publisher` and `https://<RELEASE_NAME>-am/store` from your favorite browser.
+
+
+## Enabling Centralized Logging
+
+Centralized logging with Logstash and Elasticsearch is diabled by default. However, if it is required to be enabled, 
+the following steps should be followed.
+
+1. Set `centralizedLogging.enabled` to `true` in the [values.yaml](values.yaml) file.
+
+2. Add Elasticsearch Helm repository to download sub-charts required for Centralized logging.
+```
+helm repo add elasticsearch https://helm.elastic.co
+```
+
+3. Add the following dependencies in the [requirements.yaml](requirements.yaml) file.
+```
+dependencies:
+  - name: kibana
+    version: "7.2.1-0"
+    repository: "https://helm.elastic.co"
+    condition: wso2.centralizedLogging.enabled
+  - name: elasticsearch
+    version: "7.2.1-0"
+    repository: "https://helm.elastic.co"
+    condition: wso2.centralizedLogging.enabled
+
+```
+
+4. Add override configurations for Elasticsearch in the [values.yaml](values.yaml) file.
+```
+wso2:
+  ( ... )
+  
+elasticsearch:
+  clusterName: wso2-elasticsearch
+```
