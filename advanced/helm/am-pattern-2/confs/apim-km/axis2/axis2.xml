@@ -655,7 +655,7 @@
      getting this node to join the cluster.
      -->
     <clustering class="org.wso2.carbon.core.clustering.hazelcast.HazelcastClusteringAgent"
-                enable="true">
+                enable="false">
 
         <!--
            This parameter indicates whether the cluster has to be automatically initalized

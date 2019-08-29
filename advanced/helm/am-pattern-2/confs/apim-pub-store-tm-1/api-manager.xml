@@ -105,7 +105,7 @@
                 <!-- Admin password for the API gateway.-->
                 <Password>${admin.password}</Password>
                 <!-- Endpoint URLs for the APIs hosted in this API gateway.-->
-                <GatewayEndpoint>http://wso2am-gateway,https://wso2am-gateway</GatewayEndpoint>
+                <GatewayEndpoint>http://{{ GATEWAY_HOSTNAME }},https://{{ GATEWAY_HOSTNAME }}</GatewayEndpoint>
                 <!-- Endpoint of the Websocket APIs hosted in this API Gateway -->
                 <GatewayWSEndpoint>ws://${carbon.local.ip}:9099</GatewayWSEndpoint>
             </Environment>
@@ -315,7 +315,7 @@
         <!--This property is used to indicate how we do user name comparision for token generation https://wso2.org/jira/browse/APIMANAGER-2225-->
         <CompareCaseInsensitively>true</CompareCaseInsensitively>
         <DisplayURL>true</DisplayURL>
-        <URL>https://wso2am/store</URL>
+        <URL>https://{{ AM_HOSTNAME }}/store</URL>
 
         <!-- Server URL of the API Store. -->
         <ServerURL>https://localhost:${mgt.transport.https.port}${carbon.context}services/</ServerURL>

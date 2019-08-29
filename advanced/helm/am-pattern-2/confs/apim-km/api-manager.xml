@@ -105,7 +105,7 @@
                 <!-- Admin password for the API gateway.-->
                 <Password>${admin.password}</Password>
                 <!-- Endpoint URLs for the APIs hosted in this API gateway.-->
-                <GatewayEndpoint>http://wso2am-gateway,https://wso2am-gateway</GatewayEndpoint>
+                <GatewayEndpoint>http://{{ GATEWAY_HOSTNAME }},https://{{ GATEWAY_HOSTNAME }}</GatewayEndpoint>
                 <!-- Endpoint of the Websocket APIs hosted in this API Gateway -->
                 <GatewayWSEndpoint>ws://${carbon.local.ip}:9099</GatewayWSEndpoint>
             </Environment>
