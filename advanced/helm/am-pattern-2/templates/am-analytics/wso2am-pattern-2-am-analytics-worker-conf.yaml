@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: apim-analytics-conf-worker
+  name: wso2am-pattern-2-am-analytics-worker-conf
   namespace : {{ .Release.Namespace }}
 data:
   {{- $analytics_dburl := printf "%s%s%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":" .Values.wso2.mysql.port "/WSO2AM_ANALYTICS_DB?useSSL=false" }}

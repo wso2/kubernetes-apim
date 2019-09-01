@@ -20,7 +20,7 @@ metadata:
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    deployment: wso2am-pattern-2-analytics
+    deployment: wso2am-pattern-2-analytics-worker
   ports:
     -
       name: 'thrift'
