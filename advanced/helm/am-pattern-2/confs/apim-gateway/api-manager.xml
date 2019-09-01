@@ -151,7 +151,7 @@
 
              Ex - Multiple Receiver Groups with two receivers each
              {tcp://localhost:7612/,tcp://localhost:7613},{tcp://localhost:7712/,tcp://localhost:7713/} -->
-        <StreamProcessorServerURL>tcp://wso2am-pattern-2-analytics-service:7612</StreamProcessorServerURL>
+        <StreamProcessorServerURL>tcp://wso2am-pattern-2-am-analytics-worker-service:7612</StreamProcessorServerURL>
         <!--StreamProcessorAuthServerURL>{ssl://localhost:7712}</StreamProcessorAuthServerURL-->
         <!-- Administrator username to login to the remote StreamProcessor server. -->
         <StreamProcessorUsername>${admin.username}</StreamProcessorUsername>
@@ -162,7 +162,7 @@
         <StatsProviderImpl>org.wso2.carbon.apimgt.usage.client.impl.APIUsageStatisticsRestClientImpl</StatsProviderImpl>
 
         <!-- StreamProcessor REST API configuration -->
-        <StreamProcessorRestApiURL>https://wso2am-pattern-2-analytics-service:7444</StreamProcessorRestApiURL>
+        <StreamProcessorRestApiURL>https://wso2am-pattern-2-am-analytics-worker-service:7444</StreamProcessorRestApiURL>
         <StreamProcessorRestApiUsername>${admin.username}</StreamProcessorRestApiUsername>
         <StreamProcessorRestApiPassword>${admin.password}</StreamProcessorRestApiPassword>
 
