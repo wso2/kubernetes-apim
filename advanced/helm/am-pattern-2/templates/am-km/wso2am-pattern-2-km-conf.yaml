@@ -17,12 +17,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: apim-km-conf
+  name: wso2am-pattern-2-km-conf
   namespace : {{ .Release.Namespace }}
 data:
   {{- $gateway_hostname := printf "%s%s" .Release.Name "-gateway" }}
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/apim-km/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/am-km/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}

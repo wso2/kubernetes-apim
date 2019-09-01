@@ -36,6 +36,12 @@ wso2:
           rollingUpdate:
             maxSurge: 2
             maxUnavailable: 0
+      km:
+        replicas: 1
+        strategy:
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 0
 
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
       #      dockerRegistry: ""
