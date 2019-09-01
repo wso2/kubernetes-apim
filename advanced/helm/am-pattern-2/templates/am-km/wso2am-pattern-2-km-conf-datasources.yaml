@@ -17,7 +17,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: apim-km-conf-datasources
+  name: wso2am-pattern-2-km-conf-datasources
   namespace : {{ .Release.Namespace }}
 data:
   {{- $apimgt_dburl := printf "%s%s%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":" .Values.wso2.mysql.port "/WSO2AM_APIMGT_DB?autoReconnect=true&amp;useSSL=false" }}
@@ -27,7 +27,7 @@ data:
   {{- $db_username := .Values.wso2.mysql.username }}
   {{- $db_password := .Values.wso2.mysql.password }}
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/apim-km/datasources/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/am-km/datasources/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
