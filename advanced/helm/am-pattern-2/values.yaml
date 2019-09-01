@@ -30,14 +30,18 @@ wso2:
       nfsServerIP: ""
       sharedAPIMLocationPath: ""
     wso2am:
+      gateway:
+        replicas: 2
+        strategy:
+          rollingUpdate:
+            maxSurge: 2
+            maxUnavailable: 0
+
+      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+      #      dockerRegistry: ""
       imageName: "wso2am"
       imageTag: "2.6.0"
-      replicas: 1
-      minReadySeconds: 75
-      strategy:
-        rollingUpdate:
-          maxSurge: 1
-          maxUnavailable: 0
+      minReadySeconds: 250
       livenessProbe:
         initialDelaySeconds: 250
         periodSeconds: 10
@@ -45,8 +49,8 @@ wso2:
         initialDelaySeconds: 250
         periodSeconds: 10
       resources:
-        # These are the minimum resource recommendations for running WSO2 Identity server profiles
-        # as per official documentation (https://docs.wso2.com/display/IS580/Installation+Prerequisites).
+        # These are the minimum resource recommendations for running WSO2 API Management product profiles
+        # as per official documentation (https://docs.wso2.com/display/AM260/Installation+Prerequisites).
         requests:
           memory: "2Gi"
           cpu: "2000m"
@@ -54,6 +58,7 @@ wso2:
           memory: "3Gi"
           cpu: "3000m"
       imagePullPolicy: Always
+
     wso2amAnalyticsWorker:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
       #      dockerRegistry: ""
