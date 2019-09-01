@@ -55,19 +55,21 @@ wso2:
           cpu: "3000m"
       imagePullPolicy: Always
     wso2amAnalyticsWorker:
+      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+      #      dockerRegistry: ""
       imageName: "wso2am-analytics-worker"
       imageTag: "2.6.0"
       replicas: 1
-      minReadySeconds: 75
+      minReadySeconds: 30
       strategy:
         rollingUpdate:
           maxSurge: 1
           maxUnavailable: 0
       livenessProbe:
-        initialDelaySeconds: 100
+        initialDelaySeconds: 20
         periodSeconds: 10
       readinessProbe:
-        initialDelaySeconds: 100
+        initialDelaySeconds: 20
         periodSeconds: 10
       resources:
         # These are the minimum resource recommendations for running WSO2 Stream Processor based server profiles
@@ -88,7 +90,8 @@ wso2:
     logstash:
       imageTag: 7.2.0
       elasticsearch:
-        host: "wso2-elasticsearch-master:9200"
+        host: "wso2-elasticsearch-master"
+        port: "9200"
         username: "elastic"
         password: "changeme"
       indexNodeID:

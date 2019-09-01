@@ -25,7 +25,7 @@ data:
   {{- $db_username := .Values.wso2.mysql.username }}
   {{- $db_password := .Values.wso2.mysql.password }}
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/apim-analytics/conf/worker/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/am-analytics/conf/worker/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
