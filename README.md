@@ -7,7 +7,7 @@ of WSO2 API Manager.*
 
 ### Simple
 
-* [Deployment Single Node](simple/single-script/README.md)
+* [Deployment Single Node](simple/README.md)
 
 ### Advanced
 
