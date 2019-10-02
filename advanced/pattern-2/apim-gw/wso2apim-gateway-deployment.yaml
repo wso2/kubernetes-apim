@@ -81,7 +81,7 @@ spec:
           protocol: "TCP"
         volumeMounts:
         - name: apim-storage-volume
-          mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server
+          mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server/synapse-configs/default
         - name: apim-gateway-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: apim-gateway-conf-axis2
