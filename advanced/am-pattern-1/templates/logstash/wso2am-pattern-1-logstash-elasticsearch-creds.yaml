@@ -1,4 +1,4 @@
-# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,9 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+{{ if .Values.wso2.centralizedLogging.enabled }}
 apiVersion: v1
-kind: ServiceAccount
+kind: Secret
 metadata:
-  name: {{ .Values.kubernetes.svcaccount }}
-  namespace : {{ .Release.Namespace }}
+    name: wso2am-pattern-1-logstash-elasticsearch-creds
+    namespace : {{ .Release.Namespace }}
+type: Opaque
+data:
+    username: {{ default "elastic" .Values.wso2.centralizedLogging.logstash.elasticsearch.username | b64enc }}
+    password: {{ default "changeme" .Values.wso2.centralizedLogging.logstash.elasticsearch.password | b64enc }}
+{{ end }}

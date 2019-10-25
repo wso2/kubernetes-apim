@@ -15,41 +15,18 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wso2apim-with-analytics-apim-deployment-volume-claim
-  namespace : {{ .Values.namespace }}
+  name: wso2am-pattern-1-am-volume-claim
+  namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 1Gi
-  {{- if (.Values.cloudProvider) and eq .Values.cloudProvider "Azure" }}
+  {{- if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "Azure") }}
   storageClassName: azurefile
-  {{- else }}
+  {{- else if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "internal-nfs") }}
+  storageClassName: nfs
+  {{- else if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "external-nfs") }}
   storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: apim-shared-deployment
   {{- end }}
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: wso2apim-with-analytics-tenants-volume-claim
-  namespace : {{ .Values.namespace }}
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  {{- if (.Values.cloudProvider) and eq .Values.cloudProvider "Azure" }}
-  storageClassName: azurefile
-  {{ else }}
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: apim-shared-tenants
-  {{- end -}}

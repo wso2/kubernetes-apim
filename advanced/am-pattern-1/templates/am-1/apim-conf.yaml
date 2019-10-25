@@ -15,16 +15,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: apim-analytics-conf-worker
-  namespace : {{ .Values.namespace }}
+  name: wso2am-pattern-1-am-1-conf
+  namespace : {{ .Release.namespace }}
 data:
-  {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/apim-analytics/conf/worker/*" }}
-  {{- $list := $path | splitList "/"}}
-  {{- $length := len $list }}
-  {{- $last := add $length -1 }}
-  {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
-    {{- end }}
+  {{- range $index, $content := .Values.wso2.deployment.wso2am.config }}
+    {{ $index }}: |-
+  {{ tpl $content $ | indent 4 }}
   {{- end }}
