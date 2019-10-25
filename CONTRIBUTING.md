@@ -1,7 +1,6 @@
-
 # Contributing to kubernetes-apim
 
-Kubernetes and Helm resources for WSO2 Enterprise Integrator are open source, and we encourage contributions  from our community.
+Kubernetes and Helm resources for WSO2 API Management are open source, and we encourage contributions  from our community.
 
 ## How you can Contribute
 
@@ -14,7 +13,8 @@ The recommended way to discuss anything related to WSO2 products is via our mail
 
 ### Posting Issues
 
-We encourage you to report any problems in the WSO2 Kubernetes and Helm resources or their documentation by creating GitHub issues in the respective repositories. The issues page on GitHub is for tracking bugs and feature requests. When posing a new issue, follow the guidelines below.
+We encourage you to report any problems in the WSO2 Kubernetes and Helm resources or their documentation by creating GitHub issues in the respective repositories.
+The issues page on GitHub is for tracking bugs and feature requests. When posing a new issue, follow the guidelines below.
 
 * Check whether the issue has already been reported.
 * Create a separate issue for each bug you are reporting or feature you are requesting.
@@ -23,12 +23,13 @@ We encourage you to report any problems in the WSO2 Kubernetes and Helm resource
 
 If you like to contribute with a bug fix or a new feature, start by posting an issue and discussing the best way to implement it.
 
-Unlike most projects, development for this repository is carried out on the 2.6.x branch. This is because the master branch contains the latest stable release of the project. The code in 2.6.x is merged to the master branch after a final review and a round of testing.
+Unlike most projects, development for this repository is carried out on the `3.0.x` branch. This is because the master branch contains
+the latest stable release of the project. The code in `3.0.x` is merged to the master branch after a final review and a round of testing.
 
 Please follow these guidelines when contributing to the code:
 
 1. Fork the current repository.
-2. Create a topic branch from the 2.6.x branch.
+2. Create a topic branch from the `3.0.x` branch.
 3. Make commits in logical units.
 4. Before you send out the pull request, sync your forked repository with a remote repository. This makes your pull request simple and clear.
 
@@ -36,7 +37,7 @@ Please follow these guidelines when contributing to the code:
 git clone https://github.com/<user>/kubernetes-apim.git
 git remote add upstream https://github.com/wso2/kubernetes-apim.git
 git fetch upstream
-git checkout -b <topic-branch> upstream/2.6.x
+git checkout -b <topic-branch> upstream/3.0.x
 
 # add some work
 
