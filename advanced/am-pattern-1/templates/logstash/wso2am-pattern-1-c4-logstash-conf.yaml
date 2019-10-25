@@ -1,4 +1,4 @@
-# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,20 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+{{ if .Values.wso2.centralizedLogging.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: apim-conf
-  namespace : {{ .Values.namespace }}
+    name: wso2am-pattern-1-c4-logstash-conf
+    namespace : {{ .Release.Namespace }}
 data:
-  {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/apim/*" }}
-  {{- $list := $path | splitList "/"}}
-  {{- $length := len $list }}
-  {{- $last := add $length -1 }}
-  {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
-    {{- end }}
-  {{- end }}
+    {{- (.Files.Glob "confs/logstash/c4/logstash.conf").AsConfig | nindent 2 }}
+{{ end }}

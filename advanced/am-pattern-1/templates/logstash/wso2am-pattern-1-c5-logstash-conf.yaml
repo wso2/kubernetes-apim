@@ -1,4 +1,4 @@
-# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,8 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+{{ if .Values.wso2.centralizedLogging.enabled }}
 apiVersion: v1
-kind: ServiceAccount
+kind: ConfigMap
 metadata:
-  name: {{ .Values.kubernetes.svcaccount }}
-  namespace : {{ .Release.Namespace }}
+    name: wso2am-pattern-1-c5-logstash-conf
+    namespace : {{ .Release.Namespace }}
+data:
+  {{- (.Files.Glob "confs/logstash/c5/logstash.conf").AsConfig | nindent 2 }}
+{{ end }}

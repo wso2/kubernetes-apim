@@ -1,0 +1,207 @@
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wso2am-pattern-1-am-1-deployment
+  namespace : {{ .Release.Namespace }}
+spec:
+  replicas: {{ default 1 .Values.wso2.deployment.wso2am.replicas }}
+  minReadySeconds: {{ default 75 .Values.wso2.deployment.wso2am.minReadySeconds }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ default 1 .Values.wso2.deployment.wso2am.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ default 0 .Values.wso2.deployment.wso2am.strategy.rollingUpdate.maxUnavailable }}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2am-pattern-1-am-1
+      node: wso2am-pattern-1-am-1
+  template:
+    metadata:
+      labels:
+        deployment: wso2am-pattern-1-am-1
+        node: wso2am-pattern-1-am-1
+    spec:
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+            - "{{ .Release.Name }}-am"
+      initContainers:
+        - name: init-db
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z {{ default "wso2am-mysql-db-service" .Values.wso2.mysql.host }} {{ default "3306" .Values.wso2.mysql.port }}; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        - name: init-am-analytics-worker
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-1-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+      {{- if .Values.wso2.centralizedLogging.enabled }}
+      - name: init-logstash-plugins-install
+        image: docker.elastic.co/logstash/logstash:{{ default "7.2.0" .Values.wso2.centralizedLogging.logstash.imageTag }}
+        command:
+          - /bin/bash
+          - "-c"
+          - |
+            set -e
+            ./bin/logstash-plugin install logstash-codec-multiline logstash-filter-grok
+        volumeMounts:
+          - name: wso2am-pattern-1-shared-plugins-emptydir
+            mountPath: /usr/share/logstash/plugins/
+      - name: init-elasticsearch
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Elasticsearch Server deployment"; while ! nc -z {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }} {{ default "9200" .Values.wso2.centralizedLogging.logstash.elasticsearch.port }}; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
+      {{- end }}
+      containers:
+        - name: wso2am-pattern-1-am
+          {{- if .Values.wso2.deployment.wso2am.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.wso2am.dockerRegistry }}/{{ default "wso2am" .Values.wso2.deployment.wso2am.imageName }}
+          {{- $tag := .Values.wso2.deployment.wso2am.imageTag }}
+          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+          {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
+          image: wso2/{{ default "wso2am" .Values.wso2.deployment.wso2am.imageName }}:{{ default "2.6.0" .Values.wso2.deployment.wso2am.imageTag }}
+          {{- else }}
+          image: docker.wso2.com/{{ default "wso2am" .Values.wso2.deployment.wso2am.imageName }}:{{ default "2.6.0" .Values.wso2.deployment.wso2am.imageTag }}
+          {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: {{ default 250 .Values.wso2.deployment.wso2am.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ default 10 .Values.wso2.deployment.wso2am.livenessProbe.periodSeconds }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: {{ default 250 .Values.wso2.deployment.wso2am.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ default 10 .Values.wso2.deployment.wso2am.readinessProbe.periodSeconds }}
+          lifecycle:
+            preStop:
+              exec:
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+          resources:
+            requests:
+              memory: {{ default "2Gi" .Values.wso2.deployment.wso2am.resources.requests.memory }}
+              cpu: {{ default "2000m" .Values.wso2.deployment.wso2am.resources.requests.cpu }}
+            limits:
+              memory: {{ default "3Gi" .Values.wso2.deployment.wso2am.resources.limits.memory }}
+              cpu: {{ default "3000m" .Values.wso2.deployment.wso2am.resources.limits.cpu }}
+          imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2am.imagePullPolicy }}
+          ports:
+            -
+              containerPort: 8280
+              protocol: "TCP"
+            -
+              containerPort: 8243
+              protocol: "TCP"
+            -
+              containerPort: 9763
+              protocol: "TCP"
+            -
+              containerPort: 9443
+              protocol: "TCP"
+          env:
+            - name: HOST_NAME
+              value: {{ .Release.Name }}-am
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          volumeMounts:
+            - name: wso2am-pattern-1-am-storage-volume
+              mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server
+            - name: wso2am-pattern-1-am-1-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
+              subPath: deployment.toml
+        {{- if .Values.wso2.centralizedLogging.enabled }}
+        - name: wso2am-pattern-1-shared-logs-emptydir
+          mountPath: /home/wso2carbon/wso2am-2.6.0/repository/logs/
+        - name: wso2am-logstash
+          image: docker.elastic.co/logstash/logstash:{{ default "7.2.0" .Values.wso2.centralizedLogging.logstash.imageTag }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 9600
+            initialDelaySeconds: {{ default 20 .Values.wso2.centralizedLogging.logstash.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ default 30 .Values.wso2.centralizedLogging.logstash.livenessProbe.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 9600
+            initialDelaySeconds: {{ default 20 .Values.wso2.centralizedLogging.logstash.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ default 30 .Values.wso2.centralizedLogging.logstash.readinessProbe.periodSeconds }}
+          volumeMounts:
+            - name: wso2am-pattern-1-shared-logs-emptydir
+              mountPath: /usr/share/logstash/wso2-logs/
+            - name: wso2am-pattern-1-logstash-yml-conf
+              mountPath: /usr/share/logstash/config/logstash.yml
+              subPath: logstash.yml
+            - name: wso2am-pattern-1-c4-logstash-conf
+              mountPath: /usr/share/logstash/pipeline/logstash.conf
+              subPath: logstash.conf
+            - name: wso2am-pattern-1-shared-plugins-emptydir
+              mountPath: /usr/share/logstash/plugins/
+          env:
+            - name: NODE_ID
+              value: {{ default "wso2am-node-1" .Values.wso2.centralizedLogging.logstash.indexNodeID.wso2AMNode1 }}
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: ELASTICSEARCH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: wso2am-pattern-1-logstash-elasticsearch-creds
+                  key: username
+            - name: ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wso2am-pattern-1-logstash-elasticsearch-creds
+                  key: password
+            - name: ELASTICSEARCH_HOST
+              value: {{ default "wso2-elasticsearch-master:9200" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }}
+        {{- end }}
+      serviceAccountName: {{ default "wso2am-pattern-1-svc-account" .Values.kubernetes.svcaccount }}
+      {{- if .Values.wso2.deployment.wso2am.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.wso2.deployment.wso2am.imagePullSecrets }}
+      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      imagePullSecrets:
+        - name: wso2am-pattern-1-creds
+      {{- end }}
+      volumes:
+        - name: wso2am-pattern-1-am-storage-volume
+          persistentVolumeClaim:
+            claimName: wso2am-pattern-1-am-volume-claim
+        - name: wso2am-pattern-1-am-1-conf
+          configMap:
+            name: wso2am-pattern-1-am-1-conf
+      {{- if .Values.wso2.centralizedLogging.enabled }}
+      - name: wso2am-pattern-1-shared-logs-emptydir
+        emptyDir: {}
+      - name: wso2am-pattern-1-logstash-yml-conf
+        configMap:
+          name: wso2am-pattern-1-logstash-yml-conf
+      - name: wso2am-pattern-1-c4-logstash-conf
+        configMap:
+          name: wso2am-pattern-1-c4-logstash-conf
+      - name: wso2am-pattern-1-shared-plugins-emptydir
+        emptyDir: {}
+      - name: wso2am-pattern-1-logstash-elasticsearch-creds
+        secret:
+          secretName: wso2am-pattern-1-logstash-elasticsearch-creds
+      {{- end }}

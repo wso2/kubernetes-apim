@@ -1,4 +1,3 @@
-{{- if (not .Values.cloudProvider)}}
 # Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+{{- if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "external-nfs") }}
 
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wso2apim-with-analytics-shared-deployment-pv
-  namespace : {{ .Values.namespace }}
+  name: wso2am-pattern-1-shared-deployment-pv
   labels:
-    purpose: apim-shared-deployment
+    purpose: wso2am-pattern-1-am-shared-deployment
 spec:
   capacity:
     storage: 1Gi
@@ -27,25 +26,7 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: {{ .Values.serverIp }}
-    path: {{ .Values.sharedDeploymentLocationPath }}
+    server: {{ required "A valid .Values.wso2.deployment.persistentRuntimeArtifacts.nfsServerIP entry required!" .Values.wso2.deployment.persistentRuntimeArtifacts.nfsServerIP }}
+    path: {{ required "A valid .Values.wso2.deployment.persistentRuntimeArtifacts.sharedAPIMLocationPath entry required!" .Values.wso2.deployment.persistentRuntimeArtifacts.sharedAPIMLocationPath }}
 
----
-
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: wso2apim-with-analytics-shared-tenants-pv
-  namespace : {{ .Values.namespace }}
-  labels:
-    purpose: apim-shared-tenants
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: {{ .Values.serverIp }}
-    path: {{ .Values.sharedTenantsLocationPath }}
 {{- end }}
