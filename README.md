@@ -1,24 +1,19 @@
 # Kubernetes and Helm Resources for WSO2 API Management
 
-*This repository contains Kubernetes and Helm Resources for container-based deployments
-of WSO2 API Manager.*
+*This repository contains Kubernetes and Helm Resources for container-based deployments of WSO2 API Management.*
 
 ## Kubernetes resources for API Management deployment patterns
 
 ### Simple
 
-* [Deployment Single Node](simple/single-script/README.md)
+* [Deployment Single Node](simple/README.md)
 
 ### Advanced
 
+#### Helm resources for API Management deployment patterns
+
 * [Deployment Pattern 1](advanced/pattern-1/README.md)
 * [Deployment Pattern 2](advanced/pattern-2/README.md)
-* [Deployment Pattern 3](advanced/pattern-3/README.md)
-
-## Helm resources for API Management deployment patterns
-
-* [Deployment Pattern 1](advanced/helm/pattern-1/README.md)
-* [Deployment Pattern 2](advanced/helm/pattern-2/README.md)
 
 ## Advanced topics
 
