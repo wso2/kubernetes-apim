@@ -1,4 +1,4 @@
-# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,9 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: {{ .Values.kubernetes.svcaccount }}
-  namespace : {{ .Release.Namespace }}
+dependencies:
+  - name: mysql-am
+    version: "3.0.0-1"
+    repository: "https://helm.wso2.com"
+    condition: wso2.mysql.enabled
+  - name: nfs-server-provisioner
+    version: "0.3.0"
+    repository: "https://kubernetes-charts.storage.googleapis.com"
+    tags:
+      - internal-nfs
