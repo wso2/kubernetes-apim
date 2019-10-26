@@ -125,7 +125,7 @@ spec:
               subPath: deployment.yaml
           {{- if .Values.wso2.centralizedLogging.enabled }}
             - name: wso2am-pattern-1-shared-logs-emptydir
-              mountPath: /home/wso2carbon/wso2am-analytics-2.6.0/wso2/dashboard/logs
+              mountPath: /home/wso2carbon/wso2am-analytics-3.0.0/wso2/dashboard/logs
         - name: wso2am-pattern-1-analytics-dashboard-logstash
           image: docker.elastic.co/logstash/logstash:{{ .Values.wso2.centralizedLogging.logstash.imageTag }}
           livenessProbe:
