@@ -18,12 +18,12 @@ metadata:
   name: wso2am-pattern-1-analytics-worker-deployment
   namespace : {{ .Release.Namespace }}
 spec:
-  replicas: {{ default 1 .Values.wso2.deployment.wso2amAnalyticsWorker.replicas }}
-  minReadySeconds: {{ default 75 .Values.wso2.deployment.wso2amAnalyticsWorker.minReadySeconds }}
+  replicas: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.replicas }}
+  minReadySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.minReadySeconds }}
   strategy:
     rollingUpdate:
-      maxSurge: {{ default 1 .Values.wso2.deployment.wso2amAnalyticsWorker.strategy.rollingUpdate.maxSurge }}
-      maxUnavailable: {{ default 0 .Values.wso2.deployment.wso2amAnalyticsWorker.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.strategy.rollingUpdate.maxUnavailable }}
     type: RollingUpdate
   selector:
     matchLabels:
@@ -36,10 +36,10 @@ spec:
       initContainers:
         - name: init-apim-analytics-db
           image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z {{ default "wso2am-mysql-db-service" .Values.wso2.mysql.host }} {{ default "3306" .Values.wso2.mysql.port }}; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z {{ .Values.wso2.mysql.host }} {{ .Values.wso2.mysql.port }}; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
         {{- if .Values.wso2.centralizedLogging.enabled }}
         - name: init-logstash-plugins-install
-          image: docker.elastic.co/logstash/logstash:{{ default "7.2.0" .Values.wso2.centralizedLogging.logstash.imageTag }}
+          image: docker.elastic.co/logstash/logstash:{{ .Values.wso2.centralizedLogging.logstash.imageTag }}
           command:
             - /bin/bash
             - "-c"
@@ -51,18 +51,18 @@ spec:
               mountPath: /usr/share/logstash/plugins/
         - name: init-elasticsearch
           image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of Elasticsearch Server deployment"; while ! nc -z {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }} {{ default "9200" .Values.wso2.centralizedLogging.logstash.elasticsearch.port }}; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of Elasticsearch Server deployment"; while ! nc -z {{ .Values.wso2.centralizedLogging.logstash.elasticsearch.host }} {{ .Values.wso2.centralizedLogging.logstash.elasticsearch.port }}; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
         {{- end }}
       containers:
         - name: wso2am-pattern-1-analytics-worker
           {{- if .Values.wso2.deployment.wso2amAnalyticsWorker.dockerRegistry }}
-          image: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.dockerRegistry }}/{{ default "wso2am-analytics-worker" .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}
+          image: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.dockerRegistry }}/{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}
           {{- $tag := .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
           {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
           {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-          image: wso2/{{ default "wso2am-analytics-worker" .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}:{{ default "2.6.0" .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
+          image: wso2/{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}:{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
           {{- else }}
-          image: docker.wso2.com/{{ default "wso2am-analytics-worker" .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}:{{ default "2.6.0" .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}:{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
           {{- end }}
           livenessProbe:
             exec:
@@ -70,28 +70,28 @@ spec:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9444
-            initialDelaySeconds: {{ default 100 .Values.wso2.deployment.wso2amAnalyticsWorker.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ default 10 .Values.wso2.deployment.wso2amAnalyticsWorker.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.livenessProbe.periodSeconds }}
           readinessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9444
-            initialDelaySeconds: {{ default 100 .Values.wso2.deployment.wso2amAnalyticsWorker.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ default 10 .Values.wso2.deployment.wso2amAnalyticsWorker.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.readinessProbe.periodSeconds }}
           lifecycle:
             preStop:
               exec:
                 command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
           resources:
             requests:
-              memory: {{ default "4Gi" .Values.wso2.deployment.wso2amAnalyticsWorker.resources.requests.memory }}
-              cpu: {{ default "2000m" .Values.wso2.deployment.wso2amAnalyticsWorker.resources.requests.cpu }}
+              memory: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.resources.requests.memory }}
+              cpu: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.resources.requests.cpu }}
             limits:
-              memory: {{ default "4Gi" .Values.wso2.deployment.wso2amAnalyticsWorker.resources.limits.memory }}
-              cpu: {{ default "2000m" .Values.wso2.deployment.wso2amAnalyticsWorker.resources.limits.cpu }}
-          imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2amAnalyticsWorker.imagePullPolicy }}
+              memory: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.resources.limits.cpu }}
+          imagePullPolicy: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.imagePullPolicy }}
           securityContext:
             runAsUser: 802
           ports:
@@ -122,21 +122,21 @@ spec:
               subPath: deployment.yaml
         {{- if .Values.wso2.centralizedLogging.enabled }}
         - name: wso2am-pattern-1-shared-logs-emptydir
-          mountPath: /home/wso2carbon/wso2am-analytics-2.6.0/wso2/worker/logs
+          mountPath: /home/wso2carbon/wso2am-analytics-3.0.0/wso2/worker/logs
         - name: wso2am-pattern-1-analytics-worker-logstash
-          image: docker.elastic.co/logstash/logstash:{{ default "7.2.0" .Values.wso2.centralizedLogging.logstash.imageTag }}
+          image: docker.elastic.co/logstash/logstash:{{ .Values.wso2.centralizedLogging.logstash.imageTag }}
           livenessProbe:
             httpGet:
               path: /
               port: 9600
-            initialDelaySeconds: {{ default 20 .Values.wso2.centralizedLogging.logstash.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ default 30 .Values.wso2.centralizedLogging.logstash.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.wso2.centralizedLogging.logstash.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.centralizedLogging.logstash.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
               path: /
               port: 9600
-            initialDelaySeconds: {{ default 20 .Values.wso2.centralizedLogging.logstash.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ default 30 .Values.wso2.centralizedLogging.logstash.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.wso2.centralizedLogging.logstash.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.centralizedLogging.logstash.readinessProbe.periodSeconds }}
           volumeMounts:
             - name: wso2am-pattern-1-shared-logs-emptydir
               mountPath: /usr/share/logstash/wso2-logs/
@@ -150,7 +150,7 @@ spec:
               mountPath: /usr/share/logstash/plugins/
           env:
             - name: NODE_ID
-              value: {{ default "wso2am-analytics-worker-node" .Values.wso2.centralizedLogging.logstash.indexNodeID.wso2AMAnalyticsWorkerNode }}
+              value: {{ .Values.wso2.centralizedLogging.logstash.indexNodeID.wso2AMAnalyticsWorkerNode }}
             - name: NODE_IP
               valueFrom:
                 fieldRef:
@@ -166,7 +166,7 @@ spec:
                   name: wso2am-pattern-1-logstash-elasticsearch-creds
                   key: password
             - name: ELASTICSEARCH_HOST
-              value: {{ default "wso2-elasticsearch-master:9200" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }}
+              value: {{ .Values.wso2.centralizedLogging.logstash.elasticsearch.host }}
           {{- end }}
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
       {{- if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
