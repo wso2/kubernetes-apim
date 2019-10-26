@@ -12,26 +12,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: v1
+kind: Service
 metadata:
-  name: wso2am-pattern-1-am-ingress
+  name: wso2am-pattern-1-am-service
   namespace : {{ .Release.Namespace }}
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    nginx.ingress.kubernetes.io/affinity: "cookie"
-    nginx.ingress.kubernetes.io/session-cookie-name: "route"
-    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
 spec:
-  tls:
-    - hosts:
-        - {{ .Release.Name }}-am
-  rules:
-    - host: {{ .Release.Name }}-am
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: wso2am-pattern-1-am-service
-              servicePort: 9443
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    deployment: wso2am-pattern-1-am
+  ports:
+    # ports that this service should serve on
+    -
+      name: pass-through-http
+      protocol: TCP
+      port: 8280
+    -
+      name: pass-through-https
+      protocol: TCP
+      port: 8243
+    -
+      name: servlet-http
+      protocol: TCP
+      port: 9763
+    -
+      name: servlet-https
+      protocol: TCP
+      port: 9443
