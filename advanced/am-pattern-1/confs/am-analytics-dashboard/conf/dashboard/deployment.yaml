@@ -1,3 +1,19 @@
+################################################################################
+#   Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved
+#
+#   Licensed under the Apache License, Version 2.0 (the \"License\");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an \"AS IS\" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+################################################################################
+
 # Carbon Configuration Parameters
 wso2.carbon:
   type: wso2-apim-analytics
@@ -5,11 +21,12 @@ wso2.carbon:
   id: wso2-am-analytics
   # server name
   name: WSO2 API Manager Analytics Server
+  # enable/disable hostname verifier
+  hostnameVerificationEnabled: true
   # ports used by this server
   ports:
     # port offset
     offset: 3
-  #  hostnameVerificationEnabled: false
 
   # Configuration used for the databridge communication
 databridge.config:
@@ -256,10 +273,10 @@ wso2.datasources:
       definition:
         type: RDBMS
         configuration:
-          jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_PERMISSIONS_DB?useSSL=false'
+          jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/PERMISSION_DB;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE'
           username: wso2carbon
           password: wso2carbon
-          driverClassName: com.mysql.cj.jdbc.Driver
+          driverClassName: org.h2.Driver
           maxPoolSize: 10
           idleTimeout: 60000
           connectionTestQuery: SELECT 1
@@ -340,31 +357,40 @@ wso2.transport.http:
       keyStorePassword: wso2carbon
       certPass: wso2carbon
 
-# Authentication configuration
+## Dashboard data provider authorization
+data.provider.configs:
+  authorizingClass: org.wso2.carbon.dashboards.core.DashboardDataProviderAuthorizer
+
+## Additional APIs that needs to be added to the server.
+## Should be provided as a key value pairs { API context path: Microservice implementation class }
+## The configured APIs will be available as https://{host}:{port}/analytics-dashboard/{API_context_path}
+additional.apis:
+  /apis/analytics/v1.0/apim: org.wso2.analytics.apim.rest.api.proxy.ApimApi
+
+## Authentication configuration
 auth.configs:
   type: apim
   ssoEnabled: true
   properties:
-    adminScope: apim_analytics:admin
-    allScopes: apim_analytics:admin apim_analytics:creator apim_analytics:publisher_owner apim_analytics:publisher_editor apim_analytics:publisher_viewer apim_analytics:subscriber_owner apim_analytics:subscriber_editor apim_analytics:subscriber_viewer apim_analytics:everyone openid apim:api_view apim:subscribe
-    adminServiceBaseUrl: https://api-manager:9443
-    adminServiceUsername: admin
-    adminServicePassword: admin
-    kmDcrUrl: https://api-manager:9443/client-registration/v0.15/register
-    kmTokenUrl: https://api-manager:9443/oauth2
+    adminScope: apim_analytics:admin_carbon.super
+    allScopes: apim_analytics:admin apim_analytics:product_manager apim_analytics:api_developer apim_analytics:app_developer apim_analytics:devops_engineer apim_analytics:analytics_viewer apim_analytics:everyone openid apim:api_view apim:subscribe
+    adminServiceBaseUrl: https://localhost:9443
+    adminUsername: admin
+    adminPassword: admin
+    kmDcrUrl: https://localhost:9443/client-registration/v0.15/register
     kmTokenUrlForRedirection: https://localhost:9443/oauth2
+    kmTokenUrl: https://localhost:9443/oauth2
     kmUsername: admin
     kmPassword: admin
-    portalAppContext: portal
+    portalAppContext: analytics-dashboard
     businessRulesAppContext : business-rules
     cacheTimeout: 900
     baseUrl: https://localhost:9643
     grantType: authorization_code
-    publisherUrl: https://api-manager:9443
+    publisherUrl: https://localhost:9443
     #storeUrl: https://localhost:9443
 
 wso2.dashboard:
   roles:
     creators:
-      - apim_analytics:admin
-      - apim_analytics:creator
+      - apim_analytics:admin_carbon.super
