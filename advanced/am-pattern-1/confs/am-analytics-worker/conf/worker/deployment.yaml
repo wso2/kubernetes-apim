@@ -1,3 +1,19 @@
+################################################################################
+#   Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved
+#
+#   Licensed under the Apache License, Version 2.0 (the \"License\");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an \"AS IS\" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+################################################################################
+
 # Carbon Configuration Parameters
 wso2.carbon:
   type: wso2-apim-analytics
@@ -71,22 +87,22 @@ databridge.config:
   # No of worker threads to consume events
   # THIS IS A MANDATORY FIELD
   workerThreads: 10
-  # Maximum amount of messages that can be queued internally in MB
+    # Maximum amount of messages that can be queued internally in MB
   # THIS IS A MANDATORY FIELD
   maxEventBufferCapacity: 10000000
-  # Queue size; the maximum number of events that can be stored in the queue
+    # Queue size; the maximum number of events that can be stored in the queue
   # THIS IS A MANDATORY FIELD
   eventBufferSize: 2000
-  # Keystore file path
+    # Keystore file path
   # THIS IS A MANDATORY FIELD
   keyStoreLocation : ${sys:carbon.home}/resources/security/wso2carbon.jks
-  # Keystore password
+    # Keystore password
   # THIS IS A MANDATORY FIELD
   keyStorePassword : wso2carbon
-  # Session Timeout value in mins
+    # Session Timeout value in mins
   # THIS IS A MANDATORY FIELD
   clientTimeoutMin: 30
-  # Data receiver configurations
+    # Data receiver configurations
   # THIS IS A MANDATORY FIELD
   dataReceivers:
     -
@@ -125,7 +141,7 @@ data.agent.config:
         # Data agent name
         # THIS IS A MANDATORY FIELD
         name: Thrift
-        # Data endpoint class
+          # Data endpoint class
         # THIS IS A MANDATORY FIELD
         dataEndpointClass: org.wso2.carbon.databridge.agent.endpoint.thrift.ThriftDataEndpoint
         # Data publisher strategy
@@ -174,7 +190,7 @@ data.agent.config:
         # Data agent name
         # THIS IS A MANDATORY FIELD
         name: Binary
-        # Data endpoint class
+          # Data endpoint class
         # THIS IS A MANDATORY FIELD
         dataEndpointClass: org.wso2.carbon.databridge.agent.endpoint.binary.BinaryDataEndpoint
         # Data publisher strategy
@@ -332,10 +348,10 @@ wso2.datasources:
       definition:
         type: RDBMS
         configuration:
-          jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_PERMISSIONS_DB?useSSL=false&allowPublicKeyRetrieval=true'
+          jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/PERMISSION_DB;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE'
           username: wso2carbon
           password: wso2carbon
-          driverClassName: com.mysql.cj.jdbc.Driver
+          driverClassName: org.h2.Driver
           maxPoolSize: 10
           idleTimeout: 60000
           connectionTestQuery: SELECT 1
@@ -375,6 +391,24 @@ wso2.datasources:
           validationTimeout: 30000
           isAutoCommit: false
 
+    #Main datasource used in API Manager
+    - name: AM_DB
+      description: Main datasource used by API Manager
+      jndiConfig:
+        name: jdbc/AM_DB
+      definition:
+        type: RDBMS
+        configuration:
+          jdbcUrl: "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DB?useSSL=false&allowPublicKeyRetrieval=true"
+          username: wso2carbon
+          password: wso2carbon
+          driverClassName: com.mysql.cj.jdbc.Driver
+          maxPoolSize: 10
+          idleTimeout: 60000
+          connectionTestQuery: SELECT 1
+          validationTimeout: 30000
+          isAutoCommit: false
+
     - name: WSO2AM_MGW_ANALYTICS_DB
       description: "The datasource used for APIM MGW analytics data."
       jndiConfig:
@@ -408,6 +442,12 @@ wso2.datasources:
           validationTimeout: 30000
 
 siddhi:
+  refs:
+    - ref:
+        name: 'grpcSource'
+        type: 'grpc'
+        properties:
+          receiver.url : grpc://localhost:9806/org.wso2.grpc.EventService/consume
   extensions:
     -
       extension:
@@ -429,6 +469,18 @@ siddhi:
           cacheSize: 10000
           isPersistInDatabase: true
           datasource: GEO_LOCATION_DATA
+    #Enabling GRPC Service with an Extension
+    -
+      extension:
+        name: 'grpc'
+        namespace: 'source'
+        properties:
+          keyStoreFile : ${sys:carbon.home}/resources/security/wso2carbon.jks
+          keyStorePassword : wso2carbon
+          keyStoreAlgorithm : SunX509
+          trustStoreFile : ${sys:carbon.home}/resources/security/client-truststore.jks
+          trustStorePassword : wso2carbon
+          trustStoreAlgorithm : SunX509
 
   # Cluster Configuration
 cluster.config:
