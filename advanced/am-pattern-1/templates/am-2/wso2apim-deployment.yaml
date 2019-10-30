@@ -132,6 +132,10 @@ spec:
             - name: wso2am-pattern-1-am-2-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml
+            - name: am-publisher-services-login
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/publisher/services/login
+            - name: am-devportal-services-login
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/devportal/services/login
         {{- if .Values.wso2.centralizedLogging.enabled }}
         - name: wso2am-pattern-1-shared-logs-emptydir
           mountPath: /home/wso2carbon/wso2am-3.0.0/repository/logs/
@@ -198,18 +202,24 @@ spec:
         - name: wso2am-pattern-1-am-2-conf
           configMap:
             name: wso2am-pattern-1-am-2-conf
+        - name: am-publisher-services-login
+          configMap:
+            name: am-publisher-services-login
+        - name: am-devportal-services-login
+          configMap:
+            name: am-devportal-services-login
       {{- if .Values.wso2.centralizedLogging.enabled }}
-      - name: wso2am-pattern-1-shared-logs-emptydir
-        emptyDir: {}
-      - name: wso2am-pattern-1-logstash-yml-conf
-        configMap:
-          name: wso2am-pattern-1-logstash-yml-conf
-      - name: wso2am-pattern-1-c4-logstash-conf
-        configMap:
-          name: wso2am-pattern-1-c4-logstash-conf
-      - name: wso2am-pattern-1-shared-plugins-emptydir
-        emptyDir: {}
-      - name: wso2am-pattern-1-logstash-elasticsearch-creds
-        secret:
-          secretName: wso2am-pattern-1-logstash-elasticsearch-creds
+        - name: wso2am-pattern-1-shared-logs-emptydir
+          emptyDir: {}
+        - name: wso2am-pattern-1-logstash-yml-conf
+          configMap:
+            name: wso2am-pattern-1-logstash-yml-conf
+        - name: wso2am-pattern-1-c4-logstash-conf
+          configMap:
+            name: wso2am-pattern-1-c4-logstash-conf
+        - name: wso2am-pattern-1-shared-plugins-emptydir
+          emptyDir: {}
+        - name: wso2am-pattern-1-logstash-elasticsearch-creds
+          secret:
+            secretName: wso2am-pattern-1-logstash-elasticsearch-creds
       {{- end }}
