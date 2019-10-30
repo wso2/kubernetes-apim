@@ -16,7 +16,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: wso2am-pattern-1-am-2-conf
-  namespace : {{ .Release.namespace }}
+  namespace : {{ .Release.Namespace }}
 data:
   {{- if .Values.wso2.deployment.wso2am.config }}
 
