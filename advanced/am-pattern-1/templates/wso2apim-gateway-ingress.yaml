@@ -30,5 +30,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: wso2am-pattern-1-am-1-service
+          serviceName: wso2am-pattern-1-am-service
           servicePort: 8243
