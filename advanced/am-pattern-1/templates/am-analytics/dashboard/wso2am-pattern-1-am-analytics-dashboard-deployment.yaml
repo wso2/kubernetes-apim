@@ -217,4 +217,3 @@ spec:
           secret:
             secretName: wso2am-pattern-1-logstash-elasticsearch-creds
         {{- end }}
-
