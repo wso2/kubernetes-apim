@@ -134,6 +134,8 @@ spec:
               subPath: deployment.toml
             - name: wso2am-publisher-services-login
               mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/publisher/services/login
+            - name: wso2am-publisher-services-refresh
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/publisher/services/refresh
             - name: wso2am-devportal-services-login
               mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/devportal/services/login
         {{- if .Values.wso2.centralizedLogging.enabled }}
@@ -205,6 +207,9 @@ spec:
         - name: wso2am-publisher-services-login
           configMap:
             name: wso2am-publisher-services-login
+        - name: wso2am-publisher-services-refresh
+          configMap:
+            name: wso2am-publisher-services-refresh
         - name: wso2am-devportal-services-login
           configMap:
             name: wso2am-devportal-services-login
