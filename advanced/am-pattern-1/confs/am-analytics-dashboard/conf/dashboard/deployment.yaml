@@ -388,6 +388,7 @@ auth.configs:
     baseUrl: https://{{ .Release.Name }}-analytics-dashboard
     grantType: authorization_code
     publisherUrl: https://wso2am-pattern-1-am-service:9443
+    externalLogoutUrl: https://{{ .Release.Name }}-am/oidc/logout
     #storeUrl: https://localhost:9443
 
 wso2.dashboard:
