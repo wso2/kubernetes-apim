@@ -15,16 +15,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: wso2am-pattern-1-am-analytics-dashboard-bin
+  name: wso2am-pattern-1-am-analytics-dashboard-plugins
   namespace : {{ .Release.Namespace }}
-data:
-    {{- $file := .Files }}
-    {{- range $path, $byte := .Files.Glob "confs/am-analytics-dashboard/bin/*" }}
-    {{- $list := $path | splitList "/"}}
-    {{- $length := len $list }}
-    {{- $last := add $length -1 }}
-    {{ index $list $last }}: |-
-      {{- range $file.Lines $path }}
-      {{ tpl ( . ) $ }}
-      {{- end }}
-    {{- end }}
+binaryData:
+  org.wso2.analytics.apim.rest.api.proxy_3.0.0.jar : |-
+    {{ .Files.Get "confs/am-analytics-dashboard/wso2/lib/plugins/org.wso2.analytics.apim.rest.api.proxy_3.0.0.jar" | b64enc }}
