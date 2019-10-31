@@ -1,4 +1,4 @@
-{{- if (.Values.cloudProvider) and eq .Values.cloudProvider "Azure"}}
+{{- if (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) and eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "Azure"}}
 # Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
