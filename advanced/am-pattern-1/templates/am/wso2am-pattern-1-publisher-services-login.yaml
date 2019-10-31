@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: am-publisher-services-login
+  name: wso2am-publisher-services-login
   namespace : {{ .Release.Namespace }}
 data:
   {{- $file := .Files }}
@@ -28,4 +28,3 @@ data:
     {{ tpl ( . ) $ }}
     {{- end }}
   {{- end }}
-  

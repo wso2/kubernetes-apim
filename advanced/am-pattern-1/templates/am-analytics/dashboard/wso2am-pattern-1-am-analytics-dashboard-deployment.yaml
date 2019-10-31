@@ -15,28 +15,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2am-pattern-1-analytics-worker-deployment
+  name: wso2am-pattern-1-am-analytics-dashboard-deployment
   namespace : {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.replicas }}
-  minReadySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.minReadySeconds }}
+  replicas: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.replicas }}
+  minReadySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.minReadySeconds }}
   strategy:
     rollingUpdate:
-      maxSurge: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.strategy.rollingUpdate.maxSurge }}
-      maxUnavailable: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.strategy.rollingUpdate.maxUnavailable }}
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2am-pattern-1-analytics-worker
+      deployment: wso2am-pattern-1-analytics-dashboard
   template:
     metadata:
       labels:
-        deployment: wso2am-pattern-1-analytics-worker
+        deployment: wso2am-pattern-1-analytics-dashboard
     spec:
       initContainers:
         - name: init-apim-analytics-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z {{ .Values.wso2.mysql.host }} {{ .Values.wso2.mysql.port }}; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        - name: init-am-1
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Instance One deployment"; while ! nc -z  wso2am-pattern-1-am-1-service 9711; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Instance One has started";']
         {{- if .Values.wso2.centralizedLogging.enabled }}
         - name: init-logstash-plugins-install
           image: docker.elastic.co/logstash/logstash:{{ .Values.wso2.centralizedLogging.logstash.imageTag }}
@@ -52,78 +55,84 @@ spec:
         - name: init-elasticsearch
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of Elasticsearch Server deployment"; while ! nc -z {{ .Values.wso2.centralizedLogging.logstash.elasticsearch.host }} {{ .Values.wso2.centralizedLogging.logstash.elasticsearch.port }}; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
+        - name: init-am-1
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Instance One deployment"; while ! nc -z  wso2am-pattern-1-am-1-service 9711; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Instance One has started";']
         {{- end }}
       containers:
-        - name: wso2am-pattern-1-analytics-worker
-          {{- if .Values.wso2.deployment.wso2amAnalyticsWorker.dockerRegistry }}
-          image: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.dockerRegistry }}/{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}
-          {{- $tag := .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
-          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
-          {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-          image: wso2/{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}:{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
-          {{- else }}
-          image: docker.wso2.com/{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}:{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
-          {{- end }}
+        - name: wso2am-pattern-1-analytics-dashboard
+        {{- if .Values.wso2.deployment.wso2amAnalyticsDashboard.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.dockerRegistry }}/{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageName }}
+        {{- $tag := .Values.wso2.deployment.wso2amAnalyticsDashboard.imageTag }}
+        {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+        {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
+          image: wso2/{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageName }}:{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageTag }}
+        {{- else }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageName }}:{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageTag }}
+        {{- end }}
           livenessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 9444
-            initialDelaySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.livenessProbe.periodSeconds }}
+                - nc -z localhost 9643
+            initialDelaySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.livenessProbe.periodSeconds }}
           readinessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 9444
-            initialDelaySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.readinessProbe.periodSeconds }}
+                - nc -z localhost 9643
+            initialDelaySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.readinessProbe.periodSeconds }}
           lifecycle:
             preStop:
               exec:
-                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/dashboard.sh stop']
           resources:
             requests:
-              memory: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.resources.requests.memory }}
-              cpu: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.resources.requests.cpu }}
+              memory: {{  .Values.wso2.deployment.wso2amAnalyticsDashboard.resources.requests.memory }}
+              cpu: {{  .Values.wso2.deployment.wso2amAnalyticsDashboard.resources.requests.cpu }}
             limits:
-              memory: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.resources.limits.memory }}
-              cpu: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.resources.limits.cpu }}
-          imagePullPolicy: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.imagePullPolicy }}
+              memory: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.resources.limits.cpu }}
+          imagePullPolicy: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imagePullPolicy }}
           securityContext:
             runAsUser: 802
           ports:
             -
-              containerPort: 9764
+              containerPort: 9713
               protocol: "TCP"
             -
-              containerPort: 9444
+              containerPort: 9643
               protocol: "TCP"
             -
-              containerPort: 7612
+              containerPort: 9613
               protocol: "TCP"
             -
-              containerPort: 7712
+              containerPort: 7713
               protocol: "TCP"
             -
               containerPort: 9091
               protocol: "TCP"
             -
-              containerPort: 7071
-              protocol: "TCP"
-            -
-              containerPort: 7444
+              containerPort: 7613
               protocol: "TCP"
           volumeMounts:
-            - name: wso2am-pattern-1-am-analytics-worker-conf
-              mountPath: /home/wso2carbon/wso2-config-volume/conf/worker/deployment.yaml
+            - name: wso2am-pattern-1-am-analytics-dashboard-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
               subPath: deployment.yaml
-        {{- if .Values.wso2.centralizedLogging.enabled }}
-        - name: wso2am-pattern-1-shared-logs-emptydir
-          mountPath: /home/wso2carbon/wso2am-analytics-3.0.0/wso2/worker/logs
-        - name: wso2am-pattern-1-analytics-worker-logstash
+            - name: wso2am-pattern-1-am-analytics-dashboard-bin
+              mountPath: /home/wso2carbon/wso2-config-volume/wso2/dashboard/bin/carbon.sh
+              subPath: carbon.sh
+            - name: wso2am-pattern-1-am-analytics-dashboard-plugins
+              mountPath: /home/wso2carbon/wso2-config-volume/wso2/lib/plugins/org.wso2.analytics.apim.rest.api.proxy_3.0.0.jar
+              subPath: org.wso2.analytics.apim.rest.api.proxy_3.0.0.jar
+          {{- if .Values.wso2.centralizedLogging.enabled }}
+            - name: wso2am-pattern-1-shared-logs-emptydir
+              mountPath: /home/wso2carbon/wso2am-analytics-3.0.0/wso2/dashboard/logs
+        - name: wso2am-pattern-1-analytics-dashboard-logstash
           image: docker.elastic.co/logstash/logstash:{{ .Values.wso2.centralizedLogging.logstash.imageTag }}
           livenessProbe:
             httpGet:
@@ -150,7 +159,7 @@ spec:
               mountPath: /usr/share/logstash/plugins/
           env:
             - name: NODE_ID
-              value: {{ .Values.wso2.centralizedLogging.logstash.indexNodeID.wso2AMAnalyticsWorkerNode }}
+              value: {{ .Values.wso2.centralizedLogging.logstash.indexNodeID.wso2AMAnalyticsDashboardNode }}
             - name: NODE_IP
               valueFrom:
                 fieldRef:
@@ -173,6 +182,7 @@ spec:
       imagePullSecrets:
         - name: wso2am-pattern-1-creds
       {{- end }}
+      serviceAccountName: {{ .Values.kubernetes.svcaccount }}
       {{- if .Values.wso2.deployment.wso2am.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.wso2.deployment.wso2am.imagePullSecrets }}
@@ -181,9 +191,17 @@ spec:
         - name: wso2am-pattern-1-creds
       {{- end }}
       volumes:
-        - name: wso2am-pattern-1-am-analytics-worker-conf
+        - name: wso2am-pattern-1-am-analytics-dashboard-conf
           configMap:
-            name: wso2am-pattern-1-am-analytics-worker-conf
+            name: wso2am-pattern-1-am-analytics-dashboard-conf
+        - name: wso2am-pattern-1-am-analytics-dashboard-bin
+          configMap:
+            name: wso2am-pattern-1-am-analytics-dashboard-bin
+            defaultMode: 0777
+        - name: wso2am-pattern-1-am-analytics-dashboard-plugins
+          configMap:
+            name: wso2am-pattern-1-am-analytics-dashboard-plugins
+            defaultMode: 0777
         {{- if .Values.wso2.centralizedLogging.enabled }}
         - name: wso2am-pattern-1-shared-logs-emptydir
           emptyDir: {}

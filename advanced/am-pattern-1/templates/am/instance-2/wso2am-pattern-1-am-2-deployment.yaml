@@ -129,12 +129,12 @@ spec:
               mountPath: /home/wso2carbon/wso2am-3.0.0/repository/deployment/server/synapse-configs
             - name: wso2am-pattern-1-am-volume-claim-executionplans
               mountPath: /home/wso2carbon/wso2am-3.0.0/repository/deployment/server/executionplans
-            - name: wso2am-pattern-1-am-2-conf
+            - name: wso2am-pattern-1-am-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml
-            - name: am-publisher-services-login
+            - name: wso2am-publisher-services-login
               mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/publisher/services/login
-            - name: am-devportal-services-login
+            - name: wso2am-devportal-services-login
               mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/devportal/services/login
         {{- if .Values.wso2.centralizedLogging.enabled }}
         - name: wso2am-pattern-1-shared-logs-emptydir
@@ -199,15 +199,15 @@ spec:
         - name: wso2am-pattern-1-am-volume-claim-executionplans
           persistentVolumeClaim:
             claimName: wso2am-pattern-1-am-volume-claim-executionplans
-        - name: wso2am-pattern-1-am-2-conf
+        - name: wso2am-pattern-1-am-conf
           configMap:
-            name: wso2am-pattern-1-am-2-conf
-        - name: am-publisher-services-login
+            name: wso2am-pattern-1-am-conf
+        - name: wso2am-publisher-services-login
           configMap:
-            name: am-publisher-services-login
-        - name: am-devportal-services-login
+            name: wso2am-publisher-services-login
+        - name: wso2am-devportal-services-login
           configMap:
-            name: am-devportal-services-login
+            name: wso2am-devportal-services-login
       {{- if .Values.wso2.centralizedLogging.enabled }}
         - name: wso2am-pattern-1-shared-logs-emptydir
           emptyDir: {}
