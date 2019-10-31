@@ -12,23 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: v1
+kind: Service
 metadata:
-  name: wso2am-pattern-1-am-analytics-dashboard-ingress
+  name: wso2am-pattern-1-am-1-service
   namespace : {{ .Release.Namespace }}
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
 spec:
-  tls:
-    - hosts:
-        - {{ .Release.Name }}-analytics-dashboard
-  rules:
-    - host: {{ .Release.Name }}-analytics-dashboard
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: wso2am-pattern-1-analytics-dashboard-service
-              servicePort: 9643
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    deployment: wso2am-pattern-1-am
+    node: wso2am-pattern-1-am-1
+  ports:
+    # ports that this service should serve on
+    -
+      name: binary
+      protocol: TCP
+      port: 9611
+    -
+      name: binary-secure
+      protocol: TCP
+      port: 9711
+    -
+      name: jms-tcp
+      protocol: TCP
+      port: 5672
+    -
+      name: servlet-https
+      protocol: TCP
+      port: 9443

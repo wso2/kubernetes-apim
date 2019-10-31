@@ -378,7 +378,7 @@ auth.configs:
     adminUsername: admin
     adminPassword: admin
     kmDcrUrl: https://wso2am-pattern-1-am-service:9443/client-registration/v0.15/register
-    kmTokenUrlForRedirection: https://{{ .Release.Name }}/oauth2
+    kmTokenUrlForRedirection: https://{{ .Release.Name }}-am/oauth2
     kmTokenUrl: https://wso2am-pattern-1-am-service:9443/oauth2
     kmUsername: admin
     kmPassword: admin
