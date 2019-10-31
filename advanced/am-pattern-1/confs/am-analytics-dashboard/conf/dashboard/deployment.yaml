@@ -22,7 +22,7 @@ wso2.carbon:
   # server name
   name: WSO2 API Manager Analytics Server
   # enable/disable hostname verifier
-  hostnameVerificationEnabled: true
+  hostnameVerificationEnabled: false
   # ports used by this server
   ports:
     # port offset
@@ -374,20 +374,20 @@ auth.configs:
   properties:
     adminScope: apim_analytics:admin_carbon.super
     allScopes: apim_analytics:admin apim_analytics:product_manager apim_analytics:api_developer apim_analytics:app_developer apim_analytics:devops_engineer apim_analytics:analytics_viewer apim_analytics:everyone openid apim:api_view apim:subscribe
-    adminServiceBaseUrl: https://localhost:9443
+    adminServiceBaseUrl: https://wso2am-pattern-1-am-service:9443
     adminUsername: admin
     adminPassword: admin
-    kmDcrUrl: https://localhost:9443/client-registration/v0.15/register
-    kmTokenUrlForRedirection: https://localhost:9443/oauth2
-    kmTokenUrl: https://localhost:9443/oauth2
+    kmDcrUrl: https://wso2am-pattern-1-am-service:9443/client-registration/v0.15/register
+    kmTokenUrlForRedirection: https://{{ .Release.Name }}/oauth2
+    kmTokenUrl: https://wso2am-pattern-1-am-service:9443/oauth2
     kmUsername: admin
     kmPassword: admin
     portalAppContext: analytics-dashboard
     businessRulesAppContext : business-rules
     cacheTimeout: 900
-    baseUrl: https://localhost:9643
+    baseUrl: https://{{ .Release.Name }}-analytics-dashboard
     grantType: authorization_code
-    publisherUrl: https://localhost:9443
+    publisherUrl: https://wso2am-pattern-1-am-service:9443
     #storeUrl: https://localhost:9443
 
 wso2.dashboard:

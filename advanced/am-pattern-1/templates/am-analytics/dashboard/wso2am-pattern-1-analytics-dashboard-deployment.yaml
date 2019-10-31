@@ -123,6 +123,12 @@ spec:
             - name: wso2am-pattern-1-am-analytics-dashboard-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
               subPath: deployment.yaml
+            - name: wso2am-pattern-1-am-analytics-dashboard-bin
+              mountPath: /home/wso2carbon/wso2am-analytics-3.0.0/wso2/dashboard/bin/carbon.sh
+              subPath: carbon.sh
+            - name: wso2am-pattern-1-am-analytics-dashboard-plugins
+              mountPath: /home/wso2carbon/wso2am-analytics-3.0.0/wso2/lib/plugins/org.wso2.analytics.apim.rest.api.proxy_3.0.0.jar
+              subPath: org.wso2.analytics.apim.rest.api.proxy_3.0.0.jar
           {{- if .Values.wso2.centralizedLogging.enabled }}
             - name: wso2am-pattern-1-shared-logs-emptydir
               mountPath: /home/wso2carbon/wso2am-analytics-3.0.0/wso2/dashboard/logs
@@ -188,6 +194,14 @@ spec:
         - name: wso2am-pattern-1-am-analytics-dashboard-conf
           configMap:
             name: wso2am-pattern-1-am-analytics-dashboard-conf
+        - name: wso2am-pattern-1-am-analytics-dashboard-bin
+          configMap:
+            name: wso2am-pattern-1-am-analytics-dashboard-bin
+            defaultMode: 0777
+        - name: wso2am-pattern-1-am-analytics-dashboard-plugins
+          configMap:
+            name: wso2am-pattern-1-am-analytics-dashboard-plugins
+            defaultMode: 0777
         {{- if .Values.wso2.centralizedLogging.enabled }}
         - name: wso2am-pattern-1-shared-logs-emptydir
           emptyDir: {}
