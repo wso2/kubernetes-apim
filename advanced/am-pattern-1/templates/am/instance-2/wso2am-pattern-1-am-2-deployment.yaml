@@ -16,7 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2am-pattern-1-am-2-deployment
-  namespace : {{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.wso2.deployment.wso2am.replicas }}
   minReadySeconds: {{ .Values.wso2.deployment.wso2am.minReadySeconds }}
@@ -89,21 +89,17 @@ spec:
               cpu: {{ .Values.wso2.deployment.wso2am.resources.limits.cpu }}
           imagePullPolicy: {{ .Values.wso2.deployment.wso2am.imagePullPolicy }}
           ports:
-            -
-              containerPort: 8280
+            - containerPort: 8280
               protocol: "TCP"
-            -
-              containerPort: 8243
+            - containerPort: 8243
               protocol: "TCP"
-            -
-              containerPort: 9763
+            - containerPort: 9763
               protocol: "TCP"
-            -
-              containerPort: 9443
+            - containerPort: 9443
               protocol: "TCP"
           env:
             - name: HOST_NAME
-              value: {{ .Release.Name }}-am
+              value: "{{ .Release.Name }}-am"
             - name: NODE_IP
               valueFrom:
                 fieldRef:

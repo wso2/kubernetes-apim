@@ -1,4 +1,4 @@
-# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2am-pattern-1-am-analytics-dashboard-deployment
-  namespace : {{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.replicas }}
   minReadySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.minReadySeconds }}
@@ -42,15 +42,15 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Instance One deployment"; while ! nc -z  wso2am-pattern-1-am-1-service 9711; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Instance One has started";']
       containers:
         - name: wso2am-pattern-1-analytics-dashboard
-        {{- if .Values.wso2.deployment.wso2amAnalyticsDashboard.dockerRegistry }}
+          {{- if .Values.wso2.deployment.wso2amAnalyticsDashboard.dockerRegistry }}
           image: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.dockerRegistry }}/{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageName }}
-        {{- $tag := .Values.wso2.deployment.wso2amAnalyticsDashboard.imageTag }}
-        {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
-        {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
+          {{- $tag := .Values.wso2.deployment.wso2amAnalyticsDashboard.imageTag }}
+          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+          {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
           image: wso2/{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageName }}:{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageTag }}
-        {{- else }}
+          {{- else }}
           image: docker.wso2.com/{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageName }}:{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageTag }}
-        {{- end }}
+          {{- end }}
           livenessProbe:
             exec:
               command:
@@ -82,23 +82,17 @@ spec:
           securityContext:
             runAsUser: 802
           ports:
-            -
-              containerPort: 9713
+            - containerPort: 9713
               protocol: "TCP"
-            -
-              containerPort: 9643
+            - containerPort: 9643
               protocol: "TCP"
-            -
-              containerPort: 9613
+            - containerPort: 9613
               protocol: "TCP"
-            -
-              containerPort: 7713
+            - containerPort: 7713
               protocol: "TCP"
-            -
-              containerPort: 9091
+            - containerPort: 9091
               protocol: "TCP"
-            -
-              containerPort: 7613
+            - containerPort: 7613
               protocol: "TCP"
           volumeMounts:
             - name: wso2am-pattern-1-am-analytics-dashboard-conf
@@ -115,7 +109,6 @@ spec:
       imagePullSecrets:
         - name: wso2am-pattern-1-creds
       {{- end }}
-      serviceAccountName: {{ .Values.kubernetes.svcaccount }}
       {{- if .Values.wso2.deployment.wso2am.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.wso2.deployment.wso2am.imagePullSecrets }}

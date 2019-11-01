@@ -16,7 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2am-pattern-1-am-analytics-worker-deployment
-  namespace : {{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.replicas }}
   minReadySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.minReadySeconds }}
@@ -79,26 +79,19 @@ spec:
           securityContext:
             runAsUser: 802
           ports:
-            -
-              containerPort: 9764
+            - containerPort: 9764
               protocol: "TCP"
-            -
-              containerPort: 9444
+            - containerPort: 9444
               protocol: "TCP"
-            -
-              containerPort: 7612
+            - containerPort: 7612
               protocol: "TCP"
-            -
-              containerPort: 7712
+            - containerPort: 7712
               protocol: "TCP"
-            -
-              containerPort: 9091
+            - containerPort: 9091
               protocol: "TCP"
-            -
-              containerPort: 7071
+            - containerPort: 7071
               protocol: "TCP"
-            -
-              containerPort: 7444
+            - containerPort: 7444
               protocol: "TCP"
           volumeMounts:
             - name: wso2am-pattern-1-am-analytics-worker-conf
