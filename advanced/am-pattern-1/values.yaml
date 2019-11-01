@@ -116,26 +116,6 @@ wso2:
           cpu: "2000m"
       imagePullPolicy: Always
 
-  centralizedLogging:
-    enabled: false
-    logstash:
-      imageTag: 7.2.0
-      elasticsearch:
-        host: "wso2-elasticsearch-master:9200"
-        username: "elastic"
-        password: "changeme"
-      indexNodeID:
-        wso2AMNode1: "wso2am-node-1"
-        wso2AMNode2: "wso2am-node-2"
-        wso2AMAnalyticsWorkerNode: "wso2am-analytics-worker-node"
-        wso2AMAnalyticsDashboardNode: "wso2am-analytics-dashboard-node"
-      readinessProbe:
-        initialDelaySeconds: 20
-        periodSeconds: 30
-      livenessProbe:
-        initialDelaySeconds: 20
-        periodSeconds: 30
-
 tags:
   internal-nfs: true
 
