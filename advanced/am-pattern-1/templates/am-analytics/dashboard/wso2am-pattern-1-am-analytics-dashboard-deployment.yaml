@@ -102,8 +102,11 @@ spec:
               mountPath: /home/wso2carbon/wso2-config-volume/wso2/dashboard/bin/carbon.sh
               subPath: carbon.sh
             - name: wso2am-pattern-1-am-analytics-dashboard-plugins
-              mountPath: /home/wso2carbon/wso2-config-volume/wso2/lib/plugins/org.wso2.analytics.apim.rest.api.proxy_3.0.0.jar
+              mountPath: /home/wso2carbon/wso2-patch-volume/wso2/lib/plugins/org.wso2.analytics.apim.rest.api.proxy_3.0.0.jar
               subPath: org.wso2.analytics.apim.rest.api.proxy_3.0.0.jar
+            - name: wso2am-pattern-1-am-analytics-dashboard-conf-entrypoint
+              mountPath: /home/wso2carbon/docker-entrypoint.sh
+              subPath: docker-entrypoint.sh
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
       {{- if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
@@ -127,4 +130,8 @@ spec:
         - name: wso2am-pattern-1-am-analytics-dashboard-plugins
           configMap:
             name: wso2am-pattern-1-am-analytics-dashboard-plugins
+            defaultMode: 0777
+        - name: wso2am-pattern-1-am-analytics-dashboard-conf-entrypoint
+          configMap:
+            name: wso2am-pattern-1-am-analytics-dashboard-conf-entrypoint
             defaultMode: 0777
