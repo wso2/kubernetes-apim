@@ -39,6 +39,7 @@ spec:
         - ip: "127.0.0.1"
           hostnames:
             - "{{ .Release.Name }}-am"
+            - "{{ .Release.Name }}-gateway"
       initContainers:
         - name: init-db
           image: busybox:1.31
