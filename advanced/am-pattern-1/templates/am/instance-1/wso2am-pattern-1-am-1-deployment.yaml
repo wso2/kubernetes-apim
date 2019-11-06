@@ -109,7 +109,7 @@ spec:
               mountPath: /home/wso2carbon/wso2am-3.0.0/repository/deployment/server/synapse-configs
             - name: wso2am-pattern-1-am-volume-claim-executionplans
               mountPath: /home/wso2carbon/wso2am-3.0.0/repository/deployment/server/executionplans
-            - name: wso2am-pattern-1-am-conf
+            - name: wso2am-pattern-1-am-1-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml
             - name: wso2am-publisher-services-login
@@ -136,9 +136,9 @@ spec:
         - name: wso2am-pattern-1-am-volume-claim-executionplans
           persistentVolumeClaim:
             claimName: wso2am-pattern-1-am-volume-claim-executionplans
-        - name: wso2am-pattern-1-am-conf
+        - name: wso2am-pattern-1-am-1-conf
           configMap:
-            name: wso2am-pattern-1-am-conf
+            name: wso2am-pattern-1-am-1-conf
         - name: wso2am-publisher-services-login
           configMap:
             name: wso2am-publisher-services-login

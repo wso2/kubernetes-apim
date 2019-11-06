@@ -77,6 +77,19 @@ wso2:
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
+      instanceOne:
+        # If the deployment configurations for the WSO2 API Manager v3.0.0 (<WSO2AM>/repository/conf/deployment.toml),
+        # add the customized configuration file under (wso2 -> deployment -> am -> instanceOne -> config -> deployment.toml)
+        config: ""
+#            deployment.toml: |-
+#              # deployment configurations for the WSO2 API Manager v3.0.0 (<WSO2AM>/repository/conf/deployment.toml)
+      instanceTwo:
+        # If the deployment configurations for the WSO2 API Manager v3.0.0 (<WSO2AM>/repository/conf/deployment.toml),
+        # add the customized configuration file under (wso2 -> deployment -> am -> instanceTwo -> config -> deployment.toml)
+        config: ""
+#            deployment.toml: |-
+#              # deployment configurations for the WSO2 API Manager v3.0.0 (<WSO2AM>/repository/conf/deployment.toml)
+
     analytics:
       dashboard:
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
