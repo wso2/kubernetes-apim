@@ -18,12 +18,12 @@ metadata:
   name: wso2am-pattern-1-am-analytics-dashboard-deployment
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.replicas }}
-  minReadySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.minReadySeconds }}
+  replicas: {{ .Values.wso2.deployment.analytics.dashboard.replicas }}
+  minReadySeconds: {{ .Values.wso2.deployment.analytics.dashboard.minReadySeconds }}
   strategy:
     rollingUpdate:
-      maxSurge: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.strategy.rollingUpdate.maxSurge }}
-      maxUnavailable: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.wso2.deployment.analytics.dashboard.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.wso2.deployment.analytics.dashboard.strategy.rollingUpdate.maxUnavailable }}
     type: RollingUpdate
   selector:
     matchLabels:
@@ -34,22 +34,24 @@ spec:
         deployment: wso2am-pattern-1-analytics-dashboard
     spec:
       initContainers:
+        {{ if .Values.wso2.deployment.dependencies.mysql }}
         - name: init-apim-analytics-db
           image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z {{ .Values.wso2.mysql.host }} {{ .Values.wso2.mysql.port }}; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        {{ end }}
         - name: init-am-1
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Instance One deployment"; while ! nc -z  wso2am-pattern-1-am-1-service 9711; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Instance One has started";']
       containers:
         - name: wso2am-pattern-1-analytics-dashboard
-          {{- if .Values.wso2.deployment.wso2amAnalyticsDashboard.dockerRegistry }}
-          image: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.dockerRegistry }}/{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageName }}
-          {{- $tag := .Values.wso2.deployment.wso2amAnalyticsDashboard.imageTag }}
+          {{- if .Values.wso2.deployment.analytics.dashboard.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.analytics.dashboard.dockerRegistry }}/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}
+          {{- $tag := .Values.wso2.deployment.analytics.dashboard.imageTag }}
           {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
           {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-          image: wso2/{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageName }}:{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageTag }}
+          image: wso2/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}:{{ .Values.wso2.deployment.analytics.dashboard.imageTag }}
           {{- else }}
-          image: docker.wso2.com/{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageName }}:{{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imageTag }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}:{{ .Values.wso2.deployment.analytics.dashboard.imageTag }}
           {{- end }}
           livenessProbe:
             exec:
@@ -57,28 +59,28 @@ spec:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9643
-            initialDelaySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.wso2.deployment.analytics.dashboard.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.analytics.dashboard.livenessProbe.periodSeconds }}
           readinessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9643
-            initialDelaySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.wso2.deployment.analytics.dashboard.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.analytics.dashboard.readinessProbe.periodSeconds }}
           lifecycle:
             preStop:
               exec:
                 command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/dashboard.sh stop']
           resources:
             requests:
-              memory: {{  .Values.wso2.deployment.wso2amAnalyticsDashboard.resources.requests.memory }}
-              cpu: {{  .Values.wso2.deployment.wso2amAnalyticsDashboard.resources.requests.cpu }}
+              memory: {{  .Values.wso2.deployment.analytics.dashboard.resources.requests.memory }}
+              cpu: {{  .Values.wso2.deployment.analytics.dashboard.resources.requests.cpu }}
             limits:
-              memory: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.resources.limits.memory }}
-              cpu: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.resources.limits.cpu }}
-          imagePullPolicy: {{ .Values.wso2.deployment.wso2amAnalyticsDashboard.imagePullPolicy }}
+              memory: {{ .Values.wso2.deployment.analytics.dashboard.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.analytics.dashboard.resources.limits.cpu }}
+          imagePullPolicy: {{ .Values.wso2.deployment.analytics.dashboard.imagePullPolicy }}
           securityContext:
             runAsUser: 802
           ports:
@@ -112,9 +114,9 @@ spec:
       imagePullSecrets:
         - name: wso2am-pattern-1-creds
       {{- end }}
-      {{- if .Values.wso2.deployment.wso2am.imagePullSecrets }}
+      {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.wso2.deployment.wso2am.imagePullSecrets }}
+        - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
         - name: wso2am-pattern-1-creds
@@ -126,12 +128,12 @@ spec:
         - name: wso2am-pattern-1-am-analytics-dashboard-bin
           configMap:
             name: wso2am-pattern-1-am-analytics-dashboard-bin
-            defaultMode: 0777
+            defaultMode: 0407
         - name: wso2am-pattern-1-am-analytics-dashboard-plugins
           configMap:
             name: wso2am-pattern-1-am-analytics-dashboard-plugins
-            defaultMode: 0777
+            defaultMode: 0407
         - name: wso2am-pattern-1-am-analytics-dashboard-conf-entrypoint
           configMap:
             name: wso2am-pattern-1-am-analytics-dashboard-conf-entrypoint
-            defaultMode: 0777
+            defaultMode: 0407

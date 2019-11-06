@@ -18,12 +18,12 @@ metadata:
   name: wso2am-pattern-1-am-analytics-worker-deployment
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.replicas }}
-  minReadySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.minReadySeconds }}
+  replicas: {{ .Values.wso2.deployment.analytics.worker.replicas }}
+  minReadySeconds: {{ .Values.wso2.deployment.analytics.worker.minReadySeconds }}
   strategy:
     rollingUpdate:
-      maxSurge: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.strategy.rollingUpdate.maxSurge }}
-      maxUnavailable: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.wso2.deployment.analytics.worker.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.wso2.deployment.analytics.worker.strategy.rollingUpdate.maxUnavailable }}
     type: RollingUpdate
   selector:
     matchLabels:
@@ -34,19 +34,21 @@ spec:
         deployment: wso2am-pattern-1-analytics-worker
     spec:
       initContainers:
+        {{ if .Values.wso2.deployment.dependencies.mysql }}
         - name: init-apim-analytics-db
           image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z {{ .Values.wso2.mysql.host }} {{ .Values.wso2.mysql.port }}; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        {{ end }}
       containers:
         - name: wso2am-pattern-1-analytics-worker
-          {{- if .Values.wso2.deployment.wso2amAnalyticsWorker.dockerRegistry }}
-          image: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.dockerRegistry }}/{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}
-          {{- $tag := .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
+          {{- if .Values.wso2.deployment.analytics.worker.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.analytics.worker.dockerRegistry }}/{{ .Values.wso2.deployment.analytics.worker.imageName }}
+          {{- $tag := .Values.wso2.deployment.analytics.worker.imageTag }}
           {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
           {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-          image: wso2/{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}:{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
+          image: wso2/{{ .Values.wso2.deployment.analytics.worker.imageName }}:{{ .Values.wso2.deployment.analytics.worker.imageTag }}
           {{- else }}
-          image: docker.wso2.com/{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageName }}:{{ .Values.wso2.deployment.wso2amAnalyticsWorker.imageTag }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.analytics.worker.imageName }}:{{ .Values.wso2.deployment.analytics.worker.imageTag }}
           {{- end }}
           livenessProbe:
             exec:
@@ -54,28 +56,28 @@ spec:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9444
-            initialDelaySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.wso2.deployment.analytics.worker.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.analytics.worker.livenessProbe.periodSeconds }}
           readinessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9444
-            initialDelaySeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.wso2.deployment.analytics.worker.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.analytics.worker.readinessProbe.periodSeconds }}
           lifecycle:
             preStop:
               exec:
                 command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
           resources:
             requests:
-              memory: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.resources.requests.memory }}
-              cpu: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.resources.requests.cpu }}
+              memory: {{ .Values.wso2.deployment.analytics.worker.resources.requests.memory }}
+              cpu: {{ .Values.wso2.deployment.analytics.worker.resources.requests.cpu }}
             limits:
-              memory: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.resources.limits.memory }}
-              cpu: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.resources.limits.cpu }}
-          imagePullPolicy: {{ .Values.wso2.deployment.wso2amAnalyticsWorker.imagePullPolicy }}
+              memory: {{ .Values.wso2.deployment.analytics.worker.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.analytics.worker.resources.limits.cpu }}
+          imagePullPolicy: {{ .Values.wso2.deployment.analytics.worker.imagePullPolicy }}
           securityContext:
             runAsUser: 802
           ports:
@@ -102,9 +104,9 @@ spec:
       imagePullSecrets:
         - name: wso2am-pattern-1-creds
       {{- end }}
-      {{- if .Values.wso2.deployment.wso2am.imagePullSecrets }}
+      {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.wso2.deployment.wso2am.imagePullSecrets }}
+        - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
         - name: wso2am-pattern-1-creds
