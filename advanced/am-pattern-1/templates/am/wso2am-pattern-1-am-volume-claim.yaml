@@ -23,9 +23,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  {{- if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "Azure") }}
-  storageClassName: azurefile
-  {{- else if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "internal-nfs") }}
+  {{- if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "internal-nfs") }}
   storageClassName: nfs
   {{- else if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "external-nfs") }}
   storageClassName: ""
@@ -47,9 +45,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  {{- if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "Azure") }}
-  storageClassName: azurefile
-  {{- else if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "internal-nfs") }}
+  {{- if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "internal-nfs") }}
   storageClassName: nfs
   {{- else if and (.Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider "external-nfs") }}
   storageClassName: ""
