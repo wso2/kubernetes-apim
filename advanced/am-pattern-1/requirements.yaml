@@ -15,9 +15,8 @@ dependencies:
   - name: mysql-am
     version: "3.0.0-1"
     repository: "https://helm.wso2.com"
-    condition: wso2.mysql.enabled
+    condition: wso2.deployment.dependencies.mysql
   - name: nfs-server-provisioner
     version: "0.3.0"
     repository: "https://kubernetes-charts.storage.googleapis.com"
-    tags:
-      - internal-nfs
+    condition: wso2.deployment.dependencies.nfsServerProvisioner
