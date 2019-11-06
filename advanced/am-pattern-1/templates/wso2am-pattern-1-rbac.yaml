@@ -35,5 +35,5 @@ roleRef:
   name: endpoints-reader-role
 subjects:
   - kind: ServiceAccount
-    name: {{ .Values.kubernetes.svcaccount }}
+    name: {{ .Values.kubernetes.serviceAccount }}
     namespace: {{ .Release.Namespace }}

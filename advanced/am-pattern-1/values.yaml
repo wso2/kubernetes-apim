@@ -13,111 +13,149 @@
 # limitations under the License.
 
 wso2:
-  mysql:
-    enabled: true
-    host: wso2am-mysql-db-service
-    port: "3306"
-    username: wso2carbon
-    password: wso2carbon
-    driverClass: com.mysql.jdbc.Driver
-    validationQuery: "SELECT 1"
+
+  # WSO2 subscription parameters. If you do not have an active subscription, do not provide values for the parameters.
+  # If you do not possess an active WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription at (https://wso2.com/free-trial-subscription).
   subscription:
     username: ""
     password: ""
+
   deployment:
+    dependencies:
+      # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
+      mysql: true
+      # Enable NFS dynamic provisioner for Kubernetes
+      nfsServerProvisioner: true
+
     persistentRuntimeArtifacts:
+      # Persistent storage provider expected to be used for sharing persistent runtime artifacts
+      # This can be one of the following.
+      #   1. internal-nfs - Using the NFS dynamic provisioner for Kubernetes
+      #   2. external-nfs - Using an externally configured NFS server
       cloudProvider: "internal-nfs"
-      nfsServerIP: ""
-      sharedAPIMLocationPath: ""
-    wso2am:
-#      dockerRegistry: ""
+      # External NFS Server IP
+      nfsServerIP: "xxxxxxxxxxx"
+      # Exported location on external NFS Server to be mounted at <APIM_HOME>/repository/deployment/server/synapse-configs
+      sharedAPIMSynapseConfigsPath: "/data/q4/synapse-configs"
+      # Exported location on external NFS Server to be mounted at <APIM_HOME>/repository/deployment/server/executionplans
+      sharedAPIMExecutionPlansPath: "/data/q4/executionplans"
+
+    am:
+      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+      #dockerRegistry: ""
+
       imageName: "wso2am"
       imageTag: "3.0.0"
       replicas: 1
-      minReadySeconds: 75
+      # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
+      minReadySeconds: 240
       strategy:
         rollingUpdate:
           maxSurge: 1
           maxUnavailable: 0
+      # Indicates whether the container is running.
       livenessProbe:
-        initialDelaySeconds: 250
+        # Number of seconds after the container has started before liveness probes are initiated.
+        initialDelaySeconds: 240
+        # How often (in seconds) to perform the probe.
         periodSeconds: 10
+      # Indicates whether the container is ready to service requests.
       readinessProbe:
-        initialDelaySeconds: 250
+        # Number of seconds after the container has started before readiness probes are initiated.
+        initialDelaySeconds: 240
+        # How often (in seconds) to perform the probe.
         periodSeconds: 10
       resources:
-        # These are the minimum resource recommendations for running WSO2 Identity server profiles
-        # as per official documentation (https://docs.wso2.com/display/IS580/Installation+Prerequisites).
+        # These are the minimum resource recommendations for running WSO2 API Management product profiles
+        # as per official documentation (https://apim.docs.wso2.com/en/next/SetupAndInstall/InstallationGuide/installation-prerequisites/).
         requests:
           memory: "2Gi"
           cpu: "2000m"
         limits:
           memory: "3Gi"
           cpu: "3000m"
+      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
-    wso2amAnalyticsDashboard:
-#      dockerRegistry: ""
-      imageName: "wso2am-analytics-worker"
-      imageTag: "3.0.0"
-      replicas: 1
-      minReadySeconds: 75
-      strategy:
-        rollingUpdate:
-          maxSurge: 1
-          maxUnavailable: 0
-      livenessProbe:
-        initialDelaySeconds: 100
-        periodSeconds: 10
-      readinessProbe:
-        initialDelaySeconds: 100
-        periodSeconds: 10
-      resources:
-        # These are the minimum resource recommendations for running WSO2 Stream Processor based server profiles
-        # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
-        requests:
-          memory: "4Gi"
-          cpu: "2000m"
-        # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
-        # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
-        # where necessary.
-        limits:
-          memory: "4Gi"
-          cpu: "2000m"
-      imagePullPolicy: Always
+    analytics:
+      dashboard:
+        # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+        #dockerRegistry: ""
 
-    wso2amAnalyticsWorker:
-#      dockerRegistry: ""
-      imageName: "wso2am-analytics-worker"
-      imageTag: "3.0.0"
-      replicas: 1
-      minReadySeconds: 75
-      strategy:
-        rollingUpdate:
-          maxSurge: 1
-          maxUnavailable: 0
-      livenessProbe:
-        initialDelaySeconds: 100
-        periodSeconds: 10
-      readinessProbe:
-        initialDelaySeconds: 100
-        periodSeconds: 10
-      resources:
-        # These are the minimum resource recommendations for running WSO2 Stream Processor based server profiles
-        # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
-        requests:
-          memory: "4Gi"
-          cpu: "2000m"
-        # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
-        # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
-        # where necessary.
-        limits:
-          memory: "4Gi"
-          cpu: "2000m"
-      imagePullPolicy: Always
+        imageName: "wso2am-analytics-dashboard"
+        imageTag: "3.0.0"
+        replicas: 1
+        # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
+        minReadySeconds: 30
+        strategy:
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 0
+        # Indicates whether the container is running.
+        livenessProbe:
+          # Number of seconds after the container has started before liveness probes are initiated.
+          initialDelaySeconds: 20
+          # How often (in seconds) to perform the probe.
+          periodSeconds: 10
+        # Indicates whether the container is ready to service requests.
+        readinessProbe:
+          # Number of seconds after the container has started before readiness probes are initiated.
+          initialDelaySeconds: 20
+          # How often (in seconds) to perform the probe.
+          periodSeconds: 10
+        resources:
+          # These are the minimum resource recommendations for running WSO2 Stream Processor based server profiles
+          # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
+          requests:
+            memory: "4Gi"
+            cpu: "2000m"
+          # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
+          # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
+          # where necessary.
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        imagePullPolicy: Always
 
-tags:
-  internal-nfs: true
+      worker:
+        # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+        #dockerRegistry: ""
+
+        imageName: "wso2am-analytics-worker"
+        imageTag: "3.0.0"
+        replicas: 1
+        # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
+        minReadySeconds: 30
+        strategy:
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 0
+        # Indicates whether the container is running.
+        livenessProbe:
+          # Number of seconds after the container has started before liveness probes are initiated.
+          initialDelaySeconds: 20
+          # How often (in seconds) to perform the probe.
+          periodSeconds: 10
+        # Indicates whether the container is ready to service requests.
+        readinessProbe:
+          # Number of seconds after the container has started before readiness probes are initiated.
+          initialDelaySeconds: 20
+          # How often (in seconds) to perform the probe.
+          periodSeconds: 10
+        resources:
+          # These are the minimum resource recommendations for running WSO2 Stream Processor based server profiles
+          # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
+          requests:
+            memory: "4Gi"
+            cpu: "2000m"
+          # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
+          # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
+          # where necessary.
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        imagePullPolicy: Always
 
 kubernetes:
-  svcaccount: "wso2am-pattern-1-svc-account"
+  # Name of Kubernetes service account
+  serviceAccount: "wso2am-pattern-1-svc-account"
