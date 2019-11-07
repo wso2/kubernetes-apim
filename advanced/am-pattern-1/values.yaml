@@ -34,11 +34,11 @@ wso2:
       #   2. external-nfs - Using an externally configured NFS server
       cloudProvider: "internal-nfs"
       # External NFS Server IP
-      nfsServerIP: "xxxxxxxxxxx"
+      nfsServerIP: ""
       # Exported location on external NFS Server to be mounted at <APIM_HOME>/repository/deployment/server/synapse-configs
-      sharedAPIMSynapseConfigsPath: "/data/q4/synapse-configs"
+      sharedAPIMSynapseConfigsPath: ""
       # Exported location on external NFS Server to be mounted at <APIM_HOME>/repository/deployment/server/executionplans
-      sharedAPIMExecutionPlansPath: "/data/q4/executionplans"
+      sharedAPIMExecutionPlansPath: ""
 
     am:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
