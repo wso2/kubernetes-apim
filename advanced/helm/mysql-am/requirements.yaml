@@ -13,5 +13,5 @@
 # limitations under the License.
 dependencies:
   - name: mysql
-    version: "1.3.0"
+    version: "1.4.0"
     repository: "https://kubernetes-charts.storage.googleapis.com"
