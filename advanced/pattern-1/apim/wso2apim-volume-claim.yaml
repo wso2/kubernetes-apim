@@ -42,4 +42,3 @@ spec:
   selector:
     matchLabels:
       purpose: apim-execution-plans
-      
