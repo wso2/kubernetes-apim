@@ -1,5 +1,7 @@
 # Kubernetes Resources for a Fully Distributed deployment of WSO2 API Manager
 
+**Note**: We consider Helm to be the primary source of installation of WSO2 product deployment patterns in Kubernetes environments. Hence, pure Kubernetes resources for product deployment patterns will be deprecated from 2.6.0.7 onwards. Please adjust your usage accordingly.
+
 Core Kubernetes resources for [WSO2 API Manager deployment pattern 3](https://docs.wso2.com/display/AM260/Deployment+Patterns#DeploymentPatterns-Pattern3).
 This consists of a fully distributed deployment of WSO2 API Manager with WSO2 API Manager Analytics support.
 
