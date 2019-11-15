@@ -11,13 +11,31 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+ 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wso2apim-with-analytics-shared-synapse-configs-pv
+  labels:
+    purpose: apim-synapse-configs
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: <NFS_SERVER_IP>
+    path: "<NFS_LOCATION_PATH>"
+
+---
 
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wso2apim-with-analytics-shared-deployment-pv
+  name: wso2apim-with-analytics-shared-execution-plans-pv
   labels:
-    purpose: apim-shared-deployment
+    purpose: apim-execution-plans
 spec:
   capacity:
     storage: 1Gi
