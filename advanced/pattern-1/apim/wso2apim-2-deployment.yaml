@@ -90,17 +90,22 @@ spec:
           containerPort: 9443
           protocol: "TCP"
         volumeMounts:
-        - name: apim-storage-volume
-          mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server
+        - name: apim-synapse-configs-volume
+          mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server/synapse-configs
+        - name: apim-execution-plans-volume
+          mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server/executionplans
         - name: apim-2-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: apim-2-conf-datasources
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
       serviceAccountName: "wso2svc-account"
       volumes:
-      - name: apim-storage-volume
+      - name: apim-synapse-configs-volume
         persistentVolumeClaim:
-          claimName: wso2apim-with-analytics-apim-deployment-volume-claim
+          claimName: wso2apim-with-analytics-apim-synapse-configs-volume-claim
+      - name: apim-execution-plans-volume
+        persistentVolumeClaim:
+          claimName: wso2apim-with-analytics-apim-execution-plans-volume-claim
       - name: apim-2-conf
         configMap:
           name: apim-2-conf
