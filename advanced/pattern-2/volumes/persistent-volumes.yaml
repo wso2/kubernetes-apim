@@ -15,9 +15,9 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wso2apim-pattern-2-apim-server-pv
+  name: wso2apim-pattern-2-pub-store-tm-executionplans-pv
   labels:
-    purpose: wso2apim-pattern-2-apim-shared
+    purpose: wso2apim-pattern-2-pub-store-tm-shared-executionplans
 spec:
   capacity:
     storage: 1Gi
@@ -33,9 +33,9 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wso2apim-pattern-2-gateway-server-pv
+  name: wso2apim-pattern-2-gateway-synapse-configs-pv
   labels:
-    purpose: wso2apim-pattern-2-gateway-shared
+    purpose: wso2apim-pattern-2-gateway-shared-synapse-configs
 spec:
   capacity:
     storage: 1Gi

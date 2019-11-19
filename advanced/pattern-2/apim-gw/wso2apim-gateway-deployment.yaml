@@ -96,17 +96,17 @@ spec:
           containerPort: 9443
           protocol: "TCP"
         volumeMounts:
-        - name: apim-storage-volume
-          mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server
+        - name:  apim-gateway-synapse-configs-volume
+          mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server/synapse-configs
         - name: apim-gateway-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: apim-gateway-conf-axis2
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
       serviceAccountName: "wso2svc-account"
       volumes:
-      - name: apim-storage-volume
+      - name: apim-gateway-synapse-configs-volume
         persistentVolumeClaim:
-          claimName: wso2apim-pattern-2-gateway-shared-server-volume-claim
+          claimName: wso2apim-pattern-2-gateway-shared-synapse-configs-volume-claim
       - name: apim-gateway-conf
         configMap:
           name: apim-gateway-conf

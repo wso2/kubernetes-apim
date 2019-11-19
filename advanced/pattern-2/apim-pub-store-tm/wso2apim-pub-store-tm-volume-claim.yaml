@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wso2apim-pattern-2-apim-shared-server-volume-claim
+  name: wso2apim-pattern-2-pub-store-tm-shared-executionplans-volume-claim
 spec:
   accessModes:
     - ReadWriteMany
@@ -25,4 +25,4 @@ spec:
   storageClassName: ""
   selector:
     matchLabels:
-      purpose: wso2apim-pattern-2-apim-shared
+      purpose: wso2apim-pattern-2-pub-store-tm-shared-executionplans
