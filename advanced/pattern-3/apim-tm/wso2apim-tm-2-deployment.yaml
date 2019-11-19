@@ -94,8 +94,8 @@ spec:
               containerPort: 7611
               protocol: "TCP"
           volumeMounts:
-            - name: apim-storage-volume
-              mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server
+            - name: apim-tm-executionplans-volume
+              mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server/executionplans
             - name: apim-tm-2-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
             - name: apim-tm-2-conf-axis2
@@ -104,9 +104,9 @@ spec:
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
       serviceAccountName: "wso2svc-account"
       volumes:
-        - name: apim-storage-volume
+        - name: apim-tm-executionplans-volume
           persistentVolumeClaim:
-            claimName: wso2apim-pattern-3-tm-shared-server-volume-claim
+            claimName: wso2apim-pattern-3-tm-shared-executionplans-volume-claim
         - name: apim-tm-2-conf
           configMap:
             name: apim-tm-2-conf
