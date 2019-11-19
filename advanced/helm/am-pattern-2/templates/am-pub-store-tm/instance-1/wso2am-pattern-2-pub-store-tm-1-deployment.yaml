@@ -15,39 +15,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2am-pattern-2-gateway-deployment
+  name: wso2am-pattern-2-pub-store-tm-1-deployment
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.wso2.deployment.wso2am.gateway.replicas }}
+  replicas: 1
   minReadySeconds: {{ .Values.wso2.deployment.wso2am.minReadySeconds }}
   strategy:
     rollingUpdate:
-      maxSurge: {{ .Values.wso2.deployment.wso2am.gateway.strategy.rollingUpdate.maxSurge }}
-      maxUnavailable: {{ .Values.wso2.deployment.wso2am.gateway.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: 1
+      maxUnavailable: 0
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2am-pattern-2-gateway
+      deployment: wso2am-pattern-2-pub-store-tm
+      node: wso2am-pattern-2-pub-store-tm-1
   template:
     metadata:
       labels:
-        deployment: wso2am-pattern-2-gateway
+        deployment: wso2am-pattern-2-pub-store-tm
+        node: wso2am-pattern-2-pub-store-tm-1
     spec:
       initContainers:
+        {{- if and .Values.wso2.deployment.db.hostname (.Values.wso2.deployment.db.port) }}
+        - name: init-apim-db
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z {{ .Values.wso2.deployment.db.hostname }} {{ .Values.wso2.deployment.db.port }}; do sleep 1; printf "-"; done; echo -e "  >> DBMS service is available";']
+        {{- end }}
         - name: init-apim-analytics
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-2-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
         - name: init-km
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of Key Manager deployment"; while ! nc -z wso2am-pattern-2-km-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Key Manager has started";']
-        - name: init-apim-pub-store-tm-1
-          image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Pub-Store-TM Instance One deployment"; while ! nc -z wso2am-pattern-2-pub-store-tm-1-service 9443; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Pub-Store-TM Instance One has started";']
-        - name: init-apim-pub-store-tm-2
-          image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Pub-Store-TM Instance Two deployment"; while ! nc -z wso2am-pattern-2-pub-store-tm-2-service 9443; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Pub-Store-TM Instance Two has started";']
       containers:
-        - name: wso2am-pattern-2-gateway
+        - name: wso2am-pub-store-tm
           {{- if .Values.wso2.deployment.wso2am.dockerRegistry }}
           image: {{ .Values.wso2.deployment.wso2am.dockerRegistry }}/{{ .Values.wso2.deployment.wso2am.imageName }}
           {{- $tag := .Values.wso2.deployment.wso2am.imageTag }}
@@ -62,7 +63,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 8243
+                - nc -z localhost 9443
             initialDelaySeconds: {{ .Values.wso2.deployment.wso2am.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.wso2am.livenessProbe.periodSeconds }}
           readinessProbe:
@@ -70,7 +71,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 8243
+                - nc -z localhost 9443
             initialDelaySeconds: {{ .Values.wso2.deployment.wso2am.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.wso2am.readinessProbe.periodSeconds }}
           lifecycle:
@@ -88,21 +89,27 @@ spec:
           securityContext:
             runAsUser: 802
           ports:
-            - containerPort: 8280
-              protocol: "TCP"
-            - containerPort: 8243
-              protocol: "TCP"
             - containerPort: 9763
               protocol: "TCP"
             - containerPort: 9443
               protocol: "TCP"
+            - containerPort: 5672
+              protocol: "TCP"
+            - containerPort: 9711
+              protocol: "TCP"
+            - containerPort: 9611
+              protocol: "TCP"
+            - containerPort: 7711
+              protocol: "TCP"
+            - containerPort: 7611
+              protocol: "TCP"
           volumeMounts:
             - name: wso2am-pattern-2-storage-volume
-              mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server/synapse-configs
-            - name: wso2am-pattern-2-gateway-conf
+              mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server/executionplans
+            - name: wso2am-pattern-2-pub-store-tm-1-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-            - name: wso2am-pattern-2-gateway-conf-axis2
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
+            - name: wso2am-pattern-2-pub-store-tm-1-conf-datasources
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.wso2am.imagePullSecrets }}
       imagePullSecrets:
@@ -114,10 +121,10 @@ spec:
       volumes:
         - name: wso2am-pattern-2-storage-volume
           persistentVolumeClaim:
-            claimName: wso2am-pattern-2-gateway-shared-synapse-configs-volume-claim
-        - name: wso2am-pattern-2-gateway-conf
+            claimName: wso2am-pattern-2-pub-store-tm-shared-executionplans-volume-claim
+        - name: wso2am-pattern-2-pub-store-tm-1-conf
           configMap:
-            name: wso2am-pattern-2-gateway-conf
-        - name: wso2am-pattern-2-gateway-conf-axis2
+            name: wso2am-pattern-2-pub-store-tm-1-conf
+        - name: wso2am-pattern-2-pub-store-tm-1-conf-datasources
           configMap:
-            name: wso2am-pattern-2-gateway-conf-axis2
+            name: wso2am-pattern-2-pub-store-tm-1-conf-datasources

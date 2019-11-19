@@ -12,22 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: Service
+apiVersion: extensions/v1beta1
+kind: Ingress
 metadata:
-  name: wso2am-service
+  name: wso2am-pattern-2-pub-store-tm-ingress
   namespace : {{ .Release.Namespace }}
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
 spec:
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    deployment: wso2am-pattern-2-pub-store-tm
-  ports:
-    # ports that this service should serve on
-    -
-      name: servlet-http
-      protocol: TCP
-      port: 9763
-    -
-      name: servlet-https
-      protocol: TCP
-      port: 9443
+  tls:
+    - hosts:
+        - {{ .Release.Name }}-am
+  rules:
+    - host: {{ .Release.Name }}-am
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: wso2am-pattern-2-pub-store-tm-service
+              servicePort: 9443

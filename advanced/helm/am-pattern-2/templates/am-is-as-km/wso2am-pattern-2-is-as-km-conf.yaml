@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{- if (.Values.wso2.deployment.defaultKeyManager) and eq .Values.wso2.deployment.defaultKeyManager "is" }}
+{{- if .Values.wso2.deployment.wso2is.enabled }}
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: apim-is-as-km-conf
+  name: wso2am-pattern-2-is-as-km-conf
   namespace : {{ .Release.Namespace }}
 data:
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/apim-is-as-km/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/am-is-as-km/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}

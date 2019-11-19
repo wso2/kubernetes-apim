@@ -1,4 +1,4 @@
-# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,5 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-http.host: "0.0.0.0"
-path.config: /usr/share/logstash/pipeline
+apiVersion: v1
+kind: Service
+metadata:
+  name: wso2am-pattern-2-pub-store-tm-service
+  namespace : {{ .Release.Namespace }}
+spec:
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    deployment: wso2am-pattern-2-pub-store-tm
+  ports:
+    # ports that this service should serve on
+    -
+      name: servlet-http
+      protocol: TCP
+      port: 9763
+    -
+      name: servlet-https
+      protocol: TCP
+      port: 9443

@@ -11,30 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-{{- if (not .Values.wso2.deployment.persistentRuntimeArtifacts.cloudProvider)}}
+
+  {{- if (not .Values.wso2.deployment.dependencies.nfsProvisioner) }}
 
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wso2am-pattern-2-apim-server-pv
-  labels:
-    purpose: wso2am-pattern-2-apim-shared
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.nfsServerIP }}
-    path: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.sharedPubStoreTMLocationPath }}
-
----
-
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: wso2am-pattern-2-gateway-server-pv
+  name: wso2am-pattern-2-gateway-shared-synapse-configs-volume
   labels:
     purpose: wso2am-pattern-2-gateway-shared
 spec:
@@ -45,18 +28,16 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.nfsServerIP }}
-    path: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.sharedGatewayLocationPath }}
-
-  {{- if (.Values.wso2.deployment.defaultKeyManager) and eq .Values.wso2.deployment.defaultKeyManager "is" }}
+    path: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.sharedAPIMSynapseConfigsPath }}
 
 ---
 
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wso2am-pattern-2-is-as-km-server-pv
+  name: wso2am-pattern-2-pub-store-tm-shared-executionplans-volume
   labels:
-    purpose: wso2am-pattern-2-km-shared
+    purpose: wso2am-pattern-2-pub-store-tm-shared
 spec:
   capacity:
     storage: 1Gi
@@ -65,8 +46,6 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.nfsServerIP }}
-    path: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.sharedISKMLocationPath }}
+    path: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.sharedAPIMExecutionPlansPath }}
 
   {{- end }}
-
-{{- end }}
