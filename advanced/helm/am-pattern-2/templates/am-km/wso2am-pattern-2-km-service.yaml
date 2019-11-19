@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{- if (not .Values.wso2.deployment.defaultKeyManager) }}
+{{- if (not .Values.wso2.deployment.wso2is.enabled) }}
 
 apiVersion: v1
 kind: Service

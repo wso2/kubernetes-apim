@@ -56,7 +56,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>{{ AMDB_URL }}</url>
+                    <url>{{ USER_DB_URL }}</url>
                     <username>{{ DB_USERNAME }}</username>
                     <password>{{ DB_PASSWORD }}</password>
                     <driverClassName>{{ DRIVER_CLASSNAME }}</driverClassName>

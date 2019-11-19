@@ -18,12 +18,22 @@ metadata:
   name: wso2am-pattern-2-am-analytics-worker-conf
   namespace : {{ .Release.Namespace }}
 data:
-  {{- $analytics_dburl := printf "%s%s%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":" .Values.wso2.mysql.port "/WSO2AM_ANALYTICS_DB?useSSL=false" }}
-  {{- $permission_dburl := printf "%s%s%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":" .Values.wso2.mysql.port "/WSO2_PERMISSIONS_DB?useSSL=false" }}
-  {{- $db_driver_class_name := .Values.wso2.mysql.driverClass }}
-  {{- $db_validation_query := .Values.wso2.mysql.validationQuery }}
-  {{- $db_username := .Values.wso2.mysql.username }}
-  {{- $db_password := .Values.wso2.mysql.password }}
+  # generate connection URLs based on the DBMS type
+  {{- $analytics_dburl := "" }}
+  {{- $permission_dburl := "" }}
+  {{ if and .Values.wso2.deployment.db.type (eq .Values.wso2.deployment.db.type "mysql") }}
+    {{- $analytics_dburl = printf "jdbc:mysql://%s:%s/%s?useSSL=false" .Values.wso2.deployment.db.hostname .Values.wso2.deployment.db.port .Values.wso2.deployment.db.analyticsDB }}
+    {{- $permission_dburl = printf "jdbc:mysql://%s:%s/%s?useSSL=false" .Values.wso2.deployment.db.hostname .Values.wso2.deployment.db.port .Values.wso2.deployment.db.permissionsDB }}
+  {{ end }}
+  # set relevant DBMS driver class name
+  {{- $db_driver_class_name := .Values.wso2.deployment.db.driverClass }}
+  # set the relevant SQL validation query
+  {{- $db_validation_query := .Values.wso2.deployment.db.validationQuery }}
+  # set the database username
+  {{- $db_username := .Values.wso2.deployment.db.username }}
+  # set the database password
+  {{- $db_password := .Values.wso2.deployment.db.password }}
+
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/am-analytics/conf/worker/*" }}
   {{- $list := $path | splitList "/"}}

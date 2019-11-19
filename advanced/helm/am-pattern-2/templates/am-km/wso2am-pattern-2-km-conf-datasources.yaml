@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{- if (not .Values.wso2.deployment.defaultKeyManager) }}
+{{- if (not .Values.wso2.deployment.wso2is.enabled) }}
 
 apiVersion: v1
 kind: ConfigMap
@@ -20,12 +20,22 @@ metadata:
   name: wso2am-pattern-2-km-conf-datasources
   namespace : {{ .Release.Namespace }}
 data:
-  {{- $apimgt_dburl := printf "%s%s%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":" .Values.wso2.mysql.port "/WSO2AM_APIMGT_DB?autoReconnect=true&amp;useSSL=false" }}
-  {{- $am_dburl := printf "%s%s%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":" .Values.wso2.mysql.port "/WSO2AM_USER_DB?autoReconnect=true&amp;useSSL=false" }}
-  {{- $db_driver_class_name := .Values.wso2.mysql.driverClass }}
-  {{- $db_validation_query := .Values.wso2.mysql.validationQuery }}
-  {{- $db_username := .Values.wso2.mysql.username }}
-  {{- $db_password := .Values.wso2.mysql.password }}
+  # generate connection URLs based on the DBMS type
+  {{- $apimgt_dburl := "" }}
+  {{- $user_dburl := "" }}
+  {{ if and .Values.wso2.deployment.db.type (eq .Values.wso2.deployment.db.type "mysql") }}
+    {{- $apimgt_dburl = printf "jdbc:mysql://%s:%s/%s?useSSL=false" .Values.wso2.deployment.db.hostname .Values.wso2.deployment.db.port .Values.wso2.deployment.db.apimgtDB }}
+    {{- $user_dburl = printf "jdbc:mysql://%s:%s/%s?useSSL=false" .Values.wso2.deployment.db.hostname .Values.wso2.deployment.db.port .Values.wso2.deployment.db.userDB }}
+  {{ end }}
+  # set relevant DBMS driver class name
+  {{- $db_driver_class_name := .Values.wso2.deployment.db.driverClass }}
+  # set the relevant SQL validation query
+  {{- $db_validation_query := .Values.wso2.deployment.db.validationQuery }}
+  # set the database username
+  {{- $db_username := .Values.wso2.deployment.db.username }}
+  # set the database password
+  {{- $db_password := .Values.wso2.deployment.db.password }}
+
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/am-km/datasources/*" }}
   {{- $list := $path | splitList "/"}}
@@ -33,7 +43,7 @@ data:
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
     {{- range $line := $file.Lines $path }}
-      {{ $line | replace "{{ DB_USERNAME }}" $db_username | replace "{{ DB_PASSWORD }}" $db_password | replace "{{ AMDB_URL }}" $am_dburl | replace "{{ APIMGT_DB_URL }}" $apimgt_dburl | replace "{{ DRIVER_CLASSNAME }}" $db_driver_class_name | replace "{{ VALIDATION_QUERY }}" $db_validation_query }}
+      {{ $line | replace "{{ DB_USERNAME }}" $db_username | replace "{{ DB_PASSWORD }}" $db_password | replace "{{ APIMGT_DB_URL }}" $apimgt_dburl | replace "{{ USER_DB_URL }}" $user_dburl | replace "{{ DRIVER_CLASSNAME }}" $db_driver_class_name | replace "{{ VALIDATION_QUERY }}" $db_validation_query }}
     {{- end }}
   {{- end }}
 

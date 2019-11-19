@@ -13,7 +13,20 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: ServiceAccount
+kind: ConfigMap
 metadata:
-  name: {{ .Values.kubernetes.svcaccount }}
+  name: wso2am-pattern-2-pub-store-tm-1-conf
   namespace : {{ .Release.Namespace }}
+data:
+  {{- $am_hostname := printf "%s%s" .Release.Name "-am" }}
+  {{- $gateway_hostname := printf "%s%s" .Release.Name "-gateway" }}
+  {{- $file := .Files }}
+  {{- range $path, $byte := .Files.Glob "confs/am-pub-store-tm-1/*" }}
+  {{- $list := $path | splitList "/"}}
+  {{- $length := len $list }}
+  {{- $last := add $length -1 }}
+  {{ index $list $last }}: |-
+    {{- range $line := $file.Lines $path }}
+      {{ $line | replace "{{ GATEWAY_HOSTNAME }}" $gateway_hostname | replace "{{ AM_HOSTNAME }}" $am_hostname }}
+    {{- end }}
+  {{- end }}

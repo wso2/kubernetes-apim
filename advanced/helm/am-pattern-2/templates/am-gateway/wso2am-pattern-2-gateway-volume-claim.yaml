@@ -1,4 +1,4 @@
-# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,12 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-{{ if .Values.wso2.centralizedLogging.enabled }}
+
 apiVersion: v1
-kind: ConfigMap
+kind: PersistentVolumeClaim
 metadata:
-    name: wso2am-pattern-2-c4-logstash-conf
-    namespace : {{ .Release.Namespace }}
-data:
-    {{- (.Files.Glob "confs/logstash/c4/logstash.conf").AsConfig | nindent 2 }}
-{{ end }}
+  name: wso2am-pattern-2-gateway-shared-synapse-configs-volume-claim
+  namespace : {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  {{- if .Values.wso2.deployment.dependencies.nfsProvisioner }}
+  storageClassName: nfs
+  {{- else }}
+  storageClassName: ""
+  selector:
+    matchLabels:
+      purpose: wso2am-pattern-2-gateway-shared
+  {{- end }}

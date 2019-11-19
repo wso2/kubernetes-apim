@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{- if (not .Values.wso2.deployment.defaultKeyManager) }}
+{{- if (not .Values.wso2.deployment.wso2is.enabled) }}
 
 apiVersion: v1
 kind: ConfigMap
@@ -20,15 +20,14 @@ metadata:
   name: wso2am-pattern-2-km-conf
   namespace : {{ .Release.Namespace }}
 data:
-  {{- $gateway_hostname := printf "%s%s" .Release.Name "-gateway" }}
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/am-km/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
-    {{- range $line := $file.Lines $path }}
-      {{ $line | replace "{{ GATEWAY_HOSTNAME }}" $gateway_hostname }}
+    {{- range $file.Lines $path }}
+    {{ . }}
     {{- end }}
   {{- end }}
 
