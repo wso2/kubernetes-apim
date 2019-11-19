@@ -83,8 +83,6 @@ spec:
         volumeMounts:
         - name: apim-km-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-        - name: apim-km-conf-axis2
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
         - name: apim-km-conf-datasources
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
       serviceAccountName: "wso2svc-account"
@@ -92,9 +90,6 @@ spec:
       - name: apim-km-conf
         configMap:
           name: apim-km-conf
-      - name: apim-km-conf-axis2
-        configMap:
-          name: apim-km-conf-axis2
       - name: apim-km-conf-datasources
         configMap:
           name: apim-km-conf-datasources

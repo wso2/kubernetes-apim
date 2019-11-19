@@ -170,7 +170,7 @@ echoBold 'Creating Kubernetes ConfigMaps for WSO2 product configurations...'
 ${KUBERNETES_CLIENT} create configmap apim-analytics-conf-worker --from-file=../confs/apim-analytics/
 # create the Kubernetes ConfigMaps for API Manager's KeyManager
 ${KUBERNETES_CLIENT} create configmap apim-km-conf --from-file=../confs/apim-km/
-${KUBERNETES_CLIENT} create configmap apim-km-conf-axis2 --from-file=../confs/apim-km/axis2/
+# ${KUBERNETES_CLIENT} create configmap apim-km-conf-axis2 --from-file=../confs/apim-km/axis2/
 ${KUBERNETES_CLIENT} create configmap apim-km-conf-datasources --from-file=../confs/apim-km/datasources/
 # create the Kubernetes ConfigMaps for Identity Server as Key Manager
 #${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf --from-file=../confs/apim-is-as-km/

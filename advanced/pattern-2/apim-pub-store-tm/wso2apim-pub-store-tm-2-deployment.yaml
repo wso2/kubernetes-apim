@@ -104,17 +104,17 @@ spec:
           containerPort: 7611
           protocol: "TCP"
         volumeMounts:
-          - name: apim-storage-volume
-            mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server
+          - name: apim-pub-store-tm-volume
+            mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server/executionplans
           - name: apim-pub-store-tm-2-conf
             mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
           - name: apim-pub-store-tm-2-conf-datasources
             mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
       serviceAccountName: "wso2svc-account"
       volumes:
-        - name: apim-storage-volume
+        - name: apim-pub-store-tm-volume
           persistentVolumeClaim:
-            claimName: wso2apim-pattern-2-apim-shared-server-volume-claim
+            claimName: wso2apim-pattern-2-pub-store-tm-shared-executionplans-volume-claim
         - name: apim-pub-store-tm-2-conf
           configMap:
             name: apim-pub-store-tm-2-conf
