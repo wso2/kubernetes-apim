@@ -1,0 +1,131 @@
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wso2am-pattern-1-am-2-deployment
+  namespace : {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  minReadySeconds: {{ .Values.wso2.deployment.wso2am.minReadySeconds }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2am-pattern-1-am
+      node: wso2am-pattern-1-am-2
+  template:
+    metadata:
+      labels:
+        deployment: wso2am-pattern-1-am
+        node: wso2am-pattern-1-am-2
+    spec:
+      initContainers:
+        {{- if and .Values.wso2.deployment.db.hostname (.Values.wso2.deployment.db.port) }}
+        - name: init-apim-db
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z {{ .Values.wso2.deployment.db.hostname }} {{ .Values.wso2.deployment.db.port }}; do sleep 1; printf "-"; done; echo -e "  >> DBMS service is available";']
+        {{- end }}
+        - name: init-am-analytics-worker
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-1-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+        - name: init-am-1
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Instance One deployment"; while ! nc -z  wso2am-pattern-1-am-1-service 9711; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Instance One has started";']
+      containers:
+        - name: wso2am-pattern-1-am
+          {{- if .Values.wso2.deployment.wso2am.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.wso2am.dockerRegistry }}/{{ .Values.wso2.deployment.wso2am.imageName }}
+          {{- $tag := .Values.wso2.deployment.wso2am.imageTag }}
+          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+          {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
+          image: wso2/{{ .Values.wso2.deployment.wso2am.imageName }}:{{ .Values.wso2.deployment.wso2am.imageTag }}
+          {{- else }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.wso2am.imageName }}:{{ .Values.wso2.deployment.wso2am.imageTag }}
+          {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: {{ .Values.wso2.deployment.wso2am.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.wso2am.livenessProbe.periodSeconds }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: {{ .Values.wso2.deployment.wso2am.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.wso2am.readinessProbe.periodSeconds }}
+          lifecycle:
+            preStop:
+              exec:
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+          resources:
+            requests:
+              memory: {{ .Values.wso2.deployment.wso2am.resources.requests.memory }}
+              cpu: {{ .Values.wso2.deployment.wso2am.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.wso2.deployment.wso2am.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.wso2am.resources.limits.cpu }}
+          imagePullPolicy: {{ .Values.wso2.deployment.wso2am.imagePullPolicy }}
+          ports:
+            -
+              containerPort: 8280
+              protocol: "TCP"
+            -
+              containerPort: 8243
+              protocol: "TCP"
+            -
+              containerPort: 9763
+              protocol: "TCP"
+            -
+              containerPort: 9443
+              protocol: "TCP"
+          volumeMounts:
+            - name: wso2am-pattern-1-storage-volume-executionplans
+              mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server/executionplans
+            - name: wso2am-pattern-1-storage-volume-synapse-configs
+              mountPath: /home/wso2carbon/wso2am-2.6.0/repository/deployment/server/synapse-configs
+            - name: wso2am-pattern-1-am-2-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+            - name: wso2am-pattern-1-am-2-datasources-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
+      {{- if .Values.wso2.deployment.wso2am.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.wso2.deployment.wso2am.imagePullSecrets }}
+      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      imagePullSecrets:
+        - name: wso2am-pattern-1-creds
+      {{ end }}
+      volumes:
+        - name: wso2am-pattern-1-storage-volume-executionplans
+          persistentVolumeClaim:
+            claimName: wso2am-pattern-1-am-shared-executionplans-volume-claim
+        - name: wso2am-pattern-1-storage-volume-synapse-configs
+          persistentVolumeClaim:
+            claimName: wso2am-pattern-1-am-shared-synapse-configs-volume-claim
+        - name: wso2am-pattern-1-am-2-conf
+          configMap:
+            name: wso2am-pattern-1-am-2-conf
+        - name: wso2am-pattern-1-am-2-datasources-conf
+          configMap:
+            name: wso2am-pattern-1-am-2-datasources-conf

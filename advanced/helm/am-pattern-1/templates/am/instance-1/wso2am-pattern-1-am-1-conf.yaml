@@ -1,4 +1,4 @@
-# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,19 +15,22 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: wso2am-pattern-1-am-2-conf
+  name: wso2am-pattern-1-am-1-conf
   namespace : {{ .Release.Namespace }}
 data:
-  {{- $am_db_chach_id := printf "%s%s%s%s%s%s" .Values.wso2.mysql.username "@jdbc:mysql://" .Values.wso2.mysql.host ":" .Values.wso2.mysql.port "/WSO2AM_REG_DB" }}
+  {{- $am_db_chach_id := "" }}
+  {{ if and .Values.wso2.deployment.db.type (eq .Values.wso2.deployment.db.type "mysql") }}
+    {{- $am_db_chach_id := printf "%s@jdbc:%s://%s:%s/%s" .Values.wso2.deployment.db.username .Values.wso2.deployment.db.type .Values.wso2.deployment.db.hostname .Values.wso2.deployment.db.port .Values.wso2.deployment.db.regDB }}
+  {{ end }}
   {{- $gateway_hostname := printf "%s%s" .Release.Name "-gateway" }}
   {{- $am_hostname := printf "%s%s" .Release.Name "-am" }}
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/am-2/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/am-1/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
     {{- range $line := $file.Lines $path }}
-    {{ $line | replace "{{ GATEWAY_HOSTNAME }}" $gateway_hostname | replace "{{ AM_HOSTNAME }}" $am_hostname | replace "{{ AM_DB_CACHE_ID }}" $am_db_chach_id  }}
+      {{ $line | replace "{{ GATEWAY_HOSTNAME }}" $gateway_hostname | replace "{{ AM_HOSTNAME }}" $am_hostname | replace "{{ AM_DB_CACHE_ID }}" $am_db_chach_id }}
     {{- end }}
   {{- end }}
