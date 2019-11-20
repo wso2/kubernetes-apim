@@ -242,7 +242,6 @@ ${KUBERNETES_CLIENT} create -f ../apim-km/wso2apim-km-deployment.yaml
 sleep 3m
 
 #echoBold 'Deploying WSO2 Identity Server as Key Manager...'
-#${KUBERNETES_CLIENT} create -f ../apim-is-as-km/wso2apim-is-as-km-volume-claim.yaml
 #${KUBERNETES_CLIENT} create -f ../apim-is-as-km/wso2apim-is-as-km-deployment.yaml
 
 echoBold 'Deploying WSO2 API Manager Publisher...'
