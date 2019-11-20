@@ -81,17 +81,12 @@ spec:
           containerPort: 9443
           protocol: "TCP"
         volumeMounts:
-        - name: apim-is-as-km-storage-volume
-          mountPath: /home/wso2carbon/wso2is-km-5.7.0/repository/deployment
         - name: apim-is-as-km-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: apim-is-as-km-conf-datasources
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
       serviceAccountName: "wso2svc-account"
       volumes:
-      - name: apim-is-as-km-storage-volume
-        persistentVolumeClaim:
-          claimName: wso2apim-pattern-3-is-as-km-shared-server-volume-claim
       - name: apim-is-as-km-conf
         configMap:
           name: apim-is-as-km-conf
