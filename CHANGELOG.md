@@ -3,19 +3,7 @@ All notable changes to this project 2.6.x per each release will be documented in
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [Unreleased]
-
-### Added
-
-- Introduce the use of Kubernetes Init Containers in Kubernetes and Helm resources for
-WSO2 API Management deployment patterns.
-
-### Changed
-
-- Fix product configuration issues associated with Helm resources for WSO2 API Management
-deployment patterns.
-- Update Kubernetes resource definitions used within Helm resources for WSO2 API Management deployment patterns.
-- Make WSO2 API Manager's Key Manager profile the default Key Manager used in WSO2 API Management deployment patterns.
+## [v2.6.0.7] - 2019-11-21
 
 For detailed information on the tasks carried out during this release, please see the GitHub milestone
 [v2.6.0.7](https://github.com/wso2/kubernetes-apim/milestone/4).
