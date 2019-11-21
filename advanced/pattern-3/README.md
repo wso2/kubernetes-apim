@@ -199,47 +199,20 @@ chmod -R 700 <directory_name>
 
 Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
 
-**Note**: If you are using WSO2 Identity Server as the Key Manager, uncomment the corresponding Kubernetes Persistent Volume resource.
-
-```
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: wso2apim-pattern-3-is-as-km-server-pv
-  labels:
-    purpose: wso2apim-pattern-3-km-shared
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"  
-```
-
 Then, deploy the Kubernetes Persistent Volume and Volume Claim resources as follows:
 
 * Kubernetes Persistent Volume Claim resource for the shared volume mount for runtime artifacts created at
-`<APIM_HOME>/repository/deployment/server` directory in Gateway profile deployment.
+`<APIM_HOME>/repository/deployment/server/synapse-configs` directory in Gateway profile deployment.
 
 ```
 kubectl create -f <KUBERNETES_HOME>/advanced/pattern-3/apim-gateway/wso2apim-gateway-volume-claim.yaml
 ```
 
 * Kubernetes Persistent Volume Claim resource for the shared volume mount for runtime artifacts created at
-`<APIM_HOME>/repository/deployment/server` directory in Traffic-Manager profile deployment.
+`<APIM_HOME>/repository/deployment/server/executionplans` directory in Traffic-Manager profile deployment.
 
 ```
 kubectl create -f <KUBERNETES_HOME>/advanced/pattern-3/apim-tm/wso2apim-tm-volume-claim.yaml
-```
-
-* [Optional] If you are using WSO2 Identity Server as the Key Manager, Kubernetes Persistent Volume Claim resource for the
-shared volume mount for runtime artifacts created at `<IS_KM_HOME>/repository/deployment/server` directory in Key Manager profile deployment.
-
-```
-kubectl create -f <KUBERNETES_HOME>/advanced/pattern-3/apim-is-as-km/wso2apim-is-as-km-volume-claim.yaml
 ```
 
 * Kubernetes Persistent Volume resources for the above Volume Claims created.

@@ -66,26 +66,7 @@ chmod -R 700 <directory_name>
 Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
 
 **Note**: By default, the deployment management script (i.e. `<KUBERNETES_HOME>/advanced/pattern-3/scripts/deploy.sh`) is configured to deploy
-WSO2 Identity Server as the Key Manager. If you are **not** using WSO2 Identity Server as the Key Manager, comment out the corresponding
-Kubernetes Persistent Volume resource.
-
-```
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: wso2apim-pattern-3-is-as-km-server-pv
-  labels:
-    purpose: wso2apim-pattern-3-km-shared
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"  
-```
+WSO2 Identity Server as the Key Manager. 
 
 ##### 4. Setup product database(s).
 
