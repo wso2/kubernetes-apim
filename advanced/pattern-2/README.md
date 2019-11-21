@@ -210,47 +210,20 @@ kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 
   Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
 
-  **Note**: If you are using WSO2 Identity Server as the Key Manager, uncomment the corresponding Kubernetes Persistent Volume resource.
-
-  ```
-  apiVersion: v1
-  kind: PersistentVolume
-  metadata:
-    name: wso2apim-pattern-2-is-as-km-server-pv
-    labels:
-      purpose: wso2apim-pattern-2-km-shared
-  spec:
-    capacity:
-      storage: 1Gi
-    accessModes:
-      - ReadWriteMany
-    persistentVolumeReclaimPolicy: Retain
-    nfs:
-      server: <NFS_SERVER_IP>
-      path: "<NFS_LOCATION_PATH>"  
-  ```
-
   Then, deploy the Kubernetes Persistent Volume and Volume Claim resources as follows:
 
   * Kubernetes Persistent Volume Claim resource for the shared volume mount for runtime artifacts created at
-  `<APIM_HOME>/repository/deployment/server` directory in Gateway profile deployment.
+  `<APIM_HOME>/repository/deployment/server/synapse-configs` directory in Gateway profile deployment.
 
   ```
   kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/apim-gw/wso2apim-gateway-volume-claim.yaml
   ```
 
   * Kubernetes Persistent Volume Claim resource for the shared volume mount for runtime artifacts created at
-  `<APIM_HOME>/repository/deployment/server` directory in Publisher-Store-Traffic-Manager profile deployment.
+  `<APIM_HOME>/repository/deployment/server/executionplans` directory in Publisher-Store-Traffic-Manager profile deployment.
 
   ```
   kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/apim-pub-store-tm/wso2apim-pub-store-tm-volume-claim.yaml
-  ```
-
-  * [Optional] If you are using WSO2 Identity Server as the Key Manager, Kubernetes Persistent Volume Claim resource for the
-  shared volume mount for runtime artifacts created at `<IS_KM_HOME>/repository/deployment/server` directory in Key Manager profile deployment.
-
-  ```
-  kubectl create -f <KUBERNETES_HOME>/advanced/pattern-2/apim-is-as-km/wso2apim-is-as-km-volume-claim.yaml
   ```
 
   * Kubernetes Persistent Volume resources for the above Volume Claims created.
@@ -277,7 +250,6 @@ If you are using WSO2 API Manager's Key Manager profile, deploy the following Ku
 
 ```
 kubectl create configmap apim-km-conf --from-file=<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-km/
-kubectl create configmap apim-km-conf-axis2 --from-file=<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-km/axis2/
 kubectl create configmap apim-km-conf-datasources --from-file=<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-km/datasources/
 ```
 
@@ -285,6 +257,7 @@ Else, if you are using WSO2 Identity Server as Key Manager, deploy the following
 
 ```
 kubectl create configmap apim-is-as-km-conf --from-file=<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-is-as-km/
+kubectl create create -f <KUBERNETES_HOME>/advanced/pattern-2/confs/apim-is-as-km/Init/init.yaml
 kubectl create configmap apim-is-as-km-conf-axis2 --from-file=<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-is-as-km/axis2/
 kubectl create configmap apim-is-as-km-conf-datasources --from-file=<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-is-as-km/datasources/
 ```

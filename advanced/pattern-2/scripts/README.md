@@ -66,27 +66,7 @@ chmod -R 700 <directory_name>
 
 Update each Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported, NFS server directory path (`NFS_LOCATION_PATH`).
 
-**Note**: By default, the deployment management script (i.e. `<KUBERNETES_HOME>/advanced/pattern-2/scripts/deploy.sh`) is configured to deploy
-WSO2 Identity Server as the Key Manager. If you are **not** using WSO2 Identity Server as the Key Manager, comment out the corresponding
-Kubernetes Persistent Volume resource.
-
-```
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: wso2apim-pattern-2-is-as-km-server-pv
-  labels:
-    purpose: wso2apim-pattern-2-km-shared
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"  
-```
+**Note**: By default, the deployment management script (i.e. `<KUBERNETES_HOME>/advanced/pattern-2/scripts/deploy.sh`) is configured to deploy WSO2 Identity Server as the Key Manager. 
 
 ##### 4. Setup product database(s).
 
@@ -155,7 +135,6 @@ WSO2 Identity Server as the Key Manager.
     ```
     # Kubernetes ConfigMaps for WSO2 API Manager's Key Manager profile
     ${KUBERNETES_CLIENT} create configmap apim-km-conf --from-file=../confs/apim-km/
-    ${KUBERNETES_CLIENT} create configmap apim-km-conf-axis2 --from-file=../confs/apim-km/axis2/
     ${KUBERNETES_CLIENT} create configmap apim-km-conf-datasources --from-file=../confs/apim-km/datasources/
     
     ...
@@ -175,6 +154,7 @@ WSO2 Identity Server as the Key Manager.
     ```
     # Kubernetes ConfigMaps for WSO2 Identity Server as Key Manager
     ${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf --from-file=../confs/apim-is-as-km/
+    ${KUBERNETES_CLIENT} create -f ../confs/apim-is-as-km/Init/init.yaml
     ${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf-axis2 --from-file=../confs/apim-is-as-km/axis2/
     ${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf-datasources --from-file=../confs/apim-is-as-km/datasources/
     
@@ -182,11 +162,6 @@ WSO2 Identity Server as the Key Manager.
     
     # Kubernetes Service for WSO2 Identity Server as Key Manager
     ${KUBERNETES_CLIENT} create -f ../apim-is-as-km/wso2apim-is-as-km-service.yaml
-    
-    ...
-    
-    # Kubernetes Persistent Volume Claim for shaing runtime artifacts between WSO2 Identity Server as Key Manager pods
-    ${KUBERNETES_CLIENT} create -f ../apim-is-as-km/wso2apim-is-as-km-volume-claim.yaml
     
     ...
     
