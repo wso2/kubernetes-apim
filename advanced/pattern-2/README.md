@@ -257,7 +257,7 @@ Else, if you are using WSO2 Identity Server as Key Manager, deploy the following
 
 ```
 kubectl create configmap apim-is-as-km-conf --from-file=<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-is-as-km/
-kubectl create create -f <KUBERNETES_HOME>/advanced/pattern-2/confs/apim-is-as-km/Init/init.yaml
+kubectl create create -f <KUBERNETES_HOME>/advanced/pattern-2/confs/apim-is-as-km/init/init.yaml
 kubectl create configmap apim-is-as-km-conf-axis2 --from-file=<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-is-as-km/axis2/
 kubectl create configmap apim-is-as-km-conf-datasources --from-file=<KUBERNETES_HOME>/advanced/pattern-2/confs/apim-is-as-km/datasources/
 ```
