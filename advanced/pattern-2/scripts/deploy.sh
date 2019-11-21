@@ -173,6 +173,8 @@ ${KUBERNETES_CLIENT} create configmap apim-km-conf --from-file=../confs/apim-km/
 ${KUBERNETES_CLIENT} create configmap apim-km-conf-datasources --from-file=../confs/apim-km/datasources/
 # create the Kubernetes ConfigMaps for Identity Server as Key Manager
 #${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf --from-file=../confs/apim-is-as-km/
+#${KUBERNETES_CLIENT} create -f ../confs/apim-is-as-km/Init/init.yaml
+#${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf-axis2 --from-file=../confs/apim-is-as-km/axis2/
 #${KUBERNETES_CLIENT} create configmap apim-is-as-km-conf-datasources --from-file=../confs/apim-is-as-km/datasources/
 # create the Kubernetes ConfigMaps for API Manager's Publisher-Store-TM
 ${KUBERNETES_CLIENT} create configmap apim-pub-store-tm-1-conf --from-file=../confs/apim-pub-store-tm-1/

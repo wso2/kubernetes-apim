@@ -59,6 +59,7 @@ spec:
           initialDelaySeconds: 240
           failureThreshold: 3
           periodSeconds: 10
+        command: ["/home/wso2carbon/init.sh"]
         lifecycle:
           preStop:
             exec:
@@ -73,6 +74,11 @@ spec:
         imagePullPolicy: Always
         securityContext:
           runAsUser: 802
+        env:
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
         ports:
         -
           containerPort: 9763
@@ -83,6 +89,11 @@ spec:
         volumeMounts:
         - name: apim-is-as-km-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+        - name: apim-is-as-km-conf-axis2-init
+          mountPath: /home/wso2carbon/init.sh
+          subPath: init.sh
+        - name: apim-is-as-km-conf-axis2
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
         - name: apim-is-as-km-conf-datasources
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
       serviceAccountName: "wso2svc-account"
@@ -90,6 +101,13 @@ spec:
       - name: apim-is-as-km-conf
         configMap:
           name: apim-is-as-km-conf
+      - name: apim-is-as-km-conf-axis2-init
+        configMap:
+          name: apim-is-as-km-conf-axis2-init
+          defaultMode: 0407
+      - name: apim-is-as-km-conf-axis2
+        configMap:
+          name: apim-is-as-km-conf-axis2
       - name: apim-is-as-km-conf-datasources
         configMap:
           name: apim-is-as-km-conf-datasources
