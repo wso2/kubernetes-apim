@@ -103,9 +103,6 @@ spec:
             - name: wso2am-pattern-1-am-analytics-dashboard-bin
               mountPath: /home/wso2carbon/wso2-config-volume/wso2/dashboard/bin/carbon.sh
               subPath: carbon.sh
-            - name: wso2am-pattern-1-am-analytics-dashboard-plugins
-              mountPath: /home/wso2carbon/wso2-patch-volume/wso2/lib/plugins/org.wso2.analytics.apim.rest.api.proxy_3.0.0.jar
-              subPath: org.wso2.analytics.apim.rest.api.proxy_3.0.0.jar
             - name: wso2am-pattern-1-am-analytics-dashboard-conf-entrypoint
               mountPath: /home/wso2carbon/docker-entrypoint.sh
               subPath: docker-entrypoint.sh
@@ -128,10 +125,6 @@ spec:
         - name: wso2am-pattern-1-am-analytics-dashboard-bin
           configMap:
             name: wso2am-pattern-1-am-analytics-dashboard-bin
-            defaultMode: 0407
-        - name: wso2am-pattern-1-am-analytics-dashboard-plugins
-          configMap:
-            name: wso2am-pattern-1-am-analytics-dashboard-plugins
             defaultMode: 0407
         - name: wso2am-pattern-1-am-analytics-dashboard-conf-entrypoint
           configMap:

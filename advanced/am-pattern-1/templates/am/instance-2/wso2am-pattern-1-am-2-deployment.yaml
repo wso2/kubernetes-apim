@@ -115,12 +115,6 @@ spec:
             - name: wso2am-pattern-1-am-2-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml
-            - name: wso2am-publisher-services-login
-              mountPath: /home/wso2carbon/wso2-patch-volume/repository/deployment/server/jaggeryapps/publisher/services/login
-            - name: wso2am-publisher-services-refresh
-              mountPath: /home/wso2carbon/wso2-patch-volume/repository/deployment/server/jaggeryapps/publisher/services/refresh
-            - name: wso2am-devportal-services-login
-              mountPath: /home/wso2carbon/wso2-patch-volume/repository/deployment/server/jaggeryapps/devportal/services/login
             - name: wso2am-pattern-1-am-conf-entrypoint
               mountPath: /home/wso2carbon/docker-entrypoint.sh
               subPath: docker-entrypoint.sh
@@ -142,15 +136,6 @@ spec:
         - name: wso2am-pattern-1-am-2-conf
           configMap:
             name: wso2am-pattern-1-am-2-conf
-        - name: wso2am-publisher-services-login
-          configMap:
-            name: wso2am-publisher-services-login
-        - name: wso2am-publisher-services-refresh
-          configMap:
-            name: wso2am-publisher-services-refresh
-        - name: wso2am-devportal-services-login
-          configMap:
-            name: wso2am-devportal-services-login
         - name: wso2am-pattern-1-am-conf-entrypoint
           configMap:
             name: wso2am-pattern-1-am-conf-entrypoint
