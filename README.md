@@ -4,6 +4,10 @@
 
 ## Kubernetes resources for API Management deployment patterns
 
+### Simple
+
+* [Simplified Setup](simple/README.md)
+
 ### Advanced
 
 #### Helm resources for API Management deployment patterns
