@@ -1,0 +1,60 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wso2apim-mysql-deployment
+  namespace: wso2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: wso2apim-mysql
+      product: api-manager
+  template:
+    metadata:
+      labels:
+        deployment: wso2apim-mysql
+        product: api-manager
+    spec:
+      containers:
+        - name: wso2apim-mysql
+          image: mysql:5.7
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}"
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}"
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 999
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_USER
+              value: wso2carbon
+            - name: MYSQL_PASSWORD
+              value: wso2carbon
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+          volumeMounts:
+            - name: wso2apim-mysql-dbscripts
+              mountPath: /docker-entrypoint-initdb.d
+          args: ["--max-connections", "10000"]
+      volumes:
+        - name: wso2apim-mysql-dbscripts
+          configMap:
+            name: wso2apim-mysql-dbscripts
+      serviceAccountName: "wso2am-pattern-1-svc-account"
+---

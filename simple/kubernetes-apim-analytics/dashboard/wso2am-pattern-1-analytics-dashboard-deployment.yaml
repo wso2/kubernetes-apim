@@ -1,0 +1,77 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wso2am-pattern-1-analytics-dashboard-deployment
+  namespace: wso2
+spec:
+  replicas: 1
+  minReadySeconds: 75
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2am-pattern-1-analytics-dashboard
+      product: api-manager
+  template:
+    metadata:
+      labels:
+        deployment: wso2am-pattern-1-analytics-dashboard
+        product: api-manager
+    spec:
+      initContainers:
+        - name: init-apim-analytics-db
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+      containers:
+        - name: wso2am-pattern-1-analytics-dashboard
+          image: "$image.pull.@.wso2"/wso2am-analytics-dashboard:3.0.0
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 30643
+            initialDelaySeconds: 100
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 30643
+            initialDelaySeconds: 100
+            periodSeconds: 10
+          lifecycle:
+            preStop:
+              exec:
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/dashboard.sh stop']
+          resources:
+            requests:
+              memory: 4Gi
+              cpu: 2000m
+            limits:
+              memory: 4Gi
+              cpu: 2000m
+          imagePullPolicy: Always
+          securityContext:
+            runAsUser: 802
+          ports:
+            -
+              containerPort: 30643
+              protocol: "TCP"
+          volumeMounts:
+            - name: wso2am-pattern-1-am-analytics-dashboard-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
+              subPath: deployment.yaml
+      serviceAccountName: wso2am-pattern-1-svc-account
+      imagePullSecrets:
+        - name: wso2am-pattern-1-creds
+      volumes:
+        - name: wso2am-pattern-1-am-analytics-dashboard-conf
+          configMap:
+            name: wso2am-pattern-1-am-analytics-dashboard-conf
+---
