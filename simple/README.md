@@ -12,12 +12,12 @@
 
 * An already setup Kubernetes cluster. If you haven’t already setup a K8s cluster  Refer [the guide](https://kubernetes.io/docs/setup/).
 
-* WSO2 subscribed users can run [wso2am-latest.sh](TODO: add link) with the latest updates by providing their subscription Username and Password. If you do not possess an active WSO2 subscription already, run [wso2am-ga.sh](TODO: add link) which does not require subscription credentials. Further users can acquire a subsciption by refering this [link](https://wso2.com/subscription).
+* WSO2 subscribed users can run [wso2am-latest.sh](https://github.com/wso2/kubernetes-apim/blob/3.0.x/simple/deployment-scripts/wso2am-latest.sh) with the latest updates by providing their subscription Username and Password. If you do not possess an active WSO2 subscription already, run [wso2am-ga.sh](https://github.com/wso2/kubernetes-apim/blob/3.0.x/simple/deployment-scripts/wso2am-ga.sh) which does not require subscription credentials. Further users can acquire a subsciption by refering this [link](https://wso2.com/subscription).
 
 *From this point forward the respective script (wso2am-ga.sh and wso2am-latest.sh) will be identified as SIMPLIFIED_SCRIPT*
 
 ## Quick Start Guide
-1. Download(TODO:link to file) simplified Kubernetes setup (SIMPLIFIED_SCRIPT) for WSO2 API Manager.  
+1. Download(https://github.com/wso2/kubernetes-apim/tree/3.0.x/simple/deployment-scripts) simplified Kubernetes setup (SIMPLIFIED_SCRIPT) for WSO2 API Manager.  
 
 2. In the command line, move into the directory where you have downloaded the SIMPLIFIED_SCRIPT.
 
