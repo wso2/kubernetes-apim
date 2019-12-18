@@ -6,7 +6,7 @@ metadata:
   namespace: wso2
 spec:
   replicas: 1
-  minReadySeconds: 75
+  minReadySeconds: 30
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -35,7 +35,7 @@ spec:
                 - /bin/sh
                 - -c
                 - nc -z localhost 30643
-            initialDelaySeconds: 100
+            initialDelaySeconds: 20
             periodSeconds: 10
           readinessProbe:
             exec:
@@ -43,7 +43,7 @@ spec:
                 - /bin/sh
                 - -c
                 - nc -z localhost 30643
-            initialDelaySeconds: 100
+            initialDelaySeconds: 20
             periodSeconds: 10
           lifecycle:
             preStop:
