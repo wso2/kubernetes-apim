@@ -6,7 +6,6 @@ metadata:
   namespace: wso2
 spec:
   replicas: 1
-  minReadySeconds: 75
   strategy:
     rollingUpdate:
       maxSurge: 1
