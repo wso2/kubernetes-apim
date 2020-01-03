@@ -30,4 +30,4 @@ For detailed information on the tasks carried out during this release, please se
 For detailed information on the tasks carried out during this release, please see the GitHub milestone
 [v3.0.0.2](https://github.com/wso2/kubernetes-apim/milestone/7).
 
-[v3.0.0.2]: https://github.com/wso2/kubernetes-apim/compare/v3.0.0.1...v3.0.0.2
+[v3.0.0.3]: https://github.com/wso2/kubernetes-apim/compare/v3.0.0.2...v3.0.0.3
