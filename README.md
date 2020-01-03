@@ -11,7 +11,7 @@ of WSO2 API Manager.*
 
 ### Advanced
 
-**Note**: We consider Helm to be the primary source of installation of WSO2 product deployment patterns in Kubernetes environments. Hence, pure Kubernetes resources for product deployment patterns will be deprecated from 2.6.0.7 onwards. Please adjust your usage accordingly.
+**Note**: We consider Helm to be the primary source of installation of WSO2 product deployment patterns in Kubernetes environments. Hence, pure Kubernetes resources for product deployment patterns will be deprecated from 2.6.0.8 onwards. Please adjust your usage accordingly.
 
 * [Deployment Pattern 1](advanced/pattern-1/README.md)
 * [Deployment Pattern 2](advanced/pattern-2/README.md)
