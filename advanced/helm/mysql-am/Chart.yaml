@@ -16,4 +16,4 @@ apiVersion: v1
 appVersion: "5.7"
 description: A Helm chart for deploying WSO2 API Management Databases in MySQL DBMS
 name: mysql-am
-version: 2.6.0-7
+version: 2.6.0-8
