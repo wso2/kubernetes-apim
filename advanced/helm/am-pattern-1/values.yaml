@@ -73,7 +73,7 @@ wso2:
       imageName: "wso2am"
       imageTag: "2.6.0"
       # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
-      minReadySeconds: 240
+      minReadySeconds: 30
       # Indicates whether the container is running.
       livenessProbe:
         # Number of seconds after the container has started before liveness probes are initiated.
