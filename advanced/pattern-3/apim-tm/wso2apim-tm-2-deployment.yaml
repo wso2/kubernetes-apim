@@ -61,7 +61,6 @@ spec:
             initialDelaySeconds: 240
             failureThreshold: 3
             periodSeconds: 10
-          command: ["/home/wso2carbon/docker-entrypoint.sh"]
           args: ["--optimize", "-Dprofile=traffic-manager"]
           lifecycle:
             preStop:
