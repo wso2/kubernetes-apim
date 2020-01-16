@@ -40,10 +40,10 @@ spec:
         command: ['sh', '-c', 'echo -e "Checking for the availability of Key Manager deployment"; while ! nc -z wso2apim-pattern-3-km-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Key Manager has started";']
       - name: init-apim-tm-1
         image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of Traffic Manager Instance One deployment"; while ! nc -z wso2apim-pattern-3-tm-1-service 9711; do sleep 1; printf "-"; done; echo -e "  >> Traffic Manager Instance One has started";']
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Traffic Manager Instance One deployment"; while ! nc -z wso2apim-pattern-3-tm-1-service 9611; do sleep 1; printf "-"; done; echo -e "  >> Traffic Manager Instance One has started";']
       - name: init-apim-tm-2
         image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of Traffic Manager Instance Two deployment"; while ! nc -z wso2apim-pattern-3-tm-2-service 9711; do sleep 1; printf "-"; done; echo -e "  >> Traffic Manager Instance Two has started";']
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Traffic Manager Instance Two deployment"; while ! nc -z wso2apim-pattern-3-tm-2-service 9611; do sleep 1; printf "-"; done; echo -e "  >> Traffic Manager Instance Two has started";']
       containers:
       - name: wso2apim-gateway
         image: wso2/wso2am:2.6.0
