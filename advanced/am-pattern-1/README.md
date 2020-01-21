@@ -13,11 +13,13 @@
   If you do not possess an active WSO2 Subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).
   Otherwise you can proceed with Docker images, which are created using GA releases.<br><br>
 
-* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Helm](https://github.com/kubernetes/helm/blob/master/docs/install.md)
-  (and Tiller) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) in order to run the steps
+* Install 
+  * [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+  * [Helm](https://github.com/helm/helm/releases/tag/v2.14.3) (and Tiller) (Supported version 2.14.3)
+  * [Kubernetes client](https://v1-14.docs.kubernetes.io/docs/tasks/tools/install-kubectl/) (Supported version 1.14.10) in order to run the steps
   provided in the following quick start guide.<br><br>
 
-* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup).<br><br>
+* An already setup [Kubernetes cluster](https://v1-14.docs.kubernetes.io/docs/setup/) (Supported version 1.14.10) .<br><br>
 
 * Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/).<br><br>
 
