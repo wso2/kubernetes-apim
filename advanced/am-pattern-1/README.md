@@ -1,6 +1,6 @@
-# Helm Chart for deployment of WSO2 API Manager Pattern 2: Deployment with a separate Gateway and separate Key Manager
+# Helm Chart for deployment of WSO2 API Manager Pattern 1: Single node (all-in-one) deployment
 
-![WSO2 API Manager pattern 2 deployment](pattern-2.png)
+![WSO2 API Manager pattern 1 deployment](pattern-1.png)
 
 ## Contents
 
@@ -42,9 +42,9 @@ git clone https://github.com/wso2/kubernetes-apim.git
 
 ##### 2. Provide configurations.
 
-a. The default product configurations are available at `<HELM_HOME>/am-pattern-2/confs` folder. Change the configurations, as necessary.
+a. The default product configurations are available at `<HELM_HOME>/am-pattern-1/confs` folder. Change the configurations, as necessary.
 
-b. Open the `<HELM_HOME>/am-pattern-2/values.yaml` and provide the following values.
+b. Open the `<HELM_HOME>/am-pattern-1/values.yaml` and provide the following values.
 
 ###### WSO2 Subscription Configurations
 
@@ -70,56 +70,25 @@ If you do not have an active WSO2 subscription, do not change the parameters `ws
 | `wso2.deployment.persistentRuntimeArtifacts.sharedAPIMSynapseConfigsPath`   | Exported location on external NFS Server to be mounted at `<APIM_HOME>/repository/deployment/server/synapse-configs` | -            |
 | `wso2.deployment.persistentRuntimeArtifacts.sharedAPIMExecutionPlansPath`   | Exported location on external NFS Server to be mounted at `<APIM_HOME>/repository/deployment/server/executionplans` | -            |
 
+###### API Manager Server Configurations
 
-
-###### API Manager Server Configurations 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.deployment.am.dockerRegistry`                                         | Registry location of the Docker image to be used to create API Manager instances          | -                           |
 | `wso2.deployment.am.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | wso2am                      |
 | `wso2.deployment.am.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 3.1.0                       |
-| `wso2.deployment.am.resources.requests.memory`                              | The minimum amount of memory that should be allocated for a Pod                           | 2Gi                         |
-| `wso2.deployment.am.resources.requests.cpu`                                 | The minimum amount of CPU that should be allocated for a Pod                              | 4000m                       |
-| `wso2.deployment.am.resources.limits.memory`                                | The maximum amount of memory that should be allocated for a Pod                           | 2Gi                         |
-| `wso2.deployment.am.resources.limits.cpu`                                   | The maximum amount of CPU that should be allocated for a Pod                              | 4000m                       |
+| `wso2.deployment.am.minReadySeconds`                                        | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentspec-v1-apps)| 120        |
+| `wso2.deployment.am.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for API Manager node                                | 120                         |
+| `wso2.deployment.am.livenessProbe.periodSeconds`                            | Period of the live-ness probe for API Manager node                                        | 10                          |
+| `wso2.deployment.am.readinessProbe.initialDelaySeconds`                     | Initial delay for the readiness probe for API Manager node                                | 120                         |
+| `wso2.deployment.am.readinessProbe.periodSeconds`                           | Period of the readiness probe for API Manager node                                        | 10                          |
+| `wso2.deployment.am.resources.requests.memory`                              | The minimum amount of memory that should be allocated for a Pod                           | 4Gi                         |
+| `wso2.deployment.am.resources.requests.cpu`                                 | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                       |
+| `wso2.deployment.am.resources.limits.memory`                                | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                         |
+| `wso2.deployment.am.resources.limits.cpu`                                   | The maximum amount of CPU that should be allocated for a Pod                              | 2000m                       |
 | `wso2.deployment.am.imagePullPolicy`                                        | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | Always                      |
 
-
 **Note**: The above mentioned default, minimum resource amounts for running WSO2 API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/3.0.0/SetupAndInstall/InstallationGuide/installation-prerequisites/).
-
-
-
-###### API Manager Server Configurations (Developer Portal, Publisher, Traffic Manager)
-
-| Parameter                                                                   | Description                                                                               | Default Value               |
-|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.am.pubStoreTM.minReadySeconds`                                        | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentspec-v1-apps)| 120        |
-| `wso2.deployment.am.pubStoreTM.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for API Manager node                                | 120                         |
-| `wso2.deployment.am.pubStoreTM.livenessProbe.periodSeconds`                            | Period of the live-ness probe for API Manager node                                        | 10                          |
-| `wso2.deployment.am.pubStoreTM.readinessProbe.initialDelaySeconds`                     | Initial delay for the readiness probe for API Manager node                                | 120                         |
-| `wso2.deployment.am.pubStoreTM.readinessProbe.periodSeconds`                           | Period of the readiness probe for API Manager node                                        | 10                          |
-
-
-###### API Manager Server Configurations (Gateway)
-
-| Parameter                                                                   | Description                                                                               | Default Value               |
-|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.am.gateway.minReadySeconds`                                        | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentspec-v1-apps)| 60        |
-| `wso2.deployment.am.gateway.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for API Manager Gateway node                                | 60                         |
-| `wso2.deployment.am.gateway.livenessProbe.periodSeconds`                            | Period of the live-ness probe for API Manager Gateway node                                        | 10                          |
-| `wso2.deployment.am.gateway.readinessProbe.initialDelaySeconds`                     | Initial delay for the readiness probe for API Manager Gateway node                                | 60                         |
-| `wso2.deployment.am.gateway.readinessProbe.periodSeconds`                           | Period of the readiness probe for API Manager Gateway node                                        | 10                          |
-
-
-###### API Manager Server Configurations (Key Manager)
-
-| Parameter                                                                   | Description                                                                               | Default Value               |
-|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.am.km.minReadySeconds`                                        | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentspec-v1-apps)| 60        |
-| `wso2.deployment.am.km.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for API Key Manager node                                | 60                         |
-| `wso2.deployment.am.km.livenessProbe.periodSeconds`                            | Period of the live-ness probe for API Key Manager node                                        | 10                          |
-| `wso2.deployment.am.km.readinessProbe.initialDelaySeconds`                     | Initial delay for the readiness probe for API Key Manager node                                | 60                         |
-| `wso2.deployment.am.km.readinessProbe.periodSeconds`                           | Period of the readiness probe for API Key Manager node                                        | 10                          |
 
 ###### Analytics Dashboard Runtime Configurations
 
@@ -167,12 +136,12 @@ If you do not have an active WSO2 subscription, do not change the parameters `ws
 
 | Parameter                                                     | Description                                                                               | Default Value                   |
 |---------------------------------------------------------------|-------------------------------------------------------------------------------------------|---------------------------------|
-| `kubernetes.serviceAccount`                                   | Name of the Kubernetes Service Account to which the Pods are to be bound                  | wso2am-pattern-2-svc-account    |
+| `kubernetes.serviceAccount`                                   | Name of the Kubernetes Service Account to which the Pods are to be bound                  | wso2am-pattern-1-svc-account    |
 
 ##### 4. Deploy WSO2 API Manager pattern-1.
 
 ```
-helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-2 --dependency-update --namespace <NAMESPACE>
+helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --dependency-update --namespace <NAMESPACE>
 ```
 
 ##### 5. Access Management Console:

@@ -19,7 +19,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.wso2.deployment.am.km.replicas }}
-  minReadySeconds: {{ .Values.wso2.deployment.am.minReadySeconds }}
+  minReadySeconds: {{ .Values.wso2.deployment.am.km.minReadySeconds }}
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.wso2.deployment.am.km.strategy.rollingUpdate.maxSurge }}
