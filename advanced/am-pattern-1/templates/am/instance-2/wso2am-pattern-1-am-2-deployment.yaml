@@ -59,7 +59,7 @@ spec:
           {{- $tag := .Values.wso2.deployment.am.imageTag }}
           {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
           {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-          image: chathuru/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
+          image: wso2/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
           {{- else }}
           image: docker.wso2.com/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
           {{- end }}
@@ -109,9 +109,9 @@ spec:
                   fieldPath: status.podIP
           volumeMounts:
             - name: wso2am-pattern-1-am-volume-claim-synapse-configs
-              mountPath: /home/wso2carbon/wso2am-3.1.0-beta/repository/deployment/server/synapse-configs
+              mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/synapse-configs
             - name: wso2am-pattern-1-am-volume-claim-executionplans
-              mountPath: /home/wso2carbon/wso2am-3.1.0-beta/repository/deployment/server/executionplans
+              mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
             - name: wso2am-pattern-1-am-2-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml

@@ -1,6 +1,0 @@
-dependencies:
-- name: mysql-am
-  repository: https://helm.wso2.com
-  version: 3.0.0-3
-digest: sha256:ed3a06b03ad26ce76be58528a2af9e8a6d2dec00c1fa3629f0edc802984ebf97
-generated: "2020-02-28T04:52:52.830031432Z"
