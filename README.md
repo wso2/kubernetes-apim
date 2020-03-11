@@ -13,6 +13,7 @@
 #### Helm resources for API Management deployment patterns
 
 * [Deployment Pattern 1](advanced/am-pattern-1/README.md)
+* [Deployment Pattern 2](advanced/am-pattern-2/README.md)
 
 ## Advanced topics
 
@@ -21,7 +22,7 @@
 
 ## Changelog
 
-**Change log** from previous v3.0.0.2 release: [View Here](CHANGELOG.md)
+**Change log** from previous v3.1.0.1 release: [View Here](CHANGELOG.md)
 
 ## Reporting issues
 

@@ -1,4 +1,4 @@
-# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ spec:
           {{- $tag := .Values.wso2.deployment.analytics.worker.imageTag }}
           {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
           {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-          image: wso2/{{ .Values.wso2.deployment.analytics.worker.imageName }}:{{ .Values.wso2.deployment.analytics.worker.imageTag }}
+          image: chathuru/{{ .Values.wso2.deployment.analytics.worker.imageName }}:{{ .Values.wso2.deployment.analytics.worker.imageTag }}
           {{- else }}
           image: docker.wso2.com/{{ .Values.wso2.deployment.analytics.worker.imageName }}:{{ .Values.wso2.deployment.analytics.worker.imageTag }}
           {{- end }}

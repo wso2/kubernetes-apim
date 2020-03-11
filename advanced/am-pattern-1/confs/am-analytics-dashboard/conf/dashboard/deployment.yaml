@@ -1,5 +1,5 @@
 ################################################################################
-#   Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved
+#   Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved
 #
 #   Licensed under the Apache License, Version 2.0 (the \"License\");
 #   you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 ################################################################################
 
 # Carbon Configuration Parameters
+
 wso2.carbon:
   type: wso2-apim-analytics
   # value to uniquely identify a server
@@ -209,6 +210,7 @@ wso2.securevault:
 
 
 # Data Sources Configuration
+
 wso2.datasources:
   dataSources:
     # Dashboard data source
@@ -358,16 +360,19 @@ wso2.transport.http:
       certPass: wso2carbon
 
 ## Dashboard data provider authorization
+
 data.provider.configs:
   authorizingClass: org.wso2.carbon.dashboards.core.DashboardDataProviderAuthorizer
 
 ## Additional APIs that needs to be added to the server.
 ## Should be provided as a key value pairs { API context path: Microservice implementation class }
 ## The configured APIs will be available as https://{host}:{port}/analytics-dashboard/{API_context_path}
+
 additional.apis:
   /apis/analytics/v1.0/apim: org.wso2.analytics.apim.rest.api.proxy.ApimApi
 
 ## Authentication configuration
+
 auth.configs:
   type: apim
   ssoEnabled: true
@@ -377,7 +382,7 @@ auth.configs:
     adminServiceBaseUrl: https://wso2am-pattern-1-am-service:9443
     adminUsername: admin
     adminPassword: admin
-    kmDcrUrl: https://wso2am-pattern-1-am-service:9443/client-registration/v0.15/register
+    kmDcrUrl: https://wso2am-pattern-1-am-service:9443/client-registration/v0.16/register
     kmTokenUrlForRedirection: https://{{ .Release.Name }}-am/oauth2
     kmTokenUrl: https://wso2am-pattern-1-am-service:9443/oauth2
     kmUsername: admin

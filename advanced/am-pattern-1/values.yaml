@@ -1,4 +1,4 @@
-# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,15 +24,13 @@ wso2:
     dependencies:
       # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
       mysql: true
-      # Enable NFS dynamic provisioner for Kubernetes
-      nfsServerProvisioner: true
 
     persistentRuntimeArtifacts:
       # Persistent storage provider expected to be used for sharing persistent runtime artifacts
       # This can be one of the following.
       #   1. internal-nfs - Using the NFS dynamic provisioner for Kubernetes
       #   2. external-nfs - Using an externally configured NFS server
-      cloudProvider: "internal-nfs"
+      cloudProvider: "external-nfs"
       # External NFS Server IP
       nfsServerIP: ""
       # Exported location on external NFS Server to be mounted at <APIM_HOME>/repository/deployment/server/synapse-configs
@@ -45,10 +43,10 @@ wso2:
       #dockerRegistry: ""
 
       imageName: "wso2am"
-      imageTag: "3.0.0"
+      imageTag: "3.1.0"
       replicas: 1
       # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
-      minReadySeconds: 240
+      minReadySeconds: 120
       strategy:
         rollingUpdate:
           maxSurge: 1
@@ -56,13 +54,13 @@ wso2:
       # Indicates whether the container is running.
       livenessProbe:
         # Number of seconds after the container has started before liveness probes are initiated.
-        initialDelaySeconds: 240
+        initialDelaySeconds: 120
         # How often (in seconds) to perform the probe.
         periodSeconds: 10
       # Indicates whether the container is ready to service requests.
       readinessProbe:
         # Number of seconds after the container has started before readiness probes are initiated.
-        initialDelaySeconds: 240
+        initialDelaySeconds: 120
         # How often (in seconds) to perform the probe.
         periodSeconds: 10
       resources:
@@ -96,7 +94,7 @@ wso2:
         #dockerRegistry: ""
 
         imageName: "wso2am-analytics-dashboard"
-        imageTag: "3.0.0"
+        imageTag: "3.1.0"
         replicas: 1
         # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
         minReadySeconds: 30
@@ -135,7 +133,7 @@ wso2:
         #dockerRegistry: ""
 
         imageName: "wso2am-analytics-worker"
-        imageTag: "3.0.0"
+        imageTag: "3.1.0"
         replicas: 1
         # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
         minReadySeconds: 30

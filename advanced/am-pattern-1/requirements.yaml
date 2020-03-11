@@ -1,4 +1,4 @@
-# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,10 +13,6 @@
 # limitations under the License.
 dependencies:
   - name: mysql-am
-    version: "3.0.0-3"
+    version: "3.1.0"
     repository: "https://helm.wso2.com"
     condition: wso2.deployment.dependencies.mysql
-  - name: nfs-server-provisioner
-    version: "0.3.0"
-    repository: "https://kubernetes-charts.storage.googleapis.com"
-    condition: wso2.deployment.dependencies.nfsServerProvisioner
