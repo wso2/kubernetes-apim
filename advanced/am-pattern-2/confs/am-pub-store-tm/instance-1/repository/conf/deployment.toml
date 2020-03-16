@@ -69,13 +69,16 @@ allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","S
 allow_credentials = false
 
 [apim.throttling]
-enable_data_publishing = false
-#enable_policy_deploy = true
-enable_blacklist_condition = false
+enable_data_publishing = true
 
 [[apim.throttling.url_group]]
-traffic_manager_urls = ["tcp://localhost:9611","tcp://wso2am-pattern-2-pub-store-tm-2-service:9611"]
-traffic_manager_auth_urls = ["ssl://localhost:9711","ssl://wso2am-pattern-2-pub-store-tm-2-service:9711"]
+traffic_manager_urls = ["tcp://localhost:9611"]
+traffic_manager_auth_urls = ["ssl://localhost:9711"]
+type = "loadbalance"
+
+[[apim.throttling.url_group]]
+traffic_manager_urls = ["tcp://wso2am-pattern-2-pub-store-tm-2-service:9611"]
+traffic_manager_auth_urls = [ssl://wso2am-pattern-2-pub-store-tm-2-service:9711"]
 type = "loadbalance"
 
 [[event_handler]]
