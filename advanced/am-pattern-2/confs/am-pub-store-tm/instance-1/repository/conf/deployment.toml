@@ -78,7 +78,7 @@ type = "loadbalance"
 
 [[apim.throttling.url_group]]
 traffic_manager_urls = ["tcp://wso2am-pattern-2-pub-store-tm-2-service:9611"]
-traffic_manager_auth_urls = [ssl://wso2am-pattern-2-pub-store-tm-2-service:9711"]
+traffic_manager_auth_urls = ["ssl://wso2am-pattern-2-pub-store-tm-2-service:9711"]
 type = "loadbalance"
 
 [[event_handler]]
