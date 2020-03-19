@@ -299,12 +299,13 @@ wso2.artifact.deployment:
 
   # Periodic Persistence Configuration
 state.persistence:
-  enabled: false
+  enabled: true
   intervalInMin: 1
   revisionsToKeep: 2
   persistenceStore: org.wso2.carbon.streaming.integrator.core.persistence.FileSystemPersistenceStore
   config:
-    location: siddhi-app-persistence
+    datasource: PERSISTENCE_DB
+    table: PERSISTENCE_TABLE
 
   # Secure Vault Configuration
 wso2.securevault:
@@ -425,21 +426,40 @@ wso2.datasources:
           connectionTestQuery: SELECT 1
           validationTimeout: 30000
           isAutoCommit: false
-    -
-      name: WSO2_CLUSTER_DB
-      description: "The datasource used by cluster coordinators in HA deployment"
+
+    - name: WSO2_CLUSTER_DB
+      description: The MySQL datasource used for Cluster Coordination
+      jndiConfig:
+        name: jdbc/WSO2ClusterDB
       definition:
         type: RDBMS
         configuration:
-          connectionTestQuery: "SELECT 1"
-          driverClassName: org.h2.Driver
+          jdbcUrl: "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2_CLUSTER_DB?useSSL=false&allowPublicKeyRetrieval=true"
+          username: root
+          password: root
+          driverClassName: com.mysql.jdbc.Driver
+          maxPoolSize: 50
           idleTimeout: 60000
-          isAutoCommit: false
-          jdbcUrl: "jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/WSO2_CLUSTER_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;AUTO_SERVER=TRUE"
-          maxPoolSize: 10
-          password: wso2carbon
-          username: wso2carbon
+          connectionTestQuery: SELECT 1
           validationTimeout: 30000
+          isAutoCommit: false
+
+    - name: PERSISTENCE_DB
+      description: The MySQL datasource used for persistence
+      jndiConfig:
+        name: jdbc/PERSISTENCE_DB
+      definition:
+        type: RDBMS
+        configuration:
+          jdbcUrl: "jdbc:mysql://wso2am-mysql-db-service:3306/PERSISTENCE_DB?useSSL=false&allowPublicKeyRetrieval=true"
+          username: root
+          password: root
+          driverClassName: com.mysql.jdbc.Driver
+          maxPoolSize: 50
+          idleTimeout: 60000
+          connectionTestQuery: SELECT 1
+          validationTimeout: 30000
+          isAutoCommit: false
 
 siddhi:
   refs:
@@ -484,14 +504,14 @@ siddhi:
 
   # Cluster Configuration
 cluster.config:
-  enabled: false
+  enabled: true
   groupId:  sp
   coordinationStrategyClass: org.wso2.carbon.cluster.coordinator.rdbms.RDBMSCoordinationStrategy
   strategyConfig:
     datasource: WSO2_CLUSTER_DB
-    heartbeatInterval: 1000
-    heartbeatMaxRetry: 2
-    eventPollingInterval: 1000
+    heartbeatInterval: 5000
+    heartbeatMaxRetry: 5
+    eventPollingInterval: 5000
 
 # Authentication configuration
 auth.configs:
@@ -517,22 +537,25 @@ auth.configs:
 
 
   # Sample of deployment.config for Two node HA
-  #deployment.config:
-  #  type: ha
-  #  eventSyncServer:
-  #    host: localhost
-  #    port: 9893
-  #    advertisedHost: localhost
-  #    advertisedPort: 9893
-  #    bossThreads: 10
-  #    workerThreads: 10
-  #  eventSyncClientPool:
-  #    maxActive: 10
-  #    maxTotal: 10
-  #    maxIdle: 10
-  #    maxWait: 60000
-  #    minEvictableIdleTimeMillis: 120000
-
+deployment.config:
+  type: ha
+  passiveNodeDetailsWaitTimeOutMillis: 300000
+  passiveNodeDetailsRetrySleepTimeMillis: 500
+  eventByteBufferQueueCapacity: 20000
+  byteBufferExtractorThreadPoolSize: 5
+  eventSyncServer:
+    host: 0.0.0.0
+    port: 9893
+    advertisedHost: wso2am-pattern-1-analytics-worker-service
+    advertisedPort: 9893
+    bossThreads: 10
+    workerThreads: 10
+  eventSyncClientPool:
+    maxActive: 10
+    maxTotal: 10
+    maxIdle: 10
+    maxWait: 60000
+    minEvictableIdleTimeMillis: 120000
   # Sample of deployment.config for Distributed deployment
 #deployment.config:
 #  type: distributed
