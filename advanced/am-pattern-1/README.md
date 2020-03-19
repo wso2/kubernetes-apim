@@ -9,9 +9,15 @@
 
 ## Prerequisites
 
-* In order to use WSO2 Helm resources, you need an active [WSO2 Subscription](https://wso2.com/subscription).
-  If you do not possess an active WSO2 Subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).
-  Otherwise you can proceed with Docker images, which are created using GA releases.<br><br>
+* About WSO2 product Docker images used for the Kubernetes deployment
+  
+  For a production grade deployment of the desired WSO2 product-version, it is highly recommended to use the relevant
+  Docker image which packages [WSO2 Updates](https://wso2.com/updates), available at [WSO2 Private Docker Registry](https://docker.wso2.com/).
+  In order to use WSO2 product Docker images with Updates, you need an active [WSO2 Subscription](https://wso2.com/subscription).
+  
+  Otherwise, you can proceed with WSO2 product Docker images available at [DockerHub](https://hub.docker.com/u/wso2/), which
+  package General Availability (GA) versions of WSO2 products with no WSO2 Updates.
+  <br><br>
 
 * Install 
   * [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)

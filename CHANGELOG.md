@@ -3,6 +3,15 @@ All notable changes to this project 3.0.x per each release will be documented in
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [v3.0.0.4] - 2020-03-19
+
+### Added
+- Add Helm resources for WSO2 API Management deployment pattern 2.
+- Add Helm resources for WSO2 API Management deployment pattern 3.
+
+For detailed information on the tasks carried out during this release, please see the GitHub milestones
+[v3.0.0.4](https://github.com/wso2/kubernetes-apim/milestone/9).
+
 ## [v3.0.0.3] - 2020-01-06
 
 ### Added
