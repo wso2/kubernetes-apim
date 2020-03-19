@@ -27,4 +27,3 @@ spec:
       name: 'analytics-dashboard'
       port: 9643
       protocol: TCP
-

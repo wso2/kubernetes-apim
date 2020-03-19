@@ -37,4 +37,3 @@ subjects:
   - kind: ServiceAccount
     name: {{ .Values.kubernetes.serviceAccount }}
     namespace: {{ .Release.Namespace }}
-
