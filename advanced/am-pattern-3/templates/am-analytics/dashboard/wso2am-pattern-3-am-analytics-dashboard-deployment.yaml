@@ -1,0 +1,129 @@
+# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wso2am-pattern-3-am-analytics-dashboard-deployment
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.wso2.deployment.analytics.dashboard.replicas }}
+  minReadySeconds: {{ .Values.wso2.deployment.analytics.dashboard.minReadySeconds }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.wso2.deployment.analytics.dashboard.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.wso2.deployment.analytics.dashboard.strategy.rollingUpdate.maxUnavailable }}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2am-pattern-3-analytics-dashboard
+  template:
+    metadata:
+      labels:
+        deployment: wso2am-pattern-3-analytics-dashboard
+    spec:
+      initContainers:
+        {{ if .Values.wso2.deployment.dependencies.mysql }}
+        - name: init-apim-analytics-db
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        {{ end }}
+      containers:
+        - name: wso2am-pattern-3-analytics-dashboard
+          {{- if .Values.wso2.deployment.analytics.dashboard.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.analytics.dashboard.dockerRegistry }}/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}
+          {{- $tag := .Values.wso2.deployment.analytics.dashboard.imageTag }}
+          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+          {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
+          image: wso2/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}:{{ .Values.wso2.deployment.analytics.dashboard.imageTag }}
+          {{- else }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}:{{ .Values.wso2.deployment.analytics.dashboard.imageTag }}
+          {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9643
+            initialDelaySeconds: {{ .Values.wso2.deployment.analytics.dashboard.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.analytics.dashboard.livenessProbe.periodSeconds }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9643
+            initialDelaySeconds: {{ .Values.wso2.deployment.analytics.dashboard.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.analytics.dashboard.readinessProbe.periodSeconds }}
+          lifecycle:
+            preStop:
+              exec:
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/dashboard.sh stop']
+          resources:
+            requests:
+              memory: {{  .Values.wso2.deployment.analytics.dashboard.resources.requests.memory }}
+              cpu: {{  .Values.wso2.deployment.analytics.dashboard.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.wso2.deployment.analytics.dashboard.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.analytics.dashboard.resources.limits.cpu }}
+          imagePullPolicy: {{ .Values.wso2.deployment.analytics.dashboard.imagePullPolicy }}
+          securityContext:
+            runAsUser: 802
+          ports:
+            - containerPort: 9713
+              protocol: "TCP"
+            - containerPort: 9643
+              protocol: "TCP"
+            - containerPort: 9613
+              protocol: "TCP"
+            - containerPort: 7713
+              protocol: "TCP"
+            - containerPort: 9091
+              protocol: "TCP"
+            - containerPort: 7613
+              protocol: "TCP"
+          volumeMounts:
+            - name: wso2am-pattern-3-am-analytics-dashboard-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
+              subPath: deployment.yaml
+            - name: wso2am-pattern-3-am-analytics-dashboard-bin
+              mountPath: /home/wso2carbon/wso2-config-volume/wso2/dashboard/bin/carbon.sh
+              subPath: carbon.sh
+            - name: wso2am-pattern-3-am-analytics-dashboard-conf-entrypoint
+              mountPath: /home/wso2carbon/docker-entrypoint.sh
+              subPath: docker-entrypoint.sh
+      serviceAccountName: {{ .Values.kubernetes.svcaccount }}
+      {{- if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      imagePullSecrets:
+        - name: wso2am-pattern-3-creds
+      {{- end }}
+      {{- if .Values.wso2.deployment.am.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
+      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      imagePullSecrets:
+        - name: wso2am-pattern-3-creds
+      {{- end }}
+      volumes:
+        - name: wso2am-pattern-3-am-analytics-dashboard-conf
+          configMap:
+            name: wso2am-pattern-3-am-analytics-dashboard-conf
+        - name: wso2am-pattern-3-am-analytics-dashboard-bin
+          configMap:
+            name: wso2am-pattern-3-am-analytics-dashboard-bin
+            defaultMode: 0407
+        - name: wso2am-pattern-3-am-analytics-dashboard-conf-entrypoint
+          configMap:
+            name: wso2am-pattern-3-am-analytics-dashboard-conf-entrypoint
+            defaultMode: 0407

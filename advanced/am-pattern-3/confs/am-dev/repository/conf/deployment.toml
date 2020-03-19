@@ -1,0 +1,105 @@
+[server]
+hostname = "$env{HOST_NAME}"
+node_ip = "127.0.0.1"
+server_role = "default"
+offset = "0"
+mode = "single" #single or ha
+base_path = "${carbon.protocol}://${carbon.host}:${carbon.management.port}"
+
+[user_store]
+type = "database"
+
+[super_admin]
+username = "admin"
+password = "admin"
+create_admin_account = true
+
+[database.apim_db]
+type = "mysql"
+url = "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false"
+username = "wso2carbon"
+password = "wso2carbon"
+driver = "com.mysql.cj.jdbc.Driver"
+
+[database.shared_db]
+type = "mysql"
+url = "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_SHARED_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false"
+username = "wso2carbon"
+password = "wso2carbon"
+driver = "com.mysql.cj.jdbc.Driver"
+
+[keystore.tls]
+file_name =  "wso2carbon.jks"
+type =  "JKS"
+password =  "wso2carbon"
+alias =  "wso2carbon"
+key_password =  "wso2carbon"
+
+[truststore]
+file_name = "client-truststore.jks"
+type = "JKS"
+password = "wso2carbon"
+
+
+[[apim.gateway.environment]]
+name = "Production and Sandbox"
+type = "hybrid"
+display_in_api_console = true
+description = "This is a hybrid gateway that handles both production and sandbox token traffic."
+show_as_token_endpoint_url = true
+service_url = "https://wso2am-pattern-3-gateway-service:${mgt.transport.https.port}${carbon.context}services/"
+username= "${admin.username}"
+password= "${admin.password}"
+ws_endpoint = "ws://wso2am-pattern-3-gateway-service:9099"
+wss_endpoint = "wss://wso2am-pattern-3-gateway-service:8099"
+http_endpoint = "http://{{ .Release.Name }}-gateway"
+https_endpoint = "https://{{ .Release.Name }}-gateway"
+
+
+[apim.key_manager]
+service_url = "https://wso2am-pattern-3-km-service:9443/services/"
+username= "$ref{super_admin.username}"
+password= "$ref{super_admin.password}"
+
+[apim.analytics]
+enable = "true"
+receiver_username = "${admin.username}"
+receiver_password = "${admin.password}"
+store_api_url = "https://wso2am-pattern-3-analytics-worker-service:7444"
+store_api_username = "${admin.username}"
+store_api_password = "${admin.password}"
+
+[[apim.analytics.url_group]]
+analytics_url =["tcp://wso2am-pattern-3-analytics-worker-service:7612","tcp://wso2am-pattern-3-analytics-worker-2-service:7612"]
+analytics_auth_url =["ssl://wso2am-pattern-3-analytics-worker-service:7712","ssl://wso2am-pattern-3-analytics-worker-2-service:7712"]
+type = "failover"
+
+[apim.cache.recent_apis]
+enable = false
+
+[apim.cache.scopes]
+enable = true
+
+[apim.cache.tags]
+expiry_time = 120000
+
+[apim.oauth_config]
+revoke_endpoint = "https://localhost:${https.nio.port}/revoke"
+enable_token_encryption = false
+enable_token_hashing = false
+
+[transport.https.properties]
+proxyPort = 443
+
+[apim.cors]
+allow_origins = "*"
+allow_methods = ["GET","PUT","POST","DELETE","PATCH","OPTIONS"]
+allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction"]
+allow_credentials = false
+
+[[event_handler]]
+name="userPostSelfRegistration"
+subscriptions=["POST_ADD_USER"]
+
+[service_provider]
+sp_name_regex = "^[\\sa-zA-Z0-9._-]*$"
