@@ -27,7 +27,7 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       containers:
         - name: wso2am-pattern-1-analytics-dashboard
-          image: "$image.pull.@.wso2"/wso2am-analytics-dashboard:3.0.0
+          image: "$image.pull.@.wso2"/wso2am-analytics-dashboard:3.1.0
           livenessProbe:
             exec:
               command:
