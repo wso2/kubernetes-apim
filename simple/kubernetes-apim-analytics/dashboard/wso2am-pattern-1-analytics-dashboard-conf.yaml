@@ -18,7 +18,7 @@ data:
           # ports used by this server
         ports:
             # port offset
-          offset: 3
+          offset: 0
 
         # Configuration used for the databridge communication
       databridge.config:
@@ -351,13 +351,17 @@ data:
 
       ## Dashboard data provider authorization
       data.provider.configs:
-        authorizingClass: org.wso2.carbon.dashboards.core.DashboardDataProviderAuthorizer
+        authorizingClass: org.wso2.analytics.apim.dashboards.core.data.provider.Authorizer
 
       ## Additional APIs that needs to be added to the server.
       ## Should be provided as a key value pairs { API context path: Microservice implementation class }
       ## The configured APIs will be available as https://{host}:{port}/analytics-dashboard/{API_context_path}
       additional.apis:
         /apis/analytics/v1.0/apim: org.wso2.analytics.apim.rest.api.proxy.ApimApi
+        /apis/v1.0/report: org.wso2.analytics.apim.rest.api.report.ReportApi
+
+      report:
+        implClass: org.wso2.analytics.apim.rest.api.report.reportgen.DefaultReportGeneratorImpl
 
       ## Authentication configuration
       auth.configs:
@@ -369,7 +373,7 @@ data:
           adminServiceBaseUrl: https://"ip.node.k8s.&.wso2.apim":32293
           adminUsername: admin
           adminPassword: admin
-          kmDcrUrl: https://"ip.node.k8s.&.wso2.apim":32293/client-registration/v0.15/register
+          kmDcrUrl: https://"ip.node.k8s.&.wso2.apim":32293/client-registration/v0.16/register
           kmTokenUrlForRedirection: https://"ip.node.k8s.&.wso2.apim":32293/oauth2
           kmTokenUrl: https://"ip.node.k8s.&.wso2.apim":32293/oauth2
           kmUsername: admin
@@ -387,4 +391,11 @@ data:
         roles:
           creators:
             - apim_analytics:admin_carbon.super
+      wso2.rdbms.data.provider:
+        timeTypes:
+          - DATE
+          - TIME
+          - DATETIME
+          - TIMESTAMP
+          - TIMESTAMP WITHOUT TIME ZONE
 ---
