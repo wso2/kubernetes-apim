@@ -27,10 +27,12 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
+      app-worker: wso2am-pattern-1-analytics-worker
       deployment: wso2am-pattern-1-analytics-worker-2
   template:
     metadata:
       labels:
+        app-worker: wso2am-pattern-1-analytics-worker
         deployment: wso2am-pattern-1-analytics-worker-2
     spec:
       initContainers:

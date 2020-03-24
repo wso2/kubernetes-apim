@@ -27,11 +27,13 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2am-pattern-1-analytics-worker
+      app-worker: wso2am-pattern-1-analytics-worker
+      deployment: wso2am-pattern-1-analytics-worker-1
   template:
     metadata:
       labels:
-        deployment: wso2am-pattern-1-analytics-worker
+        app-worker: wso2am-pattern-1-analytics-worker
+        deployment: wso2am-pattern-1-analytics-worker-1
     spec:
       initContainers:
         {{ if .Values.wso2.deployment.dependencies.mysql }}
