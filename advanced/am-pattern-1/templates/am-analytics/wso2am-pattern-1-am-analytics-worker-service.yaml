@@ -1,4 +1,4 @@
-# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,13 +15,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2am-pattern-1-analytics-worker-2-service
+  name: wso2am-pattern-1-analytics-worker-service
   namespace : {{ .Release.Namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
     app-worker: wso2am-pattern-1-analytics-worker
-    deployment: wso2am-pattern-1-analytics-worker-2
   ports:
     # ports that this service should serve on
     -
