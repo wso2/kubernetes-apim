@@ -70,7 +70,7 @@ allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","S
 allow_credentials = false
 
 [apim.throttling]
-enable_data_publishing = false
+enable_data_publishing = true
 #enable_policy_deploy = true
 enable_blacklist_condition = false
 
