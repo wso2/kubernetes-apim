@@ -1,0 +1,5 @@
+#templates/am/pub-store-tm/wso2am-pattern-2-pub-store-tm-volume-claim.yaml
+#templates/am/gateway/wso2am-pattern-2-gateway-volume-claim.yaml
+#templates/is-as-km
+#templates/wso2am-pattern-2-persistent-volumes.yaml
+#templates/wso2am-pattern-2-rbac.yaml

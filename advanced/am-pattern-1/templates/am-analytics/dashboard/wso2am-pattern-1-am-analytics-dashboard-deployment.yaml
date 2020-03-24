@@ -39,9 +39,6 @@ spec:
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
         {{ end }}
-        - name: init-am-1
-          image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Instance One deployment"; while ! nc -z  wso2am-pattern-1-am-1-service 9711; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Instance One has started";']
       containers:
         - name: wso2am-pattern-1-analytics-dashboard
           {{- if .Values.wso2.deployment.analytics.dashboard.dockerRegistry }}
