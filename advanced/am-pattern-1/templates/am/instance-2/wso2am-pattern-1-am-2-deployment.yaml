@@ -49,9 +49,6 @@ spec:
         - name: init-am-analytics-worker
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-1-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
-        - name: init-am-1
-          image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Instance One deployment"; while ! nc -z  wso2am-pattern-1-am-1-service 9711; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Instance One has started";']
       containers:
         - name: wso2am-pattern-1-am
           {{- if .Values.wso2.deployment.am.dockerRegistry }}
@@ -109,9 +106,9 @@ spec:
                   fieldPath: status.podIP
           volumeMounts:
             - name: wso2am-pattern-1-am-volume-claim-synapse-configs
-              mountPath: /home/wso2carbon/wso2am-3.0.0/repository/deployment/server/synapse-configs
+              mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/synapse-configs
             - name: wso2am-pattern-1-am-volume-claim-executionplans
-              mountPath: /home/wso2carbon/wso2am-3.0.0/repository/deployment/server/executionplans
+              mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
             - name: wso2am-pattern-1-am-2-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml

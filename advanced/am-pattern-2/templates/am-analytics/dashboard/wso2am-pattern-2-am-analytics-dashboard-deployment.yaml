@@ -1,0 +1,103 @@
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wso2am-pattern-2-am-analytics-dashboard-deployment
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.wso2.deployment.analytics.dashboard.replicas }}
+  minReadySeconds: {{ .Values.wso2.deployment.analytics.dashboard.minReadySeconds }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.wso2.deployment.analytics.dashboard.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.wso2.deployment.analytics.dashboard.strategy.rollingUpdate.maxUnavailable }}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2am-pattern-2-analytics-dashboard
+  template:
+    metadata:
+      labels:
+        deployment: wso2am-pattern-2-analytics-dashboard
+    spec:
+      {{- if and .Values.wso2.deployment.db.host (.Values.wso2.deployment.db.port) }}
+      initContainers:
+      - name: init-apim-analytics-db
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z {{ .Values.wso2.deployment.db.host }} {{ .Values.wso2.deployment.db.port }}; do sleep 1; printf "-"; done; echo -e "  >> DBMS service is available";']
+      - name: init-am-1
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Publisher Instance One deployment"; while ! nc -z  wso2am-pattern-2-pub-store-tm-1-service 9711; do sleep 1; printf "-"; done; echo -e "  >> Publisher Instance One has started";']
+      {{- end }}
+      containers:
+      - name: wso2am-pattern-2-am-analytics-dashboard
+        {{- if .Values.wso2.deployment.analytics.dashboard.dockerRegistry }}
+        image: {{ .Values.wso2.deployment.analytics.dashboard.dockerRegistry }}/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}
+        {{- $tag := .Values.wso2.deployment.analytics.dashboard.imageTag }}
+        {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+        {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
+        image: wso2/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}:{{ .Values.wso2.deployment.analytics.dashboard.imageTag }}
+        {{- else }}
+        image: docker.wso2.com/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}:{{ .Values.wso2.deployment.analytics.dashboard.imageTag }}
+        {{- end }}
+        livenessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - nc -z localhost 9643
+          initialDelaySeconds: {{ .Values.wso2.deployment.analytics.dashboard.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.wso2.deployment.analytics.dashboard.livenessProbe.periodSeconds }}
+        readinessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - nc -z localhost 9643
+          initialDelaySeconds: {{ .Values.wso2.deployment.analytics.dashboard.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.wso2.deployment.analytics.dashboard.readinessProbe.periodSeconds }}
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/dashboard.sh stop']
+        resources:
+          requests:
+            memory: {{ .Values.wso2.deployment.analytics.resources.requests.memory }}
+            cpu: {{ .Values.wso2.deployment.analytics.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.wso2.deployment.analytics.resources.limits.memory }}
+            cpu: {{ .Values.wso2.deployment.analytics.resources.limits.cpu }}
+        imagePullPolicy: {{ .Values.wso2.deployment.analytics.dashboard.imagePullPolicy }}
+        securityContext:
+          runAsUser: 802
+        ports:
+        - containerPort: 9643
+          protocol: "TCP"
+        volumeMounts:
+        - name: wso2am-pattern-2-am-analytics-dashboard-conf
+          mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
+      {{- if .Values.wso2.deployment.analytics.dashboard.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.wso2.deployment.analytics.dashboard.imagePullSecrets }}
+      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      imagePullSecrets:
+        - name: wso2am-pattern-2-wso2-private-registry-creds
+      {{ end }}
+      volumes:
+      - name: wso2am-pattern-2-am-analytics-dashboard-conf
+        configMap:
+          name: wso2am-pattern-2-am-analytics-dashboard-conf

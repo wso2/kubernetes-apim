@@ -45,7 +45,7 @@ wso2:
       #dockerRegistry: ""
 
       imageName: "wso2am"
-      imageTag: "3.0.0"
+      imageTag: "3.1.0"
       replicas: 1
       # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
       minReadySeconds: 240
@@ -96,7 +96,7 @@ wso2:
         #dockerRegistry: ""
 
         imageName: "wso2am-analytics-dashboard"
-        imageTag: "3.0.0"
+        imageTag: "3.1.0"
         replicas: 1
         # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
         minReadySeconds: 30
@@ -135,7 +135,7 @@ wso2:
         #dockerRegistry: ""
 
         imageName: "wso2am-analytics-worker"
-        imageTag: "3.0.0"
+        imageTag: "3.1.0"
         replicas: 1
         # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
         minReadySeconds: 30

@@ -47,3 +47,7 @@ spec:
       name: 'rest-api-port-4'
       protocol: TCP
       port: 7444
+    -
+      name: 'event-sync-port-1'
+      protocol: TCP
+      port: 9893
