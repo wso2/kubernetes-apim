@@ -220,10 +220,10 @@ wso2.datasources:
       definition:
         type: RDBMS
         configuration:
-          jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/DASHBOARD_DB;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE'
+          jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DASHBOARD_DB?useSSL=false'
           username: wso2carbon
           password: wso2carbon
-          driverClassName: org.h2.Driver
+          driverClassName: com.mysql.cj.jdbc.Driver
           maxPoolSize: 20
           idleTimeout: 60000
           connectionTestQuery: SELECT 1
@@ -273,10 +273,10 @@ wso2.datasources:
       definition:
         type: RDBMS
         configuration:
-          jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/PERMISSION_DB;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE'
+          jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_PERMISSIONS_DB?useSSL=false'
           username: wso2carbon
           password: wso2carbon
-          driverClassName: org.h2.Driver
+          driverClassName: com.mysql.cj.jdbc.Driver
           maxPoolSize: 10
           idleTimeout: 60000
           connectionTestQuery: SELECT 1
@@ -349,9 +349,13 @@ wso2.transport.http:
       value: true
 
   listenerConfigurations:
+    - id: "default"
+      host: "0.0.0.0"
+      port: 9089
+
     - id: "default-https"
       host: "0.0.0.0"
-      port: 9643
+      port: 9640
       scheme: https
       keyStoreFile: "${carbon.home}/resources/security/wso2carbon.jks"
       keyStorePassword: wso2carbon
@@ -359,13 +363,17 @@ wso2.transport.http:
 
 ## Dashboard data provider authorization
 data.provider.configs:
-  authorizingClass: org.wso2.carbon.dashboards.core.DashboardDataProviderAuthorizer
+  authorizingClass: org.wso2.analytics.apim.dashboards.core.data.provider.Authorizer
 
 ## Additional APIs that needs to be added to the server.
 ## Should be provided as a key value pairs { API context path: Microservice implementation class }
 ## The configured APIs will be available as https://{host}:{port}/analytics-dashboard/{API_context_path}
 additional.apis:
   /apis/analytics/v1.0/apim: org.wso2.analytics.apim.rest.api.proxy.ApimApi
+  /apis/v1.0/report: org.wso2.analytics.apim.rest.api.report.ReportApi
+
+report:
+  implClass: org.wso2.analytics.apim.rest.api.report.reportgen.DefaultReportGeneratorImpl
 
 ## Authentication configuration
 auth.configs:
@@ -384,12 +392,12 @@ auth.configs:
     kmPassword: admin
     portalAppContext: analytics-dashboard
     businessRulesAppContext : business-rules
-    cacheTimeout: 900
+    cacheTimeout: 30
     baseUrl: https://{{ .Release.Name }}-analytics-dashboard
     grantType: authorization_code
     publisherUrl: https://wso2am-pattern-2-pub-store-tm-service:9443
-    externalLogoutUrl: https://{{ .Release.Name }}-am/oidc/logout
-    #storeUrl: https://localhost:9443
+    devPortalUrl: https://localhost:9443
+    externalLogoutUrl: https://localhost:9443/oidc/logout
 
 wso2.dashboard:
   roles:
