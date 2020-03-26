@@ -31,4 +31,4 @@ spec:
       - path: /
         backend:
           serviceName: wso2am-pattern-2-am-analytics-dashboard-service
-          servicePort: 9643
+          servicePort: 9640
