@@ -19,7 +19,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   docker-entrypoint.sh: |
-    #!/bin/sh
+    #!/bin/bash
     set -e
 
     # volume mounts
@@ -38,14 +38,13 @@ data:
     test ! -d ${WSO2_SERVER_HOME} && echo "WSO2 Docker product home does not exist" && exit 1
 
     # shared artifact directories
-    set "executionplans" "synapse-configs"
+    directories=("executionplans" "synapse-configs")
     # if the original directory locations of artifacts to be synced between nodes are empty,
     # copy the preserved, default content of these folders to these original locations
-    for shared_directory
-    do
+    for shared_directory in ${directories[@]}; do
       if test -d ${original_deployment_artifacts}/${shared_directory};
       then
-        if [ -z "$(ls -A ${deployment_volume}/${shared_directory})" ]; then
+        if [[ -z "$(ls -A ${deployment_volume}/${shared_directory})" ]]; then
           if ! cp -R ${original_deployment_artifacts}/${shared_directory}/* ${deployment_volume}/${shared_directory};
           then
             echo "Failed to copy the preserved, default artifacts to original location (${deployment_volume}/${shared_directory})"
@@ -56,17 +55,40 @@ data:
       fi
     done
 
-    # copy any configuration changes mounted to config_volume
-    test -d ${config_volume} && [ "$(ls -A ${config_volume})" ] && cp -RL ${config_volume}/* ${WSO2_SERVER_HOME}/
-    # copy any artifact changes mounted to artifact_volume
-    test -d ${artifact_volume} && [ "$(ls -A ${artifact_volume})" ] && cp -RL ${artifact_volume}/* ${WSO2_SERVER_HOME}/
-
-    if [ ! `test -d ${WSO2_SERVER_HOME}/updates/wum` ];
+    # Copying carbon_db
+    if ! test -f /home/wso2carbon/solr/database/WSO2CARBON_DB.mv.db
     then
-      echo "Copying critical patch fixes to GA pack";
-      # copy any patches mounted to patch_volume
-      test -d ${patch_volume} && [ "$(ls -A ${patch_volume})" ] && cp -RL ${patch_volume}/* ${WSO2_SERVER_HOME}/
+      echo "Copying WSO2CARBON_DB.mv.db" >&2
+      cp ${WSO2_SERVER_HOME}/repository/database/WSO2CARBON_DB.mv.db /home/wso2carbon/solr/database/
+    fi
+
+    # optimize WSO2 Carbon Server, if the profile name is defined as an environment variable
+    if [[ ! -z "${PROFILE_NAME}" ]]
+    then
+      echo "Optimizing WSO2 Carbon Server" >&2
+      sh ${WSO2_SERVER_HOME}/bin/profileSetup.sh -Dprofile=${PROFILE_NAME}
+    fi
+
+    # copy any configuration changes mounted to config_volume
+    test -d ${config_volume} && [[ "$(ls -A ${config_volume})" ]] && cp -RL ${config_volume}/* ${WSO2_SERVER_HOME}/
+    # copy any artifact changes mounted to artifact_volume
+    test -d ${artifact_volume} && [[ "$(ls -A ${artifact_volume})" ]] && cp -RL ${artifact_volume}/* ${WSO2_SERVER_HOME}/
+
+    # copy any patches mounted to patch_volume
+    if [[ ! `test -d ${WSO2_SERVER_HOME}/updates/wum` ]]
+    then
+      test -d ${patch_volume} && [[ "$(ls -A ${patch_volume})" ]] \
+      && echo "Copying critical patch fixes to GA pack" \
+      && cp -RL ${patch_volume}/* ${WSO2_SERVER_HOME}/
     fi
 
     # start WSO2 Carbon server
-    sh ${WSO2_SERVER_HOME}/bin/wso2server.sh "$@"
+    echo "Start WSO2 Carbon server" >&2
+    if [[ -z "${PROFILE_NAME}" ]]
+    then
+      # start the server with the provided startup arguments
+      sh ${WSO2_SERVER_HOME}/bin/wso2server.sh "$@"
+    else
+      # start the server with the specified profile and provided startup arguments
+      sh ${WSO2_SERVER_HOME}/bin/wso2server.sh -Dprofile=${PROFILE_NAME} "$@"
+    fi
