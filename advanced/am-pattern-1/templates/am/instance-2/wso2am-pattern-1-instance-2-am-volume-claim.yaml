@@ -52,8 +52,4 @@ spec:
   selector:
     matchLabels:
       purpose: wso2am-pattern-1-instance-2-solr
-<<<<<<< HEAD
   {{- end }}
-=======
-  {{- end }}
->>>>>>> Add statefull set to pattern 1
