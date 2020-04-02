@@ -43,6 +43,8 @@ metadata:
   name: wso2am-pattern-1-am-2-deployment
   namespace: {{ .Release.Namespace }}
 spec:
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       deployment: wso2am-pattern-1-am
