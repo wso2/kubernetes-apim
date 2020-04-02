@@ -12,23 +12,53 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+apiVersion: v1
+kind: Service
+metadata:
+  name: wso2am-pattern-2-pub-store-tm-1-service
+  namespace : {{ .Release.Namespace }}
+spec:
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    node: wso2am-pattern-2-pub-store-tm-1
+  ports:
+  # ports that this service should serve on
+  - name: jms-tcp
+    protocol: TCP
+    port: 5672
+  - name: binary-secure
+    protocol: TCP
+    port: 9711
+  - name: binary
+    protocol: TCP
+    port: 9611
+  - name: thrift-secure
+    protocol: TCP
+    port: 7711
+  - name: thrift
+    protocol: TCP
+    port: 7611
+  - name: servlet-http
+    protocol: TCP
+    port: 9763
+  - name: servlet-https
+    protocol: TCP
+    port: 9443
+---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: wso2am-pattern-2-pub-store-tm-1-deployment
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
-  minReadySeconds: {{ .Values.wso2.deployment.am.minReadySeconds }}
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-    type: RollingUpdate
   selector:
     matchLabels:
       deployment: wso2am-pattern-2-pub-store-tm
       node: wso2am-pattern-2-pub-store-tm-1
+  serviceName: wso2am-pattern-2-pub-store-tm-1-service
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -117,9 +147,13 @@ spec:
         - name: wso2am-pattern-2-pub-store-tm-1-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
           subPath: deployment.toml
-        - name: wso2am-pattern-2-am-conf-entrypoint
+        - name: wso2am-pattern-2-conf-entrypoint
           mountPath: /home/wso2carbon/docker-entrypoint.sh
           subPath: docker-entrypoint.sh
+        - name: wso2am-pattern-2-instance-1-solr
+          mountPath: /home/wso2carbon/solr/indexed-data
+        - name: wso2am-pattern-2-instance-1-carbon-db
+          mountPath: /home/wso2carbon/solr/database
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
@@ -129,13 +163,19 @@ spec:
         - name: wso2am-pattern-2-wso2-private-registry-creds
       {{ end }}
       volumes:
+      - name: wso2am-pattern-2-instance-1-carbon-db
+        persistentVolumeClaim:
+          claimName: wso2am-pattern-2-instance-1-carbon-db
+      - name: wso2am-pattern-2-instance-1-solr
+        persistentVolumeClaim:
+          claimName: wso2am-pattern-2-instance-1-solr
       - name: wso2am-pattern-2-storage-volume
         persistentVolumeClaim:
           claimName: wso2am-pattern-2-pub-store-tm-shared-executionplans-volume-claim
       - name: wso2am-pattern-2-pub-store-tm-1-conf
         configMap:
           name: wso2am-pattern-2-pub-store-tm-1-conf
-      - name: wso2am-pattern-2-am-conf-entrypoint
+      - name: wso2am-pattern-2-conf-entrypoint
         configMap:
           name: wso2am-pattern-2-am-conf-entrypoint
           defaultMode: 0407

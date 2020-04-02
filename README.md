@@ -13,6 +13,7 @@
 #### Helm resources for API Management deployment patterns
 
 * [Deployment Pattern 1](advanced/am-pattern-1/README.md)
+* [Deployment Pattern 2](advanced/am-pattern-2/README.md)
 
 ## Advanced topics
 
