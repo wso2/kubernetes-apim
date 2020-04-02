@@ -49,14 +49,14 @@ spec:
       node: wso2am-pattern-1-am-2
   serviceName: wso2am-pattern-1-am-2-service
   replicas: {{ .Values.wso2.deployment.am.replicas }}
+  updateStrategy:
+    type: RollingUpdate
   template:
     metadata:
       labels:
         deployment: wso2am-pattern-1-am
         node: wso2am-pattern-1-am-2
     spec:
-      updateStrategy:
-        type: RollingUpdate
       hostAliases:
         - ip: "127.0.0.1"
           hostnames:
