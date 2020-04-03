@@ -51,8 +51,6 @@ spec:
       node: wso2am-pattern-1-am-1
   serviceName: wso2am-pattern-1-am-1-service
   replicas: {{ .Values.wso2.deployment.am.replicas }}
-  updateStrategy:
-    type: RollingUpdate
   template:
     metadata:
       labels:
