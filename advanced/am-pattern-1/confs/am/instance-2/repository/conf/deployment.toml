@@ -99,3 +99,4 @@ url = "jdbc:h2:/home/wso2carbon/solr/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FAL
 
 [indexing]
 location = "/home/wso2carbon/solr/indexed-data"
+
