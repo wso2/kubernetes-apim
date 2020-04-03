@@ -2983,7 +2983,7 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       containers:
         - name: wso2am-pattern-1-analytics-dashboard
-          image: gcr.io/research-n-development-209206/wso2am-analytics-dashboard:3.1.0
+          image: "$image.pull.@.wso2"/wso2am-analytics-dashboard:3.1.0
           livenessProbe:
             exec:
               command:
@@ -3647,7 +3647,7 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       containers:
         - name: wso2am-pattern-1-analytics-worker
-          image: gcr.io/research-n-development-209206/wso2am-analytics-worker:3.1.0
+          image: "$image.pull.@.wso2"/wso2am-analytics-worker:3.1.0
           livenessProbe:
             exec:
               command:
@@ -4049,7 +4049,7 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-1-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       containers:
         - name: wso2am-pattern-1-am
-          image: gcr.io/research-n-development-209206/wso2am:3.1.0
+          image: "$image.pull.@.wso2"/wso2am:3.1.0
           livenessProbe:
             exec:
               command:
