@@ -53,3 +53,4 @@ spec:
     matchLabels:
       purpose: wso2am-pattern-1-instance-1-solr
   {{- end }}
+
