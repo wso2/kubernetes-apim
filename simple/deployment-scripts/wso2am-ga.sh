@@ -83,7 +83,6 @@ data:
     GRANT ALL ON WSO2AM_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
 
     USE WSO2AM_DB;
-
     -- Start of IDENTITY Tables--
     CREATE TABLE IF NOT EXISTS IDN_BASE_TABLE (
                 PRODUCT_NAME VARCHAR(20),
@@ -166,11 +165,22 @@ data:
                 SUBJECT_IDENTIFIER VARCHAR(255),
                 ACCESS_TOKEN_HASH VARCHAR(512),
                 REFRESH_TOKEN_HASH VARCHAR(512),
-                IDP_ID INTEGER,
+                IDP_ID INTEGER DEFAULT -1 NOT NULL,
+                TOKEN_BINDING_REF VARCHAR (32) DEFAULT 'NONE',
                 PRIMARY KEY (TOKEN_ID),
                 FOREIGN KEY (CONSUMER_KEY_ID) REFERENCES IDN_OAUTH_CONSUMER_APPS(ID) ON DELETE CASCADE,
                 CONSTRAINT CON_APP_KEY UNIQUE (CONSUMER_KEY_ID,AUTHZ_USER,TENANT_ID,USER_DOMAIN,USER_TYPE,TOKEN_SCOPE_HASH,
-                                               TOKEN_STATE,TOKEN_STATE_ID,IDP_ID)
+                                               TOKEN_STATE,TOKEN_STATE_ID,IDP_ID,TOKEN_BINDING_REF)
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS IDN_OAUTH2_TOKEN_BINDING (
+                TOKEN_ID VARCHAR (255),
+                TOKEN_BINDING_TYPE VARCHAR (32),
+                TOKEN_BINDING_REF VARCHAR (32),
+                TOKEN_BINDING_VALUE VARCHAR (1024),
+                TENANT_ID INTEGER DEFAULT -1,
+                PRIMARY KEY (TOKEN_ID),
+                FOREIGN KEY (TOKEN_ID) REFERENCES IDN_OAUTH2_ACCESS_TOKEN(TOKEN_ID) ON DELETE CASCADE
     )ENGINE INNODB;
 
 
@@ -195,7 +205,7 @@ data:
                 ACCESS_TOKEN_HASH VARCHAR(512),
                 REFRESH_TOKEN_HASH VARCHAR(512),
                 INVALIDATED_TIME TIMESTAMP NULL,
-                IDP_ID INTEGER
+                IDP_ID INTEGER DEFAULT -1 NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS IDN_OAUTH2_AUTHORIZATION_CODE (
@@ -207,7 +217,7 @@ data:
                 AUTHZ_USER VARCHAR (100),
                 TENANT_ID INTEGER,
                 USER_DOMAIN VARCHAR(50),
-                TIME_CREATED TIMESTAMP,
+                TIME_CREATED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 VALIDITY_PERIOD BIGINT,
                 STATE VARCHAR (25) DEFAULT 'ACTIVE',
                 TOKEN_ID VARCHAR(255),
@@ -215,13 +225,47 @@ data:
                 PKCE_CODE_CHALLENGE VARCHAR(255),
                 PKCE_CODE_CHALLENGE_METHOD VARCHAR(128),
                 AUTHORIZATION_CODE_HASH VARCHAR(512),
-                IDP_ID INTEGER,
+                IDP_ID INTEGER DEFAULT -1 NOT NULL,
                 PRIMARY KEY (CODE_ID),
                 FOREIGN KEY (CONSUMER_KEY_ID) REFERENCES IDN_OAUTH_CONSUMER_APPS(ID) ON DELETE CASCADE
     )ENGINE INNODB;
 
 
+    CREATE TABLE IF NOT EXISTS IDN_OAUTH2_AUTHZ_CODE_SCOPE(
+                CODE_ID   VARCHAR(255),
+                SCOPE     VARCHAR(60),
+                TENANT_ID INTEGER DEFAULT -1,
+                PRIMARY KEY (CODE_ID, SCOPE),
+                FOREIGN KEY (CODE_ID) REFERENCES IDN_OAUTH2_AUTHORIZATION_CODE (CODE_ID) ON DELETE CASCADE
+    )ENGINE INNODB;
 
+    CREATE TABLE IF NOT EXISTS IDN_OAUTH2_DEVICE_FLOW (
+                CODE_ID VARCHAR(255),
+                DEVICE_CODE VARCHAR(255),
+                USER_CODE VARCHAR(25),
+                CONSUMER_KEY_ID INTEGER,
+                LAST_POLL_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                EXPIRY_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                TIME_CREATED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                POLL_TIME BIGINT,
+                STATUS VARCHAR (25) DEFAULT 'PENDING',
+                AUTHZ_USER VARCHAR (100),
+                TENANT_ID INTEGER,
+                USER_DOMAIN VARCHAR(50),
+                IDP_ID INTEGER,
+                PRIMARY KEY (DEVICE_CODE),
+                UNIQUE (CODE_ID),
+                UNIQUE (USER_CODE),
+                FOREIGN KEY (CONSUMER_KEY_ID) REFERENCES IDN_OAUTH_CONSUMER_APPS(ID) ON DELETE CASCADE
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS IDN_OAUTH2_DEVICE_FLOW_SCOPES (
+                ID INTEGER NOT NULL AUTO_INCREMENT,
+                SCOPE_ID VARCHAR(255),
+                SCOPE VARCHAR(255),
+                PRIMARY KEY (ID),
+                FOREIGN KEY (SCOPE_ID) REFERENCES IDN_OAUTH2_DEVICE_FLOW(CODE_ID) ON DELETE CASCADE
+    )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS IDN_OAUTH2_ACCESS_TOKEN_SCOPE (
                 TOKEN_ID VARCHAR (255),
@@ -237,13 +281,15 @@ data:
                 DISPLAY_NAME VARCHAR(255) NOT NULL,
                 DESCRIPTION VARCHAR(512),
                 TENANT_ID INTEGER NOT NULL DEFAULT -1,
+                SCOPE_TYPE VARCHAR(255) NOT NULL,
                 PRIMARY KEY (SCOPE_ID)
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS IDN_OAUTH2_SCOPE_BINDING (
                 SCOPE_ID INTEGER NOT NULL,
-                SCOPE_BINDING VARCHAR(255),
-                FOREIGN KEY (SCOPE_ID) REFERENCES IDN_OAUTH2_SCOPE(SCOPE_ID) ON DELETE CASCADE
+                SCOPE_BINDING VARCHAR(255) NOT NULL,
+                BINDING_TYPE VARCHAR(255) NOT NULL,
+                FOREIGN KEY (SCOPE_ID) REFERENCES IDN_OAUTH2_SCOPE (SCOPE_ID) ON DELETE CASCADE
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS IDN_OAUTH2_RESOURCE_SCOPE (
@@ -387,26 +433,32 @@ data:
     CREATE TABLE IF NOT EXISTS SP_APP (
             ID INTEGER NOT NULL AUTO_INCREMENT,
             TENANT_ID INTEGER NOT NULL,
-    	    	APP_NAME VARCHAR (255) NOT NULL ,
-    	    	USER_STORE VARCHAR (255) NOT NULL,
+            APP_NAME VARCHAR (255) NOT NULL ,
+            USER_STORE VARCHAR (255) NOT NULL,
             USERNAME VARCHAR (255) NOT NULL ,
             DESCRIPTION VARCHAR (1024),
-    	    	ROLE_CLAIM VARCHAR (512),
+            ROLE_CLAIM VARCHAR (512),
             AUTH_TYPE VARCHAR (255) NOT NULL,
-    	    	PROVISIONING_USERSTORE_DOMAIN VARCHAR (512),
-    	    	IS_LOCAL_CLAIM_DIALECT CHAR(1) DEFAULT '1',
-    	    	IS_SEND_LOCAL_SUBJECT_ID CHAR(1) DEFAULT '0',
-    	    	IS_SEND_AUTH_LIST_OF_IDPS CHAR(1) DEFAULT '0',
+            PROVISIONING_USERSTORE_DOMAIN VARCHAR (512),
+            IS_LOCAL_CLAIM_DIALECT CHAR(1) DEFAULT '1',
+            IS_SEND_LOCAL_SUBJECT_ID CHAR(1) DEFAULT '0',
+            IS_SEND_AUTH_LIST_OF_IDPS CHAR(1) DEFAULT '0',
             IS_USE_TENANT_DOMAIN_SUBJECT CHAR(1) DEFAULT '1',
             IS_USE_USER_DOMAIN_SUBJECT CHAR(1) DEFAULT '1',
             ENABLE_AUTHORIZATION CHAR(1) DEFAULT '0',
-    	    	SUBJECT_CLAIM_URI VARCHAR (512),
-    	    	IS_SAAS_APP CHAR(1) DEFAULT '0',
-    	    	IS_DUMB_MODE CHAR(1) DEFAULT '0',
+            SUBJECT_CLAIM_URI VARCHAR (512),
+            IS_SAAS_APP CHAR(1) DEFAULT '0',
+            IS_DUMB_MODE CHAR(1) DEFAULT '0',
+            UUID CHAR(36),
+            IMAGE_URL VARCHAR(1024),
+            ACCESS_URL VARCHAR(1024),
+            IS_DISCOVERABLE CHAR(1) DEFAULT '0',
+
             PRIMARY KEY (ID)
     )ENGINE INNODB;
 
     ALTER TABLE SP_APP ADD CONSTRAINT APPLICATION_NAME_CONSTRAINT UNIQUE(APP_NAME, TENANT_ID);
+    ALTER TABLE SP_APP ADD CONSTRAINT APPLICATION_UUID_CONSTRAINT UNIQUE(UUID);
 
     CREATE TABLE IF NOT EXISTS SP_METADATA (
                 ID INTEGER AUTO_INCREMENT,
@@ -531,17 +583,6 @@ data:
       PRIMARY KEY (ID),
       CONSTRAINT SP_TEMPLATE_CONSTRAINT UNIQUE (TENANT_ID, NAME));
 
-    CREATE TABLE IF NOT EXISTS IDN_ARTIFACT_STORE (
-      ID          VARCHAR(255)           NOT NULL,
-      TENANT_ID   INTEGER                NOT NULL,
-      ARTIFACT    BLOB                   DEFAULT NULL,
-      IDENTIFIER  VARCHAR(255)           NOT NULL,
-      ARTIFACT_TYPE       VARCHAR(255)   NOT NULL,
-      CONTENT_TYPE        VARCHAR(255)   DEFAULT NULL,
-      PRIMARY KEY (ID),
-      UNIQUE (IDENTIFIER , ARTIFACT_TYPE )
-    )ENGINE INNODB;
-
     CREATE TABLE IF NOT EXISTS IDN_AUTH_WAIT_STATUS (
       ID              INTEGER AUTO_INCREMENT NOT NULL,
       TENANT_ID       INTEGER                NOT NULL,
@@ -572,9 +613,12 @@ data:
      			PROVISIONING_ROLE VARCHAR(128),
      			IS_FEDERATION_HUB CHAR(1) NOT NULL DEFAULT '0',
      			IS_LOCAL_CLAIM_DIALECT CHAR(1) NOT NULL DEFAULT '0',
-                DISPLAY_NAME VARCHAR(255),
+     			DISPLAY_NAME VARCHAR(255),
+     			IMAGE_URL VARCHAR(1024),
+     			UUID CHAR(36) NOT NULL,
     			PRIMARY KEY (ID),
-    			UNIQUE (TENANT_ID, NAME)
+    			UNIQUE (TENANT_ID, NAME),
+    			UNIQUE (UUID)
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS IDP_ROLE (
@@ -717,6 +761,7 @@ data:
                 IDP_ID INTEGER NOT NULL,
                 DOMAIN_NAME VARCHAR(255) NOT NULL,
                 USER_NAME VARCHAR(255) NOT NULL,
+                ASSOCIATION_ID CHAR(36) NOT NULL,
                 PRIMARY KEY (ID),
                 UNIQUE(IDP_USER_ID, TENANT_ID, IDP_ID),
                 FOREIGN KEY (IDP_ID) REFERENCES IDP(ID) ON DELETE CASCADE
@@ -750,6 +795,8 @@ data:
                 PUBLIC_KEY_COSE VARCHAR(1024) NOT NULL,
                 SIGNATURE_COUNT BIGINT,
                 USER_IDENTITY VARCHAR(512) NOT NULL,
+                DISPLAY_NAME VARCHAR(255),
+                IS_USERNAMELESS_SUPPORTED CHAR(1) DEFAULT '0',
                 PRIMARY KEY (CREDENTIAL_ID, USER_HANDLE)
     )ENGINE INNODB;
 
@@ -867,7 +914,7 @@ data:
 
     CREATE TABLE IF NOT EXISTS IDN_CLAIM (
       ID INTEGER NOT NULL AUTO_INCREMENT,
-      DIALECT_ID INTEGER,
+      DIALECT_ID INTEGER NOT NULL,
       CLAIM_URI VARCHAR (255) NOT NULL,
       TENANT_ID INTEGER NOT NULL,
       PRIMARY KEY (ID),
@@ -989,20 +1036,14 @@ data:
                  CONSTRAINT CERTIFICATE_UNIQUE_KEY UNIQUE (NAME, TENANT_ID)
     )ENGINE INNODB;
 
-    CREATE TABLE IF NOT EXISTS IDN_OIDC_SCOPE (
-                ID INTEGER NOT NULL AUTO_INCREMENT,
-                NAME VARCHAR(255) NOT NULL,
-                TENANT_ID INTEGER DEFAULT -1,
-                PRIMARY KEY (ID)
-    )ENGINE INNODB;
-
     CREATE TABLE IF NOT EXISTS IDN_OIDC_SCOPE_CLAIM_MAPPING (
                 ID INTEGER NOT NULL AUTO_INCREMENT,
-                SCOPE_ID INTEGER,
-                EXTERNAL_CLAIM_ID INTEGER,
+                SCOPE_ID INTEGER NOT NULL,
+                EXTERNAL_CLAIM_ID INTEGER NOT NULL,
                 PRIMARY KEY (ID),
-                FOREIGN KEY (SCOPE_ID) REFERENCES IDN_OIDC_SCOPE(ID) ON DELETE CASCADE,
-                FOREIGN KEY (EXTERNAL_CLAIM_ID) REFERENCES IDN_CLAIM(ID) ON DELETE CASCADE
+                FOREIGN KEY (SCOPE_ID) REFERENCES IDN_OAUTH2_SCOPE(SCOPE_ID) ON DELETE CASCADE,
+                FOREIGN KEY (EXTERNAL_CLAIM_ID) REFERENCES IDN_CLAIM(ID) ON DELETE CASCADE,
+                UNIQUE (SCOPE_ID, EXTERNAL_CLAIM_ID)
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS IDN_FUNCTION_LIBRARY (
@@ -1014,6 +1055,40 @@ data:
     	PRIMARY KEY (TENANT_ID,NAME)
     )ENGINE INNODB;
 
+    CREATE TABLE IF NOT EXISTS IDN_OAUTH2_CIBA_AUTH_CODE (
+        AUTH_CODE_KEY CHAR (36),
+        AUTH_REQ_ID CHAR (36),
+        ISSUED_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSUMER_KEY VARCHAR(255),
+        LAST_POLLED_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        POLLING_INTERVAL INTEGER,
+        EXPIRES_IN  INTEGER,
+        AUTHENTICATED_USER_NAME VARCHAR(255),
+        USER_STORE_DOMAIN VARCHAR(100),
+        TENANT_ID INTEGER,
+        AUTH_REQ_STATUS VARCHAR (100) DEFAULT 'REQUESTED',
+        IDP_ID INTEGER,
+        UNIQUE(AUTH_REQ_ID),
+        PRIMARY KEY (AUTH_CODE_KEY),
+        FOREIGN KEY (CONSUMER_KEY) REFERENCES IDN_OAUTH_CONSUMER_APPS(CONSUMER_KEY) ON DELETE CASCADE
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS IDN_OAUTH2_CIBA_REQUEST_SCOPES (
+        AUTH_CODE_KEY CHAR (36),
+        SCOPE VARCHAR (255),
+        FOREIGN KEY (AUTH_CODE_KEY) REFERENCES IDN_OAUTH2_CIBA_AUTH_CODE(AUTH_CODE_KEY) ON DELETE CASCADE
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS IDN_FED_AUTH_SESSION_MAPPING (
+    	IDP_SESSION_ID VARCHAR(255) NOT NULL,
+    	SESSION_ID VARCHAR(255) NOT NULL,
+    	IDP_NAME VARCHAR(255) NOT NULL,
+    	AUTHENTICATOR_ID VARCHAR(255),
+    	PROTOCOL_TYPE VARCHAR(255),
+    	TIME_CREATED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    	PRIMARY KEY (IDP_SESSION_ID)
+    )ENGINE INNODB;
+
     -- --------------------------- INDEX CREATION -----------------------------
     -- IDN_OAUTH2_ACCESS_TOKEN --
     CREATE INDEX IDX_TC ON IDN_OAUTH2_ACCESS_TOKEN(TIME_CREATED);
@@ -1023,6 +1098,7 @@ data:
     CREATE INDEX IDX_AT_AU_TID_UD_TS_CKID ON IDN_OAUTH2_ACCESS_TOKEN(AUTHZ_USER, TENANT_ID, USER_DOMAIN, TOKEN_STATE, CONSUMER_KEY_ID);
     CREATE INDEX IDX_AT_AU_CKID_TS_UT ON IDN_OAUTH2_ACCESS_TOKEN(AUTHZ_USER, CONSUMER_KEY_ID, TOKEN_STATE, USER_TYPE);
     CREATE INDEX IDX_AT_RTH ON IDN_OAUTH2_ACCESS_TOKEN(REFRESH_TOKEN_HASH);
+    CREATE INDEX IDX_AT_CKID_AU_TID_UD_TSH_TS ON IDN_OAUTH2_ACCESS_TOKEN(CONSUMER_KEY_ID, AUTHZ_USER, TENANT_ID, USER_DOMAIN, TOKEN_SCOPE_HASH, TOKEN_STATE);
 
     -- IDN_OAUTH2_AUTHORIZATION_CODE --
     CREATE INDEX IDX_AUTHORIZATION_CODE_HASH ON IDN_OAUTH2_AUTHORIZATION_CODE (AUTHORIZATION_CODE_HASH, CONSUMER_KEY_ID);
@@ -1045,7 +1121,6 @@ data:
 
     -- IDN_OAUTH2_SCOPE --
     CREATE INDEX IDX_SC_TID ON IDN_OAUTH2_SCOPE(TENANT_ID);
-    CREATE INDEX IDX_SC_N_TID ON IDN_OAUTH2_SCOPE(NAME, TENANT_ID);
 
     -- IDN_OAUTH2_SCOPE_BINDING --
     CREATE INDEX IDX_SB_SCPID ON IDN_OAUTH2_SCOPE_BINDING(SCOPE_ID);
@@ -1078,6 +1153,16 @@ data:
 
     -- IDN_FIDO2_PROPERTY --
     CREATE INDEX IDX_FIDO2_STR ON FIDO2_DEVICE_STORE(USER_NAME, TENANT_ID, DOMAIN_NAME, CREDENTIAL_ID, USER_HANDLE);
+
+    -- IDN_ASSOCIATED_ID --
+    CREATE INDEX IDX_AI_DN_UN_AI ON IDN_ASSOCIATED_ID(DOMAIN_NAME, USER_NAME, ASSOCIATION_ID);
+
+    -- IDN_OAUTH2_TOKEN_BINDING --
+    CREATE INDEX IDX_IDN_AUTH_BIND ON IDN_OAUTH2_TOKEN_BINDING (TOKEN_BINDING_REF);
+
+    -- IDN_FED_AUTH_SESSION_MAPPING --
+    CREATE INDEX IDX_FEDERATED_AUTH_SESSION_ID ON IDN_FED_AUTH_SESSION_MAPPING (SESSION_ID);
+
     -- End of IDENTITY Tables--
 
     -- Start of CONSENT-MGT Tables --
@@ -1270,6 +1355,13 @@ data:
         THROTTLING_TIER varchar(512) DEFAULT NULL,
         MEDIATION_SCRIPT BLOB,
         PRIMARY KEY (URL_MAPPING_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS AM_SECURITY_AUDIT_UUID_MAPPING (
+        API_ID INTEGER NOT NULL,
+        AUDIT_UUID VARCHAR(255) NOT NULL,
+        FOREIGN KEY (API_ID) REFERENCES AM_API(API_ID) ON UPDATE CASCADE ON DELETE RESTRICT,
+        PRIMARY KEY (API_ID)
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS AM_API_PRODUCT_MAPPING (
@@ -1648,8 +1740,8 @@ data:
 
     CREATE TABLE IF NOT EXISTS `AM_CERTIFICATE_METADATA` (
       `TENANT_ID` INT(11) NOT NULL,
-      `ALIAS` VARCHAR(45) NOT NULL,
-      `END_POINT` VARCHAR(100) NOT NULL,
+      `ALIAS` VARCHAR(255) NOT NULL,
+      `END_POINT` VARCHAR(255) NOT NULL,
       CONSTRAINT PK_ALIAS PRIMARY KEY (`ALIAS`)
     ) ENGINE=InnoDB;
 
@@ -1720,7 +1812,7 @@ data:
         CONSUMER_KEY VARCHAR(512) NOT NULL,
         CONSUMER_SECRET VARCHAR(512) NOT NULL,
         CREATED_TIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE (NAME),
+        TENANT_DOMAIN VARCHAR(255) DEFAULT 'carbon.super',
         UNIQUE (CONSUMER_KEY),
         PRIMARY KEY (ID)
      ) ENGINE=InnoDB;
@@ -1743,7 +1835,94 @@ data:
         TIME_CREATED TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (UUID)
     ) ENGINE=InnoDB;
+
+    CREATE TABLE IF NOT EXISTS AM_API_CATEGORIES (
+      UUID VARCHAR(50),
+      NAME VARCHAR(255),
+      DESCRIPTION VARCHAR(1024),
+      TENANT_ID INTEGER DEFAULT -1,
+      UNIQUE (NAME,TENANT_ID),
+      PRIMARY KEY (UUID)
+    ) ENGINE=InnoDB;
+
+    CREATE TABLE IF NOT EXISTS AM_USER (
+        USER_ID VARCHAR(255) NOT NULL,
+        USER_NAME VARCHAR(255) NOT NULL,
+        PRIMARY KEY(USER_ID)
+    ) ENGINE=InnoDB;
     -- End of API-MGT Tables --
+
+    -- UMA tables --
+    CREATE TABLE IF NOT EXISTS IDN_UMA_RESOURCE (
+      ID INTEGER AUTO_INCREMENT NOT NULL,
+      RESOURCE_ID VARCHAR(255),
+      RESOURCE_NAME VARCHAR(255),
+      TIME_CREATED TIMESTAMP NOT NULL,
+      RESOURCE_OWNER_NAME VARCHAR(255),
+      CLIENT_ID VARCHAR(255),
+      TENANT_ID INTEGER DEFAULT -1234,
+      USER_DOMAIN VARCHAR(50),
+      PRIMARY KEY (ID)
+    );
+
+    CREATE INDEX IDX_RID ON IDN_UMA_RESOURCE (RESOURCE_ID);
+
+    CREATE INDEX IDX_USER ON IDN_UMA_RESOURCE (RESOURCE_OWNER_NAME, USER_DOMAIN);
+
+    CREATE TABLE IF NOT EXISTS IDN_UMA_RESOURCE_META_DATA (
+      ID INTEGER AUTO_INCREMENT NOT NULL,
+      RESOURCE_IDENTITY INTEGER NOT NULL,
+      PROPERTY_KEY VARCHAR(40),
+      PROPERTY_VALUE VARCHAR(255),
+      PRIMARY KEY (ID),
+      FOREIGN KEY (RESOURCE_IDENTITY) REFERENCES IDN_UMA_RESOURCE (ID) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS IDN_UMA_RESOURCE_SCOPE (
+      ID INTEGER AUTO_INCREMENT NOT NULL,
+      RESOURCE_IDENTITY INTEGER NOT NULL,
+      SCOPE_NAME VARCHAR(255),
+      PRIMARY KEY (ID),
+      FOREIGN KEY (RESOURCE_IDENTITY) REFERENCES IDN_UMA_RESOURCE (ID) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IDX_RS ON IDN_UMA_RESOURCE_SCOPE (SCOPE_NAME);
+
+    CREATE TABLE IF NOT EXISTS IDN_UMA_PERMISSION_TICKET (
+      ID INTEGER AUTO_INCREMENT NOT NULL,
+      PT VARCHAR(255) NOT NULL,
+      TIME_CREATED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      EXPIRY_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      TICKET_STATE VARCHAR(25) DEFAULT 'ACTIVE',
+      TENANT_ID INTEGER DEFAULT -1234,
+      PRIMARY KEY (ID)
+    );
+
+    CREATE INDEX IDX_PT ON IDN_UMA_PERMISSION_TICKET (PT);
+
+    CREATE TABLE IF NOT EXISTS IDN_UMA_PT_RESOURCE (
+      ID INTEGER AUTO_INCREMENT NOT NULL,
+      PT_RESOURCE_ID INTEGER NOT NULL,
+      PT_ID INTEGER NOT NULL,
+      PRIMARY KEY (ID),
+      FOREIGN KEY (PT_ID) REFERENCES IDN_UMA_PERMISSION_TICKET (ID) ON DELETE CASCADE,
+      FOREIGN KEY (PT_RESOURCE_ID) REFERENCES IDN_UMA_RESOURCE (ID) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS IDN_UMA_PT_RESOURCE_SCOPE (
+      ID INTEGER AUTO_INCREMENT NOT NULL,
+      PT_RESOURCE_ID INTEGER NOT NULL,
+      PT_SCOPE_ID INTEGER NOT NULL,
+      PRIMARY KEY (ID),
+      FOREIGN KEY (PT_RESOURCE_ID) REFERENCES IDN_UMA_PT_RESOURCE (ID) ON DELETE CASCADE,
+      FOREIGN KEY (PT_SCOPE_ID) REFERENCES IDN_UMA_RESOURCE_SCOPE (ID) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS AM_USER (
+      USER_ID VARCHAR(255) NOT NULL,
+      USER_NAME VARCHAR(255) NOT NULL,
+      PRIMARY KEY(USER_ID)
+    );
 
     -- Performance indexes start--
 
@@ -1762,13 +1941,15 @@ data:
     create index IDX_AA_AT_CB on AM_APPLICATION (APPLICATION_TIER,CREATED_BY);
 
     -- Performance indexes end--
+
+
+
   mysql_shared.sql: |-
     DROP DATABASE IF EXISTS WSO2AM_SHARED_DB;
     CREATE DATABASE WSO2AM_SHARED_DB;
     GRANT ALL ON WSO2AM_SHARED_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
 
     USE WSO2AM_SHARED_DB;
-
     CREATE TABLE IF NOT EXISTS REG_CLUSTER_LOCK (
                  REG_LOCK_NAME VARCHAR (20),
                  REG_LOCK_STATUS VARCHAR (20),
@@ -1802,7 +1983,6 @@ data:
                  CONSTRAINT UNIQUE_REG_PATH_TENANT_ID UNIQUE (REG_PATH_VALUE,REG_TENANT_ID)
     )ENGINE INNODB;
 
-    CREATE INDEX REG_PATH_IND_BY_PATH_VALUE USING HASH ON REG_PATH(REG_PATH_VALUE, REG_TENANT_ID);
     CREATE INDEX REG_PATH_IND_BY_PATH_PARENT_ID USING HASH ON REG_PATH(REG_PATH_PARENT_ID, REG_TENANT_ID);
 
     CREATE TABLE IF NOT EXISTS REG_CONTENT (
@@ -2023,6 +2203,7 @@ data:
 
     CREATE TABLE UM_USER (
                  UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                 UM_USER_ID VARCHAR(255) NOT NULL,
                  UM_USER_NAME VARCHAR(255) NOT NULL,
                  UM_USER_PASSWORD VARCHAR(255) NOT NULL,
                  UM_SALT_VALUE VARCHAR(31),
@@ -2030,7 +2211,7 @@ data:
                  UM_CHANGED_TIME TIMESTAMP NOT NULL,
                  UM_TENANT_ID INTEGER DEFAULT 0,
                  PRIMARY KEY (UM_ID, UM_TENANT_ID),
-                 UNIQUE(UM_USER_NAME, UM_TENANT_ID)
+                 UNIQUE(UM_USER_ID, UM_TENANT_ID)
     )ENGINE INNODB;
 
     CREATE TABLE UM_SYSTEM_USER (
@@ -2231,8 +2412,6 @@ data:
                 UNIQUE(UM_ROLE_NAME,UM_TENANT_ID)
     )ENGINE INNODB;
 
-    CREATE INDEX SYSTEM_ROLE_IND_BY_RN_TI ON UM_SYSTEM_ROLE(UM_ROLE_NAME, UM_TENANT_ID);
-
     CREATE TABLE UM_SYSTEM_USER_ROLE(
                 UM_ID INTEGER NOT NULL AUTO_INCREMENT,
                 UM_USER_NAME VARCHAR(255),
@@ -2252,6 +2431,19 @@ data:
                 UM_TENANT_ID INTEGER DEFAULT 0,
     			PRIMARY KEY (UM_ID, UM_TENANT_ID)
     )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS UM_UUID_DOMAIN_MAPPER (
+                UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                UM_USER_ID VARCHAR(255) NOT NULL,
+                UM_DOMAIN_ID INTEGER NOT NULL,
+                UM_TENANT_ID INTEGER DEFAULT 0,
+                PRIMARY KEY (UM_ID),
+                UNIQUE (UM_USER_ID),
+                FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE
+    )ENGINE INNODB;
+
+    CREATE INDEX UUID_DM_UID_TID ON UM_UUID_DOMAIN_MAPPER(UM_USER_ID, UM_TENANT_ID);
+
 ---
 
 apiVersion: v1
@@ -2350,7 +2542,7 @@ data:
           # ports used by this server
         ports:
             # port offset
-          offset: 3
+          offset: 0
 
         # Configuration used for the databridge communication
       databridge.config:
@@ -2683,13 +2875,17 @@ data:
 
       ## Dashboard data provider authorization
       data.provider.configs:
-        authorizingClass: org.wso2.carbon.dashboards.core.DashboardDataProviderAuthorizer
+        authorizingClass: org.wso2.analytics.apim.dashboards.core.data.provider.Authorizer
 
       ## Additional APIs that needs to be added to the server.
       ## Should be provided as a key value pairs { API context path: Microservice implementation class }
       ## The configured APIs will be available as https://{host}:{port}/analytics-dashboard/{API_context_path}
       additional.apis:
         /apis/analytics/v1.0/apim: org.wso2.analytics.apim.rest.api.proxy.ApimApi
+        /apis/v1.0/report: org.wso2.analytics.apim.rest.api.report.ReportApi
+
+      report:
+        implClass: org.wso2.analytics.apim.rest.api.report.reportgen.DefaultReportGeneratorImpl
 
       ## Authentication configuration
       auth.configs:
@@ -2701,7 +2897,7 @@ data:
           adminServiceBaseUrl: https://"ip.node.k8s.&.wso2.apim":32293
           adminUsername: admin
           adminPassword: admin
-          kmDcrUrl: https://"ip.node.k8s.&.wso2.apim":32293/client-registration/v0.15/register
+          kmDcrUrl: https://"ip.node.k8s.&.wso2.apim":32293/client-registration/v0.16/register
           kmTokenUrlForRedirection: https://"ip.node.k8s.&.wso2.apim":32293/oauth2
           kmTokenUrl: https://"ip.node.k8s.&.wso2.apim":32293/oauth2
           kmUsername: admin
@@ -2719,6 +2915,13 @@ data:
         roles:
           creators:
             - apim_analytics:admin_carbon.super
+      wso2.rdbms.data.provider:
+        timeTypes:
+          - DATE
+          - TIME
+          - DATETIME
+          - TIMESTAMP
+          - TIMESTAMP WITHOUT TIME ZONE
 ---
 
 apiVersion: v1
@@ -2749,7 +2952,6 @@ metadata:
   namespace: wso2
 spec:
   replicas: 1
-  minReadySeconds: 75
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -2771,14 +2973,14 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       containers:
         - name: wso2am-pattern-1-analytics-dashboard
-          image: "$image.pull.@.wso2"/wso2am-analytics-dashboard:3.0.0
+          image: "$image.pull.@.wso2"/wso2am-analytics-dashboard:3.1.0
           livenessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
                 - nc -z localhost 30643
-            initialDelaySeconds: 100
+            initialDelaySeconds: 20
             periodSeconds: 10
           readinessProbe:
             exec:
@@ -2786,7 +2988,7 @@ spec:
                 - /bin/sh
                 - -c
                 - nc -z localhost 30643
-            initialDelaySeconds: 100
+            initialDelaySeconds: 20
             periodSeconds: 10
           lifecycle:
             preStop:
@@ -2811,6 +3013,8 @@ spec:
               mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
               subPath: deployment.yaml
       serviceAccountName: wso2am-pattern-1-svc-account
+      imagePullSecrets:
+        - name: wso2am-pattern-1-creds
       volumes:
         - name: wso2am-pattern-1-am-analytics-dashboard-conf
           configMap:
@@ -2825,542 +3029,546 @@ metadata:
 data:
   deployment.yaml: |-
     # Carbon Configuration Parameters
-      wso2.carbon:
-        type: wso2-apim-analytics
-          # value to uniquely identify a server
-        id: wso2-am-analytics
-          # server name
-        name: WSO2 API Manager Analytics Server
-          # ports used by this server
-        ports:
-            # port offset
-          offset: 1
+    wso2.carbon:
+      type: wso2-apim-analytics
+        # value to uniquely identify a server
+      id: wso2-am-analytics
+        # server name
+      name: WSO2 API Manager Analytics Server
+        # ports used by this server
+      ports:
+          # port offset
+        offset: 1
 
-      wso2.transport.http:
-        transportProperties:
-          -
-            name: "server.bootstrap.socket.timeout"
-            value: 60
-          -
-            name: "client.bootstrap.socket.timeout"
-            value: 60
-          -
-            name: "latency.metrics.enabled"
-            value: true
-
-        listenerConfigurations:
-          -
-            id: "default"
-            host: "0.0.0.0"
-            port: 9091
-          -
-            id: "msf4j-https"
-            host: "0.0.0.0"
-            port: 9444
-            scheme: https
-            keyStoreFile: "${carbon.home}/resources/security/wso2carbon.jks"
-            keyStorePassword: wso2carbon
-            certPass: wso2carbon
-
-        senderConfigurations:
-          -
-            id: "http-sender"
-
-      siddhi.stores.query.api:
-        transportProperties:
-          -
-            name: "server.bootstrap.socket.timeout"
-            value: 60
-          -
-            name: "client.bootstrap.socket.timeout"
-            value: 60
-          -
-            name: "latency.metrics.enabled"
-            value: true
-
-        listenerConfigurations:
-          -
-            id: "default"
-            host: "0.0.0.0"
-            port: 7071
-          -
-            id: "msf4j-https"
-            host: "0.0.0.0"
-            port: 7444
-            scheme: https
-            keyStoreFile: "${carbon.home}/resources/security/wso2carbon.jks"
-            keyStorePassword: wso2carbon
-            certPass: wso2carbon
-
-        # Configuration used for the databridge communication
-      databridge.config:
-          # No of worker threads to consume events
-          # THIS IS A MANDATORY FIELD
-        workerThreads: 10
-          # Maximum amount of messages that can be queued internally in MB
-          # THIS IS A MANDATORY FIELD
-        maxEventBufferCapacity: 10000000
-          # Queue size; the maximum number of events that can be stored in the queue
-          # THIS IS A MANDATORY FIELD
-        eventBufferSize: 2000
-          # Keystore file path
-          # THIS IS A MANDATORY FIELD
-        keyStoreLocation : ${sys:carbon.home}/resources/security/wso2carbon.jks
-          # Keystore password
-          # THIS IS A MANDATORY FIELD
-        keyStorePassword : wso2carbon
-          # Session Timeout value in mins
-          # THIS IS A MANDATORY FIELD
-        clientTimeoutMin: 30
-          # Data receiver configurations
-          # THIS IS A MANDATORY FIELD
-        dataReceivers:
+    wso2.transport.http:
+      transportProperties:
         -
-            # Data receiver configuration
-          dataReceiver:
-              # Data receiver type
-              # THIS IS A MANDATORY FIELD
-            type: Thrift
-              # Data receiver properties
+          name: "server.bootstrap.socket.timeout"
+          value: 60
+        -
+          name: "client.bootstrap.socket.timeout"
+          value: 60
+        -
+          name: "latency.metrics.enabled"
+          value: true
+
+      listenerConfigurations:
+        -
+          id: "default"
+          host: "0.0.0.0"
+          port: 9090
+        -
+          id: "msf4j-https"
+          host: "0.0.0.0"
+          port: 9443
+          scheme: https
+          keyStoreFile: "${carbon.home}/resources/security/wso2carbon.jks"
+          keyStorePassword: wso2carbon
+          certPass: wso2carbon
+
+      senderConfigurations:
+        -
+          id: "http-sender"
+
+    siddhi.stores.query.api:
+      transportProperties:
+        -
+          name: "server.bootstrap.socket.timeout"
+          value: 60
+        -
+          name: "client.bootstrap.socket.timeout"
+          value: 60
+        -
+          name: "latency.metrics.enabled"
+          value: true
+
+      listenerConfigurations:
+        -
+          id: "default"
+          host: "0.0.0.0"
+          port: 7071
+        -
+          id: "msf4j-https"
+          host: "0.0.0.0"
+          port: 7444
+          scheme: https
+          keyStoreFile: "${carbon.home}/resources/security/wso2carbon.jks"
+          keyStorePassword: wso2carbon
+          certPass: wso2carbon
+
+      # Configuration used for the databridge communication
+    databridge.config:
+        # No of worker threads to consume events
+        # THIS IS A MANDATORY FIELD
+      workerThreads: 10
+        # Maximum amount of messages that can be queued internally in MB
+        # THIS IS A MANDATORY FIELD
+      maxEventBufferCapacity: 10000000
+        # Queue size; the maximum number of events that can be stored in the queue
+        # THIS IS A MANDATORY FIELD
+      eventBufferSize: 2000
+        # Keystore file path
+        # THIS IS A MANDATORY FIELD
+      keyStoreLocation : ${sys:carbon.home}/resources/security/wso2carbon.jks
+        # Keystore password
+        # THIS IS A MANDATORY FIELD
+      keyStorePassword : wso2carbon
+        # Session Timeout value in mins
+        # THIS IS A MANDATORY FIELD
+      clientTimeoutMin: 30
+        # Data receiver configurations
+        # THIS IS A MANDATORY FIELD
+      dataReceivers:
+      -
+          # Data receiver configuration
+        dataReceiver:
+            # Data receiver type
+            # THIS IS A MANDATORY FIELD
+          type: Thrift
+            # Data receiver properties
+          properties:
+            tcpPort: '7611'
+            sslPort: '7711'
+
+      -
+          # Data receiver configuration
+        dataReceiver:
+            # Data receiver type
+            # THIS IS A MANDATORY FIELD
+          type: Binary
+            # Data receiver properties
+          properties:
+            tcpPort: '9611'
+            sslPort: '9711'
+            tcpReceiverThreadPoolSize: '100'
+            sslReceiverThreadPoolSize: '100'
+            hostName: 0.0.0.0
+
+      # Configuration of the Data Agents - to publish events through databridge
+    data.agent.config:
+        # Data agent configurations
+        # THIS IS A MANDATORY FIELD
+      agents:
+      -
+          # Data agent configuration
+        agentConfiguration:
+            # Data agent name
+            # THIS IS A MANDATORY FIELD
+          name: Thrift
+            # Data endpoint class
+            # THIS IS A MANDATORY FIELD
+          dataEndpointClass: org.wso2.carbon.databridge.agent.endpoint.thrift.ThriftDataEndpoint
+            # Data publisher strategy
+          publishingStrategy: async
+            # Trust store path
+          trustStorePath: '${sys:carbon.home}/resources/security/client-truststore.jks'
+            # Trust store password
+          trustStorePassword: 'wso2carbon'
+            # Queue Size
+          queueSize: 32768
+            # Batch Size
+          batchSize: 200
+            # Core pool size
+          corePoolSize: 1
+            # Socket timeout in milliseconds
+          socketTimeoutMS: 30000
+            # Maximum pool size
+          maxPoolSize: 1
+            # Keep alive time in pool
+          keepAliveTimeInPool: 20
+            # Reconnection interval
+          reconnectionInterval: 30
+            # Max transport pool size
+          maxTransportPoolSize: 250
+            # Max idle connections
+          maxIdleConnections: 250
+            # Eviction time interval
+          evictionTimePeriod: 5500
+            # Min idle time in pool
+          minIdleTimeInPool: 5000
+            # Secure max transport pool size
+          secureMaxTransportPoolSize: 250
+            # Secure max idle connections
+          secureMaxIdleConnections: 250
+            # secure eviction time period
+          secureEvictionTimePeriod: 5500
+            # Secure min idle time in pool
+          secureMinIdleTimeInPool: 5000
+            # SSL enabled protocols
+          sslEnabledProtocols: TLSv1.1,TLSv1.2
+            # Ciphers
+          ciphers: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+      -
+          # Data agent configuration
+        agentConfiguration:
+            # Data agent name
+            # THIS IS A MANDATORY FIELD
+          name: Binary
+            # Data endpoint class
+            # THIS IS A MANDATORY FIELD
+          dataEndpointClass: org.wso2.carbon.databridge.agent.endpoint.binary.BinaryDataEndpoint
+            # Data publisher strategy
+          publishingStrategy: async
+            # Trust store path
+          trustStorePath: '${sys:carbon.home}/resources/security/client-truststore.jks'
+            # Trust store password
+          trustStorePassword: 'wso2carbon'
+            # Queue Size
+          queueSize: 32768
+            # Batch Size
+          batchSize: 200
+            # Core pool size
+          corePoolSize: 1
+            # Socket timeout in milliseconds
+          socketTimeoutMS: 30000
+            # Maximum pool size
+          maxPoolSize: 1
+            # Keep alive time in pool
+          keepAliveTimeInPool: 20
+            # Reconnection interval
+          reconnectionInterval: 30
+            # Max transport pool size
+          maxTransportPoolSize: 250
+            # Max idle connections
+          maxIdleConnections: 250
+            # Eviction time interval
+          evictionTimePeriod: 5500
+            # Min idle time in pool
+          minIdleTimeInPool: 5000
+            # Secure max transport pool size
+          secureMaxTransportPoolSize: 250
+            # Secure max idle connections
+          secureMaxIdleConnections: 250
+            # secure eviction time period
+          secureEvictionTimePeriod: 5500
+            # Secure min idle time in pool
+          secureMinIdleTimeInPool: 5000
+            # SSL enabled protocols
+          sslEnabledProtocols: TLSv1.1,TLSv1.2
+            # Ciphers
+          ciphers: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+
+    # This is the main configuration for metrics
+    wso2.metrics:
+      # Enable Metrics
+      enabled: false
+      reporting:
+        console:
+          - # The name for the Console Reporter
+            name: Console
+
+            # Enable Console Reporter
+            enabled: false
+
+            # Polling Period in seconds.
+            # This is the period for polling metrics from the metric registry and printing in the console
+            pollingPeriod: 5
+
+    wso2.metrics.jdbc:
+      # Data Source Configurations for JDBC Reporters
+      dataSource:
+        # Default Data Source Configuration
+        - &JDBC01
+          # JNDI name of the data source to be used by the JDBC Reporter.
+          # This data source should be defined in a *-datasources.xml file in conf/datasources directory.
+          dataSourceName: java:comp/env/jdbc/WSO2MetricsDB
+          # Schedule regular deletion of metrics data older than a set number of days.
+          # It is recommended that you enable this job to ensure your metrics tables do not get extremely large.
+          # Deleting data older than seven days should be sufficient.
+          scheduledCleanup:
+            # Enable scheduled cleanup to delete Metrics data in the database.
+            enabled: true
+
+            # The scheduled job will cleanup all data older than the specified days
+            daysToKeep: 3
+
+            # This is the period for each cleanup operation in seconds.
+            scheduledCleanupPeriod: 86400
+
+      # The JDBC Reporter is in the Metrics JDBC Core feature
+      reporting:
+        # The JDBC Reporter configurations will be ignored if the Metrics JDBC Core feature is not available in runtime
+        jdbc:
+          - # The name for the JDBC Reporter
+            name: JDBC
+
+            # Enable JDBC Reporter
+            enabled: true
+
+            # Source of Metrics, which will be used to identify each metric in database -->
+            # Commented to use the hostname by default
+            # source: Carbon
+
+            # Alias referring to the Data Source configuration
+            dataSource: *JDBC01
+
+            # Polling Period in seconds.
+            # This is the period for polling metrics from the metric registry and updating the database with the values
+            pollingPeriod: 60
+
+      # Deployment configuration parameters
+    wso2.artifact.deployment:
+        # Scheduler update interval
+      updateInterval: 5
+
+      # Periodic Persistence Configuration
+    state.persistence:
+      enabled: false
+      intervalInMin: 1
+      revisionsToKeep: 2
+      persistenceStore: org.wso2.carbon.streaming.integrator.core.persistence.DBPersistenceStore
+      config:
+        datasource: PERSISTENCE_DB   # A datasource with this name should be defined in wso2.datasources namespace
+        table: PERSISTENCE_TABLE
+
+      # Secure Vault Configuration
+    wso2.securevault:
+      secretRepository:
+        type: org.wso2.carbon.secvault.repository.DefaultSecretRepository
+        parameters:
+          privateKeyAlias: wso2carbon
+          keystoreLocation: ${sys:carbon.home}/resources/security/securevault.jks
+          secretPropertiesFile: ${sys:carbon.home}/conf/${sys:wso2.runtime}/secrets.properties
+      masterKeyReader:
+        type: org.wso2.carbon.secvault.reader.DefaultMasterKeyReader
+        parameters:
+          masterKeyReaderFile: ${sys:carbon.home}/conf/${sys:wso2.runtime}/master-keys.yaml
+
+       # Datasource Configurations
+    wso2.datasources:
+      dataSources:
+        # carbon metrics data source
+        - name: WSO2_METRICS_DB
+          description: The datasource used for dashboard feature
+          jndiConfig:
+            name: jdbc/WSO2MetricsDB
+          definition:
+            type: RDBMS
+            configuration:
+              jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/dashboard/database/metrics;AUTO_SERVER=TRUE'
+              username: wso2carbon
+              password: wso2carbon
+              driverClassName: org.h2.Driver
+              maxPoolSize: 30
+              idleTimeout: 60000
+              connectionTestQuery: SELECT 1
+              validationTimeout: 30000
+              isAutoCommit: false
+
+        - name: WSO2_PERMISSIONS_DB
+          description: The datasource used for permission feature
+          jndiConfig:
+            name: jdbc/PERMISSION_DB
+            useJndiReference: true
+          definition:
+            type: RDBMS
+            configuration:
+              jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_PERMISSIONS_DB?useSSL=false&allowPublicKeyRetrieval=true'
+              username: wso2carbon
+              password: wso2carbon
+              driverClassName: com.mysql.cj.jdbc.Driver
+              maxPoolSize: 10
+              idleTimeout: 60000
+              connectionTestQuery: SELECT 1
+              validationTimeout: 30000
+              isAutoCommit: false
+
+        - name: GEO_LOCATION_DATA
+          description: "The data source used for geo location database"
+          jndiConfig:
+            name: jdbc/GEO_LOCATION_DATA
+          definition:
+            type: RDBMS
+            configuration:
+              jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/worker/database/GEO_LOCATION_DATA;AUTO_SERVER=TRUE'
+              username: wso2carbon
+              password: wso2carbon
+              driverClassName: org.h2.Driver
+              maxPoolSize: 50
+              idleTimeout: 60000
+              validationTimeout: 30000
+              isAutoCommit: false
+
+        - name: APIM_ANALYTICS_DB
+          description: "The datasource used for APIM statistics aggregated data."
+          jndiConfig:
+            name: jdbc/APIM_ANALYTICS_DB
+          definition:
+            type: RDBMS
+            configuration:
+              jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_STATS_DB?useSSL=false&allowPublicKeyRetrieval=true'
+              username: wso2carbon
+              password: wso2carbon
+              driverClassName: com.mysql.cj.jdbc.Driver
+              maxPoolSize: 50
+              idleTimeout: 60000
+              connectionTestQuery: SELECT 1
+              validationTimeout: 30000
+              isAutoCommit: false
+
+        #Main datasource used in API Manager
+        - name: AM_DB
+          description: Main datasource used by API Manager
+          jndiConfig:
+            name: jdbc/AM_DB
+          definition:
+            type: RDBMS
+            configuration:
+              jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_DB?useSSL=false&allowPublicKeyRetrieval=true'
+              username: wso2carbon
+              password: wso2carbon
+              driverClassName: com.mysql.cj.jdbc.Driver
+              maxPoolSize: 10
+              idleTimeout: 60000
+              connectionTestQuery: SELECT 1
+              validationTimeout: 30000
+              isAutoCommit: false
+
+        - name: WSO2AM_MGW_ANALYTICS_DB
+          description: "The datasource used for APIM MGW analytics data."
+          jndiConfig:
+            name: jdbc/WSO2AM_MGW_ANALYTICS_DB
+          definition:
+            type: RDBMS
+            configuration:
+              jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/worker/database/WSO2AM_MGW_ANALYTICS_DB;AUTO_SERVER=TRUE'
+              username: wso2carbon
+              password: wso2carbon
+              driverClassName: org.h2.Driver
+              maxPoolSize: 50
+              idleTimeout: 60000
+              connectionTestQuery: SELECT 1
+              validationTimeout: 30000
+              isAutoCommit: false
+        -
+          name: WSO2_CLUSTER_DB
+          description: "The datasource used by cluster coordinators in HA deployment"
+          definition:
+            type: RDBMS
+            configuration:
+              connectionTestQuery: "SELECT 1"
+              driverClassName: org.h2.Driver
+              idleTimeout: 60000
+              isAutoCommit: false
+              jdbcUrl: "jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/WSO2_CLUSTER_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;AUTO_SERVER=TRUE"
+              maxPoolSize: 10
+              password: wso2carbon
+              username: wso2carbon
+              validationTimeout: 30000
+
+    siddhi:
+      # properties:
+      #  partitionById: true
+      #  shardId: 1
+      refs:
+        - ref:
+            name: 'grpcSource'
+            type: 'grpc'
             properties:
-              tcpPort: '7611'
-              sslPort: '7711'
-
+              receiver.url : grpc://localhost:9806/org.wso2.analytics.mgw.grpc.service.AnalyticsSendService/sendAnalytics
+      extensions:
         -
-            # Data receiver configuration
-          dataReceiver:
-              # Data receiver type
-              # THIS IS A MANDATORY FIELD
-            type: Binary
-              # Data receiver properties
+          extension:
+            name: 'findCountryFromIP'
+            namespace: 'geo'
             properties:
-              tcpPort: '9611'
-              sslPort: '9711'
-              tcpReceiverThreadPoolSize: '100'
-              sslReceiverThreadPoolSize: '100'
-              hostName: 0.0.0.0
-
-        # Configuration of the Data Agents - to publish events through databridge
-      data.agent.config:
-          # Data agent configurations
-          # THIS IS A MANDATORY FIELD
-        agents:
+              geoLocationResolverClass: org.wso2.extension.siddhi.execution.geo.internal.impl.DefaultDBBasedGeoLocationResolver
+              isCacheEnabled: true
+              cacheSize: 10000
+              isPersistInDatabase: true
+              datasource: GEO_LOCATION_DATA
         -
-            # Data agent configuration
-          agentConfiguration:
-              # Data agent name
-              # THIS IS A MANDATORY FIELD
-            name: Thrift
-              # Data endpoint class
-              # THIS IS A MANDATORY FIELD
-            dataEndpointClass: org.wso2.carbon.databridge.agent.endpoint.thrift.ThriftDataEndpoint
-              # Data publisher strategy
-            publishingStrategy: async
-              # Trust store path
-            trustStorePath: '${sys:carbon.home}/resources/security/client-truststore.jks'
-              # Trust store password
-            trustStorePassword: 'wso2carbon'
-              # Queue Size
-            queueSize: 32768
-              # Batch Size
-            batchSize: 200
-              # Core pool size
-            corePoolSize: 1
-              # Socket timeout in milliseconds
-            socketTimeoutMS: 30000
-              # Maximum pool size
-            maxPoolSize: 1
-              # Keep alive time in pool
-            keepAliveTimeInPool: 20
-              # Reconnection interval
-            reconnectionInterval: 30
-              # Max transport pool size
-            maxTransportPoolSize: 250
-              # Max idle connections
-            maxIdleConnections: 250
-              # Eviction time interval
-            evictionTimePeriod: 5500
-              # Min idle time in pool
-            minIdleTimeInPool: 5000
-              # Secure max transport pool size
-            secureMaxTransportPoolSize: 250
-              # Secure max idle connections
-            secureMaxIdleConnections: 250
-              # secure eviction time period
-            secureEvictionTimePeriod: 5500
-              # Secure min idle time in pool
-            secureMinIdleTimeInPool: 5000
-              # SSL enabled protocols
-            sslEnabledProtocols: TLSv1.1,TLSv1.2
-              # Ciphers
-            ciphers: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+          extension:
+            name: 'findCityFromIP'
+            namespace: 'geo'
+            properties:
+              geoLocationResolverClass: org.wso2.extension.siddhi.execution.geo.internal.impl.DefaultDBBasedGeoLocationResolver
+              isCacheEnabled: true
+              cacheSize: 10000
+              isPersistInDatabase: true
+              datasource: GEO_LOCATION_DATA
+       #Enabling GRPC Service with an Extension
         -
-            # Data agent configuration
-          agentConfiguration:
-              # Data agent name
-              # THIS IS A MANDATORY FIELD
-            name: Binary
-              # Data endpoint class
-              # THIS IS A MANDATORY FIELD
-            dataEndpointClass: org.wso2.carbon.databridge.agent.endpoint.binary.BinaryDataEndpoint
-              # Data publisher strategy
-            publishingStrategy: async
-              # Trust store path
-            trustStorePath: '${sys:carbon.home}/resources/security/client-truststore.jks'
-              # Trust store password
-            trustStorePassword: 'wso2carbon'
-              # Queue Size
-            queueSize: 32768
-              # Batch Size
-            batchSize: 200
-              # Core pool size
-            corePoolSize: 1
-              # Socket timeout in milliseconds
-            socketTimeoutMS: 30000
-              # Maximum pool size
-            maxPoolSize: 1
-              # Keep alive time in pool
-            keepAliveTimeInPool: 20
-              # Reconnection interval
-            reconnectionInterval: 30
-              # Max transport pool size
-            maxTransportPoolSize: 250
-              # Max idle connections
-            maxIdleConnections: 250
-              # Eviction time interval
-            evictionTimePeriod: 5500
-              # Min idle time in pool
-            minIdleTimeInPool: 5000
-              # Secure max transport pool size
-            secureMaxTransportPoolSize: 250
-              # Secure max idle connections
-            secureMaxIdleConnections: 250
-              # secure eviction time period
-            secureEvictionTimePeriod: 5500
-              # Secure min idle time in pool
-            secureMinIdleTimeInPool: 5000
-              # SSL enabled protocols
-            sslEnabledProtocols: TLSv1.1,TLSv1.2
-              # Ciphers
-            ciphers: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+          extension:
+            name: 'grpc'
+            namespace: 'source'
+            properties:
+              keyStoreFile : ${sys:carbon.home}/resources/security/wso2carbon.jks
+              keyStorePassword : wso2carbon
+              keyStoreAlgorithm : SunX509
+              trustStoreFile : ${sys:carbon.home}/resources/security/client-truststore.jks
+              trustStorePassword : wso2carbon
+              trustStoreAlgorithm : SunX509
 
-      # This is the main configuration for metrics
-      wso2.metrics:
-        # Enable Metrics
-        enabled: false
-        reporting:
-          console:
-            - # The name for the Console Reporter
-              name: Console
+      # Cluster Configuration
+    cluster.config:
+      enabled: false
+      groupId:  sp
+      coordinationStrategyClass: org.wso2.carbon.cluster.coordinator.rdbms.RDBMSCoordinationStrategy
+      strategyConfig:
+        datasource: WSO2_CLUSTER_DB
+        heartbeatInterval: 5000
+        heartbeatMaxRetry: 3
+        eventPollingInterval: 1000
 
-              # Enable Console Reporter
-              enabled: false
+    # Authentication configuration
+    auth.configs:
+      type: 'local'        # Type of the IdP client used
+      userManager:
+        adminRole: admin   # Admin role which is granted all permissions
+        userStore:         # User store
+          users:
+           -
+             user:
+               username: admin
+               password: YWRtaW4=
+               roles: 1
+          roles:
+           -
+             role:
+               id: 1
+               displayName: admin
 
-              # Polling Period in seconds.
-              # This is the period for polling metrics from the metric registry and printing in the console
-              pollingPeriod: 5
-
-      wso2.metrics.jdbc:
-        # Data Source Configurations for JDBC Reporters
-        dataSource:
-          # Default Data Source Configuration
-          - &JDBC01
-            # JNDI name of the data source to be used by the JDBC Reporter.
-            # This data source should be defined in a *-datasources.xml file in conf/datasources directory.
-            dataSourceName: java:comp/env/jdbc/WSO2MetricsDB
-            # Schedule regular deletion of metrics data older than a set number of days.
-            # It is recommended that you enable this job to ensure your metrics tables do not get extremely large.
-            # Deleting data older than seven days should be sufficient.
-            scheduledCleanup:
-              # Enable scheduled cleanup to delete Metrics data in the database.
-              enabled: true
-
-              # The scheduled job will cleanup all data older than the specified days
-              daysToKeep: 3
-
-              # This is the period for each cleanup operation in seconds.
-              scheduledCleanupPeriod: 86400
-
-        # The JDBC Reporter is in the Metrics JDBC Core feature
-        reporting:
-          # The JDBC Reporter configurations will be ignored if the Metrics JDBC Core feature is not available in runtime
-          jdbc:
-            - # The name for the JDBC Reporter
-              name: JDBC
-
-              # Enable JDBC Reporter
-              enabled: true
-
-              # Source of Metrics, which will be used to identify each metric in database -->
-              # Commented to use the hostname by default
-              # source: Carbon
-
-              # Alias referring to the Data Source configuration
-              dataSource: *JDBC01
-
-              # Polling Period in seconds.
-              # This is the period for polling metrics from the metric registry and updating the database with the values
-              pollingPeriod: 60
-
-        # Deployment configuration parameters
-      wso2.artifact.deployment:
-          # Scheduler update interval
-        updateInterval: 5
-
-        # Periodic Persistence Configuration
-      state.persistence:
-        enabled: false
-        intervalInMin: 1
-        revisionsToKeep: 2
-        persistenceStore: org.wso2.carbon.streaming.integrator.core.persistence.FileSystemPersistenceStore
-        config:
-          location: siddhi-app-persistence
-
-        # Secure Vault Configuration
-      wso2.securevault:
-        secretRepository:
-          type: org.wso2.carbon.secvault.repository.DefaultSecretRepository
-          parameters:
-            privateKeyAlias: wso2carbon
-            keystoreLocation: ${sys:carbon.home}/resources/security/securevault.jks
-            secretPropertiesFile: ${sys:carbon.home}/conf/${sys:wso2.runtime}/secrets.properties
-        masterKeyReader:
-          type: org.wso2.carbon.secvault.reader.DefaultMasterKeyReader
-          parameters:
-            masterKeyReaderFile: ${sys:carbon.home}/conf/${sys:wso2.runtime}/master-keys.yaml
-
-        # Datasource Configurations
-      wso2.datasources:
-        dataSources:
-          # carbon metrics data source
-          - name: WSO2_METRICS_DB
-            description: The datasource used for dashboard feature
-            jndiConfig:
-              name: jdbc/WSO2MetricsDB
-            definition:
-              type: RDBMS
-              configuration:
-                jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/dashboard/database/metrics;AUTO_SERVER=TRUE'
-                username: wso2carbon
-                password: wso2carbon
-                driverClassName: org.h2.Driver
-                maxPoolSize: 30
-                idleTimeout: 60000
-                connectionTestQuery: SELECT 1
-                validationTimeout: 30000
-                isAutoCommit: false
-
-          - name: WSO2_PERMISSIONS_DB
-            description: The datasource used for permission feature
-            jndiConfig:
-              name: jdbc/PERMISSION_DB
-              useJndiReference: true
-            definition:
-              type: RDBMS
-              configuration:
-                jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_PERMISSIONS_DB?useSSL=false&allowPublicKeyRetrieval=true'
-                username: wso2carbon
-                password: wso2carbon
-                driverClassName: com.mysql.cj.jdbc.Driver
-                maxPoolSize: 10
-                idleTimeout: 60000
-                connectionTestQuery: SELECT 1
-                validationTimeout: 30000
-                isAutoCommit: false
-
-          - name: GEO_LOCATION_DATA
-            description: "The data source used for geo location database"
-            jndiConfig:
-              name: jdbc/GEO_LOCATION_DATA
-            definition:
-              type: RDBMS
-              configuration:
-                jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/worker/database/GEO_LOCATION_DATA;AUTO_SERVER=TRUE'
-                username: wso2carbon
-                password: wso2carbon
-                driverClassName: org.h2.Driver
-                maxPoolSize: 50
-                idleTimeout: 60000
-                validationTimeout: 30000
-                isAutoCommit: false
-
-          - name: APIM_ANALYTICS_DB
-            description: "The datasource used for APIM statistics aggregated data."
-            jndiConfig:
-              name: jdbc/APIM_ANALYTICS_DB
-            definition:
-              type: RDBMS
-              configuration:
-                jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_STATS_DB?useSSL=false&allowPublicKeyRetrieval=true'
-                username: wso2carbon
-                password: wso2carbon
-                driverClassName: com.mysql.cj.jdbc.Driver
-                maxPoolSize: 50
-                idleTimeout: 60000
-                connectionTestQuery: SELECT 1
-                validationTimeout: 30000
-                isAutoCommit: false
-
-          #Main datasource used in API Manager
-          - name: AM_DB
-            description: Main datasource used by API Manager
-            jndiConfig:
-              name: jdbc/AM_DB
-            definition:
-              type: RDBMS
-              configuration:
-                jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_DB?useSSL=false&allowPublicKeyRetrieval=true'
-                username: wso2carbon
-                password: wso2carbon
-                driverClassName: com.mysql.cj.jdbc.Driver
-                maxPoolSize: 10
-                idleTimeout: 60000
-                connectionTestQuery: SELECT 1
-                validationTimeout: 30000
-                isAutoCommit: false
-
-          - name: WSO2AM_MGW_ANALYTICS_DB
-            description: "The datasource used for APIM MGW analytics data."
-            jndiConfig:
-              name: jdbc/WSO2AM_MGW_ANALYTICS_DB
-            definition:
-              type: RDBMS
-              configuration:
-                jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/worker/database/WSO2AM_MGW_ANALYTICS_DB;AUTO_SERVER=TRUE'
-                username: wso2carbon
-                password: wso2carbon
-                driverClassName: org.h2.Driver
-                maxPoolSize: 50
-                idleTimeout: 60000
-                connectionTestQuery: SELECT 1
-                validationTimeout: 30000
-                isAutoCommit: false
-          -
-            name: WSO2_CLUSTER_DB
-            description: "The datasource used by cluster coordinators in HA deployment"
-            definition:
-              type: RDBMS
-              configuration:
-                connectionTestQuery: "SELECT 1"
-                driverClassName: org.h2.Driver
-                idleTimeout: 60000
-                isAutoCommit: false
-                jdbcUrl: "jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/WSO2_CLUSTER_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;AUTO_SERVER=TRUE"
-                maxPoolSize: 10
-                password: wso2carbon
-                username: wso2carbon
-                validationTimeout: 30000
-
-      siddhi:
-        refs:
-          - ref:
-              name: 'grpcSource'
-              type: 'grpc'
-              properties:
-                receiver.url : grpc://localhost:9806/org.wso2.grpc.EventService/consume
-        extensions:
-          -
-            extension:
-              name: 'findCountryFromIP'
-              namespace: 'geo'
-              properties:
-                geoLocationResolverClass: org.wso2.extension.siddhi.execution.geo.internal.impl.DefaultDBBasedGeoLocationResolver
-                isCacheEnabled: true
-                cacheSize: 10000
-                isPersistInDatabase: true
-                datasource: GEO_LOCATION_DATA
-          -
-            extension:
-              name: 'findCityFromIP'
-              namespace: 'geo'
-              properties:
-                geoLocationResolverClass: org.wso2.extension.siddhi.execution.geo.internal.impl.DefaultDBBasedGeoLocationResolver
-                isCacheEnabled: true
-                cacheSize: 10000
-                isPersistInDatabase: true
-                datasource: GEO_LOCATION_DATA
-         #Enabling GRPC Service with an Extension
-          -
-            extension:
-              name: 'grpc'
-              namespace: 'source'
-              properties:
-                keyStoreFile : ${sys:carbon.home}/resources/security/wso2carbon.jks
-                keyStorePassword : wso2carbon
-                keyStoreAlgorithm : SunX509
-                trustStoreFile : ${sys:carbon.home}/resources/security/client-truststore.jks
-                trustStorePassword : wso2carbon
-                trustStoreAlgorithm : SunX509
-
-        # Cluster Configuration
-      cluster.config:
-        enabled: false
-        groupId:  sp
-        coordinationStrategyClass: org.wso2.carbon.cluster.coordinator.rdbms.RDBMSCoordinationStrategy
-        strategyConfig:
-          datasource: WSO2_CLUSTER_DB
-          heartbeatInterval: 1000
-          heartbeatMaxRetry: 2
-          eventPollingInterval: 1000
-
-      # Authentication configuration
-      auth.configs:
-        type: 'local'        # Type of the IdP client used
-        userManager:
-          adminRole: admin   # Admin role which is granted all permissions
-          userStore:         # User store
-            users:
-             -
-               user:
-                 username: admin
-                 password: YWRtaW4=
-                 roles: 1
-            roles:
-             -
-               role:
-                 id: 1
-                 displayName: admin
-
-        # Configuration to enable apim alerts
-      #analytics.solutions:
-      #  APIM-alerts.enabled: true
+      # Configuration to enable apim alerts
+    #analytics.solutions:
+    #  APIM-alerts.enabled: true
 
 
-        # Sample of deployment.config for Two node HA
-      #deployment.config:
-      #  type: ha
-      #  eventSyncServer:
-      #    host: localhost
-      #    port: 9893
-      #    advertisedHost: localhost
-      #    advertisedPort: 9893
-      #    bossThreads: 10
-      #    workerThreads: 10
-      #  eventSyncClientPool:
-      #    maxActive: 10
-      #    maxTotal: 10
-      #    maxIdle: 10
-      #    maxWait: 60000
-      #    minEvictableIdleTimeMillis: 120000
+      # Sample of deployment.config for Two node HA
+    #deployment.config:
+    #  type: ha
+    #  eventSyncServer:
+    #    host: localhost
+    #    port: 9893
+    #    advertisedHost: localhost
+    #    advertisedPort: 9893
+    #    bossThreads: 10
+    #    workerThreads: 10
+    #  eventSyncClientPool:
+    #    maxActive: 10
+    #    maxTotal: 10
+    #    maxIdle: 10
+    #    maxWait: 60000
+    #    minEvictableIdleTimeMillis: 120000
 
-        # Sample of deployment.config for Distributed deployment
-      #deployment.config:
-      #  type: distributed
-      #  httpsInterface:
-      #    host: 192.168.1.3
-      #    port: 9443
-      #    username: admin
-      #    password: admin
-      #  leaderRetryInterval: 10000
-      #  resourceManagers:
-      #    - host: 192.168.1.1
-      #      port: 9543
-      #      username: admin
-      #      password: admin
-      #    - host: 192.168.1.2
-      #      port: 9543
-      #      username: admin
-      #      password: admin
+      # Sample of deployment.config for Distributed deployment
+    #deployment.config:
+    #  type: distributed
+    #  httpsInterface:
+    #    host: 192.168.1.3
+    #    port: 9443
+    #    username: admin
+    #    password: admin
+    #  leaderRetryInterval: 10000
+    #  resourceManagers:
+    #    - host: 192.168.1.1
+    #      port: 9543
+    #      username: admin
+    #      password: admin
+    #    - host: 192.168.1.2
+    #      port: 9543
+    #      username: admin
+    #      password: admin9444
 ---
 
 apiVersion: v1
@@ -3408,7 +3616,6 @@ metadata:
   namespace: wso2
 spec:
   replicas: 1
-  minReadySeconds: 75
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -3430,13 +3637,13 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       containers:
         - name: wso2am-pattern-1-analytics-worker
-          image: "$image.pull.@.wso2"/wso2am-analytics-worker:3.0.0
+          image: "$image.pull.@.wso2"/wso2am-analytics-worker:3.1.0
           livenessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 9444
+                - nc -z localhost 7444
             initialDelaySeconds: 100
             periodSeconds: 10
           readinessProbe:
@@ -3444,7 +3651,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 9444
+                - nc -z localhost 7444
             initialDelaySeconds: 100
             periodSeconds: 10
           lifecycle:
@@ -3488,6 +3695,8 @@ spec:
               mountPath: /home/wso2carbon/wso2-config-volume/conf/worker/deployment.yaml
               subPath: deployment.yaml
       serviceAccountName: wso2am-pattern-1-svc-account
+      imagePullSecrets:
+        - name: wso2am-pattern-1-creds
       volumes:
         - name: wso2am-pattern-1-am-analytics-worker-conf
           configMap:
@@ -3498,9 +3707,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: wso2am-pattern-1-am-1-conf
-  namespace : wso2
+  namespace: wso2
 data:
   deployment.toml: |
+
     [server]
     hostname = ""ip.node.k8s.&.wso2.apim""
     node_ip = "$env{NODE_IP}"
@@ -3516,7 +3726,7 @@ data:
     create_admin_account = true
 
     [user_store]
-    type = "database"
+    type = "database_unique_id"
 
     [database.apim_db]
     type = "mysql"
@@ -3538,6 +3748,20 @@ data:
     password =  "wso2carbon"
     alias =  "wso2carbon"
     key_password =  "wso2carbon"
+
+    #[keystore.primary]
+    #file_name =  "wso2carbon.jks"
+    #type =  "JKS"
+    #password =  "wso2carbon"
+    #alias =  "wso2carbon"
+    #key_password =  "wso2carbon"
+
+    #[keystore.internal]
+    #file_name =  "wso2carbon.jks"
+    #type =  "JKS"
+    #password =  "wso2carbon"
+    #alias =  "wso2carbon"
+    #key_password =  "wso2carbon"
 
     [[apim.gateway.environment]]
     name = "Production and Sandbox"
@@ -3611,6 +3835,10 @@ data:
     #key_validation_handler_type = "custom"
     #key_validation_handler_impl = "org.wso2.carbon.apimgt.keymgt.handlers.DefaultKeyValidationHandler"
 
+    #[apim.idp]
+    #authorize_endpoint = "https://localhost:${mgt.transport.https.port}/oauth2/authorize"
+    #oidc_logout_endpoint = "https://localhost:${mgt.transport.https.port}/oidc/logout"
+
     #[apim.jwt]
     #enable = true
     #encoding = "base64" # base64,base64url
@@ -3643,7 +3871,7 @@ data:
     [apim.cors]
     allow_origins = "*"
     allow_methods = ["GET","PUT","POST","DELETE","PATCH","OPTIONS"]
-    allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction"]
+    allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction","apikey"]
     allow_credentials = false
 
     #[apim.throttling]
@@ -3683,9 +3911,9 @@ data:
     #service_url = "https://localhost:9445/bpmn"
     #username = "$ref{super_admin.username}"
     #password = "$ref{super_admin.password}"
-    #callback_endpoint = "https://localhost:${mgt.transport.https.port}/api/am/publisher/v0.15/workflows/update-workflow-status"
+    #callback_endpoint = "https://localhost:${mgt.transport.https.port}/api/am/admin/v0.16/workflows/update-workflow-status"
     #token_endpoint = "https://localhost:${https.nio.port}/token"
-    #client_registration_endpoint = "https://localhost:${mgt.transport.https.port}/client-registration/v0.15/register"
+    #client_registration_endpoint = "https://localhost:${mgt.transport.https.port}/client-registration/v0.16/register"
     #client_registration_username = "$ref{super_admin.username}"
     #client_registration_password = "$ref{super_admin.password}"
 
@@ -3729,8 +3957,8 @@ data:
     [service_provider]
     sp_name_regex = "^[\\sa-zA-Z0-9._-]*$"
 
-    #[transport.passthru_https.sender.parameters]
-    #HostnameVerifier = "AllowAll"
+    [database.local]
+    url = "jdbc:h2:./repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
 ---
 
 apiVersion: v1
@@ -3780,10 +4008,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2am-pattern-1-am-1-deployment
-  namespace : wso2
+  namespace: wso2
 spec:
   replicas: 1
-  minReadySeconds: 75
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -3812,7 +4039,7 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-1-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       containers:
         - name: wso2am-pattern-1-am
-          image: "$image.pull.@.wso2"/wso2am:3.0.0
+          image: "$image.pull.@.wso2"/wso2am:3.1.0
           livenessProbe:
             exec:
               command:
@@ -3866,6 +4093,8 @@ spec:
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml
       serviceAccountName: wso2am-pattern-1-svc-account
+      imagePullSecrets:
+        - name: wso2am-pattern-1-creds
       volumes:
         - name: wso2am-pattern-1-am-1-conf
           configMap:
