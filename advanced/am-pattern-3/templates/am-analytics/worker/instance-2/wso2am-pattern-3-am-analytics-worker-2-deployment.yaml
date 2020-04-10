@@ -1,0 +1,120 @@
+# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wso2am-pattern-3-am-analytics-worker-2-deployment
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.wso2.deployment.analytics.worker.replicas }}
+  minReadySeconds: {{ .Values.wso2.deployment.analytics.worker.minReadySeconds }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.wso2.deployment.analytics.worker.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.wso2.deployment.analytics.worker.strategy.rollingUpdate.maxUnavailable }}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2am-pattern-3-analytics-worker
+      node: wso2am-pattern-3-analytics-worker-2
+  template:
+    metadata:
+      labels:
+        deployment: wso2am-pattern-3-analytics-worker
+        node: wso2am-pattern-3-analytics-worker-2
+    spec:
+      initContainers:
+      {{- if and .Values.wso2.deployment.db.host (.Values.wso2.deployment.db.port) }}
+      - name: init-apim-analytics-db
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z {{ .Values.wso2.deployment.db.host }} {{ .Values.wso2.deployment.db.port }}; do sleep 1; printf "-"; done; echo -e "  >> DBMS service is available";']
+      {{- end }}
+      - name: init-am-analytics-worker
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-3-am-analytics-worker-1-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+      containers:
+        - name: wso2am-pattern-3-analytics-worker-2
+          {{- if .Values.wso2.deployment.analytics.worker.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.analytics.worker.dockerRegistry }}/{{ .Values.wso2.deployment.analytics.worker.imageName }}
+          {{- $tag := .Values.wso2.deployment.analytics.worker.imageTag }}
+          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+          {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
+          image: wso2/{{ .Values.wso2.deployment.analytics.worker.imageName }}:{{ .Values.wso2.deployment.analytics.worker.imageTag }}
+          {{- else }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.analytics.worker.imageName }}:{{ .Values.wso2.deployment.analytics.worker.imageTag }}
+          {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9444
+            initialDelaySeconds: {{ .Values.wso2.deployment.analytics.worker.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.analytics.worker.livenessProbe.periodSeconds }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9444
+            initialDelaySeconds: {{ .Values.wso2.deployment.analytics.worker.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.analytics.worker.readinessProbe.periodSeconds }}
+          lifecycle:
+            preStop:
+              exec:
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
+          resources:
+            requests:
+              memory: {{ .Values.wso2.deployment.analytics.worker.resources.requests.memory }}
+              cpu: {{ .Values.wso2.deployment.analytics.worker.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.wso2.deployment.analytics.worker.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.analytics.worker.resources.limits.cpu }}
+          imagePullPolicy: {{ .Values.wso2.deployment.analytics.worker.imagePullPolicy }}
+          securityContext:
+            runAsUser: 802
+          ports:
+            - containerPort: 9091
+              protocol: "TCP"
+            - containerPort: 9444
+              protocol: "TCP"
+            - containerPort: 7712
+              protocol: "TCP"
+            - containerPort: 7612
+              protocol: "TCP"
+            - containerPort: 9712
+              protocol: "TCP"
+            - containerPort: 9612
+              protocol: "TCP"
+            - containerPort: 7071
+              protocol: "TCP"
+            - containerPort: 7444
+              protocol: "TCP"
+          volumeMounts:
+            - name: wso2am-pattern-3-am-analytics-worker-2-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/conf/worker/deployment.yaml
+              subPath: deployment.yaml
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
+      {{- if .Values.wso2.deployment.am.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
+      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      imagePullSecrets:
+        - name: wso2am-pattern-3-wso2-private-registry-creds
+      {{ end }}
+      volumes:
+        - name: wso2am-pattern-3-am-analytics-worker-2-conf
+          configMap:
+            name: wso2am-pattern-3-am-analytics-worker-2-conf
