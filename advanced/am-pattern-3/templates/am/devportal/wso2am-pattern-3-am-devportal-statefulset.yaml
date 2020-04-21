@@ -12,23 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: wso2am-pattern-3-am-devportal-service
-  namespace : {{ .Release.Namespace }}
-spec:
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    deployment: wso2am-pattern-3-devportal
-  ports:
-  # ports that this service should serve on
-  - name: servlet-https
-    protocol: TCP
-    port: 9443
-
----
-
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -39,7 +22,7 @@ spec:
     matchLabels:
       deployment: wso2am-pattern-3-devportal
   serviceName: wso2am-pattern-3-am-devportal-service
-  replicas: 1
+  replicas: 2
   updateStrategy:
     type: RollingUpdate
   template:
@@ -118,10 +101,6 @@ spec:
         - name: wso2am-pattern-3-am-devportal-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
           subPath: deployment.toml
-        - name: wso2am-pattern-3-am-devportal-carbon-db-storage
-          mountPath: /home/wso2carbon/solr/database
-        - name: wso2am-pattern-3-am-devportal-solr-storage
-          mountPath: /home/wso2carbon/solr/indexed-data
         - name: wso2am-pattern-3-am-devportal-conf-entrypoint
           mountPath: /home/wso2carbon/docker-entrypoint.sh
           subPath: docker-entrypoint.sh
@@ -134,12 +113,6 @@ spec:
         - name: wso2am-pattern-3-wso2-private-registry-creds
       {{ end }}
       volumes:
-      - name: wso2am-pattern-3-am-devportal-carbon-db-storage
-        persistentVolumeClaim:
-          claimName: wso2am-pattern-3-am-devportal-carbon-db-volume-claim
-      - name: wso2am-pattern-3-am-devportal-solr-storage
-        persistentVolumeClaim:
-          claimName: wso2am-pattern-3-am-devportal-solr-volume-claim
       - name: wso2am-pattern-3-am-devportal-conf
         configMap:
           name: wso2am-pattern-3-am-devportal-conf

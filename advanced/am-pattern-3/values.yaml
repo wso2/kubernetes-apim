@@ -25,8 +25,8 @@ wso2:
   # WSO2 subscription parameters. If you do not have an active subscription, do not provide values for the parameters.
   # If you do not possess an active WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription at (https://wso2.com/free-trial-subscription).
   subscription:
-    username: ""
-    password: ""
+    username: "chathuras@wso2.com"
+    password: "WRLO71H5+7Vi8HOM"
 
   deployment:
     dependencies:
@@ -37,24 +37,10 @@ wso2:
 
     persistentRuntimeArtifacts:
       # Persistent storage provider expected to be used for sharing persistent runtime artifacts
-      # This can be one of the following.
-      #   1. internal-nfs - Using the NFS dynamic provisioner for Kubernetes
-      #   2. external-nfs - Using an externally configured NFS server
-      cloudProvider: "internal-nfs"
-      # External NFS Server IP
-      nfsServerIP: ""
-      # Exported location on external NFS Server to be mounted at <APIM_HOME>/repository/deployment/server/synapse-configs
-      sharedAPIMSynapseConfigsPath: ""
-      # Exported location on external NFS Server to be mounted at <APIM_HOME>/repository/deployment/server/executionplans
-      sharedAPIMExecutionPlansPath: ""
-      # Exported location on external NFS Server to be mounted for persisting Solr indexed data of API Manager Publisher
-      publisherIndexedDataPath: ""
-      # Exported location on external NFS Server to be mounted for persisting H2 based WSO2CARBON_DB data of API Manager Publisher
-      publisherCarbonDBPath: ""
-      # Exported location on external NFS Server to be mounted for persisting Solr indexed data of API Manager Store
-      devPortalIndexedDataPath: ""
-      # Exported location on external NFS Server to be mounted for persisting H2 based WSO2CARBON_DB data of API Manager Store
-      devPortalCarbonDBPath: ""
+      # Must refer to an appropriate Kubernetes Storage Class (https://kubernetes.io/docs/concepts/storage/storage-classes/)
+      # "nfs" (default) - Using the official Kubernetes NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner).
+      # This provisioner is installed by default, with this Helm Chart (wso2 -> deployment -> dependencies -> nfsServerProvisioner).
+      storageClass: "nfs"
 
     db:
       host: wso2am-mysql-db-service
@@ -209,6 +195,8 @@ wso2:
         config: ""
         
       tm:
+        # Number of deployment replicas
+        replicas: 1
         instanceOne:
           # If the deployment configurations for the Publisher-Store-TM of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
           # add the customized configuration file under (wso2 -> deployment -> am -> pubStoreTM -> instanceOne -> config -> deployment.toml)
@@ -227,13 +215,13 @@ wso2:
       # Indicates whether the container is running.
       livenessProbe:
         # Number of seconds after the container has started before liveness probes are initiated.
-        initialDelaySeconds: 60
+        initialDelaySeconds: 80
         # How often (in seconds) to perform the probe.
         periodSeconds: 10
         # Indicates whether the container is ready to service requests.
       readinessProbe:
         # Number of seconds after the container has started before readiness probes are initiated.
-        initialDelaySeconds: 60
+        initialDelaySeconds: 80
         # How often (in seconds) to perform the probe.
         periodSeconds: 10
 
