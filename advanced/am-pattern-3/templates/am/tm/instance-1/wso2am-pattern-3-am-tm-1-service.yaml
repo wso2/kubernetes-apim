@@ -13,29 +13,23 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: ConfigMap
+kind: Service
 metadata:
-  name: wso2am-pattern-3-am-analytics-worker-2-conf
+  name: wso2am-pattern-3-am-tm-1-service
   namespace : {{ .Release.Namespace }}
-data:
-  {{ if .Values.wso2.deployment.analytics.worker.config }}
-
-  {{- range $index, $content := .Values.wso2.deployment.analytics.worker.config }}
-  {{ $index }}: |-
-    {{ tpl $content $ | indent 4 }}
-  {{- end }}
-
-  {{- else }}
-
-  {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/am-analytics-worker/conf/worker/*" }}
-  {{- $list := $path | splitList "/"}}
-  {{- $length := len $list }}
-  {{- $last := add $length -1 }}
-  {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ tpl ( . ) $ }}
-    {{- end }}
-  {{- end }}
-
-  {{- end }}
+spec:
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    deployment: wso2am-pattern-3-tm
+    node: wso2am-pattern-3-tm-1
+  ports:
+  # ports that this service should serve on
+  - name: jms-tcp
+    protocol: TCP
+    port: 5672
+  - name: binary-secure
+    protocol: TCP
+    port: 9711
+  - name: binary
+    protocol: TCP
+    port: 9611

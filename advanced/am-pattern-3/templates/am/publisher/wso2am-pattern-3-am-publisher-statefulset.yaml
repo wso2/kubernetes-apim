@@ -12,23 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: wso2am-pattern-3-am-publisher-service
-  namespace : {{ .Release.Namespace }}
-spec:
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    deployment: wso2am-pattern-3-publisher
-  ports:
-  # ports that this service should serve on
-  - name: servlet-https
-    protocol: TCP
-    port: 9443
-
----
-
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -39,7 +22,7 @@ spec:
     matchLabels:
       deployment: wso2am-pattern-3-publisher
   serviceName: wso2am-pattern-3-am-publisher-service
-  replicas: 1
+  replicas: 2
   updateStrategy:
     type: RollingUpdate
   template:
@@ -131,12 +114,6 @@ spec:
         - name: wso2am-pattern-3-wso2-private-registry-creds
       {{ end }}
       volumes:
-      - name: wso2am-pattern-3-am-publisher-carbon-db-storage
-        persistentVolumeClaim:
-          claimName: wso2am-pattern-3-am-publisher-carbon-db-volume-claim
-      - name: wso2am-pattern-3-am-publisher-solr-storage
-        persistentVolumeClaim:
-          claimName: wso2am-pattern-3-am-publisher-solr-volume-claim
       - name: wso2am-pattern-3-am-publisher-conf
         configMap:
           name: wso2am-pattern-3-am-publisher-conf
@@ -144,3 +121,22 @@ spec:
         configMap:
           name: wso2am-pattern-3-am-publisher-conf-entrypoint
           defaultMode: 0407
+  volumeClaimTemplates:
+  - metadata:
+      name: wso2am-pattern-3-am-publisher-carbon-db-storage
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+      storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+  - metadata:
+      name: wso2am-pattern-3-am-publisher-solr-storage
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+      storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}

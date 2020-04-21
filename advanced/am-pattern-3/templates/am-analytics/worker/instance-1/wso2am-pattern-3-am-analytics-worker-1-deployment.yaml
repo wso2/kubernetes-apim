@@ -52,6 +52,9 @@ spec:
           {{- else }}
           image: docker.wso2.com/{{ .Values.wso2.deployment.analytics.worker.imageName }}:{{ .Values.wso2.deployment.analytics.worker.imageTag }}
           {{- end }}
+          env:
+          - name: CLUSTER_MEMBER
+            value: wso2am-pattern-3-analytics-worker-2-service
           livenessProbe:
             exec:
               command:
