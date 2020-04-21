@@ -12,52 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: wso2am-pattern-3-am-tm-2-service
-  namespace : {{ .Release.Namespace }}
-spec:
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    deployment: wso2am-pattern-3-tm
-    node: wso2am-pattern-3-tm-2
-  ports:
-  # ports that this service should serve on
-  - name: jms-tcp
-    protocol: TCP
-    port: 5672
-  - name: binary-secure
-    protocol: TCP
-    port: 9711
-  - name: binary
-    protocol: TCP
-    port: 9611
-
----
-
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: wso2am-pattern-3-am-tm-2-deployment
+  name: wso2am-pattern-3-am-tm-1-deployment
   namespace: {{ .Release.Namespace }}
 spec:
+  replicas: {{ .Values.wso2.deployment.am.tm.replicas }}
+  minReadySeconds: {{ .Values.wso2.deployment.am.minReadySeconds }}
+  strategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       deployment: wso2am-pattern-3-tm
-      node: wso2am-pattern-3-tm-2
-  serviceName: wso2am-pattern-3-am-tm-2-service
-  replicas: 1
-  updateStrategy:
-    type: RollingUpdate
+      node: wso2am-pattern-3-tm-1
   template:
     metadata:
       labels:
         deployment: wso2am-pattern-3-tm
-        node: wso2am-pattern-3-tm-2
+        node: wso2am-pattern-3-tm-1
     spec:
       containers:
-      - name: wso2am-pattern-3-am-tm-2
+      - name: wso2am-pattern-3-am-tm-1
         {{- if .Values.wso2.deployment.am.dockerRegistry }}
         image: {{ .Values.wso2.deployment.am.dockerRegistry }}/{{ .Values.wso2.deployment.am.imageName }}
         {{- $tag := .Values.wso2.deployment.am.imageTag }}
@@ -116,7 +92,7 @@ spec:
         volumeMounts:
         - name: wso2am-pattern-3-am-tm-shared-storage-volume
           mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
-        - name: wso2am-pattern-3-am-tm-2-conf
+        - name: wso2am-pattern-3-am-tm-1-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
           subPath: deployment.toml
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
@@ -131,6 +107,6 @@ spec:
       - name: wso2am-pattern-3-am-tm-shared-storage-volume
         persistentVolumeClaim:
           claimName: wso2am-pattern-3-am-tm-shared-executionplans-volume-claim
-      - name: wso2am-pattern-3-am-tm-2-conf
+      - name: wso2am-pattern-3-am-tm-1-conf
         configMap:
-          name: wso2am-pattern-3-am-tm-2-conf
+          name: wso2am-pattern-3-am-tm-1-conf
