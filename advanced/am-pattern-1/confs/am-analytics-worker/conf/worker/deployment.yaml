@@ -541,7 +541,7 @@ deployment.config:
   eventSyncServer:
     host: 0.0.0.0
     port: 9893
-    advertisedHost: wso2am-pattern-1-analytics-worker-2-service
+    advertisedHost: ${CLUSTER_MEMBER}
     advertisedPort: 9893
     bossThreads: 10
     workerThreads: 10
