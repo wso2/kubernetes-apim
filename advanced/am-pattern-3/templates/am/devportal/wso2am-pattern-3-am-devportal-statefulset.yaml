@@ -104,6 +104,10 @@ spec:
         - name: wso2am-pattern-3-am-devportal-conf-entrypoint
           mountPath: /home/wso2carbon/docker-entrypoint.sh
           subPath: docker-entrypoint.sh
+        - name: wso2am-pattern-3-am-devportal-carbon-db-storage
+          mountPath: /home/wso2carbon/solr/database
+        - name: wso2am-pattern-3-am-devportal-solr-storage
+          mountPath: /home/wso2carbon/solr/indexed-data
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
@@ -120,3 +124,22 @@ spec:
         configMap:
           name: wso2am-pattern-3-am-devportal-conf-entrypoint
           defaultMode: 0407
+  volumeClaimTemplates:
+  - metadata:
+      name: wso2am-pattern-3-am-devportal-carbon-db-storage
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+      storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+  - metadata:
+      name: wso2am-pattern-3-am-devportal-solr-storage
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+      storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
