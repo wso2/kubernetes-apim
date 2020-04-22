@@ -9,10 +9,33 @@
 
 ## Prerequisites
 
+* WSO2 product Docker images used for the Kubernetes deployment.
+  
+  WSO2 product Docker images available at [DockerHub](https://hub.docker.com/u/wso2/) package General Availability (GA)
+  versions of WSO2 products with no [WSO2 Updates](https://wso2.com/updates).
+
+  For a production grade deployment of the desired WSO2 product-version, it is highly recommended to use the relevant
+  Docker image which packages WSO2 Updates, available at [WSO2 Private Docker Registry](https://docker.wso2.com/). In order
+  to use these images, you need an active [WSO2 Subscription](https://wso2.com/subscription).
+  <br><br>
+
+* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Helm](https://helm.sh/docs/intro/install/)
+  and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) in order to run the steps provided in the
+  following quick start guide.<br><br>
+
+* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup).<br><br>
+
+* Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/).<br><br>
+
+* Add the WSO2 Helm chart repository.
+
+    ```
+     helm repo add wso2 https://helm.wso2.com && helm repo update
+    ```
 
 
 ## Quick Start Guide
-##### 1. Deploy Helm chart for WSO2 APIM Pattern 1 deployment
+##### 1. Deploy Helm chart for WSO2 APIM Pattern 2 deployment
 [Option 1] Deploy using Docker images from DockerHub.
 
 ```

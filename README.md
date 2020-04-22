@@ -14,6 +14,7 @@
 
 * [Deployment Pattern 1](advanced/am-pattern-1/README.md)
 * [Deployment Pattern 2](advanced/am-pattern-2/README.md)
+* [Deployment Pattern 3](advanced/am-pattern-3/README.md)
 
 ## Changelog
 
