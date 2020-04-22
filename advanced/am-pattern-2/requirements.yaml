@@ -17,6 +17,6 @@ dependencies:
     repository: "https://helm.wso2.com"
     condition: wso2.deployment.dependencies.mysql
   - name: nfs-server-provisioner
-    version: "0.3.0"
+    version: "1.0.0"
     repository: "https://kubernetes-charts.storage.googleapis.com"
     condition: wso2.deployment.dependencies.nfsServerProvisioner
