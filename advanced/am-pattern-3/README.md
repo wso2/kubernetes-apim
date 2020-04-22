@@ -35,7 +35,7 @@
 
 
 ## Quick Start Guide
-##### 1. Deploy Helm chart for WSO2 APIM Pattern 2 deployment
+##### 1. Deploy Helm chart for WSO2 APIM Pattern 3 deployment
 [Option 1] Deploy using Docker images from DockerHub.
 
 ```
