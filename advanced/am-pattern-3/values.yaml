@@ -229,11 +229,11 @@ wso2:
         # These are the minimum resource recommendations for running WSO2 API Management product profiles
         # as per official documentation (https://apim.docs.wso2.com/en/next/SetupAndInstall/InstallationGuide/installation-prerequisites/).
         requests:
-          memory: "1Gi"
-          cpu: "1000m"
-        limits:
           memory: "2Gi"
           cpu: "2000m"
+        limits:
+          memory: "3Gi"
+          cpu: "3000m"
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
