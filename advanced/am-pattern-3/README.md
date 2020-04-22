@@ -88,7 +88,7 @@ Git repository. <br>
 ```
 git clone https://github.com/wso2/kubernetes-apim.git
 ```
-##### 2. Deploy WSO2 API Manager pattern-2.
+##### 2. Deploy WSO2 API Manager pattern-3.
 
 ```
 helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-3 --namespace <NAMESPACE>

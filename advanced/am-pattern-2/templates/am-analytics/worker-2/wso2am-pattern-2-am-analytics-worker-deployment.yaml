@@ -60,6 +60,8 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: status.podIP
+        - name: CLUSTER_MEMBER
+          value: wso2am-pattern-2-analytics-worker-1-service
         livenessProbe:
           exec:
             command:

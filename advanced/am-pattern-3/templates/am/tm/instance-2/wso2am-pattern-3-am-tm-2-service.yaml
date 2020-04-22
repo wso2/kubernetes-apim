@@ -33,3 +33,4 @@ spec:
   - name: binary
     protocol: TCP
     port: 9611
+
