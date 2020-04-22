@@ -25,8 +25,8 @@ wso2:
   # WSO2 subscription parameters. If you do not have an active subscription, do not provide values for the parameters.
   # If you do not possess an active WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription at (https://wso2.com/free-trial-subscription).
   subscription:
-    username: "chathuras@wso2.com"
-    password: "WRLO71H5+7Vi8HOM"
+    username: ""
+    password: ""
 
   deployment:
     dependencies:
