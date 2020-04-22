@@ -37,16 +37,10 @@ wso2:
 
     persistentRuntimeArtifacts:
       # Persistent storage provider expected to be used for sharing persistent runtime artifacts
-      # This can be one of the following.
-      #   1. internal-nfs - Using the NFS dynamic provisioner for Kubernetes
-      #   2. external-nfs - Using an externally configured NFS server
-      cloudProvider: "internal-nfs"
-      # External NFS Server IP
-      nfsServerIP: ""
-      # Exported location on external NFS Server to be mounted at <APIM_HOME>/repository/deployment/server/synapse-configs
-      sharedAPIMSynapseConfigsPath: ""
-      # Exported location on external NFS Server to be mounted at <APIM_HOME>/repository/deployment/server/executionplans
-      sharedAPIMExecutionPlansPath: ""
+      # Must refer to an appropriate Kubernetes Storage Class (https://kubernetes.io/docs/concepts/storage/storage-classes/)
+      # "nfs" (default) - Using the official Kubernetes NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner).
+      # This provisioner is installed by default, with this Helm Chart (wso2 -> deployment -> dependencies -> nfsServerProvisioner).
+      storageClass: "nfs"
 
     db:
       host: wso2am-mysql-db-service

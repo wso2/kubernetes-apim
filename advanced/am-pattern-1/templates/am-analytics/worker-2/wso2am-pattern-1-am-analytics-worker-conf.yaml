@@ -28,7 +28,7 @@ data:
   {{- else }}
 
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/am-analytics-worker-2/conf/worker/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/am-analytics-worker/conf/worker/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
