@@ -111,6 +111,9 @@ spec:
         - name: wso2am-pattern-3-am-gateway-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
           subPath: deployment.toml
+        - name: wso2am-pattern-3-conf-entrypoint
+          mountPath: /home/wso2carbon/docker-entrypoint.sh
+          subPath: docker-entrypoint.sh
       securityContext:
         runAsUser: 802
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
@@ -128,3 +131,7 @@ spec:
       - name: wso2am-pattern-3-am-gateway-conf
         configMap:
           name: wso2am-pattern-3-am-gateway-conf
+      - name: wso2am-pattern-3-conf-entrypoint
+        configMap:
+          name: wso2am-pattern-3-conf-entrypoint
+          defaultMode: 0407

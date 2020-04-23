@@ -117,4 +117,4 @@ spec:
       volumes:
         - name: wso2am-pattern-3-am-analytics-worker-conf
           configMap:
-            name: wso2am-pattern-3-am-analytics-worker-1-conf
+            name: wso2am-pattern-3-am-analytics-worker-conf
