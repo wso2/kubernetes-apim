@@ -42,12 +42,12 @@
 [Option 1] Deploy using Docker images from DockerHub.
 
 ```
-helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-1 --namespace <NAMESPACE>
+helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-2 --namespace <NAMESPACE>
 ```
 
 [Option 2] Deploy WSO2  API Manager using Docker images from WSO2 Private Docker Registry.
 ```
-helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-2 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 **Note:**
 

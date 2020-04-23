@@ -104,7 +104,7 @@ spec:
             - containerPort: 7444
               protocol: "TCP"
           volumeMounts:
-            - name: wso2am-pattern-1-am-analytics-worker-2-conf
+            - name: wso2am-pattern-1-am-analytics-worker-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/worker/deployment.yaml
               subPath: deployment.yaml
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
@@ -120,6 +120,6 @@ spec:
         - name: wso2am-pattern-1-creds
       {{- end }}
       volumes:
-        - name: wso2am-pattern-1-am-analytics-worker-2-conf
+        - name: wso2am-pattern-1-am-analytics-worker-conf
           configMap:
-            name: wso2am-pattern-1-am-analytics-worker-2-conf
+            name: wso2am-pattern-1-am-analytics-worker-conf
