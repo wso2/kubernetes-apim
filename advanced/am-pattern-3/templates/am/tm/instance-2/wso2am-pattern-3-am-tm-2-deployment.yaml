@@ -95,6 +95,9 @@ spec:
         - name: wso2am-pattern-3-am-tm-2-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
           subPath: deployment.toml
+        - name: wso2am-pattern-3-conf-entrypoint
+          mountPath: /home/wso2carbon/docker-entrypoint.sh
+          subPath: docker-entrypoint.sh
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
@@ -110,3 +113,7 @@ spec:
       - name: wso2am-pattern-3-am-tm-2-conf
         configMap:
           name: wso2am-pattern-3-am-tm-2-conf
+      - name: wso2am-pattern-3-conf-entrypoint
+        configMap:
+          name: wso2am-pattern-3-conf-entrypoint
+          defaultMode: 0407
