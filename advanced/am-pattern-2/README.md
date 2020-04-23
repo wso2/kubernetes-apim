@@ -35,6 +35,9 @@
 
 
 ## Quick Start Guide
+
+### Install Chart From [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2)
+
 ##### 1. Deploy Helm chart for WSO2 APIM Pattern 2 deployment
 [Option 1] Deploy using Docker images from DockerHub.
 
