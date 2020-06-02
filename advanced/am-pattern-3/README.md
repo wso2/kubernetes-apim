@@ -1,4 +1,7 @@
-# Helm Chart for deployment of WSO2 API Manager with WSO2 API Manager Analytics
+# Helm Chart for deployment of a Fully Distributed Setup of WSO2 API Manager with WSO2 API Manager Analytics 
+
+Resources for building a Helm Chart for deployment of a [fully distributed setup of WSO2 API Manager with WSO2 API Manager Analytics
+support](https://apim.docs.wso2.com/en/latest/install-and-setup/setup/deployment-patterns/#pattern-3-fully-distributed-setup).
 
 ![WSO2 API Manager pattern 3 deployment](pattern-3.png)
 
@@ -6,6 +9,7 @@
 
 * [Prerequisites](#prerequisites)
 * [Quick Start Guide](#quick-start-guide)
+
 
 ## Prerequisites
 
@@ -33,12 +37,12 @@
      helm repo add wso2 https://helm.wso2.com && helm repo update
     ```
 
-
 ## Quick Start Guide
 
 ### Install Chart From [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2)
 
 ##### 1. Deploy Helm chart for WSO2 APIM Pattern 3 deployment
+
 [Option 1] Deploy using Docker images from DockerHub.
 
 ```
@@ -46,9 +50,11 @@ helm install --name <RELEASE_NAME> wso2/am-pattern-3 --version 3.1.0-2 --namespa
 ```
 
 [Option 2] Deploy WSO2  API Manager using Docker images from WSO2 Private Docker Registry.
+
 ```
 helm install --name <RELEASE_NAME> wso2/am-pattern-3 --version 3.1.0-2 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
+
 **Note:**
 
 * `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed.
@@ -60,27 +66,35 @@ Default deployment will expose `<RELEASE_NAME>` host (to expose Administrative s
 To access the console in the environment,
  
  a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
+
 ```
  kubectl get ing -n <NAMESPACE>
 ```
+
   Output:
+
 ```
 NAME                                               HOSTS                                ADDRESS          PORTS      AGE
 wso2am-pattern-3-am-gateway-ingress               <RELEASE_NAME>-gateway                <EXTERNAL-IP>    80, 443    7m
-wso2am-pattern-3-am-ingress                       <RELEASE_NAME>-am                     <EXTERNAL-IP>    80, 443    7m
+wso2am-pattern-3-am-devportal-ingress             <RELEASE_NAME>-devportal              <EXTERNAL-IP>    80, 443    7m
+wso2am-pattern-3-am-publisher-ingress             <RELEASE_NAME>-publisher              <EXTERNAL-IP>    80, 443    7m
 wso2am-pattern-3-am-analytics-dashboard-ingress   <RELEASE_NAME>-analytics-dashboard    <EXTERNAL-IP>    80, 443    7m
 ```
+
 b. Add the above hosts as entries in `/etc/hosts` file as follows:
 
 ```
-  <EXTERNAL-IP> <RELEASE_NAME>-am
+  <EXTERNAL-IP> <RELEASE_NAME>-devportal
+  <EXTERNAL-IP> <RELEASE_NAME>-publisher
   <EXTERNAL-IP> <RELEASE_NAME>-gateway
   <EXTERNAL-IP> <RELEASE_NAME>-analytics-dashboard
 ```
 
-c. Try navigating to `https://<RELEASE_NAME>-am/carbon`, `https://<RELEASE_NAME>-am/publisher` and `https://<RELEASE_NAME>-am/devportal` from your favorite browser.
+c. Try navigating to `https://<RELEASE_NAME>-publisher/carbon`, `https://<RELEASE_NAME>-publisher/publisher` and `https://<RELEASE_NAME>-devportal/devportal`
+from your favorite browser.
 
 ### Install Chart From Source
+
 >In the context of this document, <br>
 >* `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-apim`](https://github.com/wso2/kubernetes-apim/)
 Git repository. <br>
@@ -91,41 +105,52 @@ Git repository. <br>
 ```
 git clone https://github.com/wso2/kubernetes-apim.git
 ```
+
 ##### 2. Deploy WSO2 API Manager pattern-3.
 
 ```
 helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-3 --namespace <NAMESPACE>
 ```
+
 `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed
 
 [Option 1] Deploy using Docker images from DockerHub.
+
 ```
 helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-3 --namespace <NAMESPACE>
 ```
+
 [Option 2] Deploy WSO2 API Manager using Docker images from WSO2 Private Docker Registry.
+
 ```
 helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-3 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
+
 **Note:**
 
 * `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed.
 
 ##### 3. Access Management Console.
+
 Default deployment will expose `<RELEASE_NAME>` host (to expose Administrative services and Management Console).
  
 To access the console in the environment,
  
  a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
+
 ```
  kubectl get ing -n <NAMESPACE>
 ```
+
   Output:
+
 ```
 NAME                                               HOSTS                                ADDRESS          PORTS      AGE
 wso2am-pattern-3-am-gateway-ingress               <RELEASE_NAME>-gateway                <EXTERNAL-IP>    80, 443    7m
 wso2am-pattern-3-am-ingress                       <RELEASE_NAME>-am                     <EXTERNAL-IP>    80, 443    7m
 wso2am-pattern-3-am-analytics-dashboard-ingress   <RELEASE_NAME>-analytics-dashboard    <EXTERNAL-IP>    80, 443    7m
 ```
+
 b. Add the above hosts as entries in `/etc/hosts` file as follows:
 
 ```
@@ -137,6 +162,7 @@ b. Add the above hosts as entries in `/etc/hosts` file as follows:
 c. Try navigating to `https://<RELEASE_NAME>-am/carbon`, `https://<RELEASE_NAME>-am/publisher` and `https://<RELEASE_NAME>-am/devportal` from your favorite browser.
 
 ## Configuration
+
 The following tables lists the configurable parameters of the chart and their default values.
 
 ###### WSO2 Subscription Configurations
