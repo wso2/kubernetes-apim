@@ -194,21 +194,12 @@ wso2:
       devportal:
         config: ""
         
-      tm:
-        # Number of deployment replicas
-        replicas: 1
-        instanceOne:
-          # If the deployment configurations for the Publisher-Store-TM of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
-          # add the customized configuration file under (wso2 -> deployment -> am -> pubStoreTM -> instanceOne -> config -> deployment.toml)
-          config: ""
-#            deployment.toml: |-
-#              # deployment configurations for the Key Manager profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
-        instanceTwo:
-          # If the deployment configurations for the Publisher-Store-TM of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
-          # add the customized configuration file under (wso2 -> deployment -> am -> pubStoreTM -> instanceTwo -> config -> deployment.toml)
-          config: ""
-#            deployment.toml: |-
-#              # deployment configurations for the Key Manager profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
+#      tm:
+#        # If the deployment configurations for the Publisher-Store-TM of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
+#        # add the customized configuration file under (wso2 -> deployment -> am -> pubStoreTM -> instanceOne -> config -> deployment.toml)
+#        config: ""
+#          deployment.toml: |-
+#            # deployment configurations for the Key Manager profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
 
       # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
       minReadySeconds: 30
