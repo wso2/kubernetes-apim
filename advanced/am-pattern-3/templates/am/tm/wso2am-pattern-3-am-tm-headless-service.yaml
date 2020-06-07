@@ -15,21 +15,24 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2am-pattern-3-am-tm-1-service
-  namespace : {{ .Release.Namespace }}
+  name: wso2am-pattern-3-am-tm-headless-service
+  namespace: {{ .Release.Namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
+  clusterIP: None
   selector:
     deployment: wso2am-pattern-3-tm
-    node: wso2am-pattern-3-tm-1
   ports:
-  # ports that this service should serve on
-  - name: jms-tcp
-    protocol: TCP
-    port: 5672
-  - name: binary-secure
-    protocol: TCP
-    port: 9711
-  - name: binary
-    protocol: TCP
-    port: 9611
+    # ports that this service should serve on
+    - name: binary
+      port: 9611
+      protocol: TCP
+      targetPort: 9611
+    - name: binary-secure
+      port: 9711
+      protocol: TCP
+      targetPort: 9711
+    - name: jms-tcp
+      port: 5672
+      protocol: TCP
+      targetPort: 5672
