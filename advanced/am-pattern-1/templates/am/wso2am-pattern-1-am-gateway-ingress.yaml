@@ -23,9 +23,9 @@ metadata:
 spec:
   tls:
   - hosts:
-    - {{ .Release.Name }}-gateway
+    - {{ .Values.wso2.deployment.am.gateway.hostname }}
   rules:
-  - host: {{ .Release.Name }}-gateway
+  - host: {{ .Values.wso2.deployment.am.gateway.hostname }}
     http:
       paths:
       - path: /
