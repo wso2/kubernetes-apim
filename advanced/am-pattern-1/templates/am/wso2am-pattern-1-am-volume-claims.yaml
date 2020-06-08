@@ -39,3 +39,63 @@ spec:
     requests:
       storage: 1Gi
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wso2am-pattern-1-instance-1-carbon-db
+  namespace : {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wso2am-pattern-1-instance-1-solr
+  namespace : {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wso2am-pattern-1-instance-2-carbon-db
+  namespace : {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wso2am-pattern-1-instance-2-solr
+  namespace : {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
