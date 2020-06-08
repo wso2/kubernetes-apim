@@ -1,4 +1,4 @@
-# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2am-pattern-1-am-analytics-worker-2-deployment
+  name: wso2am-pattern-1-am-analytics-worker-deployment
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.wso2.deployment.analytics.worker.replicas }}
@@ -28,24 +28,21 @@ spec:
   selector:
     matchLabels:
       app-worker: wso2am-pattern-1-analytics-worker
-      deployment: wso2am-pattern-1-analytics-worker-2
+      deployment: wso2am-pattern-1-analytics-worker-1
   template:
     metadata:
       labels:
         app-worker: wso2am-pattern-1-analytics-worker
-        deployment: wso2am-pattern-1-analytics-worker-2
+        deployment: wso2am-pattern-1-analytics-worker-1
     spec:
+      {{ if .Values.wso2.deployment.dependencies.mysql }}
       initContainers:
-        {{ if .Values.wso2.deployment.dependencies.mysql }}
         - name: init-apim-analytics-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
-        - name: init-am-analytics-worker
-          image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-1-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
-        {{ end }}
+      {{ end }}
       containers:
-        - name: wso2am-pattern-1-analytics-worker-2
+        - name: wso2am-pattern-1-analytics-worker
           {{- if .Values.wso2.deployment.analytics.worker.dockerRegistry }}
           image: {{ .Values.wso2.deployment.analytics.worker.dockerRegistry }}/{{ .Values.wso2.deployment.analytics.worker.imageName }}
           {{- $tag := .Values.wso2.deployment.analytics.worker.imageTag }}
@@ -57,7 +54,7 @@ spec:
           {{- end }}
           env:
           - name: CLUSTER_MEMBER
-            value: wso2am-pattern-1-analytics-worker-1-service
+            value: wso2am-pattern-1-analytics-worker-2-service
           livenessProbe:
             exec:
               command:
