@@ -106,14 +106,14 @@ spec:
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
       {{- if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: wso2am-pattern-1-creds
+        - name: wso2am-pattern-1-wso2-private-registry-creds
       {{- end }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: wso2am-pattern-1-creds
+        - name: wso2am-pattern-1-wso2-private-registry-creds
       {{- end }}
       volumes:
         - name: wso2am-pattern-1-am-analytics-dashboard-conf
