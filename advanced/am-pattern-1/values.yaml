@@ -35,14 +35,21 @@ wso2:
       storageClass: "nfs"
 
     am:
-      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
-      #dockerRegistry: ""
+      # API Manager profile configurations
+      gateway:
+        # Hostname for Gateway profile
+        hostname: "gateway.am.wso2.com"
 
+      # Hostname for API Manager All In One deployment
+      hostname: "am.wso2.com"
+
+      # Container image configurations
+      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+      # dockerRegistry: ""
       imageName: "wso2am"
       imageTag: "3.1.0"
       replicas: 1
-      # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
-      minReadySeconds: 240
+
       strategy:
         rollingUpdate:
           maxSurge: 1
