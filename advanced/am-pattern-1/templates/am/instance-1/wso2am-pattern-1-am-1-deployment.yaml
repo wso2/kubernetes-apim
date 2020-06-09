@@ -44,7 +44,7 @@ spec:
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-1-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       containers:
-        - name: wso2am-pattern-1-am
+        - name: wso2am
           {{- if .Values.wso2.deployment.am.dockerRegistry }}
           image: {{ .Values.wso2.deployment.am.dockerRegistry }}/{{ .Values.wso2.deployment.am.imageName }}
           {{- $tag := .Values.wso2.deployment.am.imageTag }}
