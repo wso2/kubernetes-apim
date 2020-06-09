@@ -20,7 +20,7 @@ metadata:
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    app-worker: wso2am-pattern-1-analytics-worker
+    deployment: wso2am-pattern-1-analytics-worker
   ports:
     # ports that this service should serve on
     -
