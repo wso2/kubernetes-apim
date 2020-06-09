@@ -1,4 +1,4 @@
-# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,27 +13,22 @@
 # limitations under the License.
 
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: wso2am-pattern-1-am-analytics-worker-deployment
+  name: wso2am-pattern-1-am-analytics-worker-statefulset
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.wso2.deployment.analytics.worker.replicas }}
-  minReadySeconds: {{ .Values.wso2.deployment.analytics.worker.minReadySeconds }}
-  strategy:
-    rollingUpdate:
-      maxSurge: {{ .Values.wso2.deployment.analytics.worker.strategy.rollingUpdate.maxSurge }}
-      maxUnavailable: {{ .Values.wso2.deployment.analytics.worker.strategy.rollingUpdate.maxUnavailable }}
+  replicas: 2
+  updateStrategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      app-worker: wso2am-pattern-1-analytics-worker
-      deployment: wso2am-pattern-1-analytics-worker-1
+      deployment: wso2am-pattern-1-analytics-worker
+  serviceName: wso2am-pattern-1-am-analytics-worker-headless-service
   template:
     metadata:
       labels:
-        app-worker: wso2am-pattern-1-analytics-worker
-        deployment: wso2am-pattern-1-analytics-worker-1
+        deployment: wso2am-pattern-1-analytics-worker
     spec:
       {{ if .Values.wso2.deployment.dependencies.mysql }}
       initContainers:
@@ -42,7 +37,7 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       {{ end }}
       containers:
-        - name: wso2am-pattern-1-analytics-worker
+        - name: wso2am-analytics-worker
           {{- if .Values.wso2.deployment.analytics.worker.dockerRegistry }}
           image: {{ .Values.wso2.deployment.analytics.worker.dockerRegistry }}/{{ .Values.wso2.deployment.analytics.worker.imageName }}
           {{- $tag := .Values.wso2.deployment.analytics.worker.imageTag }}
@@ -53,8 +48,14 @@ spec:
           image: docker.wso2.com/{{ .Values.wso2.deployment.analytics.worker.imageName }}:{{ .Values.wso2.deployment.analytics.worker.imageTag }}
           {{- end }}
           env:
-          - name: CLUSTER_MEMBER
-            value: wso2am-pattern-1-analytics-worker-2-service
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           livenessProbe:
             exec:
               command:
@@ -104,11 +105,7 @@ spec:
             - name: wso2am-pattern-1-am-analytics-worker-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/worker/deployment.yaml
               subPath: deployment.yaml
-      serviceAccountName: {{ .Values.kubernetes.svcaccount }}
-      {{- if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
-      imagePullSecrets:
-        - name: wso2am-pattern-1-wso2-private-registry-creds
-      {{- end }}
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
