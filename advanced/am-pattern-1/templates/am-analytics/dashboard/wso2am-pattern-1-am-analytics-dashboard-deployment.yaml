@@ -19,7 +19,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.wso2.deployment.analytics.dashboard.replicas }}
-  minReadySeconds: {{ .Values.wso2.deployment.analytics.dashboard.minReadySeconds }}
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.wso2.deployment.analytics.dashboard.strategy.rollingUpdate.maxSurge }}
@@ -33,14 +32,14 @@ spec:
       labels:
         deployment: wso2am-pattern-1-analytics-dashboard
     spec:
+      {{ if .Values.wso2.deployment.dependencies.mysql }}
       initContainers:
-        {{ if .Values.wso2.deployment.dependencies.mysql }}
         - name: init-apim-analytics-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
-        {{ end }}
+      {{ end }}
       containers:
-        - name: wso2am-pattern-1-analytics-dashboard
+        - name: wso2am-analytics-dashboard
           {{- if .Values.wso2.deployment.analytics.dashboard.dockerRegistry }}
           image: {{ .Values.wso2.deployment.analytics.dashboard.dockerRegistry }}/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}
           {{- $tag := .Values.wso2.deployment.analytics.dashboard.imageTag }}
@@ -100,9 +99,6 @@ spec:
             - name: wso2am-pattern-1-am-analytics-dashboard-bin
               mountPath: /home/wso2carbon/wso2-config-volume/wso2/dashboard/bin/carbon.sh
               subPath: carbon.sh
-            - name: wso2am-pattern-1-am-analytics-dashboard-conf-entrypoint
-              mountPath: /home/wso2carbon/docker-entrypoint.sh
-              subPath: docker-entrypoint.sh
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
       {{- if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
@@ -122,8 +118,4 @@ spec:
         - name: wso2am-pattern-1-am-analytics-dashboard-bin
           configMap:
             name: wso2am-pattern-1-am-analytics-dashboard-bin
-            defaultMode: 0407
-        - name: wso2am-pattern-1-am-analytics-dashboard-conf-entrypoint
-          configMap:
-            name: wso2am-pattern-1-am-analytics-dashboard-conf-entrypoint
             defaultMode: 0407
