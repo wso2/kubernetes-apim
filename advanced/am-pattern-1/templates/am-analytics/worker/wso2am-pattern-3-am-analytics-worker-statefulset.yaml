@@ -27,6 +27,8 @@ spec:
   serviceName: wso2am-pattern-1-am-analytics-worker-headless-service
   template:
     metadata:
+      annotations:
+        checksum.am.analytics.worker.conf: {{ include (print $.Template.BasePath "/am-analytics/worker/wso2am-pattern-1-am-analytics-worker-conf.yaml") . | sha256sum }}
       labels:
         deployment: wso2am-pattern-1-analytics-worker
     spec:

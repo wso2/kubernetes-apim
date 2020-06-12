@@ -29,6 +29,9 @@ spec:
       deployment: wso2am-pattern-1-analytics-dashboard
   template:
     metadata:
+      annotations:
+        checksum.am.analytics.dashboard.bin: {{ include (print $.Template.BasePath "/am-analytics/dashboard/wso2am-pattern-1-am-analytics-dashboard-bin.yaml") . | sha256sum }}
+        checksum.am.analytics.dashboard.conf: {{ include (print $.Template.BasePath "/am-analytics/dashboard/wso2am-pattern-1-am-analytics-dashboard-conf.yaml") . | sha256sum }}
       labels:
         deployment: wso2am-pattern-1-analytics-dashboard
     spec:
