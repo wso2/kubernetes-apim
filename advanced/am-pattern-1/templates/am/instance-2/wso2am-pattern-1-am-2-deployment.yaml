@@ -30,6 +30,9 @@ spec:
       node: wso2am-pattern-1-am-2
   template:
     metadata:
+      annotations:
+        checksum.am.conf: {{ include (print $.Template.BasePath "/am/instance-2/wso2am-pattern-1-am-2-conf.yaml") . | sha256sum }}
+        checksum.am.entrypoint: {{ include (print $.Template.BasePath "/am/wso2am-pattern-1-am-conf-entrypoint.yaml") . | sha256sum }}
       labels:
         deployment: wso2am-pattern-1-am
         node: wso2am-pattern-1-am-2
