@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: wso2am-pattern-1-am-analytics-dashboard-conf
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-dashboard-conf
   namespace : {{ .Release.Namespace }}
   {{ if .Values.wso2.deployment.analytics.dashboard.config }}
 
@@ -416,9 +416,9 @@ data:
         allScopes: apim_analytics:admin apim_analytics:product_manager apim_analytics:api_developer apim_analytics:app_developer apim_analytics:devops_engineer apim_analytics:analytics_viewer apim_analytics:everyone openid apim:api_view apim:subscribe
         adminUsername: admin
         adminPassword: admin
-        kmDcrUrl: https://wso2am-pattern-1-am-service:9443/client-registration/v0.16/register
+        kmDcrUrl: https://{{ template "am-pattern-1.resource.prefix" . }}-am-service:9443/client-registration/v0.16/register
         kmTokenUrlForRedirection: https://{{ .Values.wso2.deployment.am.hostname }}/oauth2
-        kmTokenUrl: https://wso2am-pattern-1-am-service:9443/oauth2
+        kmTokenUrl: https://{{ template "am-pattern-1.resource.prefix" . }}-am-service:9443/oauth2
         kmUsername: admin
         kmPassword: admin
         portalAppContext: analytics-dashboard
@@ -426,8 +426,8 @@ data:
         cacheTimeout: 30
         baseUrl: https://{{ .Values.wso2.deployment.analytics.dashboard.hostname }}
         grantType: authorization_code
-        publisherUrl: https://wso2am-pattern-1-am-service:9443
-        devPortalUrl: https://wso2am-pattern-1-am-service:9443
+        publisherUrl: https://{{ template "am-pattern-1.resource.prefix" . }}-am-service:9443
+        devPortalUrl: https://{{ template "am-pattern-1.resource.prefix" . }}-am-service:9443
         externalLogoutUrl: https://{{ .Values.wso2.deployment.am.hostname }}/oidc/logout
 
     wso2.dashboard:
