@@ -15,12 +15,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2am-pattern-1-am-analytics-dashboard-service
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-dashboard-service
   namespace : {{ .Release.Namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    deployment: wso2am-pattern-1-analytics-dashboard
+    deployment: {{ template "am-pattern-1.resource.prefix" . }}-analytics-dashboard
   ports:
     # ports that this service should serve on
     -
