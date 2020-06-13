@@ -15,7 +15,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: wso2am-pattern-1-am-analytics-worker-statefulset
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-statefulset
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 2
@@ -23,14 +23,14 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2am-pattern-1-analytics-worker
-  serviceName: wso2am-pattern-1-am-analytics-worker-headless-service
+      deployment: {{ template "am-pattern-1.resource.prefix" . }}-analytics-worker
+  serviceName: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-headless-service
   template:
     metadata:
       annotations:
         checksum.am.analytics.worker.conf: {{ include (print $.Template.BasePath "/am-analytics/worker/wso2am-pattern-1-am-analytics-worker-conf.yaml") . | sha256sum }}
       labels:
-        deployment: wso2am-pattern-1-analytics-worker
+        deployment: {{ template "am-pattern-1.resource.prefix" . }}-analytics-worker
     spec:
       {{ if .Values.wso2.deployment.dependencies.mysql }}
       initContainers:
@@ -104,7 +104,7 @@ spec:
             - containerPort: 7444
               protocol: "TCP"
           volumeMounts:
-            - name: wso2am-pattern-1-am-analytics-worker-conf
+            - name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/worker/deployment.yaml
               subPath: deployment.yaml
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
@@ -113,9 +113,9 @@ spec:
         - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: wso2am-pattern-1-wso2-private-registry-creds
+        - name: {{ template "am-pattern-1.resource.prefix" . }}-wso2-private-registry-creds
       {{- end }}
       volumes:
-        - name: wso2am-pattern-1-am-analytics-worker-conf
+        - name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-conf
           configMap:
-            name: wso2am-pattern-1-am-analytics-worker-conf
+            name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-conf

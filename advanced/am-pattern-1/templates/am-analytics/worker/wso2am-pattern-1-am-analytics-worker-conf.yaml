@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: wso2am-pattern-1-am-analytics-worker-conf
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-conf
   namespace : {{ .Release.Namespace }}
   {{ if .Values.wso2.deployment.analytics.worker.config }}
 

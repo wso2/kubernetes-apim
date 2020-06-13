@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wso2am-pattern-1-am-volume-claim-synapse-configs
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-synapse-configs
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -30,7 +30,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wso2am-pattern-1-am-volume-claim-executionplans
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-executionplans
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -45,7 +45,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wso2am-pattern-1-instance-1-carbon-db
+  name: {{ template "am-pattern-1.resource.prefix" . }}-instance-1-carbon-db
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -60,7 +60,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wso2am-pattern-1-instance-1-solr
+  name: {{ template "am-pattern-1.resource.prefix" . }}-instance-1-solr
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -75,7 +75,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wso2am-pattern-1-instance-2-carbon-db
+  name: {{ template "am-pattern-1.resource.prefix" . }}-instance-2-carbon-db
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -90,7 +90,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wso2am-pattern-1-instance-2-solr
+  name: {{ template "am-pattern-1.resource.prefix" . }}-instance-2-solr
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
