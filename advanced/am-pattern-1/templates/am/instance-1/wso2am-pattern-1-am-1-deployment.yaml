@@ -15,27 +15,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2am-pattern-1-am-1-deployment
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-deployment
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   strategy:
     rollingUpdate:
-#      maxSurge: 1
-#      maxUnavailable: 0
-    type: Recreate
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2am-pattern-1-am
-      node: wso2am-pattern-1-am-1
+      deployment: {{ template "am-pattern-1.resource.prefix" . }}-am
+      node: {{ template "am-pattern-1.resource.prefix" . }}-am-1
   template:
     metadata:
       annotations:
         checksum.am.conf: {{ include (print $.Template.BasePath "/am/instance-1/wso2am-pattern-1-am-1-conf.yaml") . | sha256sum }}
         checksum.am.entrypoint: {{ include (print $.Template.BasePath "/am/wso2am-pattern-1-am-conf-entrypoint.yaml") . | sha256sum }}
       labels:
-        deployment: wso2am-pattern-1-am
-        node: wso2am-pattern-1-am-1
+        deployment: {{ template "am-pattern-1.resource.prefix" . }}-am
+        node: {{ template "am-pattern-1.resource.prefix" . }}-am-1
     spec:
       initContainers:
         {{ if .Values.wso2.deployment.dependencies.mysql }}
@@ -45,7 +45,7 @@ spec:
         {{ end }}
         - name: init-am-analytics-worker
           image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-1-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-1.resource.prefix" . }}-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       containers:
         - name: wso2am
           {{- if .Values.wso2.deployment.am.dockerRegistry }}
@@ -106,18 +106,18 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
           volumeMounts:
-            - name: wso2am-pattern-1-instance-1-carbon-db
+            - name: {{ template "am-pattern-1.resource.prefix" . }}-instance-1-carbon-db
               mountPath: /home/wso2carbon/solr/database
-            - name: wso2am-pattern-1-instance-1-solr
+            - name: {{ template "am-pattern-1.resource.prefix" . }}-instance-1-solr
               mountPath: /home/wso2carbon/solr/indexed-data
-            - name: wso2am-pattern-1-am-volume-claim-executionplans
+            - name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-executionplans
               mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
-            - name: wso2am-pattern-1-am-volume-claim-synapse-configs
+            - name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-synapse-configs
               mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/synapse-configs
-            - name: wso2am-pattern-1-am-1-conf
+            - name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml
-            - name: wso2am-pattern-1-am-conf-entrypoint
+            - name: {{ template "am-pattern-1.resource.prefix" . }}-am-conf-entrypoint
               mountPath: /home/wso2carbon/docker-entrypoint.sh
               subPath: docker-entrypoint.sh
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
@@ -126,25 +126,25 @@ spec:
         - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: wso2am-pattern-1-wso2-private-registry-creds
+        - name: {{ template "am-pattern-1.resource.prefix" . }}-wso2-private-registry-creds
       {{- end }}
       volumes:
-        - name: wso2am-pattern-1-instance-1-carbon-db
+        - name: {{ template "am-pattern-1.resource.prefix" . }}-instance-1-carbon-db
           persistentVolumeClaim:
-            claimName: wso2am-pattern-1-instance-1-carbon-db
-        - name: wso2am-pattern-1-instance-1-solr
+            claimName: {{ template "am-pattern-1.resource.prefix" . }}-instance-1-carbon-db
+        - name: {{ template "am-pattern-1.resource.prefix" . }}-instance-1-solr
           persistentVolumeClaim:
-            claimName: wso2am-pattern-1-instance-1-solr
-        - name: wso2am-pattern-1-am-volume-claim-synapse-configs
+            claimName: {{ template "am-pattern-1.resource.prefix" . }}-instance-1-solr
+        - name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-synapse-configs
           persistentVolumeClaim:
-            claimName: wso2am-pattern-1-am-volume-claim-synapse-configs
-        - name: wso2am-pattern-1-am-volume-claim-executionplans
+            claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-synapse-configs
+        - name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-executionplans
           persistentVolumeClaim:
-            claimName: wso2am-pattern-1-am-volume-claim-executionplans
-        - name: wso2am-pattern-1-am-1-conf
+            claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-executionplans
+        - name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-conf
           configMap:
-            name: wso2am-pattern-1-am-1-conf
-        - name: wso2am-pattern-1-am-conf-entrypoint
+            name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-conf
+        - name: {{ template "am-pattern-1.resource.prefix" . }}-am-conf-entrypoint
           configMap:
-            name: wso2am-pattern-1-am-conf-entrypoint
+            name: {{ template "am-pattern-1.resource.prefix" . }}-am-conf-entrypoint
             defaultMode: 0407
