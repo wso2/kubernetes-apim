@@ -33,6 +33,11 @@ wso2:
       # "nfs" (default) - Using the official Kubernetes NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner).
       # This provisioner is installed by default, with this Helm Chart (wso2 -> deployment -> dependencies -> nfsServerProvisioner).
       storageClass: "nfs"
+      capacity:
+        sharedSynapseConfigs: 50M
+        sharedExecutionPlans: 50M
+        solrIndexedData: 50M
+        carbonDB: 50M
 
     am:
       # API Manager Gateway profile specific configurations
@@ -73,18 +78,11 @@ wso2:
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
-      instanceOne:
-        # If the deployment configurations for the WSO2 API Manager v3.0.0 (<WSO2AM>/repository/conf/deployment.toml),
-        # add the customized configuration file under (wso2 -> deployment -> am -> instanceOne -> config -> deployment.toml)
-        config: ""
-#            deployment.toml: |-
-#              # deployment configurations for the WSO2 API Manager v3.0.0 (<WSO2AM>/repository/conf/deployment.toml)
-      instanceTwo:
-        # If the deployment configurations for the WSO2 API Manager v3.0.0 (<WSO2AM>/repository/conf/deployment.toml),
-        # add the customized configuration file under (wso2 -> deployment -> am -> instanceTwo -> config -> deployment.toml)
-        config: ""
-#            deployment.toml: |-
-#              # deployment configurations for the WSO2 API Manager v3.0.0 (<WSO2AM>/repository/conf/deployment.toml)
+      # If the deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
+      # add the customized configuration file under (wso2 -> deployment -> am -> instanceOne -> config -> deployment.toml)
+      config: ""
+#        deployment.toml: |-
+#          # deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
 
     analytics:
       dashboard:
