@@ -13,36 +13,30 @@
 # limitations under the License.
 
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-am-2-deployment
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-statefulset
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-    type: RollingUpdate
   selector:
     matchLabels:
       deployment: {{ template "am-pattern-1.resource.prefix" . }}-am
-      node: {{ template "am-pattern-1.resource.prefix" . }}-am-2
+  serviceName: {{ template "am-pattern-1.resource.prefix" . }}-am-headless-service
+  replicas: 2
   template:
     metadata:
       annotations:
-        checksum.am.conf: {{ include (print $.Template.BasePath "/am/instance-2/wso2am-pattern-1-am-2-conf.yaml") . | sha256sum }}
+        checksum.am.conf: {{ include (print $.Template.BasePath "/am/wso2am-pattern-1-am-conf.yaml") . | sha256sum }}
         checksum.am.entrypoint: {{ include (print $.Template.BasePath "/am/wso2am-pattern-1-am-conf-entrypoint.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-1.resource.prefix" . }}-am
-        node: {{ template "am-pattern-1.resource.prefix" . }}-am-2
     spec:
       initContainers:
-        {{ if .Values.wso2.deployment.dependencies.mysql }}
+      {{ if .Values.wso2.deployment.dependencies.mysql }}
         - name: init-apim-analytics-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
-        {{ end }}
+      {{ end }}
         - name: init-am-analytics-worker
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-1.resource.prefix" . }}-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
@@ -57,6 +51,11 @@ spec:
           {{- else }}
           image: docker.wso2.com/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
           {{- end }}
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           livenessProbe:
             exec:
               command:
@@ -85,6 +84,8 @@ spec:
               memory: {{ .Values.wso2.deployment.am.resources.limits.memory }}
               cpu: {{ .Values.wso2.deployment.am.resources.limits.cpu }}
           imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
+          securityContext:
+            runAsUser: 802
           ports:
             - containerPort: 8280
               protocol: "TCP"
@@ -100,51 +101,59 @@ spec:
               protocol: "TCP"
             - containerPort: 5672
               protocol: "TCP"
-          env:
-            - name: NODE_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
           volumeMounts:
-            - name: {{ template "am-pattern-1.resource.prefix" . }}-instance-2-carbon-db
-              mountPath: /home/wso2carbon/solr/database
-            - name: {{ template "am-pattern-1.resource.prefix" . }}-instance-2-solr
-              mountPath: /home/wso2carbon/solr/indexed-data
-            - name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-executionplans
+            - name: wso2am-executionplans-storage
               mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
-            - name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-synapse-configs
+            - name: wso2am-synapse-configs-storage
               mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/synapse-configs
-            - name: {{ template "am-pattern-1.resource.prefix" . }}-am-2-conf
+            - name: wso2am-carbon-db-storage
+              mountPath: /home/wso2carbon/solr/database
+            - name: wso2am-solr-indexed-data-storage
+              mountPath: /home/wso2carbon/solr/indexed-data
+            - name: wso2am-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml
-            - name: {{ template "am-pattern-1.resource.prefix" . }}-am-conf-entrypoint
+            - name: wso2am-conf-entrypoint
               mountPath: /home/wso2carbon/docker-entrypoint.sh
               subPath: docker-entrypoint.sh
-      serviceAccountName: {{ .Values.kubernetes.svcaccount }}
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
         - name: {{ template "am-pattern-1.resource.prefix" . }}-wso2-private-registry-creds
-      {{- end }}
+      {{ end }}
       volumes:
-        - name: {{ template "am-pattern-1.resource.prefix" . }}-instance-2-carbon-db
-          persistentVolumeClaim:
-            claimName: {{ template "am-pattern-1.resource.prefix" . }}-instance-2-carbon-db
-        - name: {{ template "am-pattern-1.resource.prefix" . }}-instance-2-solr
-          persistentVolumeClaim:
-            claimName: {{ template "am-pattern-1.resource.prefix" . }}-instance-2-solr
-        - name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-executionplans
+        - name: wso2am-executionplans-storage
           persistentVolumeClaim:
             claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-executionplans
-        - name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-synapse-configs
+        - name: wso2am-synapse-configs-storage
           persistentVolumeClaim:
             claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-synapse-configs
-        - name: {{ template "am-pattern-1.resource.prefix" . }}-am-2-conf
+        - name: wso2am-conf
           configMap:
-            name: {{ template "am-pattern-1.resource.prefix" . }}-am-2-conf
-        - name: {{ template "am-pattern-1.resource.prefix" . }}-am-conf-entrypoint
+            name: {{ template "am-pattern-1.resource.prefix" . }}-am-conf
+        - name: wso2am-conf-entrypoint
           configMap:
             name: {{ template "am-pattern-1.resource.prefix" . }}-am-conf-entrypoint
             defaultMode: 0407
+  volumeClaimTemplates:
+    - metadata:
+        name: wso2am-carbon-db-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.carbonDB }}
+        storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+    - metadata:
+        name: wso2am-solr-indexed-data-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.solrIndexedData }}
+        storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}

@@ -15,21 +15,6 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-synapse-configs
-  namespace : {{ .Release.Namespace }}
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-executionplans
   namespace : {{ .Release.Namespace }}
 spec:
@@ -37,7 +22,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.sharedExecutionPlans }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
 ---
@@ -45,57 +30,12 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-instance-1-carbon-db
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-synapse-configs
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
-  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-instance-1-solr
-  namespace : {{ .Release.Namespace }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
-  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-instance-2-carbon-db
-  namespace : {{ .Release.Namespace }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-instance-2-solr
-  namespace : {{ .Release.Namespace }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.sharedSynapseConfigs }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
