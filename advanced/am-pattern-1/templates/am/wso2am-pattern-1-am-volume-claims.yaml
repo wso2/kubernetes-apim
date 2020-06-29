@@ -12,18 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-am-shared-executionplans-volume-claim
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-executionplans
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.executionPlans }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.sharedExecutionPlans }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
 ---
@@ -31,74 +30,12 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-am-shared-synapse-configs-volume-claim
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-synapse-configs
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.synapseConfigs }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.sharedSynapseConfigs }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
-
-  {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-local-carbon-database-volume-claim
-  namespace : {{ .Release.Namespace }}
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.carbonDatabase }}
-  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-solr-indexed-data-volume-claim
-  namespace : {{ .Release.Namespace }}
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.solrIndexedData }}
-  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-am-2-local-carbon-database-volume-claim
-  namespace : {{ .Release.Namespace }}
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.carbonDatabase }}
-  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-am-2-solr-indexed-data-volume-claim
-  namespace : {{ .Release.Namespace }}
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.solrIndexedData }}
-  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
-  {{ end }}
