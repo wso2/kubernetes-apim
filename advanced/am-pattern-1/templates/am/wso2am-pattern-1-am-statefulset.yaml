@@ -103,9 +103,9 @@ spec:
               protocol: "TCP"
           volumeMounts:
             - name: wso2am-executionplans-storage
-              mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
+              mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/executionplans
             - name: wso2am-synapse-configs-storage
-              mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/synapse-configs
+              mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/synapse-configs
             - name: wso2am-carbon-db-storage
               mountPath: /home/wso2carbon/solr/database
             - name: wso2am-solr-indexed-data-storage
