@@ -79,7 +79,7 @@ wso2:
       imagePullPolicy: Always
 
       # If the deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
-      # add the customized configuration file under (wso2 -> deployment -> am -> instanceOne -> config -> deployment.toml)
+      # add the customized configuration file under (wso2 -> deployment -> am -> config -> deployment.toml)
       config: ""
 #        deployment.toml: |-
 #          # deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
