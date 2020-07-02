@@ -23,19 +23,15 @@ spec:
     deployment: {{ template "am-pattern-1.resource.prefix" . }}-am
   ports:
     # ports that this service should serve on
-    -
-      name: pass-through-http
+    - name: pass-through-http
       protocol: TCP
       port: 8280
-    -
-      name: pass-through-https
+    - name: pass-through-https
       protocol: TCP
       port: 8243
-    -
-      name: servlet-http
+    - name: servlet-http
       protocol: TCP
       port: 9763
-    -
-      name: servlet-https
+    - name: servlet-https
       protocol: TCP
       port: 9443
