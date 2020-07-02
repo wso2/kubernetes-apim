@@ -15,13 +15,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-service
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-headless-service
   namespace : {{ .Release.Namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
+  clusterIP: None
   selector:
     deployment: {{ template "am-pattern-1.resource.prefix" . }}-am
-    node: {{ template "am-pattern-1.resource.prefix" . }}-am-1
   ports:
     # ports that this service should serve on
     - name: binary
