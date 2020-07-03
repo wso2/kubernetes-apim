@@ -33,7 +33,7 @@ password = "wso2carbon"
 # key manager implementation
 
 [apim.key_manager]
-service_url = "https://wso2am-pattern-2-km-service:${mgt.transport.https.port}/services/"
+service_url = "https://{{ template "am-pattern-2.resource.prefix" . }}-km-service:${mgt.transport.https.port}/services/"
 username= "$ref{super_admin.username}"
 password= "$ref{super_admin.password}"
 # Traffic Manager configurations
