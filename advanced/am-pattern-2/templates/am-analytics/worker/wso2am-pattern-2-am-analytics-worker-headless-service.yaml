@@ -12,28 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+apiVersion: v1
+kind: Service
 metadata:
-  namespace: {{ .Release.Namespace }}
-  name: wso2am-pattern-2-endpoints-reader-role
-rules:
-  - apiGroups: [""]
-    verbs: ["get", "list"]
-    resources: ["endpoints"]
-
----
-
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: RoleBinding
-metadata:
-  name: wso2am-pattern-2-endpoints-reader-role-binding
-  namespace: {{ .Release.Namespace }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: wso2am-pattern-2-endpoints-reader-role
-subjects:
-  - kind: ServiceAccount
-    name: {{ .Values.kubernetes.serviceAccount }}
-    namespace: {{ .Release.Namespace }}
+  name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-headless-service
+  namespace : {{ .Release.Namespace }}
+spec:
+  # label keys and values that must match in order to receive traffic for this service
+  clusterIP: None
+  selector:
+    deployment: {{ template "am-pattern-2.resource.prefix" . }}-analytics-worker
+  ports:
+    # ports that this service should serve on
+    - name: 'thrift'
+      port: 7612
+      protocol: TCP
+    - name: 'thrift-ssl'
+      port: 7712
+      protocol: TCP
