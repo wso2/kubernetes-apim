@@ -15,11 +15,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2am-pattern-2-am-km-deployment
+  name: {{ template "am-pattern-2.resource.prefix" . }}-am-km-deployment
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.wso2.deployment.am.km.replicas }}
-  minReadySeconds: {{ .Values.wso2.deployment.am.minReadySeconds }}
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.wso2.deployment.am.km.strategy.rollingUpdate.maxSurge }}
@@ -27,26 +26,25 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2am-pattern-2-km
+      deployment: {{ template "am-pattern-2.resource.prefix" . }}-km
   template:
     metadata:
+      annotations:
+        checksum.am.km.conf: {{ include (print $.Template.BasePath "/am/km/wso2am-pattern-2-am-km-conf.yaml") . | sha256sum }}
       labels:
-        deployment: wso2am-pattern-2-km
+        deployment: {{ template "am-pattern-2.resource.prefix" . }}-km
     spec:
       initContainers:
-      {{- if and .Values.wso2.deployment.db.host (.Values.wso2.deployment.db.port) }}
+      {{ if .Values.wso2.deployment.dependencies.mysql }}
       - name: init-apim-db
         image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z {{ .Values.wso2.deployment.db.host }} {{ .Values.wso2.deployment.db.port }}; do sleep 1; printf "-"; done; echo -e "  >> DBMS service is available";']
+        command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       {{- end }}
-      - name: init-apmi-am
+      - name: init-apim
         image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager deployment"; while ! nc -z wso2am-pattern-2-pub-store-tm-service 9443; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager has started";']
-      - name: init-apim-analytics
-        image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-2-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+        command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager deployment"; while ! nc -z {{ template "am-pattern-2.resource.prefix" . }}-am-service 9443; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager has started";']
       containers:
-      - name: wso2am-pattern-2-am-km
+      - name: wso2am-km
         {{- if .Values.wso2.deployment.am.dockerRegistry }}
         image: {{ .Values.wso2.deployment.am.dockerRegistry }}/{{ .Values.wso2.deployment.am.imageName }}
         {{- $tag := .Values.wso2.deployment.am.imageTag }}
@@ -57,8 +55,6 @@ spec:
         image: docker.wso2.com/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
         {{- end }}
         env:
-        - name: HOST_NAME
-          value: {{ .Release.Name }}-km
         - name: PROFILE_NAME
           value: api-key-manager
         - name: NODE_IP
@@ -102,25 +98,18 @@ spec:
           - containerPort: 9443
             protocol: "TCP"
         volumeMounts:
-        - name: wso2am-pattern-2-am-km-conf
+        - name: wso2am-km-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
           subPath: deployment.toml
-        - name: wso2am-pattern-2-conf-entrypoint
-          mountPath: /home/wso2carbon/docker-entrypoint.sh
-          subPath: docker-entrypoint.sh
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: wso2am-pattern-2-wso2-private-registry-creds
+        - name: {{ template "am-pattern-2.resource.prefix" . }}-wso2-private-registry-creds
       {{ end }}
       volumes:
-      - name: wso2am-pattern-2-am-km-conf
+      - name: wso2am-km-conf
         configMap:
-          name: wso2am-pattern-2-am-km-conf
-      - name: wso2am-pattern-2-conf-entrypoint
-        configMap:
-          name: wso2am-pattern-2-conf-entrypoint
-          defaultMode: 0407
+          name: {{ template "am-pattern-2.resource.prefix" . }}-am-km-conf
