@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: wso2am-pattern-2-am-analytics-dashboard-ingress
+  name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard-ingress
   namespace : {{ .Release.Namespace }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
@@ -23,12 +23,12 @@ metadata:
 spec:
   tls:
   - hosts:
-    - {{ .Release.Name }}-analytics-dashboard
+    - {{ .Values.wso2.deployment.analytics.dashboard.hostname }}
   rules:
-  - host: {{ .Release.Name }}-analytics-dashboard
+  - host: {{ .Values.wso2.deployment.analytics.dashboard.hostname }}
     http:
       paths:
       - path: /
         backend:
-          serviceName: wso2am-pattern-2-am-analytics-dashboard-service
+          serviceName: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard-service
           servicePort: 9643
