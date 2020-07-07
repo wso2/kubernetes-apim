@@ -15,7 +15,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2am-pattern-2-am-analytics-dashboard-deployment
+  name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard-deployment
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.wso2.deployment.analytics.dashboard.replicas }}
@@ -26,23 +26,26 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2am-pattern-2-analytics-dashboard
+      deployment: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard
   template:
     metadata:
+      annotations:
+        checksum.am.analytics.dashboard.bin: {{ include (print $.Template.BasePath "/am-analytics/dashboard/wso2am-pattern-2-am-analytics-dashboard-bin.yaml") . | sha256sum }}
+        checksum.am.analytics.dashboard.conf: {{ include (print $.Template.BasePath "/am-analytics/dashboard/wso2am-pattern-2-am-analytics-dashboard-conf.yaml") . | sha256sum }}
       labels:
-        deployment: wso2am-pattern-2-analytics-dashboard
+        deployment: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard
     spec:
       {{- if and .Values.wso2.deployment.db.host (.Values.wso2.deployment.db.port) }}
       initContainers:
       - name: init-apim-analytics-db
         image: busybox:1.31
         command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z {{ .Values.wso2.deployment.db.host }} {{ .Values.wso2.deployment.db.port }}; do sleep 1; printf "-"; done; echo -e "  >> DBMS service is available";']
-      - name: init-am-1
+      - name: init-am
         image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of Publisher Instance One deployment"; while ! nc -z  wso2am-pattern-2-pub-store-tm-1-service 9711; do sleep 1; printf "-"; done; echo -e "  >> Publisher Instance One has started";']
+        command: ['sh', '-c', 'echo -e "Checking for the availability of API Manager deployment"; while ! nc -z  {{ template "am-pattern-2.resource.prefix" . }}-am-service 9443; do sleep 1; printf "-"; done; echo -e "  >> API Manager service has started";']
       {{- end }}
       containers:
-      - name: wso2am-pattern-2-am-analytics-dashboard
+      - name: wso2am-analytics-dashboard
         {{- if .Values.wso2.deployment.analytics.dashboard.dockerRegistry }}
         image: {{ .Values.wso2.deployment.analytics.dashboard.dockerRegistry }}/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}
         {{- $tag := .Values.wso2.deployment.analytics.dashboard.imageTag }}
@@ -83,20 +86,28 @@ spec:
         securityContext:
           runAsUser: 802
         ports:
-        - containerPort: 9643
-          protocol: "TCP"
+          - containerPort: 9643
+            protocol: "TCP"
         volumeMounts:
-        - name: wso2am-pattern-2-am-analytics-dashboard-conf
-          mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard
+          - name: wso2am-analytics-dashboard-conf-bin
+            mountPath: /home/wso2carbon/wso2-config-volume/wso2/dashboard/bin/carbon.sh
+            subPath: carbon.sh
+          - name: wso2am-analytics-dashboard-conf
+            mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
+            subPath: deployment.yaml
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.analytics.dashboard.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.wso2.deployment.analytics.dashboard.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: wso2am-pattern-2-wso2-private-registry-creds
+        - name: {{ template "am-pattern-2.resource.prefix" . }}-wso2-private-registry-creds
       {{ end }}
       volumes:
-      - name: wso2am-pattern-2-am-analytics-dashboard-conf
-        configMap:
-          name: wso2am-pattern-2-am-analytics-dashboard-conf
+        - name: wso2am-analytics-dashboard-conf-bin
+          configMap:
+            name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard-bin
+            defaultMode: 0755
+        - name: wso2am-analytics-dashboard-conf
+          configMap:
+            name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard-conf
