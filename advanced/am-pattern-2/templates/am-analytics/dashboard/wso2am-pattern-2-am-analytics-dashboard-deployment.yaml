@@ -35,11 +35,11 @@ spec:
       labels:
         deployment: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard
     spec:
-      {{- if and .Values.wso2.deployment.db.host (.Values.wso2.deployment.db.port) }}
+      {{- if .Values.wso2.deployment.dependencies.mysql }}
       initContainers:
       - name: init-apim-analytics-db
         image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z {{ .Values.wso2.deployment.db.host }} {{ .Values.wso2.deployment.db.port }}; do sleep 1; printf "-"; done; echo -e "  >> DBMS service is available";']
+        command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> DBMS service is available";']
       - name: init-am
         image: busybox:1.31
         command: ['sh', '-c', 'echo -e "Checking for the availability of API Manager deployment"; while ! nc -z  {{ template "am-pattern-2.resource.prefix" . }}-am-service 9443; do sleep 1; printf "-"; done; echo -e "  >> API Manager service has started";']
