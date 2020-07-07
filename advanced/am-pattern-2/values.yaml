@@ -33,6 +33,10 @@ wso2:
       # "nfs" (default) - Using the official Kubernetes NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner).
       # This provisioner is installed by default, with this Helm Chart (wso2 -> deployment -> dependencies -> nfsServerProvisioner).
       storageClass: "nfs"
+      capacity:
+        sharedSynapseConfigs: 50M
+        sharedExecutionPlans: 20M
+        solrIndexedData: 50M
 
     analytics:
       dashboard:
@@ -113,11 +117,13 @@ wso2:
     am:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
       #dockerRegistry: ""
-
       imageName: "wso2am"
       imageTag: "3.1.0"
+
       # API Manager's Gateway specific configurations
       gateway:
+        # Hostname for Gateway profile
+        hostname: "gateway.am.wso2.com"
         livenessProbe:
           # Number of seconds after the container has started before liveness probes are initiated.
           initialDelaySeconds: 60
@@ -170,6 +176,7 @@ wso2:
 #            # deployment configurations for the Key Manager profile of WSO2 API Manager v3.0.0 (<WSO2AM>/repository/conf/deployment.toml)
 
       pubStoreTM:
+        hostname: "am.wso2.com"
         livenessProbe:
           # Number of seconds after the container has started before liveness probes are initiated.
           initialDelaySeconds: 180
@@ -194,8 +201,6 @@ wso2:
 #            deployment.toml: |-
 #              # deployment configurations for the Key Manager profile of WSO2 API Manager v3.0.0 (<WSO2AM>/repository/conf/deployment.toml)
 
-      # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
-      minReadySeconds: 30
       # Indicates whether the container is running.
       resources:
         # These are the minimum resource recommendations for running WSO2 API Management product profiles

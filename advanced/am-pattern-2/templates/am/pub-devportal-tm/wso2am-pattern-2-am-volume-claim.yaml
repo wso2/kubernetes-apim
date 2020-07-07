@@ -15,27 +15,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wso2am-pattern-2-instance-2-carbon-db
+  name: {{ template "am-pattern-2.resource.prefix" . }}-am-shared-executionplans-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteMany
   resources:
     requests:
-      storage: 2Gi
-  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: wso2am-pattern-2-instance-2-solr
-  namespace : {{ .Release.Namespace }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.sharedExecutionPlans }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
