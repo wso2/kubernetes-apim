@@ -32,7 +32,7 @@ spec:
     spec:
       {{ if .Values.wso2.deployment.dependencies.mysql }}
       initContainers:
-        - name: init-apim-analytics-db
+        - name: init-mysql-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       {{ end }}
@@ -78,31 +78,23 @@ spec:
                 command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
           resources:
             requests:
-              memory: {{ .Values.wso2.deployment.analytics.worker.resources.requests.memory }}
-              cpu: {{ .Values.wso2.deployment.analytics.worker.resources.requests.cpu }}
+              memory: {{ .Values.wso2.deployment.analytics.resources.requests.memory }}
+              cpu: {{ .Values.wso2.deployment.analytics.resources.requests.cpu }}
             limits:
-              memory: {{ .Values.wso2.deployment.analytics.worker.resources.limits.memory }}
-              cpu: {{ .Values.wso2.deployment.analytics.worker.resources.limits.cpu }}
+              memory: {{ .Values.wso2.deployment.analytics.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.analytics.resources.limits.cpu }}
           imagePullPolicy: {{ .Values.wso2.deployment.analytics.worker.imagePullPolicy }}
           securityContext:
             runAsUser: 802
           ports:
-            - containerPort: 9764
-              protocol: "TCP"
-            - containerPort: 9444
-              protocol: "TCP"
             - containerPort: 7612
               protocol: "TCP"
             - containerPort: 7712
               protocol: "TCP"
-            - containerPort: 9090
-              protocol: "TCP"
-            - containerPort: 7071
-              protocol: "TCP"
             - containerPort: 7444
               protocol: "TCP"
           volumeMounts:
-            - name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-conf
+            - name: wso2am-analytics-worker-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/worker/deployment.yaml
               subPath: deployment.yaml
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
@@ -114,6 +106,6 @@ spec:
         - name: {{ template "am-pattern-2.resource.prefix" . }}-wso2-private-registry-creds
       {{- end }}
       volumes:
-        - name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-conf
+        - name: wso2am-analytics-worker-conf
           configMap:
             name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-conf
