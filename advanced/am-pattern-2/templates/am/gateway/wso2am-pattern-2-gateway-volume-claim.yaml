@@ -15,12 +15,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wso2am-pattern-2-gateway-shared-synapse-configs-volume-claim
+  name: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway-shared-synapse-configs-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
   - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.sharedSynapseConfigs }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
