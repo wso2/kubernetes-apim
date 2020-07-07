@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: wso2am-pattern-2-pub-store-tm-ingress
+  name: {{ template "am-pattern-2.resource.prefix" . }}-am-ingress
   namespace : {{ .Release.Namespace }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
@@ -26,12 +26,12 @@ metadata:
 spec:
   tls:
   - hosts:
-    - {{ .Release.Name }}-am
+    - {{ .Values.wso2.deployment.am.hostname }}
   rules:
-  - host: {{ .Release.Name }}-am
+  - host: {{ .Values.wso2.deployment.am.hostname }}
     http:
       paths:
       - path: /
         backend:
-          serviceName: wso2am-pattern-2-pub-store-tm-service
+          serviceName: {{ template "am-pattern-2.resource.prefix" . }}-am-service
           servicePort: 9443
