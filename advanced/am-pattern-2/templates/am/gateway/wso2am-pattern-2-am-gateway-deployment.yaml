@@ -30,7 +30,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum.am.km.conf: {{ include (print $.Template.BasePath "/am/gateway/wso2am-pattern-2-gateway-conf.yaml") . | sha256sum }}
+        checksum.am.km.conf: {{ include (print $.Template.BasePath "/am/gateway/wso2am-pattern-2-am-gateway-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway
     spec:
