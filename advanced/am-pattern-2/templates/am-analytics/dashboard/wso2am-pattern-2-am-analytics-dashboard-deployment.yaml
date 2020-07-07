@@ -19,7 +19,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.wso2.deployment.analytics.dashboard.replicas }}
-  minReadySeconds: {{ .Values.wso2.deployment.analytics.dashboard.minReadySeconds }}
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.wso2.deployment.analytics.dashboard.strategy.rollingUpdate.maxSurge }}
