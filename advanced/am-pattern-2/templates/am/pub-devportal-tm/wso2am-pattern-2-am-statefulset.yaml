@@ -37,9 +37,9 @@ spec:
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       {{ end }}
-        - name: init-am-analytics-worker
+        - name: init-am-analytics
           image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> API Manager Analytics Worker has started";']
       containers:
         - name: wso2am
           {{- if .Values.wso2.deployment.am.dockerRegistry }}
@@ -105,7 +105,7 @@ spec:
               protocol: "TCP"
           volumeMounts:
             - name: wso2am-executionplans-storage
-              mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/executionplans
+              mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
             - name: wso2am-solr-indexed-data-storage
               mountPath: /home/wso2carbon/solr/indexed-data
             - name: wso2am-conf

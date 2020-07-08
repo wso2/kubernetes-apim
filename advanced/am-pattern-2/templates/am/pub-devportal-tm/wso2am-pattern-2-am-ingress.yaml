@@ -26,9 +26,9 @@ metadata:
 spec:
   tls:
   - hosts:
-    - {{ .Values.wso2.deployment.am.hostname }}
+    - {{ .Values.wso2.deployment.am.pubStoreTM.hostname }}
   rules:
-  - host: {{ .Values.wso2.deployment.am.hostname }}
+  - host: {{ .Values.wso2.deployment.am.pubStoreTM.hostname }}
     http:
       paths:
       - path: /
