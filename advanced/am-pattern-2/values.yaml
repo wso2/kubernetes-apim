@@ -41,7 +41,7 @@ wso2:
     analytics:
       dashboard:
         # Hostname for API Manager Analytics Dashboard
-        hostname: "analytics.api.privatecloud.wso2.com"
+        hostname: "analytics.am.wso2.com"
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
         #dockerRegistry: ""
         imageName: "wso2am-analytics-dashboard"
