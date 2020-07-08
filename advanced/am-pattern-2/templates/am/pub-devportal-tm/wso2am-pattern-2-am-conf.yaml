@@ -28,7 +28,7 @@ data:
 data:
   deployment.toml: |-
     [server]
-    hostname = "{{ .Values.wso2.deployment.am.hostname }}"
+    hostname = "{{ .Values.wso2.deployment.am.pubStoreTM.hostname }}"
     node_ip = "$env{NODE_IP}"
     #offset=0
     mode = "single" #single or ha
@@ -131,8 +131,8 @@ data:
     #publish_response_size = true
 
     [[apim.analytics.url_group]]
-    analytics_url =["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-headless-service.{{ .Release.Namespace }}.svc.cluster.local:7612","tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-headless-service.{{ .Release.Namespace }}.svc.cluster.local:7612"]
-    analytics_auth_url =["ssl://{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-headless-service.{{ .Release.Namespace }}.svc.cluster.local:7712","ssl://{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-headless-service.{{ .Release.Namespace }}.svc.cluster.local:7712"]
+    analytics_url =["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-headless-service:7612","tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-headless-service:7612"]
+    analytics_auth_url =["ssl://{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-headless-service:7712","ssl://{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-headless-service:7712"]
     type = "failover"
 
     [transport.https.properties]
@@ -165,12 +165,12 @@ data:
     [apim.oauth_config]
     #enable_outbound_auth_header = false
     #auth_header = "Authorization"
-    revoke_endpoint = "https://{{ template "am-pattern-2.resource.prefix" . }}-km-service:${https.nio.port}/revoke"
+    revoke_endpoint = "https://{{ template "am-pattern-2.resource.prefix" . }}-km-service:${mgt.transport.https.port}/oauth2/revoke"
     #enable_token_encryption = false
     #enable_token_hashing = false
 
     [apim.devportal]
-    url = "https://{{ .Values.wso2.deployment.am.hostname }}/devportal"
+    url = "https://{{ .Values.wso2.deployment.am.pubStoreTM.hostname }}/devportal"
     #enable_application_sharing = false
     #if application_sharing_type, application_sharing_impl both defined priority goes to application_sharing_impl
     #application_sharing_type = "default" #changed type, saml, default #todo: check the new config for rest api
@@ -211,13 +211,13 @@ data:
     #port = 10005
 
     [[apim.throttling.url_group]]
-    traffic_manager_urls = ["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-statefulset-0.{{ template "am-pattern-2.resource.prefix" . }}-am-headless-service.{{ .Release.Namespace }}.svc.cluster.local:9611"]
-    traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-2.resource.prefix" . }}-am-statefulset-0.{{ template "am-pattern-2.resource.prefix" . }}-am-headless-service.{{ .Release.Namespace }}.svc.cluster.local:9711"]
+    traffic_manager_urls = ["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-statefulset-0.{{ template "am-pattern-2.resource.prefix" . }}-am-headless-service:9611"]
+    traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-2.resource.prefix" . }}-am-statefulset-0.{{ template "am-pattern-2.resource.prefix" . }}-am-headless-service:9711"]
     type = "loadbalance"
 
     [[apim.throttling.url_group]]
-    traffic_manager_urls = ["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-statefulset-1.{{ template "am-pattern-2.resource.prefix" . }}-am-headless-service.{{ .Release.Namespace }}.svc.cluster.local:9611"]
-    traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-2.resource.prefix" . }}-am-statefulset-1.{{ template "am-pattern-2.resource.prefix" . }}-am-headless-service.{{ .Release.Namespace }}.svc.cluster.local:9711"]
+    traffic_manager_urls = ["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-statefulset-1.{{ template "am-pattern-2.resource.prefix" . }}-am-headless-service:9611"]
+    traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-2.resource.prefix" . }}-am-statefulset-1.{{ template "am-pattern-2.resource.prefix" . }}-am-headless-service:9711"]
     type = "loadbalance"
 
     #[apim.workflow]
