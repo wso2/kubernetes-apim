@@ -34,15 +34,12 @@ spec:
       labels:
         deployment: {{ template "am-pattern-2.resource.prefix" . }}-km
     spec:
-      initContainers:
       {{ if .Values.wso2.deployment.dependencies.mysql }}
+      initContainers:
       - name: init-apim-db
         image: busybox:1.31
         command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       {{- end }}
-      - name: init-apim
-        image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager deployment"; while ! nc -z {{ template "am-pattern-2.resource.prefix" . }}-am-service 9443; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager has started";']
       containers:
       - name: wso2am-km
         {{- if .Values.wso2.deployment.am.dockerRegistry }}
