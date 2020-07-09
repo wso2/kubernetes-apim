@@ -1,0 +1,51 @@
+# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-event-publishers-conf
+  namespace : {{ .Release.Namespace }}
+data:
+  jmsEventPublisher-2.xml: |-
+    <?xml version="1.0" encoding="UTF-8"?>
+    <eventPublisher name="jmsEventPublisher2" statistics="disable"
+    trace="disable" xmlns="http://wso2.org/carbon/eventpublisher">
+    <from streamName="org.wso2.throttle.globalThrottle.stream" version="1.0.0"/>
+    <mapping customMapping="disable" type="map"/>
+    <to eventAdapterType="jms">
+        <property name="java.naming.factory.initial">org.wso2.andes.jndi.PropertiesFileInitialContextFactory</property>
+        <property name="java.naming.provider.url">repository/conf/jndi2.properties</property>
+        <property name="transport.jms.DestinationType">topic</property>
+        <property name="transport.jms.Destination">throttleData</property>
+        <property name="transport.jms.ConcurrentPublishers">allow</property>
+        <property name="transport.jms.ConnectionFactoryJNDIName">TopicConnectionFactory</property>
+    </to>
+    </eventPublisher>
+
+  jmsEventPublisher_1.10.0-2.xml: |-
+    <?xml version="1.0" encoding="UTF-8"?>
+    <eventPublisher name="jmsEventPublisher-1.0.0-2" statistics="disable"
+    trace="disable" xmlns="http://wso2.org/carbon/eventpublisher">
+    <from streamName="org.wso2.throttle.globalThrottle.stream" version="1.1.0"/>
+    <mapping customMapping="disable" type="map"/>
+    <to eventAdapterType="jms">
+        <property name="java.naming.factory.initial">org.wso2.andes.jndi.PropertiesFileInitialContextFactory</property>
+        <property name="java.naming.provider.url">repository/conf/jndi2.properties</property>
+        <property name="transport.jms.DestinationType">topic</property>
+        <property name="transport.jms.Destination">throttleData</property>
+        <property name="transport.jms.ConcurrentPublishers">allow</property>
+        <property name="transport.jms.ConnectionFactoryJNDIName">TopicConnectionFactory</property>
+    </to>
+    </eventPublisher>

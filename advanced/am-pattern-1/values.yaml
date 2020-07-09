@@ -37,7 +37,6 @@ wso2:
         sharedSynapseConfigs: 50M
         sharedExecutionPlans: 20M
         solrIndexedData: 50M
-        carbonDB: 50M
 
     am:
       # API Manager Gateway profile specific configurations
@@ -57,18 +56,18 @@ wso2:
       # Indicates whether the container is running.
       livenessProbe:
         # Number of seconds after the container has started before liveness probes are initiated.
-        initialDelaySeconds: 240
+        initialDelaySeconds: 180
         # How often (in seconds) to perform the probe.
         periodSeconds: 10
       # Indicates whether the container is ready to service requests.
       readinessProbe:
         # Number of seconds after the container has started before readiness probes are initiated.
-        initialDelaySeconds: 240
+        initialDelaySeconds: 180
         # How often (in seconds) to perform the probe.
         periodSeconds: 10
       resources:
         # These are the minimum resource recommendations for running WSO2 API Management product profiles
-        # as per official documentation (https://apim.docs.wso2.com/en/next/SetupAndInstall/InstallationGuide/installation-prerequisites/).
+        # as per official documentation (https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/).
         requests:
           memory: "2Gi"
           cpu: "2000m"
@@ -78,11 +77,19 @@ wso2:
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
-      # If the deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
-      # add the customized configuration file under (wso2 -> deployment -> am -> config -> deployment.toml)
-      config: ""
-#        deployment.toml: |-
-#          # deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
+      instanceOne:
+        # If the deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
+        # add the customized configuration file for API Manager instance one under (wso2 -> deployment -> am -> instanceOne -> config -> deployment.toml)
+        config: ""
+#          deployment.toml: |-
+#            # deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
+
+      instanceTwo:
+        # If the deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
+        # add the customized configuration file for API Manager instance two under (wso2 -> deployment -> am -> instanceTwo -> config -> deployment.toml)
+        config: ""
+#          deployment.toml: |-
+#            # deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
 
     analytics:
       dashboard:
@@ -136,10 +143,6 @@ wso2:
         imageName: "wso2am-analytics-worker"
         imageTag: "3.2.0"
 
-        strategy:
-          rollingUpdate:
-            maxSurge: 1
-            maxUnavailable: 0
         # Indicates whether the container is running.
         livenessProbe:
           # Number of seconds after the container has started before liveness probes are initiated.
