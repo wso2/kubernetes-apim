@@ -1,4 +1,4 @@
-# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,23 +15,21 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-am-service
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-service
   namespace : {{ .Release.Namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
     deployment: {{ template "am-pattern-1.resource.prefix" . }}-am
+    node: {{ template "am-pattern-1.resource.prefix" . }}-am-1
   ports:
     # ports that this service should serve on
-    - name: pass-through-http
+    - name: binary
       protocol: TCP
-      port: 8280
-    - name: pass-through-https
+      port: 9611
+    - name: binary-secure
       protocol: TCP
-      port: 8243
-    - name: servlet-http
+      port: 9711
+    - name: jms-tcp
       protocol: TCP
-      port: 9763
-    - name: servlet-https
-      protocol: TCP
-      port: 9443
+      port: 5672
