@@ -15,23 +15,23 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: wso2am-pattern-3-am-tm-statefulset
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 2
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2am-pattern-3-tm
-  serviceName: wso2am-pattern-3-am-tm-headless-service
+      deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-tm
+  serviceName: {{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service
   template:
     metadata:
+      annotations:
+        checksum.am.tm.conf: {{ include (print $.Template.BasePath "/am/tm/wso2am-pattern-3-am-tm-conf.yaml") . | sha256sum }}
       labels:
-        deployment: wso2am-pattern-3-tm
+        deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-tm
     spec:
       containers:
-        - name: wso2am-pattern-3-am-tm
+        - name: wso2am-tm
           {{- if .Values.wso2.deployment.am.dockerRegistry }}
           image: {{ .Values.wso2.deployment.am.dockerRegistry }}/{{ .Values.wso2.deployment.am.imageName }}
           {{- $tag := .Values.wso2.deployment.am.imageTag }}
@@ -42,8 +42,6 @@ spec:
           image: docker.wso2.com/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
           {{- end }}
           env:
-            - name: HOST_NAME
-              value: "{{ .Release.Name }}-tm"
             - name: PROFILE_NAME
               value: "traffic-manager"
             - name: NODE_IP
@@ -90,9 +88,9 @@ spec:
             - containerPort: 9443
               protocol: TCP
           volumeMounts:
-            - name: wso2am-pattern-3-am-tm-shared-storage-volume
+            - name: wso2am-tm-shared-storage-volume
               mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
-            - name: wso2am-pattern-3-am-tm-conf
+            - name: wso2am-tm-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
@@ -100,12 +98,12 @@ spec:
         - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: wso2am-pattern-3-wso2-private-registry-creds
+        - name: {{ template "am-pattern-3.resource.prefix" . }}-wso2-private-registry-creds
       {{ end }}
       volumes:
-        - name: wso2am-pattern-3-am-tm-shared-storage-volume
+        - name: wso2am-tm-shared-storage-volume
           persistentVolumeClaim:
-            claimName: wso2am-pattern-3-am-tm-shared-executionplans-volume-claim
-        - name: wso2am-pattern-3-am-tm-conf
+            claimName: {{ template "am-pattern-3.resource.prefix" . }}-am-tm-shared-executionplans-volume-claim
+        - name: wso2am-tm-conf
           configMap:
-            name: wso2am-pattern-3-am-tm-conf
+            name: {{ template "am-pattern-3.resource.prefix" . }}-am-tm-conf
