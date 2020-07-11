@@ -13,39 +13,31 @@
 # limitations under the License.
 
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: wso2am-pattern-3-am-analytics-worker-2-deployment
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.wso2.deployment.analytics.worker.replicas }}
-  minReadySeconds: {{ .Values.wso2.deployment.analytics.worker.minReadySeconds }}
-  strategy:
-    rollingUpdate:
-      maxSurge: {{ .Values.wso2.deployment.analytics.worker.strategy.rollingUpdate.maxSurge }}
-      maxUnavailable: {{ .Values.wso2.deployment.analytics.worker.strategy.rollingUpdate.maxUnavailable }}
-    type: RollingUpdate
+  replicas: 2
   selector:
     matchLabels:
-      deployment: wso2am-pattern-3-analytics-worker
-      node: wso2am-pattern-3-analytics-worker-2
+      deployment: {{ template "am-pattern-3.resource.prefix" . }}-analytics-worker
+  serviceName: {{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service
   template:
     metadata:
+      annotations:
+        checksum.am.analytics.worker.conf: {{ include (print $.Template.BasePath "/am-analytics/worker/wso2am-pattern-3-am-analytics-worker-conf.yaml") . | sha256sum }}
       labels:
-        deployment: wso2am-pattern-3-analytics-worker
-        node: wso2am-pattern-3-analytics-worker-2
+        deployment: {{ template "am-pattern-3.resource.prefix" . }}-analytics-worker
     spec:
+      {{ if .Values.wso2.deployment.dependencies.mysql }}
       initContainers:
-      {{- if and .Values.wso2.deployment.db.host (.Values.wso2.deployment.db.port) }}
-      - name: init-apim-analytics-db
-        image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z {{ .Values.wso2.deployment.db.host }} {{ .Values.wso2.deployment.db.port }}; do sleep 1; printf "-"; done; echo -e "  >> DBMS service is available";']
-      {{- end }}
-      - name: init-am-analytics-worker
-        image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-3-am-analytics-worker-1-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+        - name: init-mysql-db
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+      {{ end }}
       containers:
-        - name: wso2am-pattern-3-analytics-worker-2
+        - name: wso2am-analytics-worker
           {{- if .Values.wso2.deployment.analytics.worker.dockerRegistry }}
           image: {{ .Values.wso2.deployment.analytics.worker.dockerRegistry }}/{{ .Values.wso2.deployment.analytics.worker.imageName }}
           {{- $tag := .Values.wso2.deployment.analytics.worker.imageTag }}
@@ -56,8 +48,14 @@ spec:
           image: docker.wso2.com/{{ .Values.wso2.deployment.analytics.worker.imageName }}:{{ .Values.wso2.deployment.analytics.worker.imageTag }}
           {{- end }}
           env:
-          - name: CLUSTER_MEMBER
-            value: wso2am-pattern-3-analytics-worker-2-service
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           livenessProbe:
             exec:
               command:
@@ -89,24 +87,14 @@ spec:
           securityContext:
             runAsUser: 802
           ports:
-            - containerPort: 9091
-              protocol: "TCP"
-            - containerPort: 9444
-              protocol: "TCP"
-            - containerPort: 7712
-              protocol: "TCP"
             - containerPort: 7612
               protocol: "TCP"
-            - containerPort: 9712
-              protocol: "TCP"
-            - containerPort: 9612
-              protocol: "TCP"
-            - containerPort: 7071
+            - containerPort: 7712
               protocol: "TCP"
             - containerPort: 7444
               protocol: "TCP"
           volumeMounts:
-            - name: wso2am-pattern-3-am-analytics-worker-conf
+            - name: wso2am-analytics-worker-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/worker/deployment.yaml
               subPath: deployment.yaml
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
@@ -115,9 +103,9 @@ spec:
         - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: wso2am-pattern-3-wso2-private-registry-creds
-      {{ end }}
+        - name: {{ template "am-pattern-3.resource.prefix" . }}-wso2-private-registry-creds
+      {{- end }}
       volumes:
-        - name: wso2am-pattern-3-am-analytics-worker-conf
+        - name: wso2am-analytics-worker-conf
           configMap:
-            name: wso2am-pattern-3-am-analytics-worker-conf
+            name: {{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-conf
