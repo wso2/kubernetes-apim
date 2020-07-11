@@ -32,6 +32,10 @@ wso2:
       # "nfs" (default) - Using the official Kubernetes NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner).
       # This provisioner is installed by default, with this Helm Chart (wso2 -> deployment -> dependencies -> nfsServerProvisioner).
       storageClass: "nfs"
+      capacity:
+        sharedSynapseConfigs: 50M
+        sharedExecutionPlans: 20M
+        solrIndexedData: 50M
 
     analytics:
       dashboard:
