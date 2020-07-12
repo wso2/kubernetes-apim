@@ -40,6 +40,9 @@ spec:
         - name: init-km
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of Key Manager deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-km-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Key Manager has started";']
+        - name: init-apim-analytics
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       containers:
         - name: wso2am-publisher
           {{- if .Values.wso2.deployment.am.dockerRegistry }}
