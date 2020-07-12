@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: wso2am-pattern-3-am-publisher-ingress
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-ingress
   namespace : {{ .Release.Namespace }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
@@ -26,12 +26,12 @@ metadata:
 spec:
   tls:
     - hosts:
-        - {{ .Release.Name }}-publisher
+        - {{ .Values.wso2.deployment.am.publisher.hostname }}
   rules:
-    - host: {{ .Release.Name }}-publisher
+    - host: {{ .Values.wso2.deployment.am.publisher.hostname }}
       http:
         paths:
         - path: /
           backend:
-            serviceName: wso2am-pattern-3-am-publisher-service
+            serviceName: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-service
             servicePort: 9443
