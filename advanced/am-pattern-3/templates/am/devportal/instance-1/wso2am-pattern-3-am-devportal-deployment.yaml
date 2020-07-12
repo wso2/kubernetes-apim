@@ -15,7 +15,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-1-deployment
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal-1-deployment
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
@@ -23,13 +23,13 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher
+      deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal
   template:
     metadata:
       annotations:
-        checksum.am.publisher.conf: {{ include (print $.Template.BasePath "/am/publisher/wso2am-pattern-3-am-publisher-conf.yaml") . | sha256sum }}
+        checksum.am.publisher.conf: {{ include (print $.Template.BasePath "/am/devportal/wso2am-pattern-3-am-devportal-conf.yaml") . | sha256sum }}
       labels:
-        deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher
+        deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal
     spec:
       initContainers:
         {{- if .Values.wso2.deployment.dependencies.mysql }}
@@ -44,7 +44,7 @@ spec:
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       containers:
-        - name: wso2am-publisher
+        - name: wso2am-devportal
           {{- if .Values.wso2.deployment.am.dockerRegistry }}
           image: {{ .Values.wso2.deployment.am.dockerRegistry }}/{{ .Values.wso2.deployment.am.imageName }}
           {{- $tag := .Values.wso2.deployment.am.imageTag }}
@@ -89,7 +89,7 @@ spec:
               protocol: "TCP"
           env:
             - name: PROFILE_NAME
-              value: api-publisher
+              value: api-devportal
             - name: NODE_IP
               valueFrom:
                 fieldRef:
@@ -99,12 +99,12 @@ spec:
           securityContext:
             runAsUser: 802
           volumeMounts:
-          - name: wso2am-publisher-indexed-data-volume
+          - name: wso2am-devportal-indexed-data-volume
             mountPath: /home/wso2carbon/solr/indexed-data
-          - name: wso2am-publisher-conf
+          - name: wso2am-devportal-conf
             mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
             subPath: deployment.toml
-          - name: wso2am-publisher-templates-conf
+          - name: wso2am-devportal-templates-conf
             mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/conf/templates/repository/conf
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
@@ -115,12 +115,12 @@ spec:
         - name: {{ template "am-pattern-3.resource.prefix" . }}-wso2-private-registry-creds
       {{- end }}
       volumes:
-        - name: wso2am-publisher-indexed-data-volume
+        - name: wso2am-devportal-indexed-data-volume
           persistentVolumeClaim:
-            claimName: {{ template "am-pattern-3.resource.prefix" . }}-publisher-1-indexed-data-volume-claim
-        - name: wso2am-publisher-conf
+            claimName: {{ template "am-pattern-3.resource.prefix" . }}-devportal-1-indexed-data-volume-claim
+        - name: wso2am-devportal-conf
           configMap:
-            name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-conf
-        - name: wso2am-publisher-templates-conf
+            name: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal-conf
+        - name: wso2am-devportal-templates-conf
           configMap:
-            name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-templates-conf
+            name: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal-templates-conf
