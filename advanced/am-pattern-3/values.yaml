@@ -39,15 +39,17 @@ wso2:
 
     analytics:
       dashboard:
+        # Hostname for API Manager Analytics Dashboard
+        hostname: "analytics.am.wso2.com"
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
 #        dockerRegistry: ""
-
         imageName: "wso2am-analytics-dashboard"
         imageTag: "3.1.0"
+        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+        imagePullPolicy: Always
+
         # Number of deployment replicas
         replicas: 1
-        # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
-        minReadySeconds: 30
         strategy:
           rollingUpdate:
             # The maximum number of pods that can be scheduled above the desired number of pods.
@@ -66,8 +68,6 @@ wso2:
           initialDelaySeconds: 20
           # How often (in seconds) to perform the probe.
           periodSeconds: 10
-        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
-        imagePullPolicy: Always
 #        # If the deployment configurations for the Dashboard profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml),
 #        # add the customized configuration file under (wso2 -> deployment -> analytics -> dashboard -> config -> deployment.yaml)
 #        config:
@@ -91,6 +91,8 @@ wso2:
 #        dockerRegistry: ""
         imageName: "wso2am-analytics-worker"
         imageTag: "3.1.0"
+        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+        imagePullPolicy: Always
         # Indicates whether the container is running.
         livenessProbe:
           # Number of seconds after the container has started before liveness probes are initiated.
@@ -103,8 +105,6 @@ wso2:
           initialDelaySeconds: 20
           # How often (in seconds) to perform the probe.
           periodSeconds: 10
-        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
-        imagePullPolicy: Always
 #        # If the deployment configurations for the Worker profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/worker/deployment.yaml),
 #        # add the customized configuration file under (wso2 -> deployment -> analytics -> worker -> config -> deployment.yaml)
 #        config:
