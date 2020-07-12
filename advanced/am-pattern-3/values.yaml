@@ -110,7 +110,6 @@ wso2:
 #        config:
 #          deployment.yaml: |-
 #            # deployment configurations for the Worker profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/worker/deployment.yaml)
-
         resources:
           # These are the minimum resource recommendations for running WSO2 Stream Processor based server profiles
           # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
@@ -127,11 +126,15 @@ wso2:
     am:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
 #      dockerRegistry: ""
-
       imageName: "wso2am"
       imageTag: "3.1.0"
+      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+      imagePullPolicy: Always
+
       # API Manager's Gateway specific configurations
       gateway:
+        # Hostname for Gateway profile
+        hostname: "gateway.am.wso2.com"
         # Number of deployment replicas
         replicas: 2
         strategy:
@@ -145,6 +148,7 @@ wso2:
 #        config:
 #          deployment.toml: |-
 #            # deployment configurations for the Gateway profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
+
       # API Manager's Key Manager specific configurations
       km:
         # Number of deployment replicas
@@ -152,7 +156,7 @@ wso2:
         strategy:
           rollingUpdate:
             # The maximum number of pods that can be scheduled above the desired number of pods.
-            maxSurge: 1
+            maxSurge: 2
             # The maximum number of pods that can be unavailable during the update.
             maxUnavailable: 0
 #        # If the deployment configurations for the Key Manager profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
@@ -161,22 +165,33 @@ wso2:
 #          deployment.toml: |-
 #            # deployment configurations for the Key Manager profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
 
-      # If the deployment configurations for the Publisher profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
-      # add the customized configuration file under (wso2 -> deployment -> am -> publisher -> config -> deployment.toml)
+      # API Manager's Publisher specific configurations
       publisher:
-        config: ""
+        # Hostname for Publisher profile
+        hostname: "publisher.am.wso2.com"
+#        # If the deployment configurations for the Publisher profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
+#        # add the customized configuration file under (wso2 -> deployment -> am -> km -> config -> deployment.toml)
+#        config:
+#          deployment.toml: |-
+#            # deployment configurations for the Publisher profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
 
-      # If the deployment configurations for the DevPortal profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
-      # add the customized configuration file under (wso2 -> deployment -> am -> devportal -> config -> deployment.toml)
+      # API Manager's DevPortal specific configurations
       devportal:
-        config: ""
-        
+        # Hostname for DevPortal profile
+        hostname: "devportal.am.wso2.com"
+#        # If the deployment configurations for the DevPortal profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
+#        # add the customized configuration file under (wso2 -> deployment -> am -> km -> config -> deployment.toml)
+#        config:
+#          deployment.toml: |-
+#            # deployment configurations for the DevPortal profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
+
+      # API Manager's Traffic Manager specific configurations
       tm:
-        # If the deployment configurations for the Publisher-Store-TM of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
+        # If the deployment configurations for the Traffic Manager profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
         # add the customized configuration file under (wso2 -> deployment -> am -> pubStoreTM -> instanceOne -> config -> deployment.toml)
         config: ""
 #          deployment.toml: |-
-#            # deployment configurations for the Key Manager profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
+#            # deployment configurations for the Traffic Manager profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
 
       # Indicates whether the container is running.
       livenessProbe:
@@ -199,8 +214,6 @@ wso2:
         limits:
           memory: "2Gi"
           cpu: "2000m"
-      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
-      imagePullPolicy: Always
 
 kubernetes:
   # Name of Kubernetes service account
