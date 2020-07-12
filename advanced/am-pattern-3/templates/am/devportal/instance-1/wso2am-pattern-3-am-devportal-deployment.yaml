@@ -73,7 +73,7 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+                command: ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
           resources:
             requests:
               memory: {{ .Values.wso2.deployment.am.resources.requests.memory }}
