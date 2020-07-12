@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: wso2am-pattern-3-am-devportal-ingress
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal-ingress
   namespace : {{ .Release.Namespace }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
@@ -26,12 +26,12 @@ metadata:
 spec:
   tls:
     - hosts:
-        - {{ .Release.Name }}-devportal
+        - {{ .Values.wso2.deployment.am.devportal.hostname }}
   rules:
-    - host: {{ .Release.Name }}-devportal
+    - host: {{ .Values.wso2.deployment.am.devportal.hostname }}
       http:
         paths:
         - path: /
           backend:
-            serviceName: wso2am-pattern-3-am-devportal-service
+            serviceName: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal-service
             servicePort: 9443
