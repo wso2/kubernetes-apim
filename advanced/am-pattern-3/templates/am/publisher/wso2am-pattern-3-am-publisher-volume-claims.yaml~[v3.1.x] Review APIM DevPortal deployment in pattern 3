@@ -1,4 +1,4 @@
-# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,12 +15,27 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway-shared-synapse-configs-volume-claim
+  name: {{ template "am-pattern-3.resource.prefix" . }}-publisher-1-indexed-data-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
-  - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.synapseConfigs }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.solrIndexedData }}
+  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "am-pattern-3.resource.prefix" . }}-publisher-2-indexed-data-volume-claim
+  namespace : {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.solrIndexedData }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
