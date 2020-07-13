@@ -16,7 +16,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-executionplans
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-shared-executionplans-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -31,7 +31,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-am-volume-claim-synapse-configs
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-shared-synapse-configs-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -39,4 +39,34 @@ spec:
   resources:
     requests:
       storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.sharedSynapseConfigs }}
+  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-solr-indexed-data-volume-claim
+  namespace : {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.solrIndexedData }}
+  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-2-solr-indexed-data-volume-claim
+  namespace : {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.solrIndexedData }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
