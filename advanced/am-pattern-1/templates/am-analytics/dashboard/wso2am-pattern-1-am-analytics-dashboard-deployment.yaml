@@ -26,14 +26,13 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: {{ template "am-pattern-1.resource.prefix" . }}-analytics-dashboard
+      deployment: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-dashboard
   template:
     metadata:
       annotations:
-        checksum.am.analytics.dashboard.bin: {{ include (print $.Template.BasePath "/am-analytics/dashboard/wso2am-pattern-1-am-analytics-dashboard-bin.yaml") . | sha256sum }}
         checksum.am.analytics.dashboard.conf: {{ include (print $.Template.BasePath "/am-analytics/dashboard/wso2am-pattern-1-am-analytics-dashboard-conf.yaml") . | sha256sum }}
       labels:
-        deployment: {{ template "am-pattern-1.resource.prefix" . }}-analytics-dashboard
+        deployment: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-dashboard
     spec:
       {{ if .Values.wso2.deployment.dependencies.mysql }}
       initContainers:
@@ -99,10 +98,7 @@ spec:
             - name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-dashboard-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
               subPath: deployment.yaml
-            - name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-dashboard-bin
-              mountPath: /home/wso2carbon/wso2-config-volume/wso2/dashboard/bin/carbon.sh
-              subPath: carbon.sh
-      serviceAccountName: {{ .Values.kubernetes.svcaccount }}
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
         - name: {{ template "am-pattern-1.resource.prefix" . }}-wso2-private-registry-creds
@@ -118,7 +114,4 @@ spec:
         - name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-dashboard-conf
           configMap:
             name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-dashboard-conf
-        - name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-dashboard-bin
-          configMap:
-            name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-dashboard-bin
-            defaultMode: 0407
+

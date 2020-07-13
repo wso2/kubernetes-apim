@@ -14,7 +14,7 @@
 
 apiVersion: v1
 appVersion: "3.1.0"
-description: A Helm chart for the deployment of WSO2 APIM-Analytics deployment
+description: A Helm chart for the deployment of WSO2 API Management deployment pattern 1
 name: am-pattern-1
 version: 3.1.0-3
 icon: https://wso2.cachefly.net/wso2/sites/all/images/wso2logo.svg

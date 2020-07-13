@@ -20,7 +20,7 @@ metadata:
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    deployment: {{ template "am-pattern-1.resource.prefix" . }}-analytics-dashboard
+    deployment: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-dashboard
   ports:
     # ports that this service should serve on
     -
