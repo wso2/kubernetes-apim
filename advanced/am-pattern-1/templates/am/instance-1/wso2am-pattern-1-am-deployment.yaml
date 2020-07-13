@@ -1,0 +1,148 @@
+# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-deployment
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      deployment: {{ template "am-pattern-1.resource.prefix" . }}-am
+      node: {{ template "am-pattern-1.resource.prefix" . }}-am-1
+  template:
+    metadata:
+      annotations:
+        checksum.am.conf: {{ include (print $.Template.BasePath "/am/instance-1/wso2am-pattern-1-am-conf.yaml") . | sha256sum }}
+        checksum.am.templates.conf: {{ include (print $.Template.BasePath "/am/wso2am-pattern-1-am-templates-conf.yaml") . | sha256sum }}
+      labels:
+        deployment: {{ template "am-pattern-1.resource.prefix" . }}-am
+        node: {{ template "am-pattern-1.resource.prefix" . }}-am-1
+    spec:
+      initContainers:
+        {{ if .Values.wso2.deployment.dependencies.mysql }}
+        - name: init-mysql-db
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        {{ end }}
+        - name: init-am-analytics-worker
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+      containers:
+        - name: wso2am
+          {{- if .Values.wso2.deployment.am.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.am.dockerRegistry }}/{{ .Values.wso2.deployment.am.imageName }}
+          {{- $tag := .Values.wso2.deployment.am.imageTag }}
+          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+          {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
+          image: wso2/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
+          {{- else }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
+          {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: {{ .Values.wso2.deployment.am.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.am.livenessProbe.periodSeconds }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: {{ .Values.wso2.deployment.am.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.am.readinessProbe.periodSeconds }}
+          lifecycle:
+            preStop:
+              exec:
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+          resources:
+            requests:
+              memory: {{ .Values.wso2.deployment.am.resources.requests.memory }}
+              cpu: {{ .Values.wso2.deployment.am.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.wso2.deployment.am.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.am.resources.limits.cpu }}
+          imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
+          securityContext:
+            runAsUser: 802
+          ports:
+            - containerPort: 8280
+              protocol: "TCP"
+            - containerPort: 8243
+              protocol: "TCP"
+            - containerPort: 9763
+              protocol: "TCP"
+            - containerPort: 9443
+              protocol: "TCP"
+            - containerPort: 9711
+              protocol: "TCP"
+            - containerPort: 9611
+              protocol: "TCP"
+            - containerPort: 5672
+              protocol: "TCP"
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: SOLR_INDEX_INSTANCE_ID
+              value: "/_system/governance/repository/components/lastaccesstime_wso2am_instance_one"
+          volumeMounts:
+            - name: wso2am-executionplans-storage
+              mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
+            - name: wso2am-synapse-configs-storage
+              mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/synapse-configs
+            - name: wso2am-solr-indexed-data-storage
+              mountPath: /home/wso2carbon/solr/indexed-data
+            - name: wso2am-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+            - name: wso2am-event-publishers-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/eventpublishers
+            - name: wso2am-templates-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/conf/templates/repository/conf
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
+      {{- if .Values.wso2.deployment.am.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
+      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      imagePullSecrets:
+        - name: {{ template "am-pattern-1.resource.prefix" . }}-wso2-private-registry-creds
+      {{ end }}
+      volumes:
+        - name: wso2am-executionplans-storage
+          persistentVolumeClaim:
+            claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-shared-executionplans-volume-claim
+        - name: wso2am-synapse-configs-storage
+          persistentVolumeClaim:
+            claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-shared-synapse-configs-volume-claim
+        - name: wso2am-solr-indexed-data-storage
+          persistentVolumeClaim:
+            claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-1-solr-indexed-data-volume-claim
+        - name: wso2am-templates-conf
+          configMap:
+            name: {{ template "am-pattern-1.resource.prefix" . }}-am-templates-conf
+        - name: wso2am-event-publishers-conf
+          configMap:
+            name: {{ template "am-pattern-1.resource.prefix" . }}-am-event-publishers-conf
+        - name: wso2am-conf
+          configMap:
+            name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-conf
