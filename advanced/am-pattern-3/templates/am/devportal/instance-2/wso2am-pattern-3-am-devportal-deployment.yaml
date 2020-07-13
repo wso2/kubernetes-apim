@@ -28,6 +28,7 @@ spec:
     metadata:
       annotations:
         checksum.am.publisher.conf: {{ include (print $.Template.BasePath "/am/devportal/wso2am-pattern-3-am-devportal-conf.yaml") . | sha256sum }}
+        checksum.am.templates.conf: {{ include (print $.Template.BasePath "/am/devportal/wso2am-pattern-3-am-devportal-templates-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal
     spec:
