@@ -30,7 +30,6 @@ spec:
   template:
     metadata:
       annotations:
-        checksum.am.analytics.dashboard.bin: {{ include (print $.Template.BasePath "/am-analytics/dashboard/wso2am-pattern-2-am-analytics-dashboard-bin.yaml") . | sha256sum }}
         checksum.am.analytics.dashboard.conf: {{ include (print $.Template.BasePath "/am-analytics/dashboard/wso2am-pattern-2-am-analytics-dashboard-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard
@@ -77,11 +76,11 @@ spec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/dashboard.sh stop']
         resources:
           requests:
-            memory: {{ .Values.wso2.deployment.analytics.resources.requests.memory }}
-            cpu: {{ .Values.wso2.deployment.analytics.resources.requests.cpu }}
+            memory: {{ .Values.wso2.deployment.analytics.dashboard.resources.requests.memory }}
+            cpu: {{ .Values.wso2.deployment.analytics.dashboard.resources.requests.cpu }}
           limits:
-            memory: {{ .Values.wso2.deployment.analytics.resources.limits.memory }}
-            cpu: {{ .Values.wso2.deployment.analytics.resources.limits.cpu }}
+            memory: {{ .Values.wso2.deployment.analytics.dashboard.resources.limits.memory }}
+            cpu: {{ .Values.wso2.deployment.analytics.dashboard.resources.limits.cpu }}
         imagePullPolicy: {{ .Values.wso2.deployment.analytics.dashboard.imagePullPolicy }}
         securityContext:
           runAsUser: 802
@@ -89,9 +88,6 @@ spec:
           - containerPort: 9643
             protocol: "TCP"
         volumeMounts:
-          - name: wso2am-analytics-dashboard-conf-bin
-            mountPath: /home/wso2carbon/wso2-config-volume/wso2/dashboard/bin/carbon.sh
-            subPath: carbon.sh
           - name: wso2am-analytics-dashboard-conf
             mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
             subPath: deployment.yaml
@@ -104,10 +100,6 @@ spec:
         - name: {{ template "am-pattern-2.resource.prefix" . }}-wso2-private-registry-creds
       {{ end }}
       volumes:
-        - name: wso2am-analytics-dashboard-conf-bin
-          configMap:
-            name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard-bin
-            defaultMode: 0755
         - name: wso2am-analytics-dashboard-conf
           configMap:
             name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard-conf
