@@ -23,14 +23,14 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: {{ template "am-pattern-1.resource.prefix" . }}-analytics-worker
+      deployment: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker
   serviceName: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-headless-service
   template:
     metadata:
       annotations:
         checksum.am.analytics.worker.conf: {{ include (print $.Template.BasePath "/am-analytics/worker/wso2am-pattern-1-am-analytics-worker-conf.yaml") . | sha256sum }}
       labels:
-        deployment: {{ template "am-pattern-1.resource.prefix" . }}-analytics-worker
+        deployment: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker
     spec:
       {{ if .Values.wso2.deployment.dependencies.mysql }}
       initContainers:

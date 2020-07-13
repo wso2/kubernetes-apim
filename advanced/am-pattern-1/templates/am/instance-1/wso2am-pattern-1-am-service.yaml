@@ -15,40 +15,21 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-headless-service
-  namespace: {{ .Release.Namespace }}
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-service
+  namespace : {{ .Release.Namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
-  clusterIP: None
   selector:
-    deployment: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker
+    deployment: {{ template "am-pattern-1.resource.prefix" . }}-am
+    node: {{ template "am-pattern-1.resource.prefix" . }}-am-1
   ports:
     # ports that this service should serve on
-    -
-      name: 'thrift'
-      port: 7612
+    - name: binary
       protocol: TCP
-    -
-      name: 'thrift-ssl'
-      port: 7712
+      port: 9611
+    - name: binary-secure
       protocol: TCP
-    -
-      name: 'rest-api-port-1'
+      port: 9711
+    - name: jms-tcp
       protocol: TCP
-      port: 9444
-    -
-      name: 'rest-api-port-2'
-      protocol: TCP
-      port: 9091
-    -
-      name: 'rest-api-port-3'
-      protocol: TCP
-      port: 7071
-    -
-      name: 'rest-api-port-4'
-      protocol: TCP
-      port: 7444
-    -
-      name: 'event-sync-port-1'
-      protocol: TCP
-      port: 9893
+      port: 5672
