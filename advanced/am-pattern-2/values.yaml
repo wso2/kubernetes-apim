@@ -73,6 +73,18 @@ wso2:
 #        config:
 #          deployment.yaml: |-
 #            # deployment configurations for the Dashboard profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml)
+        resources:
+          # These are the resource recommendations for running WSO2 Stream Processor based server profiles
+          # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
+          requests:
+            memory: "4Gi"
+            cpu: "2000m"
+          # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
+          # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
+          # where necessary.
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
 
       worker:
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
@@ -99,18 +111,18 @@ wso2:
 #        config:
 #          deployment.yaml: |-
 #            # deployment configurations for the Worker profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/worker/deployment.yaml)
-      resources:
-        # These are the resource recommendations for running WSO2 Stream Processor based server profiles
-        # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
-        requests:
-          memory: "4Gi"
-          cpu: "2000m"
-        # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
-        # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
-        # where necessary.
-        limits:
-          memory: "4Gi"
-          cpu: "2000m"
+        resources:
+          # These are the resource recommendations for running WSO2 Stream Processor based server profiles
+          # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
+          requests:
+            memory: "4Gi"
+            cpu: "2000m"
+          # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
+          # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
+          # where necessary.
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
 
     am:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
