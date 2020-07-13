@@ -15,12 +15,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-analytics-worker-service
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-service
   namespace : {{ .Release.Namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    deployment: {{ template "am-pattern-1.resource.prefix" . }}-analytics-worker
+    deployment: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker
   ports:
     # ports that this service should serve on
     -
