@@ -117,4 +117,7 @@ data:
     allow_methods = ["GET","PUT","POST","DELETE","PATCH","OPTIONS"]
     allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction"]
     allow_credentials = false
+
+    [transport.passthru_https.sender.parameters]
+    HostnameVerifier = "AllowAll"
   {{- end }}
