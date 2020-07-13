@@ -13,7 +13,6 @@
 # limitations under the License.
 
 wso2:
-
   # WSO2 subscription parameters. If you do not have an active subscription, do not provide values for the parameters.
   # If you do not possess an active WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription at (https://wso2.com/free-trial-subscription).
   subscription:
@@ -43,7 +42,6 @@ wso2:
       gateway:
         # Hostname for Gateway profile
         hostname: "gateway.am.wso2.com"
-
       # Hostname for API Manager All In One deployment
       hostname: "am.wso2.com"
 
@@ -51,7 +49,7 @@ wso2:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
       # dockerRegistry: ""
       imageName: "wso2am"
-      imageTag: "3.2.0"
+      imageTag: "3.1.0"
 
       # Indicates whether the container is running.
       livenessProbe:
@@ -93,7 +91,8 @@ wso2:
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
         #dockerRegistry: ""
         imageName: "wso2am-analytics-dashboard"
-        imageTag: "3.2.0"
+        imageTag: "3.1.0"
+        imagePullPolicy: Always
 
         # Number of Dashboard replicas
         replicas: 1
@@ -125,7 +124,6 @@ wso2:
           limits:
             memory: "4Gi"
             cpu: "2000m"
-        imagePullPolicy: Always
 
       worker:
 
@@ -133,7 +131,8 @@ wso2:
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
         #dockerRegistry: ""
         imageName: "wso2am-analytics-worker"
-        imageTag: "3.2.0"
+        imageTag: "3.1.0"
+        imagePullPolicy: Always
 
         # Indicates whether the container is running.
         livenessProbe:
@@ -159,7 +158,6 @@ wso2:
           limits:
             memory: "4Gi"
             cpu: "2000m"
-        imagePullPolicy: Always
 
 kubernetes:
   # Name of Kubernetes service account
