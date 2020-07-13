@@ -21,7 +21,7 @@ spec:
   # label keys and values that must match in order to receive traffic for this service
   clusterIP: None
   selector:
-    deployment: {{ template "am-pattern-1.resource.prefix" . }}-analytics-worker
+    deployment: {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker
   ports:
     # ports that this service should serve on
     -
