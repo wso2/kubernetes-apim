@@ -93,7 +93,7 @@ data:
     password= "$ref{super_admin.password}"
 
     [[apim.analytics.url_group]]
-    analytics_url =["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7612","{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7612"]
+    analytics_url =["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7612","tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7612"]
     analytics_auth_url =["ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7712","ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7712"]
     type = "failover"
 
