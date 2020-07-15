@@ -28,7 +28,6 @@ spec:
     metadata:
       annotations:
         checksum.am.publisher.conf: {{ include (print $.Template.BasePath "/am/publisher/wso2am-pattern-3-am-publisher-conf.yaml") . | sha256sum }}
-        checksum.am.templates.conf: {{ include (print $.Template.BasePath "/am/publisher/wso2am-pattern-3-am-publisher-templates-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher
     spec:
@@ -55,6 +54,7 @@ spec:
           {{- else }}
           image: docker.wso2.com/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
           {{- end }}
+          imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
           livenessProbe:
             exec:
               command:
@@ -82,7 +82,6 @@ spec:
             limits:
               memory: {{ .Values.wso2.deployment.am.resources.limits.memory }}
               cpu: {{ .Values.wso2.deployment.am.resources.limits.cpu }}
-          imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
           ports:
             - containerPort: 9763
               protocol: "TCP"
@@ -95,18 +94,19 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-            - name: SOLR_INDEX_INSTANCE_ID
-              value: "/_system/governance/repository/components/lastaccesstime_wso2am_instance_two"
           securityContext:
             runAsUser: 802
           volumeMounts:
+          - name: wso2am-publisher-local-carbon-database-storage
+            mountPath: /home/wso2carbon/solr/database
           - name: wso2am-publisher-indexed-data-volume
             mountPath: /home/wso2carbon/solr/indexed-data
           - name: wso2am-publisher-conf
             mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
             subPath: deployment.toml
-          - name: wso2am-publisher-templates-conf
-            mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/conf/templates/repository/conf
+          - name: wso2am-publisher-conf-entrypoint
+            mountPath: /home/wso2carbon/docker-entrypoint.sh
+            subPath: docker-entrypoint.sh
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
@@ -116,12 +116,16 @@ spec:
         - name: {{ template "am-pattern-3.resource.prefix" . }}-wso2-private-registry-creds
       {{- end }}
       volumes:
-        - name: wso2am-publisher-indexed-data-volume
-          persistentVolumeClaim:
-            claimName: {{ template "am-pattern-3.resource.prefix" . }}-publisher-2-indexed-data-volume-claim
         - name: wso2am-publisher-conf
           configMap:
             name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-conf
-        - name: wso2am-publisher-templates-conf
+        - name: wso2am-publisher-conf-entrypoint
           configMap:
-            name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-templates-conf
+            name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-conf-entrypoint
+            defaultMode: 0407
+        - name: wso2am-publisher-local-carbon-database-storage
+          persistentVolumeClaim:
+            claimName: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-2-local-carbon-database-volume-claim
+        - name: wso2am-publisher-indexed-data-volume
+          persistentVolumeClaim:
+            claimName: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-2-solr-indexed-data-volume-claim
