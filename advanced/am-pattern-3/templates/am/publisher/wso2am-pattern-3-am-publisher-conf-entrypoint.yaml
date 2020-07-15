@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal-conf-entrypoint
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-conf-entrypoint
   namespace: {{ .Release.Namespace }}
 data:
   docker-entrypoint.sh: |
