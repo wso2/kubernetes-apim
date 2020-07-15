@@ -51,6 +51,7 @@ spec:
           {{- else }}
           image: docker.wso2.com/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}:{{ .Values.wso2.deployment.analytics.dashboard.imageTag }}
           {{- end }}
+          imagePullPolicy: {{ .Values.wso2.deployment.analytics.dashboard.imagePullPolicy }}
           livenessProbe:
             exec:
               command:
@@ -78,7 +79,6 @@ spec:
             limits:
               memory: {{ .Values.wso2.deployment.analytics.dashboard.resources.limits.memory }}
               cpu: {{ .Values.wso2.deployment.analytics.dashboard.resources.limits.cpu }}
-          imagePullPolicy: {{ .Values.wso2.deployment.analytics.dashboard.imagePullPolicy }}
           securityContext:
             runAsUser: 802
           ports:

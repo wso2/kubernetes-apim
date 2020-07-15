@@ -35,12 +35,12 @@ wso2:
       capacity:
         sharedSynapseConfigs: 50M
         sharedExecutionPlans: 20M
+        carbonDatabase: 50M
         solrIndexedData: 50M
 
     am:
       # API Manager Gateway profile specific configurations
       gateway:
-
         # Hostname for Gateway profile
         hostname: "gateway.am.wso2.com"
       # Hostname for API Manager All In One deployment

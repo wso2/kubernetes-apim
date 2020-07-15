@@ -29,7 +29,6 @@ spec:
     metadata:
       annotations:
         checksum.am.conf: {{ include (print $.Template.BasePath "/am/instance-1/wso2am-pattern-1-am-conf.yaml") . | sha256sum }}
-        checksum.am.templates.conf: {{ include (print $.Template.BasePath "/am/wso2am-pattern-1-am-templates-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-1.resource.prefix" . }}-am
         node: {{ template "am-pattern-1.resource.prefix" . }}-am-1
@@ -54,6 +53,7 @@ spec:
           {{- else }}
           image: docker.wso2.com/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
           {{- end }}
+          imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
           livenessProbe:
             exec:
               command:
@@ -81,7 +81,6 @@ spec:
             limits:
               memory: {{ .Values.wso2.deployment.am.resources.limits.memory }}
               cpu: {{ .Values.wso2.deployment.am.resources.limits.cpu }}
-          imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
           securityContext:
             runAsUser: 802
           ports:
@@ -104,21 +103,22 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-            - name: SOLR_INDEX_INSTANCE_ID
-              value: "/_system/governance/repository/components/lastaccesstime_wso2am_instance_one"
           volumeMounts:
             - name: wso2am-executionplans-storage
               mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
             - name: wso2am-synapse-configs-storage
               mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/synapse-configs
+            - name: wso2am-local-carbon-database-storage
+              mountPath: /home/wso2carbon/solr/database
             - name: wso2am-solr-indexed-data-storage
               mountPath: /home/wso2carbon/solr/indexed-data
             - name: wso2am-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+            - name: wso2am-conf-entrypoint
+              mountPath: /home/wso2carbon/docker-entrypoint.sh
+              subPath: docker-entrypoint.sh
             - name: wso2am-event-publishers-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/eventpublishers
-            - name: wso2am-templates-conf
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/conf/templates/repository/conf
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
@@ -134,15 +134,19 @@ spec:
         - name: wso2am-synapse-configs-storage
           persistentVolumeClaim:
             claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-shared-synapse-configs-volume-claim
+        - name: wso2am-local-carbon-database-storage
+          persistentVolumeClaim:
+            claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-1-local-carbon-database-volume-claim
         - name: wso2am-solr-indexed-data-storage
           persistentVolumeClaim:
             claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-1-solr-indexed-data-volume-claim
-        - name: wso2am-templates-conf
-          configMap:
-            name: {{ template "am-pattern-1.resource.prefix" . }}-am-templates-conf
         - name: wso2am-event-publishers-conf
           configMap:
             name: {{ template "am-pattern-1.resource.prefix" . }}-am-event-publishers-conf
         - name: wso2am-conf
           configMap:
             name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-conf
+        - name: wso2am-conf-entrypoint
+          configMap:
+            name: {{ template "am-pattern-1.resource.prefix" . }}-am-conf-entrypoint
+            defaultMode: 0407
