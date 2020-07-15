@@ -45,6 +45,21 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-local-carbon-database-volume-claim
+  namespace : {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.carbonDatabase }}
+  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
   name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-solr-indexed-data-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
@@ -53,6 +68,21 @@ spec:
   resources:
     requests:
       storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.solrIndexedData }}
+  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "am-pattern-1.resource.prefix" . }}-am-2-local-carbon-database-volume-claim
+  namespace : {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.carbonDatabase }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
 ---
