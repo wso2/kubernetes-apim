@@ -51,6 +51,7 @@ spec:
         {{- else }}
         image: docker.wso2.com/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
         {{- end }}
+        imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
         env:
         - name: PROFILE_NAME
           value: api-key-manager
@@ -86,7 +87,6 @@ spec:
           limits:
             memory: {{ .Values.wso2.deployment.am.resources.limits.memory }}
             cpu: {{ .Values.wso2.deployment.am.resources.limits.cpu }}
-        imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
         securityContext:
           runAsUser: 802
         ports:
