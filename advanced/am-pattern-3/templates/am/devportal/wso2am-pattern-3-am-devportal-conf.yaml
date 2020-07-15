@@ -142,7 +142,9 @@ data:
     [transport.https.properties]
     proxyPort = 443
 
+    [database.local]
+    url = "jdbc:h2:/home/wso2carbon/solr/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
+
     [indexing]
     location = "/home/wso2carbon/solr/indexed-data"
-    re_indexing = "$env{SOLR_INDEX_INSTANCE_ID}"
   {{- end }}
