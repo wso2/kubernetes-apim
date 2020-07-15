@@ -35,6 +35,7 @@ wso2:
       capacity:
         sharedSynapseConfigs: 50M
         sharedExecutionPlans: 20M
+        carbonDatabase: 50M
         solrIndexedData: 50M
 
     am:
