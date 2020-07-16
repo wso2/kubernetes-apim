@@ -16,6 +16,12 @@ mysql:
   mysqlUser: wso2carbon
   mysqlPassword: wso2carbon
   fullnameOverride: "wso2am-mysql-db-service"
+  persistence:
+    storageClass: "nfs"
+  livenessProbe:
+    initialDelaySeconds: 120
+  readinessProbe:
+    initialDelaySeconds: 120
   configurationFiles:
     mysql.cnf: |-
       [mysqld]
