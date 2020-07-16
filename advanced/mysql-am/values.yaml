@@ -17,6 +17,12 @@ mysql:
   mysqlUser: wso2carbon
   mysqlPassword: wso2carbon
   fullnameOverride: "wso2am-mysql-db-service"
+  persistence:
+    storageClass: "nfs"
+  livenessProbe:
+    initialDelaySeconds: 120
+  readinessProbe:
+    initialDelaySeconds: 120
   configurationFiles:
     mysql.cnf: |-
       [mysqld]
@@ -43,16 +49,6 @@ mysql:
       GRANT ALL ON WSO2AM_PERMISSIONS_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
       GRANT ALL ON WSO2_CLUSTER_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
       GRANT ALL ON WSO2_PERSISTENCE_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
-
-      USE WSO2AM_STATS_DB;
-
-      CREATE TABLE IF NOT EXISTS AM_USAGE_UPLOADED_FILES (
-      FILE_NAME varchar(255) NOT NULL,
-      FILE_TIMESTAMP TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      FILE_PROCESSED tinyint(1) DEFAULT 0,
-      FILE_CONTENT MEDIUMBLOB DEFAULT NULL,
-      PRIMARY KEY (FILE_NAME, FILE_TIMESTAMP)
-      );
     mysql_apim.sql: |-
       DROP DATABASE IF EXISTS WSO2AM_DB;
       CREATE DATABASE WSO2AM_DB;
