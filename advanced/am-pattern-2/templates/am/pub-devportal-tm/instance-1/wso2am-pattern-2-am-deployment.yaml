@@ -13,33 +13,35 @@
 # limitations under the License.
 
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: {{ template "am-pattern-2.resource.prefix" . }}-am-statefulset
+  name: {{ template "am-pattern-2.resource.prefix" . }}-am-1-deployment
   namespace: {{ .Release.Namespace }}
 spec:
+  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       deployment: {{ template "am-pattern-2.resource.prefix" . }}-am
-  serviceName: {{ template "am-pattern-2.resource.prefix" . }}-am-headless-service
-  replicas: 2
+      node: {{ template "am-pattern-2.resource.prefix" . }}-am-1
   template:
     metadata:
       annotations:
         checksum.am.conf: {{ include (print $.Template.BasePath "/am/pub-devportal-tm/wso2am-pattern-2-am-conf.yaml") . | sha256sum }}
-        checksum.am.templates.conf: {{ include (print $.Template.BasePath "/am/pub-devportal-tm/wso2am-pattern-2-am-templates-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-2.resource.prefix" . }}-am
+        node: {{ template "am-pattern-2.resource.prefix" . }}-am-1
     spec:
       initContainers:
-      {{ if .Values.wso2.deployment.dependencies.mysql }}
+        {{ if .Values.wso2.deployment.dependencies.mysql }}
         - name: init-mysql-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
-      {{ end }}
-        - name: init-am-analytics
+        {{ end }}
+        - name: init-am-analytics-worker
           image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> API Manager Analytics Worker has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       containers:
         - name: wso2am
           {{- if .Values.wso2.deployment.am.dockerRegistry }}
@@ -51,45 +53,34 @@ spec:
           {{- else }}
           image: docker.wso2.com/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
           {{- end }}
-          env:
-            - name: NODE_ID
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: NODE_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: SOLR_INDEX_INSTANCE_ID
-              value: "/_system/governance/repository/components/lastaccesstime_$(NODE_ID)"
+          imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
           livenessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9443
-            initialDelaySeconds: {{ .Values.wso2.deployment.am.pubStoreTM.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.wso2.deployment.am.pubStoreTM.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.wso2.deployment.am.pubDevPortalTM.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.am.pubDevPortalTM.livenessProbe.periodSeconds }}
           readinessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9443
-            initialDelaySeconds: {{ .Values.wso2.deployment.am.pubStoreTM.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.wso2.deployment.am.pubStoreTM.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.wso2.deployment.am.pubDevPortalTM.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.am.pubDevPortalTM.readinessProbe.periodSeconds }}
           lifecycle:
             preStop:
               exec:
                 command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
           resources:
             requests:
-              memory: {{ .Values.wso2.deployment.am.pubStoreTM.resources.requests.memory }}
-              cpu: {{ .Values.wso2.deployment.am.resources.requests.cpu }}
+              memory: {{ .Values.wso2.deployment.am.pubDevPortalTM.resources.requests.memory }}
+              cpu: {{ .Values.wso2.deployment.am.pubDevPortalTM.resources.requests.cpu }}
             limits:
-              memory: {{ .Values.wso2.deployment.am.pubStoreTM.resources.limits.memory }}
-              cpu: {{ .Values.wso2.deployment.am.pubStoreTM.resources.limits.cpu }}
-          imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
+              memory: {{ .Values.wso2.deployment.am.pubDevPortalTM.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.am.pubDevPortalTM.resources.limits.cpu }}
           securityContext:
             runAsUser: 802
           ports:
@@ -103,16 +94,23 @@ spec:
               protocol: "TCP"
             - containerPort: 5672
               protocol: "TCP"
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           volumeMounts:
             - name: wso2am-executionplans-storage
               mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
+            - name: wso2am-local-carbon-database-storage
+              mountPath: /home/wso2carbon/solr/database
             - name: wso2am-solr-indexed-data-storage
               mountPath: /home/wso2carbon/solr/indexed-data
             - name: wso2am-conf
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
-              subPath: deployment.toml
-            - name: wso2am-templates-conf
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/resources/conf/templates/repository/conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+            - name: wso2am-conf-entrypoint
+              mountPath: /home/wso2carbon/docker-entrypoint.sh
+              subPath: docker-entrypoint.sh
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
@@ -125,19 +123,16 @@ spec:
         - name: wso2am-executionplans-storage
           persistentVolumeClaim:
             claimName: {{ template "am-pattern-2.resource.prefix" . }}-am-shared-executionplans-volume-claim
+        - name: wso2am-local-carbon-database-storage
+          persistentVolumeClaim:
+            claimName: {{ template "am-pattern-2.resource.prefix" . }}-am-1-local-carbon-database-volume-claim
+        - name: wso2am-solr-indexed-data-storage
+          persistentVolumeClaim:
+            claimName: {{ template "am-pattern-2.resource.prefix" . }}-am-1-solr-indexed-data-volume-claim
         - name: wso2am-conf
           configMap:
             name: {{ template "am-pattern-2.resource.prefix" . }}-am-conf
-        - name: wso2am-templates-conf
+        - name: wso2am-conf-entrypoint
           configMap:
-            name: {{ template "am-pattern-2.resource.prefix" . }}-am-templates-conf
-  volumeClaimTemplates:
-    - metadata:
-        name: wso2am-solr-indexed-data-storage
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.solrIndexedData }}
-        storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+            name: {{ template "am-pattern-2.resource.prefix" . }}-am-conf-entrypoint
+            defaultMode: 0407
