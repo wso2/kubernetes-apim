@@ -13,14 +13,23 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: Service
 metadata:
-  name: {{ template "am-pattern-2.resource.prefix" . }}-am-shared-executionplans-volume-claim
+  name: {{ template "am-pattern-2.resource.prefix" . }}-am-1-service
   namespace : {{ .Release.Namespace }}
 spec:
-  accessModes:
-  - ReadWriteMany
-  resources:
-    requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.sharedExecutionPlans }}
-  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    deployment: {{ template "am-pattern-2.resource.prefix" . }}-am
+    node: {{ template "am-pattern-2.resource.prefix" . }}-am-1
+  ports:
+    # ports that this service should serve on
+    - name: binary
+      protocol: TCP
+      port: 9611
+    - name: binary-secure
+      protocol: TCP
+      port: 9711
+    - name: jms-tcp
+      protocol: TCP
+      port: 5672
