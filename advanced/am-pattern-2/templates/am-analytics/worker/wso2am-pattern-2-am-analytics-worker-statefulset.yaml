@@ -78,11 +78,11 @@ spec:
                 command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
           resources:
             requests:
-              memory: {{ .Values.wso2.deployment.analytics.resources.requests.memory }}
-              cpu: {{ .Values.wso2.deployment.analytics.resources.requests.cpu }}
+              memory: {{ .Values.wso2.deployment.analytics.worker.resources.requests.memory }}
+              cpu: {{ .Values.wso2.deployment.analytics.worker.resources.requests.cpu }}
             limits:
-              memory: {{ .Values.wso2.deployment.analytics.resources.limits.memory }}
-              cpu: {{ .Values.wso2.deployment.analytics.resources.limits.cpu }}
+              memory: {{ .Values.wso2.deployment.analytics.worker.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.analytics.worker.resources.limits.cpu }}
           imagePullPolicy: {{ .Values.wso2.deployment.analytics.worker.imagePullPolicy }}
           securityContext:
             runAsUser: 802
