@@ -11,7 +11,7 @@ Please follow these steps to access API Manager Publisher, DevPortal consoles an
   API Manager Publisher-DevPortal
 
   - NAME: Metadata name of the Kubernetes Ingress resource (defaults to {{ template "am-pattern-2.resource.prefix" . }}-am-ingress)
-  - HOSTS: Hostname of the WSO2 API Manager service ({{ .Values.wso2.deployment.am.pubStoreTM.hostname }})
+  - HOSTS: Hostname of the WSO2 API Manager service ({{ .Values.wso2.deployment.am.pubDevPortalTM.hostname }})
   - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager service to outside of the Kubernetes environment
   - PORTS: Externally exposed service ports of the API Manager service
 
@@ -37,12 +37,12 @@ Please follow these steps to access API Manager Publisher, DevPortal consoles an
    If the defined hostnames are not backed by a DNS service, for the purpose of evaluation you may add an entry mapping the
    hostnames and the external IP in the `/etc/hosts` file at the client-side.
 
-   <EXTERNAL-IP> {{ .Values.wso2.deployment.am.pubStoreTM.hostname }} {{ .Values.wso2.deployment.am.gateway.hostname }} {{ .Values.wso2.deployment.analytics.dashboard.hostname }}
+   <EXTERNAL-IP> {{ .Values.wso2.deployment.am.pubDevPortalTM.hostname }} {{ .Values.wso2.deployment.am.gateway.hostname }} {{ .Values.wso2.deployment.analytics.dashboard.hostname }}
 
 3. Navigate to the consoles in your browser of choice.
 
-   API Manager Publisher: https://{{ .Values.wso2.deployment.am.pubStoreTM.hostname }}/publisher
-   API Manager DevPortal: https://{{ .Values.wso2.deployment.am.pubStoreTM.hostname }}/devportal
+   API Manager Publisher: https://{{ .Values.wso2.deployment.am.pubDevPortalTM.hostname }}/publisher
+   API Manager DevPortal: https://{{ .Values.wso2.deployment.am.pubDevPortalTM.hostname }}/devportal
    API Manager Analytics Dashboard: https://{{ .Values.wso2.deployment.analytics.dashboard.hostname }}/analytics-dashboard
 
 Please refer the official documentation at https://apim.docs.wso2.com/en/latest/ for additional information on WSO2 API Manager.

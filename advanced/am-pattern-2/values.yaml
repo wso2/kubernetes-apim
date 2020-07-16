@@ -13,7 +13,6 @@
 # limitations under the License.
 
 wso2:
-
   # WSO2 subscription parameters. If you do not have an active subscription, do not provide values for the parameters.
   # If you do not possess an active WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription at (https://wso2.com/free-trial-subscription).
   subscription:
@@ -36,6 +35,7 @@ wso2:
       capacity:
         sharedSynapseConfigs: 50M
         sharedExecutionPlans: 20M
+        carbonDatabase: 50M
         solrIndexedData: 50M
 
     analytics:
@@ -46,6 +46,8 @@ wso2:
         #dockerRegistry: ""
         imageName: "wso2am-analytics-dashboard"
         imageTag: "3.1.0"
+        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+        imagePullPolicy: Always
         # Number of deployment replicas
         replicas: 1
         strategy:
@@ -67,7 +69,6 @@ wso2:
           # How often (in seconds) to perform the probe.
           periodSeconds: 10
         # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
-        imagePullPolicy: Always
 #        # If the deployment configurations for the Dashboard profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml),
 #        # add the customized configuration file under (wso2 -> deployment -> analytics -> dashboard -> config -> deployment.yaml)
 #        config:
@@ -91,7 +92,8 @@ wso2:
         #dockerRegistry: ""
         imageName: "wso2am-analytics-worker"
         imageTag: "3.1.0"
-
+        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+        imagePullPolicy: Always
         # Indicates whether the container is running.
         livenessProbe:
           # Number of seconds after the container has started before liveness probes are initiated.
@@ -104,8 +106,6 @@ wso2:
           initialDelaySeconds: 20
           # How often (in seconds) to perform the probe.
           periodSeconds: 10
-        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
-        imagePullPolicy: Always
 #        # If the deployment configurations for the Worker profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/worker/deployment.yaml),
 #        # add the customized configuration file under (wso2 -> deployment -> analytics -> worker -> config -> deployment.yaml)
 #        config:
@@ -129,7 +129,8 @@ wso2:
       #dockerRegistry: ""
       imageName: "wso2am"
       imageTag: "3.1.0"
-
+      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+      imagePullPolicy: Always
       resources:
         # These are the resource recommendations for running WSO2 API Management product profiles with profile optimization.
         requests:
@@ -138,9 +139,6 @@ wso2:
         limits:
           memory: "2Gi"
           cpu: "2000m"
-      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
-      imagePullPolicy: Always
-
       # API Manager's Gateway specific configurations
       gateway:
         # Hostname for Gateway profile
@@ -197,7 +195,7 @@ wso2:
 #          deployment.toml: |-
 #            # deployment configurations for the Key Manager profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
 
-      pubStoreTM:
+      pubDevPortalTM:
         # Hostname for Publisher-DevPortal deployment
         hostname: "am.wso2.com"
         livenessProbe:
@@ -212,7 +210,7 @@ wso2:
           # How often (in seconds) to perform the probe.
           periodSeconds: 10
         # If the deployment configurations for the Publisher-Store-TM of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
-        # add the customized configuration file under (wso2 -> deployment -> am -> pubStoreTM -> instanceTwo -> config -> deployment.toml)
+        # add the customized configuration file under (wso2 -> deployment -> am -> pubDevPortalTM -> instanceTwo -> config -> deployment.toml)
 #        config: ""
 #          deployment.toml: |-
 #            # deployment configurations for the Key Manager profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
