@@ -31,7 +31,7 @@ wso2:
       # Must refer to an appropriate Kubernetes Storage Class (https://kubernetes.io/docs/concepts/storage/storage-classes/)
       # "nfs" (default) - Using the official Kubernetes NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner).
       # This provisioner is installed by default, with this Helm Chart (wso2 -> deployment -> dependencies -> nfsServerProvisioner).
-      storageClass: "nfs"
+      storageClass: &storageClass "nfs"
       capacity:
         sharedSynapseConfigs: 50M
         sharedExecutionPlans: 20M
@@ -227,3 +227,8 @@ wso2:
 kubernetes:
   # Name of Kubernetes service account
   serviceAccount: "wso2am-pattern-2-svc-account"
+
+mysql-am:
+  mysql:
+    persistence:
+      storageClass: *storageClass
