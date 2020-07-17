@@ -96,8 +96,7 @@ spec:
             protocol: "TCP"
         volumeMounts:
         - name: wso2am-km-conf
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
-          subPath: deployment.toml
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
