@@ -22,7 +22,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.sharedExecutionPlans }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.executionPlans }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
 ---
@@ -37,9 +37,10 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.sharedSynapseConfigs }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.synapseConfigs }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
+  {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
 ---
 
 apiVersion: v1
@@ -52,7 +53,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.carbonDatabase }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.carbonDatabase }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
 ---
@@ -67,7 +68,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.solrIndexedData }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.solrIndexedData }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
 ---
@@ -82,7 +83,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.carbonDatabase }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.carbonDatabase }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
 ---
@@ -97,5 +98,6 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.solrIndexedData }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.solrIndexedData }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+  {{ end }}
