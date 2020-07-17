@@ -275,12 +275,17 @@ data:
     [service_provider]
     sp_name_regex = "^[\\sa-zA-Z0-9._-]*$"
 
+    {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
     [database.local]
     url = "jdbc:h2:/home/wso2carbon/solr/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
 
     [indexing]
     location = "/home/wso2carbon/solr/indexed-data"
-  {{- end }}
+    {{ else }}
+    [database.local]
+    url = "jdbc:h2:./repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
+    {{ end }}
+  {{ end }}
 
   jndi2.properties: |-
     connectionfactory.TopicConnectionFactory = amqp://admin:admin@clientid/carbon?brokerlist='tcp://{{ template "am-pattern-1.resource.prefix" . }}-am-2-service:5672'
