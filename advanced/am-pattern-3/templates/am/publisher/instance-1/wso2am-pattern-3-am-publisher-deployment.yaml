@@ -97,16 +97,17 @@ spec:
           securityContext:
             runAsUser: 802
           volumeMounts:
+          - name: wso2am-publisher-conf
+            mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+          {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
           - name: wso2am-publisher-local-carbon-database-storage
             mountPath: /home/wso2carbon/solr/database
           - name: wso2am-publisher-indexed-data-volume
             mountPath: /home/wso2carbon/solr/indexed-data
-          - name: wso2am-publisher-conf
-            mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
-            subPath: deployment.toml
           - name: wso2am-publisher-conf-entrypoint
             mountPath: /home/wso2carbon/docker-entrypoint.sh
             subPath: docker-entrypoint.sh
+          {{ end }}
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
@@ -119,6 +120,7 @@ spec:
         - name: wso2am-publisher-conf
           configMap:
             name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-conf
+        {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
         - name: wso2am-publisher-conf-entrypoint
           configMap:
             name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-conf-entrypoint
@@ -129,3 +131,4 @@ spec:
         - name: wso2am-publisher-indexed-data-volume
           persistentVolumeClaim:
             claimName: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-1-solr-indexed-data-volume-claim
+        {{ end }}
