@@ -108,17 +108,19 @@ spec:
               mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
             - name: wso2am-synapse-configs-storage
               mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/synapse-configs
+            - name: wso2am-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+            - name: wso2am-event-publishers-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/eventpublishers
+            {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
             - name: wso2am-local-carbon-database-storage
               mountPath: /home/wso2carbon/solr/database
             - name: wso2am-solr-indexed-data-storage
               mountPath: /home/wso2carbon/solr/indexed-data
-            - name: wso2am-conf
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
             - name: wso2am-conf-entrypoint
               mountPath: /home/wso2carbon/docker-entrypoint.sh
               subPath: docker-entrypoint.sh
-            - name: wso2am-event-publishers-conf
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/eventpublishers
+            {{ end }}
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
@@ -134,19 +136,21 @@ spec:
         - name: wso2am-synapse-configs-storage
           persistentVolumeClaim:
             claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-shared-synapse-configs-volume-claim
-        - name: wso2am-local-carbon-database-storage
-          persistentVolumeClaim:
-            claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-2-local-carbon-database-volume-claim
-        - name: wso2am-solr-indexed-data-storage
-          persistentVolumeClaim:
-            claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-2-solr-indexed-data-volume-claim
         - name: wso2am-event-publishers-conf
           configMap:
             name: {{ template "am-pattern-1.resource.prefix" . }}-am-event-publishers-conf
         - name: wso2am-conf
           configMap:
             name: {{ template "am-pattern-1.resource.prefix" . }}-am-2-conf
+        {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
+        - name: wso2am-local-carbon-database-storage
+          persistentVolumeClaim:
+            claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-2-local-carbon-database-volume-claim
+        - name: wso2am-solr-indexed-data-storage
+          persistentVolumeClaim:
+            claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-2-solr-indexed-data-volume-claim
         - name: wso2am-conf-entrypoint
           configMap:
             name: {{ template "am-pattern-1.resource.prefix" . }}-am-conf-entrypoint
             defaultMode: 0407
+        {{ end }}
