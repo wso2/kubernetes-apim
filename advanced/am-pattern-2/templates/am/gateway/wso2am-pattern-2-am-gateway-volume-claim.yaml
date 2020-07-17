@@ -22,5 +22,5 @@ spec:
   - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.sharedSynapseConfigs }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.synapseConfigs }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
