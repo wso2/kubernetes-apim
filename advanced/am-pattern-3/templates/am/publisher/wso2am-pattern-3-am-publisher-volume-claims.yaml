@@ -1,3 +1,5 @@
+  {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
+
 # Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,35 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ template "am-pattern-3.resource.prefix" . }}-publisher-1-indexed-data-volume-claim
-  namespace : {{ .Release.Namespace }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.solrIndexedData }}
-  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ template "am-pattern-3.resource.prefix" . }}-publisher-2-indexed-data-volume-claim
-  namespace : {{ .Release.Namespace }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.solrIndexedData }}
-  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
-
----
 
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -52,7 +25,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.carbonDatabase }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.carbonDatabase }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
 ---
@@ -67,7 +40,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.solrIndexedData }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.solrIndexedData }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
 ---
@@ -82,7 +55,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.carbonDatabase }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.carbonDatabase }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
 ---
@@ -97,5 +70,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.capacity.solrIndexedData }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.solrIndexedData }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+
+  {{ end }}
