@@ -1,15 +1,18 @@
 # Helm Chart for deployment of WSO2 API Manager with WSO2 API Manager Analytics
 
-Resources for building a Helm Chart for deployment of [All-In-One WSO2 API Manager with WSO2 API Manager Analytics
+Resources for building a Helm chart for deployment of [All-In-One WSO2 API Manager with WSO2 API Manager Analytics
 support](https://apim.docs.wso2.com/en/latest/install-and-setup/setup/deployment-patterns/#pattern-1-single-node-all-in-one-deployment).
 
-![WSO2 API Manager pattern 1 deployment](pattern-1.png)
+![WSO2 API Manager pattern 1 deployment](https://github.com/wso2/kubernetes-apim/blob/v3.1.0.3/advanced/am-pattern-1/pattern-1.png)
+
+For advanced details on the deployment pattern, please refer to the official
+[documentation](https://apim.docs.wso2.com/en/latest/install-and-setup/setup/single-node/configuring-an-active-active-deployment/).
 
 ## Contents
 
 * [Prerequisites](#prerequisites)
 * [Quick Start Guide](#quick-start-guide)
-
+* [Configuration](#configuration)
 
 ## Prerequisites
 
@@ -39,118 +42,144 @@ support](https://apim.docs.wso2.com/en/latest/install-and-setup/setup/deployment
 
 ## Quick Start Guide
 
-### Install Chart From [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2)
+### 1. Install the Helm Chart
 
-##### 1. Deploy Helm chart for WSO2 APIM Pattern 1 deployment
-
-[Option 1] Deploy using Docker images from DockerHub.
-
-```
-helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-2 --namespace <NAMESPACE>
-```
-
-[Option 2] Deploy WSO2  API Manager using Docker images from WSO2 Private Docker Registry.
-
-```
-helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-2 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
-```
+You can install the relevant Helm chart either from [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2) or by source.
 
 **Note:**
 
 * `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed.
 
-##### 2. Access Management Console.
+#### Install Chart From [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2)
+
+ Helm version 2
+
+ ```
+ helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-3 --namespace <NAMESPACE>
+ ```
+
+ Helm version 3
+
+ - Create the Kubernetes Namespace.
  
-Default deployment will expose `<RELEASE_NAME>` host (to expose Administrative services and Management Console).
+    ```
+    kubectl create ns <NAMESPACE>
+    ```
+
+ - Deploy the Kubernetes resources using the Helm Chart
  
-To access the console in the environment,
- 
- a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
-```
- kubectl get ing -n <NAMESPACE>
-```
-  Output:
-```
-NAME                                               HOSTS                                ADDRESS          PORTS      AGE
-wso2am-pattern-1-am-gateway-ingress               <RELEASE_NAME>-gateway                <EXTERNAL-IP>    80, 443    7m
-wso2am-pattern-1-am-ingress                       <RELEASE_NAME>-am                     <EXTERNAL-IP>    80, 443    7m
-wso2am-pattern-1-am-analytics-dashboard-ingress   <RELEASE_NAME>-analytics-dashboard    <EXTERNAL-IP>    80, 443    7m
-```
-b. Add the above hosts as entries in `/etc/hosts` file as follows:
+    ```
+    helm install <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-3 --namespace <NAMESPACE>
+    ```
+
+The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
+
+If you are using WSO2 product Docker images available from WSO2 Private Docker Registry,
+please provide your WSO2 Subscription credentials via input values (using `--set` argument). 
+
+Please see the following example.
 
 ```
-  <EXTERNAL-IP> <RELEASE_NAME>-am
-  <EXTERNAL-IP> <RELEASE_NAME>-gateway
-  <EXTERNAL-IP> <RELEASE_NAME>-analytics-dashboard
+ helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-3 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
-c. Try navigating to `https://<RELEASE_NAME>-am/carbon`, `https://<RELEASE_NAME>-am/publisher` and `https://<RELEASE_NAME>-am/devportal` from your favorite browser.
-
-### Install Chart From Source
+#### Install Chart From Source
 
 >In the context of this document, <br>
 >* `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-apim`](https://github.com/wso2/kubernetes-apim/)
 Git repository. <br>
 >* `HELM_HOME` will refer to `<KUBERNETES_HOME>/advanced`. <br>
 
-##### 1. Clone the Helm Resources for WSO2 API Manager Git repository.
+##### Clone the Helm Resources for WSO2 API Manager Git repository.
 
 ```
 git clone https://github.com/wso2/kubernetes-apim.git
 ```
 
-##### 2. Deploy WSO2 API Manager pattern-1.
+##### Deploy Helm chart for WSO2 API Manager Pattern 1 deployment.
 
-```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --namespace <NAMESPACE>
-```
+ Helm version 2
 
-`NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed
+ ```
+ helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --version 3.1.0-3 --namespace <NAMESPACE>
+ ```
 
-[Option 1] Deploy using Docker images from DockerHub.
+ Helm version 3
 
-```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --namespace <NAMESPACE>
-```
-[Option 2] Deploy WSO2 API Manager using Docker images from WSO2 Private Docker Registry.
-
-```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
-```
-
-**Note:**
-
-* `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed.
-
-##### 3. Access Management Console.
-
-Default deployment will expose `<RELEASE_NAME>` host (to expose Administrative services and Management Console).
+ - Create the Kubernetes Namespace to which you desire to deploy the Kubernetes resources.
  
-To access the console in the environment,
+    ```
+    kubectl create ns <NAMESPACE>
+    ```
+
+ - Deploy the Kubernetes resources using the Helm Chart
  
- a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
- 
-```
- kubectl get ing -n <NAMESPACE>
-```
+    ```
+    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --version 3.1.0-3 --namespace <NAMESPACE> --dependency-update
+    ```
 
-  Output:
+The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
 
-```
-NAME                                               HOSTS                                ADDRESS          PORTS      AGE
-wso2am-pattern-1-am-gateway-ingress               <RELEASE_NAME>-gateway                <EXTERNAL-IP>    80, 443    7m
-wso2am-pattern-1-am-ingress                       <RELEASE_NAME>-am                     <EXTERNAL-IP>    80, 443    7m
-wso2am-pattern-1-am-analytics-dashboard-ingress   <RELEASE_NAME>-analytics-dashboard    <EXTERNAL-IP>    80, 443    7m
-```
-b. Add the above hosts as entries in `/etc/hosts` file as follows:
+If you are using WSO2 product Docker images available from WSO2 Private Docker Registry,
+please provide your WSO2 Subscription credentials via input values (using `--set` argument). 
+
+Please see the following example.
 
 ```
-  <EXTERNAL-IP> <RELEASE_NAME>-am
-  <EXTERNAL-IP> <RELEASE_NAME>-gateway
-  <EXTERNAL-IP> <RELEASE_NAME>-analytics-dashboard
+ helm install --name <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --version 3.1.0-3 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
-c. Try navigating to `https://<RELEASE_NAME>-am/carbon`, `https://<RELEASE_NAME>-am/publisher` and `https://<RELEASE_NAME>-am/devportal` from your favorite browser.
+### 2. Obtain the external IP
+
+Obtain the external IP (`EXTERNAL-IP`) of the API Manager Ingress resources, by listing down the Kubernetes Ingresses.
+
+```  
+kubectl get ing -n <NAMESPACE>
+```
+
+The output under the relevant column stands for the following.
+
+API Manager Publisher-DevPortal
+
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-1-am-ingress`)
+- HOSTS: Hostname of the WSO2 API Manager service (`<wso2.deployment.am.hostname>`)
+- ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager service to outside of the Kubernetes environment
+- PORTS: Externally exposed service ports of the API Manager service
+
+API Manager Gateway
+
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-1-am-gateway-ingress`)
+- HOSTS: Hostname of the WSO2 API Manager's Gateway service (`<wso2.deployment.am.gateway.hostname>`)
+- ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Gateway service to outside of the Kubernetes environment
+- PORTS: Externally exposed service ports of the API Manager' Gateway service
+
+API Manager Analytics Dashboard
+
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-1-am-analytics-dashboard-ingress`)
+- HOSTS: Hostname of the WSO2 API Manager Analytics Dashboard service (`<.wso2.deployment.analytics.dashboard.hostname>`)
+- ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager Analytics Dashboard service to outside of the Kubernetes environment
+- PORTS: Externally exposed service ports of the API Manager Analytics Dashboard service
+
+### 3. Add a DNS record mapping the hostnames and the external IP
+
+If the defined hostnames (in the previous step) are backed by a DNS service, add a DNS record mapping the hostnames and
+the external IP (`EXTERNAL-IP`) in the relevant DNS service.
+
+If the defined hostnames are not backed by a DNS service, for the purpose of evaluation you may add an entry mapping the
+hostnames and the external IP in the `/etc/hosts` file at the client-side.
+
+```
+<EXTERNAL-IP> <wso2.deployment.am.hostname> <wso2.deployment.am.gateway.hostname> <wso2.deployment.analytics.dashboard.hostname>
+```
+
+### 4. Access Management Consoles
+
+- API Manager Publisher: `https://<wso2.deployment.am.hostname>/publisher`
+
+- API Manager DevPortal: `https://<wso2.deployment.am.hostname>/devportal`
+
+- API Manager Analytics Dashboard: `https://<wso2.deployment.analytics.dashboard.hostname>/analytics-dashboard`
+
 
 ## Configuration
 
@@ -160,8 +189,8 @@ The following tables lists the configurable parameters of the chart and their de
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.subscription.username`                                                | Your WSO2 Subscription username                                                           | ""                          |
-| `wso2.subscription.password`                                                | Your WSO2 Subscription password                                                           | ""                          |
+| `wso2.subscription.username`                                                | Your WSO2 Subscription username                                                           | -                           |
+| `wso2.subscription.password`                                                | Your WSO2 Subscription password                                                           | -                           |
 
 If you do not have an active WSO2 subscription, do not change the parameters `wso2.subscription.username` and `wso2.subscription.password`. 
 
@@ -172,29 +201,36 @@ If you do not have an active WSO2 subscription, do not change the parameters `ws
 | `wso2.deployment.dependencies.mysql`                                        | Enable the deployment and usage of WSO2 API Management MySQL based Helm Chart             | true                        |
 | `wso2.deployment.dependencies.nfsProvisioner`                               | Enable the deployment and usage of NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner) | true |
 
-###### Persistent Runtime Artifact Configurations (applicable only when `wso2.deployment.dependencies.nfsProvisioner` is disabled)
+###### Persistent Runtime Artifact Configurations
 
-| Parameter                                                                   | Description                                                                               | Default Value               |
-|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.persistentRuntimeArtifacts.storageClass`                    | Appropriate Kubernetes Storage Class                                                                    | nfs                           |
+| Parameter                                                                                   | Description                                                                               | Default Value               |
+|---------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
+| `wso2.deployment.persistentRuntimeArtifacts.storageClass`                                   | Appropriate Kubernetes Storage Class                                                      | `nfs`                       |
+| `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.executionPlans`        | Capacity for execution plans shared between the Traffic Manager profile instances         | 20M                         |
+| `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.synapseConfigs`        | Capacity for synapse artifacts of APIs shared between the Gateway profile instances       | 50M                         |
+| `wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled`                     | Indicates if persistence of the runtime artifacts for Apache Solr-based indexing is enabled  | false                    |
+| `wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.carbonDatabase`     | Capacity for persisting the H2 based local Carbon database file                           | 50M                         |
+| `wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.solrIndexedData`    | Capacity for persisting the Apache Solr indexed data                                      | 50M                         |
 
 ###### API Manager Server Configurations
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
+| `wso2.deployment.am.hostname`                                               | Hostname for API Manager Publisher, DevPortal and Carbon Management Console               | `am.wso2.com`               |
+| `wso2.deployment.am.gateway.hostname`                                       | Hostname for API Manager Gateway                                                          | `gateway.am.wso2.com`       |
 | `wso2.deployment.am.dockerRegistry`                                         | Registry location of the Docker image to be used to create API Manager instances          | -                           |
-| `wso2.deployment.am.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | wso2am                      |
-| `wso2.deployment.am.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 3.0.0                       |
-| `wso2.deployment.am.minReadySeconds`                                        | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentspec-v1-apps)| 240        |
-| `wso2.deployment.am.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for API Manager node                                | 240                         |
+| `wso2.deployment.am.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | `wso2am`                    |
+| `wso2.deployment.am.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 3.1.0                       |
+| `wso2.deployment.am.imagePullPolicy`                                        | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
+| `wso2.deployment.am.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for API Manager node                                | 180                         |
 | `wso2.deployment.am.livenessProbe.periodSeconds`                            | Period of the live-ness probe for API Manager node                                        | 10                          |
-| `wso2.deployment.am.readinessProbe.initialDelaySeconds`                     | Initial delay for the readiness probe for API Manager node                                | 240                         |
+| `wso2.deployment.am.readinessProbe.initialDelaySeconds`                     | Initial delay for the readiness probe for API Manager node                                | 180                         |
 | `wso2.deployment.am.readinessProbe.periodSeconds`                           | Period of the readiness probe for API Manager node                                        | 10                          |
 | `wso2.deployment.am.resources.requests.memory`                              | The minimum amount of memory that should be allocated for a Pod                           | 2Gi                         |
 | `wso2.deployment.am.resources.requests.cpu`                                 | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                       |
 | `wso2.deployment.am.resources.limits.memory`                                | The maximum amount of memory that should be allocated for a Pod                           | 3Gi                         |
 | `wso2.deployment.am.resources.limits.cpu`                                   | The maximum amount of CPU that should be allocated for a Pod                              | 3000m                       |
-| `wso2.deployment.am.imagePullPolicy`                                        | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | Always                      |
+| `wso2.deployment.am.config`                                                 | Custom deployment configuration file (`<WSO2AM>/repository/conf/deployment.toml`)         | -                           |
 
 **Note**: The above mentioned default, minimum resource amounts for running WSO2 API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/).
 
@@ -202,11 +238,12 @@ If you do not have an active WSO2 subscription, do not change the parameters `ws
 
 | Parameter                                                                     | Description                                                                                                      | Default Value               |
 |-------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------|
+| `wso2.deployment.analytics.dashboard.hostname`                                | Hostname for API Manager Analytics Dashboard                                                                     | `analytics.am.wso2.com`     |
 | `wso2.deployment.analytics.dashboard.dockerRegistry`                          | Registry location of the Docker image to be used to create an API Manager Analytics instance                     | -                           |
-| `wso2.deployment.analytics.dashboard.imageName`                               | Name of the Docker image to be used to create an API Manager Analytics instance                                  | wso2am-analytics-dashboard     |
-| `wso2.deployment.analytics.dashboard.imageTag`                                | Tag of the image used to create an API Manager Analytics instance                                                | 3.0.0                       |
+| `wso2.deployment.analytics.dashboard.imageName`                               | Name of the Docker image to be used to create an API Manager Analytics instance                                  | `wso2am-analytics-dashboard`    |
+| `wso2.deployment.analytics.dashboard.imageTag`                                | Tag of the image used to create an API Manager Analytics instance                                                | 3.1.0                       |
+| `wso2.deployment.analytics.dashboard.imagePullPolicy`                         | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)                            | `Always`                    |
 | `wso2.deployment.analytics.dashboard.replicas`                                | Number of replicas of API Manager Analytics to be started                                                        | 1                           |
-| `wso2.deployment.analytics.dashboard.minReadySeconds`                         | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentspec-v1-apps)      |  30                         |
 | `wso2.deployment.analytics.dashboard.strategy.rollingUpdate.maxSurge`         | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentstrategy-v1-apps)  | 1                           |
 | `wso2.deployment.analytics.dashboard.strategy.rollingUpdate.maxUnavailable`   | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentstrategy-v1-apps)  | 0                           |
 | `wso2.deployment.analytics.dashboard.livenessProbe.initialDelaySeconds`       | Initial delay for the live-ness probe for API Manager Analytics node                                             | 20                          |
@@ -217,19 +254,16 @@ If you do not have an active WSO2 subscription, do not change the parameters `ws
 | `wso2.deployment.analytics.dashboard.resources.requests.cpu`                  | The minimum amount of CPU that should be allocated for a Pod                                                     | 2000m                       |
 | `wso2.deployment.analytics.dashboard.resources.limits.memory`                 | The maximum amount of memory that should be allocated for a Pod                                                  | 4Gi                         |
 | `wso2.deployment.analytics.dashboard.resources.limits.cpu`                    | The maximum amount of CPU that should be allocated for a Pod                                                     | 2000m                       |
-| `wso2.deployment.analytics.dashboard.imagePullPolicy`                         | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)                            | Always                      |
+| `wso2.deployment.analytics.dashboard.config`                                  | Custom deployment configuration file (`<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml`)                       | -                           |
 
 ###### Analytics Worker Runtime Configurations
 
 | Parameter                                                                  | Description                                                                                                         | Default Value               |
 |----------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.deployment.analytics.worker.dockerRegistry`                          | Registry location of the Docker image to be used to create an API Manager Analytics instance                        | -                           |
-| `wso2.deployment.analytics.worker.imageName`                               | Name of the Docker image to be used to create an API Manager Analytics instance                                     | wso2am-analytics-worker     |
-| `wso2.deployment.analytics.worker.imageTag`                                | Tag of the image used to create an API Manager Analytics instance                                                   | 3.0.0                       |
-| `wso2.deployment.analytics.worker.replicas`                                | Number of replicas of API Manager Analytics to be started                                                           | 1                           |
-| `wso2.deployment.analytics.worker.minReadySeconds`                         | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentspec-v1-apps)         | 30                          |
-| `wso2.deployment.analytics.worker.strategy.rollingUpdate.maxSurge`         | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentstrategy-v1-apps)     | 1                           |
-| `wso2.deployment.analytics.worker.strategy.rollingUpdate.maxUnavailable`   | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentstrategy-v1-apps)     | 0                           |
+| `wso2.deployment.analytics.worker.imageName`                               | Name of the Docker image to be used to create an API Manager Analytics instance                                     | `wso2am-analytics-worker`   |
+| `wso2.deployment.analytics.worker.imageTag`                                | Tag of the image used to create an API Manager Analytics instance                                                   | 3.1.0                       |
+| `wso2.deployment.analytics.worker.imagePullPolicy`                         | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)                               | `Always`                    |
 | `wso2.deployment.analytics.worker.livenessProbe.initialDelaySeconds`       | Initial delay for the live-ness probe for API Manager Analytics node                                                | 20                          |
 | `wso2.deployment.analytics.worker.livenessProbe.periodSeconds`             | Period of the live-ness probe for API Manager Analytics node                                                        | 10                          |
 | `wso2.deployment.analytics.worker.readinessProbe.initialDelaySeconds`      | Initial delay for the readiness probe for API Manager Analytics node                                                | 20                          |
@@ -238,10 +272,9 @@ If you do not have an active WSO2 subscription, do not change the parameters `ws
 | `wso2.deployment.analytics.worker.resources.requests.cpu`                  | The minimum amount of CPU that should be allocated for a Pod                                                        | 2000m                       |
 | `wso2.deployment.analytics.worker.resources.limits.memory`                 | The maximum amount of memory that should be allocated for a Pod                                                     | 4Gi                         |
 | `wso2.deployment.analytics.worker.resources.limits.cpu`                    | The maximum amount of CPU that should be allocated for a Pod                                                        | 2000m                       |
-| `wso2.deployment.analytics.worker.imagePullPolicy`                         | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)                               | Always                      |
 
 ###### Kubernetes Specific Configurations
 
 | Parameter                                                     | Description                                                                               | Default Value                   |
 |---------------------------------------------------------------|-------------------------------------------------------------------------------------------|---------------------------------|
-| `kubernetes.serviceAccount`                                   | Name of the Kubernetes Service Account to which the Pods are to be bound                  | wso2am-pattern-2-svc-account    |
+| `kubernetes.serviceAccount`                                   | Name of the Kubernetes Service Account to which the Pods are to be bound                  | `wso2am-pattern-1-svc-account`  |
