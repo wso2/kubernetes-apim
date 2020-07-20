@@ -199,7 +199,7 @@ The following tables lists the configurable parameters of the chart and their de
 | `wso2.subscription.username`                                                | Your WSO2 Subscription username                                                           | -                           |
 | `wso2.subscription.password`                                                | Your WSO2 Subscription password                                                           | -                           |
 
-If you do not have an active WSO2 subscription, do not change the parameters `wso2.subscription.username` and `wso2.subscription.password`. 
+If you do not have an active WSO2 subscription, **do not change** the parameters `wso2.subscription.username` and `wso2.subscription.password`. 
 
 ###### Chart Dependencies
 
