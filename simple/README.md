@@ -3,11 +3,12 @@
 ![WSO2 API Manager Deployment](apim_simple.png)
 
 ## Contents
-* Prerequisites
 
-* Quick Start Guide
+* [Prerequisites](#prerequisites)
+* [Quick Start Guide](#quick-start-guide)
 
 ## Prerequisites
+
 * Install [Kubernetes  Client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) in order to run the steps provided in the following Quick Start Guide.
 
 * An already setup Kubernetes cluster. If you haven’t already setup a K8s cluster  Refer [the guide](https://kubernetes.io/docs/setup/).
@@ -17,6 +18,7 @@
 *From this point forward the respective script (wso2am-ga.sh and wso2am-latest.sh) will be identified as SIMPLIFIED_SCRIPT*
 
 ## Quick Start Guide
+
 1. Download(https://github.com/wso2/kubernetes-apim/tree/3.0.x/simple/deployment-scripts) simplified Kubernetes setup (SIMPLIFIED_SCRIPT) for WSO2 API Manager.  
 
 2. In the command line, move into the directory where you have downloaded the SIMPLIFIED_SCRIPT.
