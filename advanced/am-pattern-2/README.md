@@ -1,6 +1,6 @@
 # Helm Chart for deployment of WSO2 API Manager with a separate Gateway and separate Key Manager along with WSO2 API Manager Analytics
 
-Resources for building a Helm Chart for deployment of [WSO2 API Manager with a separate Gateway and separate Key Manager along with
+Resources for building a Helm chart for deployment of [WSO2 API Manager with a separate Gateway and separate Key Manager along with
 WSO2 API Manager Analytics](https://apim.docs.wso2.com/en/latest/install-and-setup/setup/deployment-patterns/#pattern-2-deployment-with-a-separate-gateway-and-separate-key-manager).
 
 ![WSO2 API Manager pattern 2 deployment](https://github.com/wso2/kubernetes-apim/blob/v3.1.0.3/advanced/am-pattern-2/pattern-2.png)
