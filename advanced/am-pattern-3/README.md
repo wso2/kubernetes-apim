@@ -3,7 +3,7 @@
 Resources for building a Helm chart for deployment of a [fully distributed setup of WSO2 API Manager with WSO2 API Manager Analytics
 support](https://apim.docs.wso2.com/en/latest/install-and-setup/setup/deployment-patterns/#pattern-3-fully-distributed-setup).
 
-![WSO2 API Manager pattern 3 deployment](https://github.com/wso2/kubernetes-apim/blob/v3.1.0.3/advanced/am-pattern-3/pattern-3.png)
+![WSO2 API Manager pattern 3 deployment](pattern-3.png)
 
 For advanced details on the deployment pattern, please refer to the official
 [documentation](https://apim.docs.wso2.com/en/latest/install-and-setup/setup/distributed-deployment/deploying-wso2-api-m-in-a-distributed-setup/).
