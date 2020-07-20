@@ -4216,7 +4216,7 @@ function get_node_ip(){
 
   if [[ -z $NODE_IP ]]
   then
-      if [[ $(kubectl config current-context)="minikube" ]]
+      if [[ $(kubectl config current-context) = "minikube" ]]
       then
           NODE_IP=$(minikube ip)
       else
