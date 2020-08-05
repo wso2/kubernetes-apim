@@ -306,7 +306,6 @@ data:
                 RESOURCE_PATH VARCHAR(255) NOT NULL,
                 SCOPE_ID INTEGER NOT NULL,
                 TENANT_ID INTEGER DEFAULT -1,
-                PRIMARY KEY (RESOURCE_PATH),
                 FOREIGN KEY (SCOPE_ID) REFERENCES IDN_OAUTH2_SCOPE (SCOPE_ID) ON DELETE CASCADE
     )ENGINE INNODB;
 
@@ -1356,6 +1355,18 @@ data:
         UNIQUE (API_PROVIDER,API_NAME,API_VERSION)
     )ENGINE INNODB;
 
+
+    CREATE TABLE IF NOT EXISTS AM_GRAPHQL_COMPLEXITY (
+        UUID VARCHAR(256),
+        API_ID INTEGER NOT NULL,
+        TYPE VARCHAR(256),
+        FIELD VARCHAR(256),
+        COMPLEXITY_VALUE INTEGER,
+        FOREIGN KEY (API_ID) REFERENCES AM_API(API_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+        PRIMARY KEY(UUID),
+        UNIQUE (API_ID,TYPE,FIELD)
+    )ENGINE INNODB;
+
     CREATE TABLE IF NOT EXISTS AM_API_URL_MAPPING (
         URL_MAPPING_ID INTEGER AUTO_INCREMENT,
         API_ID INTEGER NOT NULL,
@@ -1365,6 +1376,14 @@ data:
         THROTTLING_TIER varchar(512) DEFAULT NULL,
         MEDIATION_SCRIPT BLOB,
         PRIMARY KEY (URL_MAPPING_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS AM_API_RESOURCE_SCOPE_MAPPING (
+        SCOPE_NAME VARCHAR(255) NOT NULL,
+        URL_MAPPING_ID INTEGER NOT NULL,
+        TENANT_ID INTEGER NOT NULL,
+        FOREIGN KEY (URL_MAPPING_ID) REFERENCES AM_API_URL_MAPPING(URL_MAPPING_ID) ON DELETE CASCADE,
+        PRIMARY KEY(SCOPE_NAME, URL_MAPPING_ID)
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS AM_SECURITY_AUDIT_UUID_MAPPING (
@@ -1386,6 +1405,7 @@ data:
     CREATE TABLE IF NOT EXISTS AM_SUBSCRIPTION (
         SUBSCRIPTION_ID INTEGER AUTO_INCREMENT,
         TIER_ID VARCHAR(50),
+        TIER_ID_PENDING VARCHAR(50),
         API_ID INTEGER,
         LAST_ACCESSED TIMESTAMP NULL,
         APPLICATION_ID INTEGER,
@@ -1411,13 +1431,16 @@ data:
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS AM_APPLICATION_KEY_MAPPING (
+        UUID VARCHAR(100),
         APPLICATION_ID INTEGER,
         CONSUMER_KEY VARCHAR(255),
         KEY_TYPE VARCHAR(512) NOT NULL,
         STATE VARCHAR(30) NOT NULL,
         CREATE_MODE VARCHAR(30) DEFAULT 'CREATED',
+        KEY_MANAGER VARCHAR(100),
+        APP_INFO BLOB ,
         FOREIGN KEY(APPLICATION_ID) REFERENCES AM_APPLICATION(APPLICATION_ID) ON UPDATE CASCADE ON DELETE RESTRICT,
-        PRIMARY KEY(APPLICATION_ID,KEY_TYPE)
+        PRIMARY KEY(APPLICATION_ID,KEY_TYPE,KEY_MANAGER)
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS AM_API_LC_EVENT (
@@ -1490,6 +1513,8 @@ data:
         TENANT_ID INTEGER,
         TENANT_DOMAIN VARCHAR(255),
         WF_EXTERNAL_REFERENCE VARCHAR(255) NOT NULL,
+        WF_METADATA BLOB DEFAULT NULL,
+        WF_PROPERTIES BLOB DEFAULT NULL,
         PRIMARY KEY (WF_ID),
         UNIQUE (WF_EXTERNAL_REFERENCE)
     )ENGINE INNODB;
@@ -1504,27 +1529,27 @@ data:
         INPUTS VARCHAR(1000),
         ALLOWED_DOMAINS VARCHAR(256),
         VALIDITY_PERIOD BIGINT,
-        UNIQUE (SUBSCRIBER_ID,APP_ID,TOKEN_TYPE),
+        KEY_MANAGER VARCHAR(255) NOT NULL,
+        UNIQUE (SUBSCRIBER_ID,APP_ID,TOKEN_TYPE,KEY_MANAGER),
         FOREIGN KEY(SUBSCRIBER_ID) REFERENCES AM_SUBSCRIBER(SUBSCRIBER_ID) ON UPDATE CASCADE ON DELETE RESTRICT,
         FOREIGN KEY(APP_ID) REFERENCES AM_APPLICATION(APPLICATION_ID) ON UPDATE CASCADE ON DELETE RESTRICT,
         PRIMARY KEY (REG_ID)
     )ENGINE INNODB;
 
-    CREATE TABLE IF NOT EXISTS AM_API_SCOPES (
-       API_ID  INTEGER NOT NULL,
-       SCOPE_ID  INTEGER NOT NULL,
-       FOREIGN KEY (API_ID) REFERENCES AM_API (API_ID) ON DELETE CASCADE ON UPDATE CASCADE,
-       FOREIGN KEY (SCOPE_ID) REFERENCES IDN_OAUTH2_SCOPE (SCOPE_ID) ON DELETE CASCADE ON UPDATE CASCADE,
-       PRIMARY KEY (API_ID, SCOPE_ID)
-    )ENGINE = INNODB;
+    CREATE TABLE IF NOT EXISTS AM_SHARED_SCOPE (
+        NAME VARCHAR(255) NOT NULL,
+        UUID VARCHAR (256),
+        TENANT_ID INTEGER,
+        PRIMARY KEY (UUID)
+    )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS AM_API_DEFAULT_VERSION (
-                DEFAULT_VERSION_ID INT AUTO_INCREMENT,
-                API_NAME VARCHAR(256) NOT NULL ,
-                API_PROVIDER VARCHAR(256) NOT NULL ,
-                DEFAULT_API_VERSION VARCHAR(30) ,
-                PUBLISHED_DEFAULT_API_VERSION VARCHAR(30) ,
-                PRIMARY KEY (DEFAULT_VERSION_ID)
+        DEFAULT_VERSION_ID INT AUTO_INCREMENT,
+        API_NAME VARCHAR(256) NOT NULL ,
+        API_PROVIDER VARCHAR(256) NOT NULL ,
+        DEFAULT_API_VERSION VARCHAR(30) ,
+        PUBLISHED_DEFAULT_API_VERSION VARCHAR(30) ,
+        PRIMARY KEY (DEFAULT_VERSION_ID)
     )ENGINE = INNODB;
 
     CREATE INDEX IDX_SUB_APP_ID ON AM_SUBSCRIPTION (APPLICATION_ID, SUBSCRIPTION_ID);
@@ -1600,6 +1625,8 @@ data:
                 BILLING_CYCLE VARCHAR(15) NULL DEFAULT NULL,
                 PRICE_PER_REQUEST VARCHAR(15) NULL DEFAULT NULL,
                 CURRENCY VARCHAR(15) NULL DEFAULT NULL,
+                MAX_COMPLEXITY INT(11) NOT NULL DEFAULT 0,
+                MAX_DEPTH INT(11) NOT NULL DEFAULT 0,
                 PRIMARY KEY (POLICY_ID),
                 UNIQUE INDEX AM_POLICY_SUBSCRIPTION_NAME_TENANT (NAME, TENANT_ID),
                 UNIQUE (UUID)
@@ -1860,6 +1887,13 @@ data:
         USER_NAME VARCHAR(255) NOT NULL,
         PRIMARY KEY(USER_ID)
     ) ENGINE=InnoDB;
+
+    -- Tenant Themes Table --
+    CREATE TABLE IF NOT EXISTS AM_TENANT_THEMES (
+      TENANT_ID INTEGER NOT NULL,
+      THEME MEDIUMBLOB NOT NULL,
+      PRIMARY KEY (TENANT_ID)
+    ) ENGINE=InnoDB;
     -- End of API-MGT Tables --
 
     -- UMA tables --
@@ -1934,6 +1968,57 @@ data:
       PRIMARY KEY(USER_ID)
     );
 
+    CREATE TABLE IF NOT EXISTS AM_KEY_MANAGER (
+      UUID VARCHAR(50) NOT NULL,
+      NAME VARCHAR(100) NULL,
+      DISPLAY_NAME VARCHAR(100) NULL,
+      DESCRIPTION VARCHAR(256) NULL,
+      TYPE VARCHAR(45) NULL,
+      CONFIGURATION BLOB NULL,
+      ENABLED BOOLEAN DEFAULT 1,
+      TENANT_DOMAIN VARCHAR(100) NULL,
+      PRIMARY KEY (UUID),
+      UNIQUE (NAME,TENANT_DOMAIN)
+      );
+
+    -- AM_GW_PUBLISHED_API_DETAILS & AM_GW_API_ARTIFACTS are independent tables for Artifact synchronizer feature which --
+    -- should not have any referential integrity constraints with other tables in AM database--
+    CREATE TABLE IF NOT EXISTS AM_GW_PUBLISHED_API_DETAILS (
+      API_ID varchar(255) NOT NULL,
+      TENANT_DOMAIN varchar(255),
+      API_PROVIDER varchar(255),
+      API_NAME varchar(255),
+      API_VERSION varchar(255),
+      PRIMARY KEY (API_ID)
+    ) ENGINE=InnoDB;
+
+    CREATE TABLE IF NOT EXISTS AM_GW_API_ARTIFACTS (
+      API_ID varchar(255) NOT NULL,
+      ARTIFACT blob,
+      GATEWAY_INSTRUCTION varchar(20),
+      GATEWAY_LABEL varchar(255),
+      TIME_STAMP TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (GATEWAY_LABEL, API_ID),
+      FOREIGN KEY (API_ID) REFERENCES AM_GW_PUBLISHED_API_DETAILS(API_ID) ON UPDATE CASCADE ON DELETE NO ACTION
+    ) ENGINE=InnoDB;
+
+    CREATE TABLE IF NOT EXISTS AM_SCOPE (
+                SCOPE_ID INTEGER NOT NULL AUTO_INCREMENT,
+                NAME VARCHAR(255) NOT NULL,
+                DISPLAY_NAME VARCHAR(255) NOT NULL,
+                DESCRIPTION VARCHAR(512),
+                TENANT_ID INTEGER NOT NULL DEFAULT -1,
+                SCOPE_TYPE VARCHAR(255) NOT NULL,
+                PRIMARY KEY (SCOPE_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS AM_SCOPE_BINDING (
+                SCOPE_ID INTEGER NOT NULL,
+                SCOPE_BINDING VARCHAR(255) NOT NULL,
+                BINDING_TYPE VARCHAR(255) NOT NULL,
+                FOREIGN KEY (SCOPE_ID) REFERENCES AM_SCOPE (SCOPE_ID) ON DELETE CASCADE
+    )ENGINE INNODB;
+
     -- Performance indexes start--
 
     create index IDX_ITS_LMT on IDN_THRIFT_SESSION (LAST_MODIFIED_TIME);
@@ -1951,8 +2036,6 @@ data:
     create index IDX_AA_AT_CB on AM_APPLICATION (APPLICATION_TIER,CREATED_BY);
 
     -- Performance indexes end--
-
-
 
   mysql_shared.sql: |-
     DROP DATABASE IF EXISTS WSO2AM_SHARED_DB;
@@ -2541,397 +2624,403 @@ metadata:
 data:
   deployment.yaml: |-
     # Carbon Configuration Parameters
-      wso2.carbon:
-        type: wso2-apim-analytics
-          # value to uniquely identify a server
-        id: wso2-am-analytics
-          # server name
-        name: WSO2 API Manager Analytics Server
-          # enable/disable hostname verifier
-        hostnameVerificationEnabled: false
-          # ports used by this server
-        ports:
-            # port offset
-          offset: 0
+    wso2.carbon:
+      type: wso2-apim-analytics
+        # value to uniquely identify a server
+      id: wso2-am-analytics
+        # server name
+      name: WSO2 API Manager Analytics Server
+        # enable/disable hostname verifier
+      hostnameVerificationEnabled: false
+        # ports used by this server
+      ports:
+          # port offset
+        offset: 3
 
-        # Configuration used for the databridge communication
-      databridge.config:
-          # No of worker threads to consume events
-          # THIS IS A MANDATORY FIELD
-        workerThreads: 10
-          # Maximum amount of messages that can be queued internally in MB
-          # THIS IS A MANDATORY FIELD
-        maxEventBufferCapacity: 10000000
-          # Queue size; the maximum number of events that can be stored in the queue
-          # THIS IS A MANDATORY FIELD
-        eventBufferSize: 2000
-          # Keystore file path
-          # THIS IS A MANDATORY FIELD
-        keyStoreLocation : ${sys:carbon.home}/resources/security/wso2carbon.jks
-          # Keystore password
-          # THIS IS A MANDATORY FIELD
-        keyStorePassword : wso2carbon
-          # Session Timeout value in mins
-          # THIS IS A MANDATORY FIELD
-        clientTimeoutMin: 30
-          # Data receiver configurations
-          # THIS IS A MANDATORY FIELD
-        dataReceivers:
+      # Configuration used for the databridge communication
+    databridge.config:
+        # No of worker threads to consume events
+        # THIS IS A MANDATORY FIELD
+      workerThreads: 10
+        # Maximum amount of messages that can be queued internally in MB
+        # THIS IS A MANDATORY FIELD
+      maxEventBufferCapacity: 10000000
+        # Queue size; the maximum number of events that can be stored in the queue
+        # THIS IS A MANDATORY FIELD
+      eventBufferSize: 2000
+        # Keystore file path
+        # THIS IS A MANDATORY FIELD
+      keyStoreLocation : ${sys:carbon.home}/resources/security/wso2carbon.jks
+        # Keystore password
+        # THIS IS A MANDATORY FIELD
+      keyStorePassword : wso2carbon
+        # Session Timeout value in mins
+        # THIS IS A MANDATORY FIELD
+      clientTimeoutMin: 30
+        # Data receiver configurations
+        # THIS IS A MANDATORY FIELD
+      dataReceivers:
+      -
+          # Data receiver configuration
+        dataReceiver:
+            # Data receiver type
+            # THIS IS A MANDATORY FIELD
+          type: Thrift
+            # Data receiver properties
+          properties:
+            tcpPort: '7611'
+            sslPort: '7711'
+
+      -
+          # Data receiver configuration
+        dataReceiver:
+            # Data receiver type
+            # THIS IS A MANDATORY FIELD
+          type: Binary
+            # Data receiver properties
+          properties:
+            tcpPort: '9611'
+            sslPort: '9711'
+            tcpReceiverThreadPoolSize: '100'
+            sslReceiverThreadPoolSize: '100'
+            hostName: 0.0.0.0
+
+      # Configuration of the Data Agents - to publish events through databridge
+    data.agent.config:
+        # Data agent configurations
+        # THIS IS A MANDATORY FIELD
+      agents:
+      -
+          # Data agent configuration
+        agentConfiguration:
+            # Data agent name
+            # THIS IS A MANDATORY FIELD
+          name: Thrift
+            # Data endpoint class
+            # THIS IS A MANDATORY FIELD
+          dataEndpointClass: org.wso2.carbon.databridge.agent.endpoint.thrift.ThriftDataEndpoint
+            # Data publisher strategy
+          publishingStrategy: async
+            # Trust store path
+          trustStorePath: '${sys:carbon.home}/resources/security/client-truststore.jks'
+            # Trust store password
+          trustStorePassword: 'wso2carbon'
+            # Queue Size
+          queueSize: 32768
+            # Batch Size
+          batchSize: 200
+            # Core pool size
+          corePoolSize: 1
+            # Socket timeout in milliseconds
+          socketTimeoutMS: 30000
+            # Maximum pool size
+          maxPoolSize: 1
+            # Keep alive time in pool
+          keepAliveTimeInPool: 20
+            # Reconnection interval
+          reconnectionInterval: 30
+            # Max transport pool size
+          maxTransportPoolSize: 250
+            # Max idle connections
+          maxIdleConnections: 250
+            # Eviction time interval
+          evictionTimePeriod: 5500
+            # Min idle time in pool
+          minIdleTimeInPool: 5000
+            # Secure max transport pool size
+          secureMaxTransportPoolSize: 250
+            # Secure max idle connections
+          secureMaxIdleConnections: 250
+            # secure eviction time period
+          secureEvictionTimePeriod: 5500
+            # Secure min idle time in pool
+          secureMinIdleTimeInPool: 5000
+            # SSL enabled protocols
+          sslEnabledProtocols: TLSv1.1,TLSv1.2
+            # Ciphers
+          ciphers: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+      -
+          # Data agent configuration
+        agentConfiguration:
+            # Data agent name
+            # THIS IS A MANDATORY FIELD
+          name: Binary
+            # Data endpoint class
+            # THIS IS A MANDATORY FIELD
+          dataEndpointClass: org.wso2.carbon.databridge.agent.endpoint.binary.BinaryDataEndpoint
+            # Data publisher strategy
+          publishingStrategy: async
+            # Trust store path
+          trustStorePath: '${sys:carbon.home}/resources/security/client-truststore.jks'
+            # Trust store password
+          trustStorePassword: 'wso2carbon'
+            # Queue Size
+          queueSize: 32768
+            # Batch Size
+          batchSize: 200
+            # Core pool size
+          corePoolSize: 1
+            # Socket timeout in milliseconds
+          socketTimeoutMS: 30000
+            # Maximum pool size
+          maxPoolSize: 1
+            # Keep alive time in pool
+          keepAliveTimeInPool: 20
+            # Reconnection interval
+          reconnectionInterval: 30
+            # Max transport pool size
+          maxTransportPoolSize: 250
+            # Max idle connections
+          maxIdleConnections: 250
+            # Eviction time interval
+          evictionTimePeriod: 5500
+            # Min idle time in pool
+          minIdleTimeInPool: 5000
+            # Secure max transport pool size
+          secureMaxTransportPoolSize: 250
+            # Secure max idle connections
+          secureMaxIdleConnections: 250
+            # secure eviction time period
+          secureEvictionTimePeriod: 5500
+            # Secure min idle time in pool
+          secureMinIdleTimeInPool: 5000
+            # SSL enabled protocols
+          sslEnabledProtocols: TLSv1.1,TLSv1.2
+            # Ciphers
+          ciphers: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+
+      # Deployment configuration parameters
+    wso2.artifact.deployment:
+        # Scheduler update interval
+      updateInterval: 5
+
+      # HA Configuration
+    state.persistence:
+      enabled: false
+      intervalInMin: 1
+      revisionsToKeep: 2
+      persistenceStore: org.wso2.carbon.streaming.integrator.core.persistence.FileSystemPersistenceStore
+      config:
+        location: siddhi-app-persistence
+
+      # Secure Vault Configuration
+    wso2.securevault:
+      secretRepository:
+        type: org.wso2.carbon.secvault.repository.DefaultSecretRepository
+        parameters:
+          privateKeyAlias: wso2carbon
+          keystoreLocation: ${sys:carbon.home}/resources/security/securevault.jks
+          secretPropertiesFile: ${sys:carbon.home}/conf/${sys:wso2.runtime}/secrets.properties
+      masterKeyReader:
+        type: org.wso2.carbon.secvault.reader.DefaultMasterKeyReader
+        parameters:
+          masterKeyReaderFile: ${sys:carbon.home}/conf/${sys:wso2.runtime}/master-keys.yaml
+
+
+    # Data Sources Configuration
+    wso2.datasources:
+      dataSources:
+      # Dashboard data source
+      - name: WSO2_DASHBOARD_DB
+        description: The datasource used for dashboard feature
+        jndiConfig:
+          name: jdbc/DASHBOARD_DB
+          useJndiReference: true
+        definition:
+          type: RDBMS
+          configuration:
+            jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/DASHBOARD_DB;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE'
+            username: wso2carbon
+            password: wso2carbon
+            driverClassName: org.h2.Driver
+            maxPoolSize: 20
+            idleTimeout: 60000
+            connectionTestQuery: SELECT 1
+            validationTimeout: 30000
+            isAutoCommit: false
+      - name: BUSINESS_RULES_DB
+        description: The datasource used for dashboard feature
+        jndiConfig:
+          name: jdbc/BUSINESS_RULES_DB
+          useJndiReference: true
+        definition:
+          type: RDBMS
+          configuration:
+            jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_BUSINESS_RULES_DB?useSSL=false'
+            username: wso2carbon
+            password: wso2carbon
+            driverClassName: com.mysql.cj.jdbc.Driver
+            maxPoolSize: 20
+            idleTimeout: 60000
+            connectionTestQuery: SELECT 1
+            validationTimeout: 30000
+            isAutoCommit: false
+
+      # carbon metrics data source
+      - name: WSO2_METRICS_DB
+        description: The datasource used for dashboard feature
+        jndiConfig:
+          name: jdbc/WSO2MetricsDB
+        definition:
+          type: RDBMS
+          configuration:
+            jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/dashboard/database/metrics;AUTO_SERVER=TRUE'
+            username: wso2carbon
+            password: wso2carbon
+            driverClassName: org.h2.Driver
+            maxPoolSize: 20
+            idleTimeout: 60000
+            connectionTestQuery: SELECT 1
+            validationTimeout: 30000
+            isAutoCommit: false
+
+      - name: WSO2_PERMISSIONS_DB
+        description: The datasource used for dashboard feature
+        jndiConfig:
+          name: jdbc/PERMISSION_DB
+          useJndiReference: true
+        definition:
+          type: RDBMS
+          configuration:
+            jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/PERMISSION_DB;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE'
+            username: wso2carbon
+            password: wso2carbon
+            driverClassName: org.h2.Driver
+            maxPoolSize: 10
+            idleTimeout: 60000
+            connectionTestQuery: SELECT 1
+            validationTimeout: 30000
+            isAutoCommit: false
+
+      #Data source for APIM Analytics
+      - name: APIM_ANALYTICS_DB
+        description: Datasource used for APIM Analytics
+        jndiConfig:
+          name: jdbc/APIM_ANALYTICS_DB
+        definition:
+          type: RDBMS
+          configuration:
+            jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_STATS_DB?useSSL=false'
+            username: wso2carbon
+            password: wso2carbon
+            driverClassName: com.mysql.cj.jdbc.Driver
+            maxPoolSize: 50
+            idleTimeout: 60000
+            connectionTestQuery: SELECT 1
+            validationTimeout: 30000
+            isAutoCommit: false
+
+       #Main datasource used in API Manager
+      - name: AM_DB
+        description: Main datasource used by API Manager
+        jndiConfig:
+          name: jdbc/AM_DB
+        definition:
+          type: RDBMS
+          configuration:
+            jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_DB?useSSL=false'
+            username: wso2carbon
+            password: wso2carbon
+            driverClassName: com.mysql.cj.jdbc.Driver
+            maxPoolSize: 10
+            idleTimeout: 60000
+            connectionTestQuery: SELECT 1
+            validationTimeout: 30000
+            isAutoCommit: false
+
+    wso2.business.rules.manager:
+      datasource: BUSINESS_RULES_DB
+      # rule template wise configuration for deploying business rules
+      deployment_configs:
         -
-            # Data receiver configuration
-          dataReceiver:
-              # Data receiver type
-              # THIS IS A MANDATORY FIELD
-            type: Thrift
-              # Data receiver properties
-            properties:
-              tcpPort: '7611'
-              sslPort: '7711'
+         # <IP>:<HTTPS Port> of the Worker node
+         localhost:9444:
+           # UUIDs of rule templates that are needed to be deployed on the node
+           - stock-data-analysis
+           - stock-exchange-input
+           - stock-exchange-output
+           - identifying-continuous-production-decrease
+           - popular-tweets-analysis
+           - http-analytics-processing
+           - message-tracing-source-template
+           - message-tracing-app-template
+      # credentials for worker nodes
+      username: admin
+      password: admin
 
-        -
-            # Data receiver configuration
-          dataReceiver:
-              # Data receiver type
-              # THIS IS A MANDATORY FIELD
-            type: Binary
-              # Data receiver properties
-            properties:
-              tcpPort: '9611'
-              sslPort: '9711'
-              tcpReceiverThreadPoolSize: '100'
-              sslReceiverThreadPoolSize: '100'
-              hostName: 0.0.0.0
+    wso2.transport.http:
+      transportProperties:
+        - name: "server.bootstrap.socket.timeout"
+          value: 60
+        - name: "client.bootstrap.socket.timeout"
+          value: 60
+        - name: "latency.metrics.enabled"
+          value: true
 
-        # Configuration of the Data Agents - to publish events through databridge
-      data.agent.config:
-          # Data agent configurations
-          # THIS IS A MANDATORY FIELD
-        agents:
-        -
-            # Data agent configuration
-          agentConfiguration:
-              # Data agent name
-              # THIS IS A MANDATORY FIELD
-            name: Thrift
-              # Data endpoint class
-              # THIS IS A MANDATORY FIELD
-            dataEndpointClass: org.wso2.carbon.databridge.agent.endpoint.thrift.ThriftDataEndpoint
-              # Data publisher strategy
-            publishingStrategy: async
-              # Trust store path
-            trustStorePath: '${sys:carbon.home}/resources/security/client-truststore.jks'
-              # Trust store password
-            trustStorePassword: 'wso2carbon'
-              # Queue Size
-            queueSize: 32768
-              # Batch Size
-            batchSize: 200
-              # Core pool size
-            corePoolSize: 1
-              # Socket timeout in milliseconds
-            socketTimeoutMS: 30000
-              # Maximum pool size
-            maxPoolSize: 1
-              # Keep alive time in pool
-            keepAliveTimeInPool: 20
-              # Reconnection interval
-            reconnectionInterval: 30
-              # Max transport pool size
-            maxTransportPoolSize: 250
-              # Max idle connections
-            maxIdleConnections: 250
-              # Eviction time interval
-            evictionTimePeriod: 5500
-              # Min idle time in pool
-            minIdleTimeInPool: 5000
-              # Secure max transport pool size
-            secureMaxTransportPoolSize: 250
-              # Secure max idle connections
-            secureMaxIdleConnections: 250
-              # secure eviction time period
-            secureEvictionTimePeriod: 5500
-              # Secure min idle time in pool
-            secureMinIdleTimeInPool: 5000
-              # SSL enabled protocols
-            sslEnabledProtocols: TLSv1.1,TLSv1.2
-              # Ciphers
-            ciphers: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
-        -
-            # Data agent configuration
-          agentConfiguration:
-              # Data agent name
-              # THIS IS A MANDATORY FIELD
-            name: Binary
-              # Data endpoint class
-              # THIS IS A MANDATORY FIELD
-            dataEndpointClass: org.wso2.carbon.databridge.agent.endpoint.binary.BinaryDataEndpoint
-              # Data publisher strategy
-            publishingStrategy: async
-              # Trust store path
-            trustStorePath: '${sys:carbon.home}/resources/security/client-truststore.jks'
-              # Trust store password
-            trustStorePassword: 'wso2carbon'
-              # Queue Size
-            queueSize: 32768
-              # Batch Size
-            batchSize: 200
-              # Core pool size
-            corePoolSize: 1
-              # Socket timeout in milliseconds
-            socketTimeoutMS: 30000
-              # Maximum pool size
-            maxPoolSize: 1
-              # Keep alive time in pool
-            keepAliveTimeInPool: 20
-              # Reconnection interval
-            reconnectionInterval: 30
-              # Max transport pool size
-            maxTransportPoolSize: 250
-              # Max idle connections
-            maxIdleConnections: 250
-              # Eviction time interval
-            evictionTimePeriod: 5500
-              # Min idle time in pool
-            minIdleTimeInPool: 5000
-              # Secure max transport pool size
-            secureMaxTransportPoolSize: 250
-              # Secure max idle connections
-            secureMaxIdleConnections: 250
-              # secure eviction time period
-            secureEvictionTimePeriod: 5500
-              # Secure min idle time in pool
-            secureMinIdleTimeInPool: 5000
-              # SSL enabled protocols
-            sslEnabledProtocols: TLSv1.1,TLSv1.2
-              # Ciphers
-            ciphers: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+      listenerConfigurations:
+        - id: "default"
+          host: "0.0.0.0"
+          port: 9089
 
-        # Deployment configuration parameters
-      wso2.artifact.deployment:
-          # Scheduler update interval
-        updateInterval: 5
+        - id: "default-https"
+          host: "0.0.0.0"
+          port: 30643
+          scheme: https
+          keyStoreFile: "${carbon.home}/resources/security/wso2carbon.jks"
+          keyStorePassword: wso2carbon
+          certPass: wso2carbon
 
-        # HA Configuration
-      state.persistence:
-        enabled: false
-        intervalInMin: 1
-        revisionsToKeep: 2
-        persistenceStore: org.wso2.carbon.streaming.integrator.core.persistence.FileSystemPersistenceStore
-        config:
-          location: siddhi-app-persistence
+    ## Dashboard data provider authorization
+    data.provider.configs:
+      authorizingClass: org.wso2.analytics.apim.dashboards.core.data.provider.Authorizer
 
-        # Secure Vault Configuration
-      wso2.securevault:
-        secretRepository:
-          type: org.wso2.carbon.secvault.repository.DefaultSecretRepository
-          parameters:
-            privateKeyAlias: wso2carbon
-            keystoreLocation: ${sys:carbon.home}/resources/security/securevault.jks
-            secretPropertiesFile: ${sys:carbon.home}/conf/${sys:wso2.runtime}/secrets.properties
-        masterKeyReader:
-          type: org.wso2.carbon.secvault.reader.DefaultMasterKeyReader
-          parameters:
-            masterKeyReaderFile: ${sys:carbon.home}/conf/${sys:wso2.runtime}/master-keys.yaml
+    ## Additional APIs that needs to be added to the server.
+    ## Should be provided as a key value pairs { API context path: Microservice implementation class }
+    ## The configured APIs will be available as https://{host}:{port}/analytics-dashboard/{API_context_path}
+    additional.apis:
+      /apis/analytics/v1.0/apim: org.wso2.analytics.apim.rest.api.proxy.ApimApi
+      /apis/v1.0/report: org.wso2.analytics.apim.rest.api.report.ReportApi
 
+    report:
+      implClass: org.wso2.analytics.apim.rest.api.report.reportgen.DefaultReportGeneratorImpl
 
-      # Data Sources Configuration
-      wso2.datasources:
-        dataSources:
-        # Dashboard data source
-        - name: WSO2_DASHBOARD_DB
-          description: The datasource used for dashboard feature
-          jndiConfig:
-            name: jdbc/DASHBOARD_DB
-            useJndiReference: true
-          definition:
-            type: RDBMS
-            configuration:
-              jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/DASHBOARD_DB;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE'
-              username: wso2carbon
-              password: wso2carbon
-              driverClassName: org.h2.Driver
-              maxPoolSize: 20
-              idleTimeout: 60000
-              connectionTestQuery: SELECT 1
-              validationTimeout: 30000
-              isAutoCommit: false
-        - name: BUSINESS_RULES_DB
-          description: The datasource used for dashboard feature
-          jndiConfig:
-            name: jdbc/BUSINESS_RULES_DB
-            useJndiReference: true
-          definition:
-            type: RDBMS
-            configuration:
-              jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_BUSINESS_RULES_DB?useSSL=false'
-              username: wso2carbon
-              password: wso2carbon
-              driverClassName: com.mysql.cj.jdbc.Driver
-              maxPoolSize: 20
-              idleTimeout: 60000
-              connectionTestQuery: SELECT 1
-              validationTimeout: 30000
-              isAutoCommit: false
+    ## Authentication configuration
+    auth.configs:
+      type: apim
+      ssoEnabled: true
+      properties:
+        adminScope: apim_analytics:admin_carbon.super
+        allScopes: apim_analytics:admin openid apim:api_view apim:subscribe apim_analytics:monitoring_dashboard:own apim_analytics:monitoring_dashboard:edit apim_analytics:monitoring_dashboard:view apim_analytics:business_analytics:own apim_analytics:business_analytics:edit apim_analytics:business_analytics:view apim_analytics:api_analytics:own apim_analytics:api_analytics:edit apim_analytics:api_analytics:view apim_analytics:application_analytics:own apim_analytics:application_analytics:edit apim_analytics:application_analytics:view
+        adminUsername: admin
+        adminPassword: admin
+        kmDcrUrl: https://"ip.node.k8s.&.wso2.apim":32293/client-registration/v0.17/register
+        kmTokenUrlForRedirection: https://"ip.node.k8s.&.wso2.apim":32293/oauth2
+        kmTokenUrl: https://"ip.node.k8s.&.wso2.apim":32293/oauth2
+        kmUsername: admin
+        kmPassword: admin
+        portalAppContext: analytics-dashboard
+        businessRulesAppContext : business-rules
+        cacheTimeout: 900
+        baseUrl: https://"ip.node.k8s.&.wso2.apim":30646
+        grantType: authorization_code
+        publisherUrl: https://"ip.node.k8s.&.wso2.apim":32293
+        devPortalUrl: https://"ip.node.k8s.&.wso2.apim":32293
+        externalLogoutUrl: https://"ip.node.k8s.&.wso2.apim":32293/oidc/logout
 
-        # carbon metrics data source
-        - name: WSO2_METRICS_DB
-          description: The datasource used for dashboard feature
-          jndiConfig:
-            name: jdbc/WSO2MetricsDB
-          definition:
-            type: RDBMS
-            configuration:
-              jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/dashboard/database/metrics;AUTO_SERVER=TRUE'
-              username: wso2carbon
-              password: wso2carbon
-              driverClassName: org.h2.Driver
-              maxPoolSize: 20
-              idleTimeout: 60000
-              connectionTestQuery: SELECT 1
-              validationTimeout: 30000
-              isAutoCommit: false
+    wso2.dashboard:
+      roles:
+        creators:
+          - apim_analytics:admin_carbon.super
+      themeConfigProviderClass: org.wso2.carbon.dashboards.core.DefaultDashboardThemeConfigProvider
 
-        - name: WSO2_PERMISSIONS_DB
-          description: The datasource used for dashboard feature
-          jndiConfig:
-            name: jdbc/PERMISSION_DB
-            useJndiReference: true
-          definition:
-            type: RDBMS
-            configuration:
-              jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/PERMISSION_DB;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE'
-              username: wso2carbon
-              password: wso2carbon
-              driverClassName: org.h2.Driver
-              maxPoolSize: 10
-              idleTimeout: 60000
-              connectionTestQuery: SELECT 1
-              validationTimeout: 30000
-              isAutoCommit: false
-
-        #Data source for APIM Analytics
-        - name: APIM_ANALYTICS_DB
-          description: Datasource used for APIM Analytics
-          jndiConfig:
-            name: jdbc/APIM_ANALYTICS_DB
-          definition:
-            type: RDBMS
-            configuration:
-              jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_STATS_DB?useSSL=false'
-              username: wso2carbon
-              password: wso2carbon
-              driverClassName: com.mysql.cj.jdbc.Driver
-              maxPoolSize: 50
-              idleTimeout: 60000
-              connectionTestQuery: SELECT 1
-              validationTimeout: 30000
-              isAutoCommit: false
-
-         #Main datasource used in API Manager
-        - name: AM_DB
-          description: Main datasource used by API Manager
-          jndiConfig:
-            name: jdbc/AM_DB
-          definition:
-            type: RDBMS
-            configuration:
-              jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_DB?useSSL=false'
-              username: wso2carbon
-              password: wso2carbon
-              driverClassName: com.mysql.cj.jdbc.Driver
-              maxPoolSize: 10
-              idleTimeout: 60000
-              connectionTestQuery: SELECT 1
-              validationTimeout: 30000
-              isAutoCommit: false
-
-      wso2.business.rules.manager:
-        datasource: BUSINESS_RULES_DB
-        # rule template wise configuration for deploying business rules
-        deployment_configs:
-          -
-           # <IP>:<HTTPS Port> of the Worker node
-           localhost:9444:
-             # UUIDs of rule templates that are needed to be deployed on the node
-             - stock-data-analysis
-             - stock-exchange-input
-             - stock-exchange-output
-             - identifying-continuous-production-decrease
-             - popular-tweets-analysis
-             - http-analytics-processing
-             - message-tracing-source-template
-             - message-tracing-app-template
-        # credentials for worker nodes
-        username: admin
-        password: admin
-
-      wso2.transport.http:
-        transportProperties:
-          - name: "server.bootstrap.socket.timeout"
-            value: 60
-          - name: "client.bootstrap.socket.timeout"
-            value: 60
-          - name: "latency.metrics.enabled"
-            value: true
-
-        listenerConfigurations:
-          - id: "default-https"
-            host: "0.0.0.0"
-            port: 30643
-            scheme: https
-            keyStoreFile: "${carbon.home}/resources/security/wso2carbon.jks"
-            keyStorePassword: wso2carbon
-            certPass: wso2carbon
-
-      ## Dashboard data provider authorization
-      data.provider.configs:
-        authorizingClass: org.wso2.analytics.apim.dashboards.core.data.provider.Authorizer
-
-      ## Additional APIs that needs to be added to the server.
-      ## Should be provided as a key value pairs { API context path: Microservice implementation class }
-      ## The configured APIs will be available as https://{host}:{port}/analytics-dashboard/{API_context_path}
-      additional.apis:
-        /apis/analytics/v1.0/apim: org.wso2.analytics.apim.rest.api.proxy.ApimApi
-        /apis/v1.0/report: org.wso2.analytics.apim.rest.api.report.ReportApi
-
-      report:
-        implClass: org.wso2.analytics.apim.rest.api.report.reportgen.DefaultReportGeneratorImpl
-
-      ## Authentication configuration
-      auth.configs:
-        type: apim
-        ssoEnabled: true
-        properties:
-          adminScope: apim_analytics:admin_carbon.super
-          allScopes: apim_analytics:admin apim_analytics:product_manager apim_analytics:api_developer apim_analytics:app_developer apim_analytics:devops_engineer apim_analytics:analytics_viewer apim_analytics:everyone openid apim:api_view apim:subscribe
-          adminServiceBaseUrl: https://"ip.node.k8s.&.wso2.apim":32293
-          adminUsername: admin
-          adminPassword: admin
-          kmDcrUrl: https://"ip.node.k8s.&.wso2.apim":32293/client-registration/v0.16/register
-          kmTokenUrlForRedirection: https://"ip.node.k8s.&.wso2.apim":32293/oauth2
-          kmTokenUrl: https://"ip.node.k8s.&.wso2.apim":32293/oauth2
-          kmUsername: admin
-          kmPassword: admin
-          portalAppContext: analytics-dashboard
-          businessRulesAppContext : business-rules
-          cacheTimeout: 900
-          baseUrl: https://"ip.node.k8s.&.wso2.apim":30643
-          grantType: authorization_code
-          publisherUrl: https://"ip.node.k8s.&.wso2.apim":32293
-          externalLogoutUrl: https://"ip.node.k8s.&.wso2.apim":32293/oidc/logout
-          #storeUrl: https://localhost:9443
-
-      wso2.dashboard:
-        roles:
-          creators:
-            - apim_analytics:admin_carbon.super
-      wso2.rdbms.data.provider:
-        timeTypes:
-          - DATE
-          - TIME
-          - DATETIME
-          - TIMESTAMP
-          - TIMESTAMP WITHOUT TIME ZONE
+    ## RDBMS Data Provider configuration
+    wso2.rdbms.data.provider:
+      timeTypes:
+        - DATE
+        - TIME
+        - DATETIME
+        - TIMESTAMP
+        - TIMESTAMP WITHOUT TIME ZONE
 ---
 
 apiVersion: v1
@@ -2949,10 +3038,10 @@ spec:
     # ports that this service should serve on
     -
       name: 'ui'
-      port: 30643
+      port: 30646
       protocol: TCP
-      targetPort: 30643
-      nodePort: 30643
+      targetPort: 30646
+      nodePort: 30646
 ---
 
 apiVersion: apps/v1
@@ -2981,15 +3070,26 @@ spec:
         - name: init-apim-analytics-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        - name: init-download-mysql-connector
+          image: busybox:1.31
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              set -e
+              wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.17/mysql-connector-java-8.0.17.jar -P /mysql-connector-jar/
+          volumeMounts:
+            - name: mysql-connector-jar
+              mountPath: /mysql-connector-jar
       containers:
         - name: wso2am-pattern-1-analytics-dashboard
-          image: "$image.pull.@.wso2"/wso2am-analytics-dashboard:3.1.0
+          image: "$image.pull.@.wso2"/wso2am-analytics-dashboard:3.2.0
           livenessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 30643
+                - nc -z localhost 30646
             initialDelaySeconds: 20
             periodSeconds: 10
           readinessProbe:
@@ -2997,7 +3097,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 30643
+                - nc -z localhost 30646
             initialDelaySeconds: 20
             periodSeconds: 10
           lifecycle:
@@ -3016,12 +3116,14 @@ spec:
             runAsUser: 802
           ports:
             -
-              containerPort: 30643
+              containerPort: 30646
               protocol: "TCP"
           volumeMounts:
             - name: wso2am-pattern-1-am-analytics-dashboard-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
               subPath: deployment.yaml
+            - name: mysql-connector-jar
+              mountPath: /home/wso2carbon/wso2-artifact-volume/lib
       serviceAccountName: wso2am-pattern-1-svc-account
       imagePullSecrets:
         - name: wso2am-pattern-1-creds
@@ -3029,6 +3131,8 @@ spec:
         - name: wso2am-pattern-1-am-analytics-dashboard-conf
           configMap:
             name: wso2am-pattern-1-am-analytics-dashboard-conf
+        - name: mysql-connector-jar
+          emptyDir: {}
 ---
 
 apiVersion: v1
@@ -3416,43 +3520,11 @@ data:
               validationTimeout: 30000
               isAutoCommit: false
 
-        #Main datasource used in API Manager
-        - name: AM_DB
-          description: Main datasource used by API Manager
-          jndiConfig:
-            name: jdbc/AM_DB
-          definition:
-            type: RDBMS
-            configuration:
-              jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_DB?useSSL=false&allowPublicKeyRetrieval=true'
-              username: wso2carbon
-              password: wso2carbon
-              driverClassName: com.mysql.cj.jdbc.Driver
-              maxPoolSize: 10
-              idleTimeout: 60000
-              connectionTestQuery: SELECT 1
-              validationTimeout: 30000
-              isAutoCommit: false
-
-        - name: WSO2AM_MGW_ANALYTICS_DB
-          description: "The datasource used for APIM MGW analytics data."
-          jndiConfig:
-            name: jdbc/WSO2AM_MGW_ANALYTICS_DB
-          definition:
-            type: RDBMS
-            configuration:
-              jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/worker/database/WSO2AM_MGW_ANALYTICS_DB;AUTO_SERVER=TRUE'
-              username: wso2carbon
-              password: wso2carbon
-              driverClassName: org.h2.Driver
-              maxPoolSize: 50
-              idleTimeout: 60000
-              connectionTestQuery: SELECT 1
-              validationTimeout: 30000
-              isAutoCommit: false
         -
           name: WSO2_CLUSTER_DB
           description: "The datasource used by cluster coordinators in HA deployment"
+          jndiConfig:
+            name: jdbc/WSO2_CLUSTER_DB
           definition:
             type: RDBMS
             configuration:
@@ -3465,6 +3537,24 @@ data:
               password: wso2carbon
               username: wso2carbon
               validationTimeout: 30000
+
+    #    -
+    #      name: PERSISTENCE_DB
+    #      description: "Datasource used for persistence"
+    #      jndiConfig:
+    #        name: jdbc/PERSISTENCE_DB
+    #      definition:
+    #        type: RDBMS
+    #        configuration:
+    #          connectionTestQuery: "SELECT 1"
+    #          driverClassName: com.mysql.jdbc.Driver
+    #          idleTimeout: 60000
+    #          isAutoCommit: false
+    #          jdbcUrl: "jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/PERSISTENCE_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;AUTO_SERVER=TRUE"
+    #          maxPoolSize: 10
+    #          password: pass
+    #          username: root
+    #          validationTimeout: 30000
 
     siddhi:
       # properties:
@@ -3509,6 +3599,13 @@ data:
               trustStoreFile : ${sys:carbon.home}/resources/security/client-truststore.jks
               trustStorePassword : wso2carbon
               trustStoreAlgorithm : SunX509
+        # Provides the regular expression collection to parse the user-agent header
+        -
+          extension:
+            name: 'getUserAgentProperty'
+            namespace: 'env'
+            properties:
+              regexFilePath : ${sys:carbon.home}/conf/worker/regexes.yaml
 
       # Cluster Configuration
     cluster.config:
@@ -3578,7 +3675,7 @@ data:
     #    - host: 192.168.1.2
     #      port: 9543
     #      username: admin
-    #      password: admin9444
+    #      password: admin
 ---
 
 apiVersion: v1
@@ -3645,9 +3742,20 @@ spec:
         - name: init-apim-analytics-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        - name: init-download-mysql-connector
+          image: busybox:1.31
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              set -e
+              wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.17/mysql-connector-java-8.0.17.jar -P /mysql-connector-jar/
+          volumeMounts:
+            - name: mysql-connector-jar
+              mountPath: /mysql-connector-jar
       containers:
         - name: wso2am-pattern-1-analytics-worker
-          image: "$image.pull.@.wso2"/wso2am-analytics-worker:3.1.0
+          image: "$image.pull.@.wso2"/wso2am-analytics-worker:3.2.0
           livenessProbe:
             exec:
               command:
@@ -3704,6 +3812,8 @@ spec:
             - name: wso2am-pattern-1-am-analytics-worker-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/worker/deployment.yaml
               subPath: deployment.yaml
+            - name: mysql-connector-jar
+              mountPath: /home/wso2carbon/wso2-artifact-volume/lib
       serviceAccountName: wso2am-pattern-1-svc-account
       imagePullSecrets:
         - name: wso2am-pattern-1-creds
@@ -3711,6 +3821,8 @@ spec:
         - name: wso2am-pattern-1-am-analytics-worker-conf
           configMap:
             name: wso2am-pattern-1-am-analytics-worker-conf
+        - name: mysql-connector-jar
+          emptyDir: {}
 ---
 
 apiVersion: v1
@@ -3846,18 +3958,21 @@ data:
     #key_validation_handler_impl = "org.wso2.carbon.apimgt.keymgt.handlers.DefaultKeyValidationHandler"
 
     #[apim.idp]
+    #server_url = "https://localhost:${mgt.transport.https.port}"
     #authorize_endpoint = "https://localhost:${mgt.transport.https.port}/oauth2/authorize"
     #oidc_logout_endpoint = "https://localhost:${mgt.transport.https.port}/oidc/logout"
+    #oidc_check_session_endpoint = "https://localhost:${mgt.transport.https.port}/oidc/checksession"
 
     #[apim.jwt]
     #enable = true
     #encoding = "base64" # base64,base64url
     #generator_impl = "org.wso2.carbon.apimgt.keymgt.token.JWTGenerator"
     #claim_dialect = "http://wso2.org/claims"
+    #convert_dialect = false
     #header = "X-JWT-Assertion"
     #signing_algorithm = "SHA256withRSA"
     #enable_user_claims = true
-    #claims_extractor_impl = "org.wso2.carbon.apimgt.impl.token.DefaultClaimsRetriever"
+    #claims_extractor_impl = "org.wso2.carbon.apimgt.impl.token.ExtendedDefaultClaimsRetriever"
 
     #[apim.oauth_config]
     #enable_outbound_auth_header = false
@@ -3877,6 +3992,7 @@ data:
     #enable_comments = true
     #enable_ratings = true
     #enable_forum = true
+    #enable_anonymous_mode=true
 
     [apim.cors]
     allow_origins = "*"
@@ -3921,9 +4037,9 @@ data:
     #service_url = "https://localhost:9445/bpmn"
     #username = "$ref{super_admin.username}"
     #password = "$ref{super_admin.password}"
-    #callback_endpoint = "https://localhost:${mgt.transport.https.port}/api/am/admin/v0.16/workflows/update-workflow-status"
+    #callback_endpoint = "https://localhost:${mgt.transport.https.port}/api/am/admin/v0.17/workflows/update-workflow-status"
     #token_endpoint = "https://localhost:${https.nio.port}/token"
-    #client_registration_endpoint = "https://localhost:${mgt.transport.https.port}/client-registration/v0.16/register"
+    #client_registration_endpoint = "https://localhost:${mgt.transport.https.port}/client-registration/v0.17/register"
     #client_registration_username = "$ref{super_admin.username}"
     #client_registration_password = "$ref{super_admin.password}"
 
@@ -3969,6 +4085,17 @@ data:
 
     [database.local]
     url = "jdbc:h2:./repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
+
+    [[event_listener]]
+    id = "token_revocation"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "org.wso2.is.notification.ApimOauthEventInterceptor"
+    order = 1
+    [event_listener.properties]
+    notification_endpoint = "https://localhost:${mgt.transport.https.port}/internal/data/v1/notify"
+    username = "${admin.username}"
+    password = "${admin.password}"
+    'header.X-WSO2-KEY-MANAGER' = "default"
 ---
 
 apiVersion: v1
@@ -4047,9 +4174,20 @@ spec:
         - name: init-am-analytics-worker
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-1-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+        - name: init-download-mysql-connector
+          image: busybox:1.31
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              set -e
+              wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.17/mysql-connector-java-8.0.17.jar -P /mysql-connector-jar/
+          volumeMounts:
+            - name: mysql-connector-jar
+              mountPath: /mysql-connector-jar
       containers:
         - name: wso2am-pattern-1-am
-          image: "$image.pull.@.wso2"/wso2am:3.1.0
+          image: "$image.pull.@.wso2"/wso2am:3.2.0
           livenessProbe:
             exec:
               command:
@@ -4102,6 +4240,8 @@ spec:
             - name: wso2am-pattern-1-am-1-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml
+            - name: mysql-connector-jar
+              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/components/dropins
       serviceAccountName: wso2am-pattern-1-svc-account
       imagePullSecrets:
         - name: wso2am-pattern-1-creds
@@ -4109,6 +4249,8 @@ spec:
         - name: wso2am-pattern-1-am-1-conf
           configMap:
             name: wso2am-pattern-1-am-1-conf
+        - name: mysql-connector-jar
+          emptyDir: {}
 ---
 EOF
 }
@@ -4396,7 +4538,7 @@ function deploy(){
     echoBold "\thttps://$NODE_IP:32293/carbon/\n"
     echoBold "\thttps://$NODE_IP:32293/publisher/\n"
     echoBold "\thttps://$NODE_IP:32293/devportal/\n"
-    echoBold "\thttps://$NODE_IP:30643/analytics-dashboard/\n\n"
+    echoBold "\thttps://$NODE_IP:30646/analytics-dashboard/\n\n"
     echoBold "from your favourite browser using credentials admin/admin\n\n"
 
     echoBold "2. Follow \"https://apim.docs.wso2.com/en/latest/GettingStarted/quick-start-guide/\" to start using WSO2 API Manager.\n\n"
