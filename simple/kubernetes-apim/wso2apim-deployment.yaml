@@ -32,9 +32,20 @@ spec:
         - name: init-am-analytics-worker
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-1-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+        - name: init-download-mysql-connector
+          image: busybox:1.31
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              set -e
+              wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.17/mysql-connector-java-8.0.17.jar -P /mysql-connector-jar/
+          volumeMounts:
+            - name: mysql-connector-jar
+              mountPath: /mysql-connector-jar
       containers:
         - name: wso2am-pattern-1-am
-          image: "$image.pull.@.wso2"/wso2am:3.1.0
+          image: "$image.pull.@.wso2"/wso2am:3.2.0
           livenessProbe:
             exec:
               command:
@@ -87,6 +98,8 @@ spec:
             - name: wso2am-pattern-1-am-1-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml
+            - name: mysql-connector-jar
+              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/components/dropins
       serviceAccountName: wso2am-pattern-1-svc-account
       imagePullSecrets:
         - name: wso2am-pattern-1-creds
@@ -94,4 +107,6 @@ spec:
         - name: wso2am-pattern-1-am-1-conf
           configMap:
             name: wso2am-pattern-1-am-1-conf
+        - name: mysql-connector-jar
+          emptyDir: {}
 ---
