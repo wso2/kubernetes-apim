@@ -14,8 +14,8 @@ spec:
     # ports that this service should serve on
     -
       name: 'ui'
-      port: 30643
+      port: 30646
       protocol: TCP
-      targetPort: 30643
-      nodePort: 30643
+      targetPort: 30646
+      nodePort: 30646
 ---

@@ -25,15 +25,26 @@ spec:
         - name: init-apim-analytics-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        - name: init-download-mysql-connector
+          image: busybox:1.31
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              set -e
+              wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.17/mysql-connector-java-8.0.17.jar -P /mysql-connector-jar/
+          volumeMounts:
+            - name: mysql-connector-jar
+              mountPath: /mysql-connector-jar
       containers:
         - name: wso2am-pattern-1-analytics-dashboard
-          image: "$image.pull.@.wso2"/wso2am-analytics-dashboard:3.1.0
+          image: "$image.pull.@.wso2"/wso2am-analytics-dashboard:3.2.0
           livenessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 30643
+                - nc -z localhost 30646
             initialDelaySeconds: 20
             periodSeconds: 10
           readinessProbe:
@@ -41,7 +52,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 30643
+                - nc -z localhost 30646
             initialDelaySeconds: 20
             periodSeconds: 10
           lifecycle:
@@ -60,12 +71,14 @@ spec:
             runAsUser: 802
           ports:
             -
-              containerPort: 30643
+              containerPort: 30646
               protocol: "TCP"
           volumeMounts:
             - name: wso2am-pattern-1-am-analytics-dashboard-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
               subPath: deployment.yaml
+            - name: mysql-connector-jar
+              mountPath: /home/wso2carbon/wso2-artifact-volume/lib
       serviceAccountName: wso2am-pattern-1-svc-account
       imagePullSecrets:
         - name: wso2am-pattern-1-creds
@@ -73,4 +86,6 @@ spec:
         - name: wso2am-pattern-1-am-analytics-dashboard-conf
           configMap:
             name: wso2am-pattern-1-am-analytics-dashboard-conf
+        - name: mysql-connector-jar
+          emptyDir: {}
 ---
