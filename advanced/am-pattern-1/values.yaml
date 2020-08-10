@@ -67,7 +67,7 @@ wso2:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
       # dockerRegistry: ""
       imageName: "wso2am"
-      imageTag: "3.1.0"
+      imageTag: "3.2.0"
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
@@ -94,11 +94,11 @@ wso2:
           memory: "3Gi"
           cpu: "3000m"
 
-      # If the deployment configurations for the WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
+      # If the deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
       # add the customized configuration file under (wso2 -> deployment -> am -> config -> deployment.toml)
 #      config: ""
 #        deployment.toml: |-
-#          # deployment configurations for the WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
+#          # deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
 
     analytics:
       dashboard:
@@ -109,7 +109,7 @@ wso2:
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
         # dockerRegistry: ""
         imageName: "wso2am-analytics-dashboard"
-        imageTag: "3.1.0"
+        imageTag: "3.2.0"
         # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
         imagePullPolicy: Always
 
@@ -148,18 +148,18 @@ wso2:
             memory: "4Gi"
             cpu: "2000m"
 
-        # If the deployment configurations for the Dashboard profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml),
+        # If the deployment configurations for the Dashboard profile of WSO2 API Manager Analytics v3.2.0 (<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml),
         # add the customized configuration file under (wso2 -> deployment -> analytics -> dashboard -> config -> deployment.yaml)
 #        config:
 #          deployment.yaml: |-
-#            # deployment configurations for the Dashboard profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml)
+#            # deployment configurations for the Dashboard profile of WSO2 API Manager Analytics v3.2.0 (<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml)
 
       worker:
         # Container image configurations
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
         # dockerRegistry: ""
         imageName: "wso2am-analytics-worker"
-        imageTag: "3.1.0"
+        imageTag: "3.2.0"
         # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
         imagePullPolicy: Always
 
@@ -189,11 +189,11 @@ wso2:
             memory: "4Gi"
             cpu: "2000m"
 
-        # If the deployment configurations for the Worker profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/worker/deployment.yaml),
+        # If the deployment configurations for the Worker profile of WSO2 API Manager Analytics v3.2.0 (<WSO2AM_ANALYTICS>/conf/worker/deployment.yaml),
         # add the customized configuration file under (wso2 -> deployment -> analytics -> worker -> config -> deployment.yaml)
 #        config:
 #          deployment.yaml: |-
-#            # deployment configurations for the Worker profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/worker/deployment.yaml)
+#            # deployment configurations for the Worker profile of WSO2 API Manager Analytics v3.2.0 (<WSO2AM_ANALYTICS>/conf/worker/deployment.yaml)
 
 kubernetes:
   # Name of Kubernetes service account
