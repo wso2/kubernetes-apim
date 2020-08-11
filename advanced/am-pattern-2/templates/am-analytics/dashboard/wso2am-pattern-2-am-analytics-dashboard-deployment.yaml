@@ -37,11 +37,23 @@ spec:
       initContainers:
       {{- if .Values.wso2.deployment.dependencies.mysql }}
         - name: init-mysql-db
-          image: busybox:1.31
+          image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> DBMS service is available";']
+        - name: init-mysql-connector-download
+          image: busybox:1.32
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              set -e
+              connector_version=8.0.17
+              wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/${connector_version}/mysql-connector-java-${connector_version}.jar -P /mysql-connector-jar/
+          volumeMounts:
+            - name: mysql-connector-jar
+              mountPath: /mysql-connector-jar
       {{- end }}
         - name: init-am
-          image: busybox:1.31
+          image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of API Manager deployment"; while ! nc -z  {{ template "am-pattern-2.resource.prefix" . }}-am-service 9443; do sleep 1; printf "-"; done; echo -e "  >> API Manager service has started";']
       containers:
       - name: wso2am-analytics-dashboard
@@ -91,6 +103,10 @@ spec:
           - name: wso2am-analytics-dashboard-conf
             mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
             subPath: deployment.yaml
+          {{ if .Values.wso2.deployment.dependencies.mysql }}
+          - name: mysql-connector-jar
+            mountPath: /home/wso2carbon/wso2-artifact-volume/lib
+          {{ end }}
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.analytics.dashboard.imagePullSecrets }}
       imagePullSecrets:
@@ -103,3 +119,7 @@ spec:
         - name: wso2am-analytics-dashboard-conf
           configMap:
             name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard-conf
+        {{ if .Values.wso2.deployment.dependencies.mysql }}
+        - name: mysql-connector-jar
+          emptyDir: {}
+        {{ end }}
