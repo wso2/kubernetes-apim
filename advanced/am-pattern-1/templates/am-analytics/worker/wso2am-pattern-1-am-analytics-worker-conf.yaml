@@ -378,7 +378,7 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_PERMISSIONS_DB?useSSL=false&allowPublicKeyRetrieval=true'
+              jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_PERMISSIONS_DB?useSSL=false'
               username: wso2carbon
               password: wso2carbon
               driverClassName: com.mysql.cj.jdbc.Driver
@@ -411,7 +411,7 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_STATS_DB?useSSL=false&allowPublicKeyRetrieval=true'
+              jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_STATS_DB?useSSL=false'
               username: wso2carbon
               password: wso2carbon
               driverClassName: com.mysql.cj.jdbc.Driver
@@ -433,7 +433,7 @@ data:
               driverClassName: com.mysql.cj.jdbc.Driver
               idleTimeout: 60000
               isAutoCommit: false
-              jdbcUrl: "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2_CLUSTER_DB?useSSL=false&allowPublicKeyRetrieval=true"
+              jdbcUrl: "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2_CLUSTER_DB?useSSL=false"
               maxPoolSize: 50
               password: wso2carbon
               username: wso2carbon
@@ -451,7 +451,7 @@ data:
               driverClassName: com.mysql.cj.jdbc.Driver
               idleTimeout: 60000
               isAutoCommit: false
-              jdbcUrl: "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2_PERSISTENCE_DB?useSSL=false&allowPublicKeyRetrieval=true"
+              jdbcUrl: "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2_PERSISTENCE_DB?useSSL=false"
               maxPoolSize: 50
               password: wso2carbon
               username: wso2carbon

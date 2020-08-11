@@ -36,12 +36,27 @@ spec:
       initContainers:
         {{ if .Values.wso2.deployment.dependencies.mysql }}
         - name: init-mysql-db
-          image: busybox:1.31
+          image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        - name: init-mysql-connector-download
+          image: busybox:1.32
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              set -e
+              connector_version=8.0.17
+              wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/${connector_version}/mysql-connector-java-${connector_version}.jar -P /mysql-connector-jar/
+          volumeMounts:
+            - name: mysql-connector-jar
+              mountPath: /mysql-connector-jar
         {{ end }}
         - name: init-am-analytics-worker
-          image: busybox:1.31
+          image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+        - name: init-am-instance-one
+          image: busybox:1.32
+          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager instance one deployment"; while ! nc -z {{ template "am-pattern-1.resource.prefix" . }}-am-1-service 9443; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager instance one has started";']
       containers:
         - name: wso2am
           {{- if .Values.wso2.deployment.am.dockerRegistry }}
@@ -119,6 +134,10 @@ spec:
               mountPath: /home/wso2carbon/docker-entrypoint.sh
               subPath: docker-entrypoint.sh
             {{ end }}
+            {{ if .Values.wso2.deployment.dependencies.mysql }}
+            - name: mysql-connector-jar
+              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/components/dropins
+            {{ end }}
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
@@ -148,4 +167,8 @@ spec:
           configMap:
             name: {{ template "am-pattern-1.resource.prefix" . }}-am-conf-entrypoint
             defaultMode: 0407
+        {{ end }}
+        {{ if .Values.wso2.deployment.dependencies.mysql }}
+        - name: mysql-connector-jar
+          emptyDir: {}
         {{ end }}
