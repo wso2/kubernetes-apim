@@ -105,13 +105,11 @@ spec:
                   fieldPath: status.podIP
           volumeMounts:
             - name: wso2am-executionplans-storage
-              mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
+              mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/executionplans
             - name: wso2am-synapse-configs-storage
-              mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/synapse-configs
+              mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/synapse-configs
             - name: wso2am-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-            - name: wso2am-event-publishers-conf
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/eventpublishers
             {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
             - name: wso2am-local-carbon-database-storage
               mountPath: /home/wso2carbon/solr/database
@@ -136,9 +134,6 @@ spec:
         - name: wso2am-synapse-configs-storage
           persistentVolumeClaim:
             claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-shared-synapse-configs-volume-claim
-        - name: wso2am-event-publishers-conf
-          configMap:
-            name: {{ template "am-pattern-1.resource.prefix" . }}-am-event-publishers-conf
         - name: wso2am-conf
           configMap:
             name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-conf
