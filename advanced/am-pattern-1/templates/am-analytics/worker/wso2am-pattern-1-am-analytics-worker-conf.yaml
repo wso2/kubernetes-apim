@@ -378,7 +378,7 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_PERMISSIONS_DB?useSSL=false'
+              jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_PERMISSIONS_DB?useSSL=false&allowPublicKeyRetrieval=true'
               username: wso2carbon
               password: wso2carbon
               driverClassName: com.mysql.cj.jdbc.Driver
@@ -411,7 +411,7 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_STATS_DB?useSSL=false'
+              jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_STATS_DB?useSSL=false&allowPublicKeyRetrieval=true'
               username: wso2carbon
               password: wso2carbon
               driverClassName: com.mysql.cj.jdbc.Driver
@@ -541,8 +541,7 @@ data:
     #analytics.solutions:
     #  APIM-alerts.enabled: true
 
-
-      # Sample of deployment.config for Two node HA
+    # Sample of deployment.config for Two node HA
     deployment.config:
       type: ha
       passiveNodeDetailsWaitTimeOutMillis: 300000
@@ -562,22 +561,6 @@ data:
         maxIdle: 10
         maxWait: 60000
         minEvictableIdleTimeMillis: 120000
-
-    #deployment.config:
-    #  type: ha
-    #  eventSyncServer:
-    #    host: localhost
-    #    port: 9893
-    #    advertisedHost: localhost
-    #    advertisedPort: 9893
-    #    bossThreads: 10
-    #    workerThreads: 10
-    #  eventSyncClientPool:
-    #    maxActive: 10
-    #    maxTotal: 10
-    #    maxIdle: 10
-    #    maxWait: 60000
-    #    minEvictableIdleTimeMillis: 120000
 
       # Sample of deployment.config for Distributed deployment
     #deployment.config:
