@@ -31,7 +31,6 @@ data:
     hostname = "{{ template "am-pattern-2.resource.prefix" . }}-km"
     node_ip = "$env{NODE_IP}"
     server_role = "api-key-manager"
-    offset = "0"
 
     [user_store]
     type = "database_unique_id"
@@ -67,19 +66,6 @@ data:
     type = "JKS"
     password = "wso2carbon"
 
-    [[apim.gateway.environment]]
-    name = "Production and Sandbox"
-    type = "hybrid"
-    display_in_api_console = true
-    description = "This is a hybrid gateway that handles both production and sandbox token traffic."
-    show_as_token_endpoint_url = true
-    service_url = "https://localhost:${mgt.transport.https.port}/services/"
-    username= "${admin.username}"
-    password= "${admin.password}"
-
-    [transport.https.properties]
-    proxyPort = 443
-
     # Caches
     [apim.cache.km_token]
     enable = false
@@ -111,4 +97,19 @@ data:
     traffic_manager_urls = ["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-2-service:9611"]
     traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-2.resource.prefix" . }}-am-2-service:9711"]
     type = "loadbalance"
+
+    [[event_handler]]
+    name="userPostSelfRegistration"
+    subscriptions=["POST_ADD_USER"]
+
+    [[event_listener]]
+    id = "token_revocation"
+    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+    name = "org.wso2.is.notification.ApimOauthEventInterceptor"
+    order = 1
+    [event_listener.properties]
+    notification_endpoint = "https://localhost:${mgt.transport.https.port}/internal/data/v1/notify"
+    username = "${admin.username}"
+    password = "${admin.password}"
+    'header.X-WSO2-KEY-MANAGER' = "default"
   {{- end }}
