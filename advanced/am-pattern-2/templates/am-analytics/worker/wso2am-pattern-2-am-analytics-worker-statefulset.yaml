@@ -33,7 +33,7 @@ spec:
       {{ if .Values.wso2.deployment.dependencies.mysql }}
       initContainers:
         - name: init-mysql-db
-          image: busybox:1.31
+          image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
         - name: init-mysql-connector-download
           image: busybox:1.32
