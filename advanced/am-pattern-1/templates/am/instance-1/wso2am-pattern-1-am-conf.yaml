@@ -46,14 +46,14 @@ data:
 
     [database.apim_db]
     type = "mysql"
-    url = "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DB?autoReconnect=true&amp;useSSL=false"
+    url = "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false"
     username = "wso2carbon"
     password = "wso2carbon"
     driver = "com.mysql.cj.jdbc.Driver"
 
     [database.shared_db]
     type = "mysql"
-    url = "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_SHARED_DB?autoReconnect=true&amp;useSSL=false"
+    url = "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_SHARED_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false"
     username = "wso2carbon"
     password = "wso2carbon"
     driver = "com.mysql.cj.jdbc.Driver"
@@ -136,11 +136,6 @@ data:
     type = "failover"
 
     #[[apim.analytics.url_group]]
-    #analytics_url =["tcp://analytics1:7611","tcp://analytics2:7611"]
-    #analytics_auth_url =["ssl://analytics1:7711","ssl://analytics2:7711"]
-    #type = "loadbalance"
-
-    #[[apim.analytics.url_group]]
     #analytics_url =["tcp://analytics1:7612","tcp://analytics2:7612"]
     #analytics_auth_url =["ssl://analytics1:7712","ssl://analytics2:7712"]
     #type = "failover"
@@ -192,9 +187,6 @@ data:
     #enable_forum = true
     #enable_anonymous_mode=true
 
-    [transport.https.properties]
-    proxyPort = 443
-
     [apim.cors]
     allow_origins = "*"
     allow_methods = ["GET","PUT","POST","DELETE","PATCH","OPTIONS"]
@@ -233,16 +225,6 @@ data:
     traffic_manager_urls = ["tcp://{{ template "am-pattern-1.resource.prefix" . }}-am-2-service:9611"]
     traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-1.resource.prefix" . }}-am-2-service:9711"]
     type = "loadbalance"
-
-    #[[apim.throttling.url_group]]
-    #traffic_manager_urls = ["tcp://localhost:9611","tcp://localhost:9611"]
-    #traffic_manager_auth_urls = ["ssl://localhost:9711","ssl://localhost:9711"]
-    #type = "loadbalance"
-
-    #[[apim.throttling.url_group]]
-    #traffic_manager_urls = ["tcp://localhost:9611","tcp://localhost:9611"]
-    #traffic_manager_auth_urls = ["ssl://localhost:9711","ssl://localhost:9711"]
-    #type = "failover"
 
     #[apim.workflow]
     #enable = false
@@ -305,6 +287,17 @@ data:
     username = "${admin.username}"
     password = "${admin.password}"
     'header.X-WSO2-KEY-MANAGER' = "default"
+
+    [transport.https.properties]
+    proxyPort = 443
+
+    [[apim.event_hub.publish.url_group]]
+    urls = ["tcp://localhost:9611"]
+    auth_urls = ["ssl://localhost:9711"]
+
+    [[apim.event_hub.publish.url_group]]
+    urls = ["tcp://{{ template "am-pattern-1.resource.prefix" . }}-am-2-service:9611"]
+    auth_urls = ["ssl://{{ template "am-pattern-1.resource.prefix" . }}-am-2-service:9711"]
 
     {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
     [database.local]
