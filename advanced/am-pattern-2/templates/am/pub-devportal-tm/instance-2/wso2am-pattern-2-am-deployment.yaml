@@ -113,7 +113,7 @@ spec:
                   fieldPath: status.podIP
           volumeMounts:
             - name: wso2am-executionplans-storage
-              mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
+              mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/executionplans
             - name: wso2am-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
             {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
