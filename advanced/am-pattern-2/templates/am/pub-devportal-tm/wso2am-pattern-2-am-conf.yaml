@@ -309,4 +309,4 @@ data:
     [database.local]
     url = "jdbc:h2:./repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
     {{ end }}
-  {{- end }}
+  {{ end }}
