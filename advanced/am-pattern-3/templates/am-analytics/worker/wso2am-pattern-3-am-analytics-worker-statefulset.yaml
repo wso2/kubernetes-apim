@@ -33,8 +33,20 @@ spec:
       {{ if .Values.wso2.deployment.dependencies.mysql }}
       initContainers:
         - name: init-mysql-db
-          image: busybox:1.31
+          image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        - name: init-mysql-connector-download
+          image: busybox:1.32
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              set -e
+              connector_version=8.0.17
+              wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/${connector_version}/mysql-connector-java-${connector_version}.jar -P /mysql-connector-jar/
+          volumeMounts:
+            - name: mysql-connector-jar
+              mountPath: /mysql-connector-jar
       {{ end }}
       containers:
         - name: wso2am-analytics-worker
@@ -97,6 +109,10 @@ spec:
             - name: wso2am-analytics-worker-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/worker/deployment.yaml
               subPath: deployment.yaml
+            {{ if .Values.wso2.deployment.dependencies.mysql }}
+            - name: mysql-connector-jar
+              mountPath: /home/wso2carbon/wso2-artifact-volume/lib
+            {{ end }}
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
@@ -109,3 +125,7 @@ spec:
         - name: wso2am-analytics-worker-conf
           configMap:
             name: {{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-conf
+        {{ if .Values.wso2.deployment.dependencies.mysql }}
+        - name: mysql-connector-jar
+          emptyDir: {}
+        {{ end }}
