@@ -107,7 +107,7 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: wso2am-gateway-storage-volume
-          mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/synapse-configs
+          mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/synapse-configs
         - name: wso2am-gateway-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
           subPath: deployment.toml
