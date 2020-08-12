@@ -291,6 +291,14 @@ data:
     [transport.https.properties]
     proxyPort = 443
 
+    [[apim.event_hub.publish.url_group]]
+    urls = ["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-1-service:9611"]
+    auth_urls = ["ssl://{{ template "am-pattern-2.resource.prefix" . }}-am-1-service:9711"]
+
+    [[apim.event_hub.publish.url_group]]
+    urls = ["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-2-service:9611"]
+    auth_urls = ["ssl://{{ template "am-pattern-2.resource.prefix" . }}-am-2-service:9711"]
+
     {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
     [database.local]
     url = "jdbc:h2:/home/wso2carbon/solr/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
