@@ -70,30 +70,20 @@ data:
     name="userPostSelfRegistration"
     subscriptions=["POST_ADD_USER"]
 
-    [apim.event_hub]
-    service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-service:9443"
-    event_listening_endpoints = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672","tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672"]
-
-    [[apim.event_hub.publish.url_group]]
-    urls = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:9611"]
-    auth_urls = ["ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:9711"]
-
-    [[apim.event_hub.publish.url_group]]
-    urls = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:9611"]
-    auth_urls = ["ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:9711"]
-
     [[event_listener]]
     id = "token_revocation"
     type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
     name = "org.wso2.is.notification.ApimOauthEventInterceptor"
     order = 1
     [event_listener.properties]
-    notification_endpoint = "https://localhost:${mgt.transport.https.port}/internal/data/v1/notify"
+    notification_endpoint = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-service:${mgt.transport.https.port}/internal/data/v1/notify"
     username = "${admin.username}"
     password = "${admin.password}"
     'header.X-WSO2-KEY-MANAGER' = "default"
 
     [apim.throttling]
+    username= "$ref{super_admin.username}"
+    password= "$ref{super_admin.password}"
     throttle_decision_endpoints = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672","tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672"]
 
     [[apim.throttling.url_group]]
