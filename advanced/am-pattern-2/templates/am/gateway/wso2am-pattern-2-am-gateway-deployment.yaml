@@ -15,7 +15,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway-deployment
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-gateway-deployment
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.wso2.deployment.am.gateway.replicas }}
@@ -26,27 +26,27 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway
+      deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-gateway
   template:
     metadata:
       annotations:
-        checksum.am.km.conf: {{ include (print $.Template.BasePath "/am/gateway/wso2am-pattern-2-am-gateway-conf.yaml") . | sha256sum }}
+        checksum.am.km.conf: {{ include (print $.Template.BasePath "/am/gateway/wso2am-pattern-3-am-gateway-conf.yaml") . | sha256sum }}
       labels:
-        deployment: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway
+        deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-gateway
     spec:
       initContainers:
       - name: init-apim-analytics
         image: busybox:1.32
-        command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
+        command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       - name: init-km
         image: busybox:1.32
-        command: ['sh', '-c', 'echo -e "Checking for the availability of Key Manager deployment"; while ! nc -z {{ template "am-pattern-2.resource.prefix" . }}-km-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Key Manager has started";']
-      - name: init-apim-1
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Key Manager deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-km-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Key Manager has started";']
+      - name: init-tm-1
         image: busybox:1.32
-        command: ['sh', '-c', 'echo -e "Checking for the availability of API Manager instance one deployment"; while ! nc -z {{ template "am-pattern-2.resource.prefix" . }}-am-1-service 9611; do sleep 1; printf "-"; done; echo -e "  >> API Manager instance one has started";']
-      - name: init-apim-2
+        command: ['sh', '-c', 'echo -e "Checking for the availability of TM instance one deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service 9611; do sleep 1; printf "-"; done; echo -e "  >> TM instance one has started";']
+      - name: init-tm-2
         image: busybox:1.32
-        command: ['sh', '-c', 'echo -e "Checking for the availability of API Manager instance two deployment"; while ! nc -z {{ template "am-pattern-2.resource.prefix" . }}-am-2-service 9611; do sleep 1; printf "-"; done; echo -e "  >> API Manager instance two has started";']
+        command: ['sh', '-c', 'echo -e "Checking for the availability of TM instance two deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service 9611; do sleep 1; printf "-"; done; echo -e "  >> TM instance two has started";']
       containers:
       - name: wso2am-gateway
         {{- if .Values.wso2.deployment.am.dockerRegistry }}
@@ -73,16 +73,16 @@ spec:
               - /bin/sh
               - -c
               - nc -z localhost 8243
-          initialDelaySeconds: {{ .Values.wso2.deployment.am.gateway.livenessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.wso2.deployment.am.gateway.livenessProbe.periodSeconds }}
+          initialDelaySeconds: {{ .Values.wso2.deployment.am.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.wso2.deployment.am.livenessProbe.periodSeconds }}
         readinessProbe:
           exec:
             command:
               - /bin/sh
               - -c
               - nc -z localhost 8243
-          initialDelaySeconds: {{ .Values.wso2.deployment.am.gateway.readinessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.wso2.deployment.am.gateway.readinessProbe.periodSeconds }}
+          initialDelaySeconds: {{ .Values.wso2.deployment.am.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.wso2.deployment.am.readinessProbe.periodSeconds }}
         lifecycle:
           preStop:
             exec:
@@ -109,20 +109,19 @@ spec:
         - name: wso2am-gateway-storage-volume
           mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/synapse-configs
         - name: wso2am-gateway-conf
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
-          subPath: deployment.toml
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: {{ template "am-pattern-2.resource.prefix" . }}-wso2-private-registry-creds
+        - name: {{ template "am-pattern-3.resource.prefix" . }}-wso2-private-registry-creds
       {{ end }}
       volumes:
       - name: wso2am-gateway-storage-volume
         persistentVolumeClaim:
-          claimName: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway-shared-synapse-configs-volume-claim
+          claimName: {{ template "am-pattern-3.resource.prefix" . }}-am-gateway-shared-synapse-configs-volume-claim
       - name: wso2am-gateway-conf
         configMap:
-          name: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway-conf
+          name: {{ template "am-pattern-3.resource.prefix" . }}-am-gateway-conf
