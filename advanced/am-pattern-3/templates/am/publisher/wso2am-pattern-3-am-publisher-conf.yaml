@@ -77,6 +77,13 @@ data:
     http_endpoint = "http://{{ .Values.wso2.deployment.am.gateway.hostname }}"
     https_endpoint = "https://{{ .Values.wso2.deployment.am.gateway.hostname }}"
 
+
+    # key manager implementation
+    [apim.key_manager]
+    service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-km-service:${mgt.transport.https.port}/services/"
+    username= "$ref{super_admin.username}"
+    password= "$ref{super_admin.password}"
+
     [apim.analytics]
     enable = "true"
     store_api_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-service:7444"
