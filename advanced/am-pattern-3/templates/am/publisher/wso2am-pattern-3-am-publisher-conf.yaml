@@ -31,7 +31,6 @@ data:
     hostname = "{{ .Values.wso2.deployment.am.publisher.hostname }}"
     node_ip = "$env{NODE_IP}"
     server_role = "api-publisher"
-    offset = "0"
 
     [user_store]
     type = "database_unique_id"
@@ -75,8 +74,6 @@ data:
     service_url= "https://{{ template "am-pattern-3.resource.prefix" . }}-am-gateway-service:${mgt.transport.https.port}${carbon.context}services/"
     username= "${admin.username}"
     password= "${admin.password}"
-    ws_endpoint = "ws://{{ template "am-pattern-3.resource.prefix" . }}-am-gateway-service:9099"
-    wss_endpoint = "wss://{{ template "am-pattern-3.resource.prefix" . }}-am-gateway-service:8099"
     http_endpoint = "http://{{ .Values.wso2.deployment.am.gateway.hostname }}"
     https_endpoint = "https://{{ .Values.wso2.deployment.am.gateway.hostname }}"
 
@@ -124,7 +121,7 @@ data:
     password = "$ref{super_admin.password}"
     callback_endpoint = "https://localhost:9443/api/am/publisher/v0.16/workflows/update-workflow-status"
     token_endpoint = "https://localhost:8243/token"
-    client_registration_endpoint = "https://localhost:9443/client-registration/v0.16/register"
+    client_registration_endpoint = "https://localhost:9443/client-registration/v0.17/register"
     client_registration_username = "$ref{super_admin.username}"
     client_registration_password = "$ref{super_admin.password}"
 
