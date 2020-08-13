@@ -31,7 +31,6 @@ data:
     hostname = "{{ .Values.wso2.deployment.am.gateway.hostname }}"
     node_ip = "$env{NODE_IP}"
     server_role = "gateway-worker"
-    offset = "0"
 
     [user_store]
     type = "database_unique_id"
@@ -58,22 +57,34 @@ data:
     file_name = "client-truststore.jks"
     type = "JKS"
     password = "wso2carbon"
-    # key manager implementation
 
+    # key manager implementation
     [apim.key_manager]
     service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-km-service:${mgt.transport.https.port}/services/"
     username= "$ref{super_admin.username}"
     password= "$ref{super_admin.password}"
 
+    # JWT Generation
+    [apim.jwt]
+    enable = true
+    encoding = "base64" # base64,base64url
+    #generator_impl = "org.wso2.carbon.apimgt.keymgt.token.JWTGenerator"
+    claim_dialect = "http://wso2.org/claims"
+    header = "X-JWT-Assertion"
+    signing_algorithm = "SHA256withRSA"
+    #enable_user_claims = true
+    #claims_extractor_impl = "org.wso2.carbon.apimgt.impl.token.DefaultClaimsRetriever"
+
     # Traffic Manager configurations
     [apim.throttling]
     username= "$ref{super_admin.username}"
     password= "$ref{super_admin.password}"
+    service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-service:${mgt.transport.https.port}/services/"
+    throttle_decision_endpoints = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672","tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672"]
     enable_unlimited_tier = true
     enable_header_based_throttling = false
     enable_jwt_claim_based_throttling = false
     enable_query_param_based_throttling = false
-    throttle_decision_endpoints = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672","tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672"]
 
     [[apim.throttling.url_group]]
     traffic_manager_urls = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:9611"]
@@ -85,28 +96,28 @@ data:
     traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:9711"]
     type = "loadbalance"
 
-    [transport.https.properties]
-    proxyPort = 443
-
     [apim.analytics]
-    enable = "True"
+    enable = "true"
     username= "$ref{super_admin.username}"
     password= "$ref{super_admin.password}"
     store_api_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-service:7444"
-    store_api_username = "${admin.username}"
-    store_api_password = "${admin.password}"
 
     [[apim.analytics.url_group]]
     analytics_url =["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7612","tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7612"]
     analytics_auth_url =["ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7712","ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7712"]
     type = "failover"
 
+    # Caches
     [apim.cache.gateway_token]
     enable = true
     expiry_time = 15
 
     [apim.cache.resource]
     enable = true
+
+    [apim.cache.jwt_claim]
+    enable = true
+    expiry_time = 900
 
     [apim.oauth_config]
     remove_outbound_auth_header = true
@@ -117,6 +128,9 @@ data:
     allow_methods = ["GET","PUT","POST","DELETE","PATCH","OPTIONS"]
     allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction"]
     allow_credentials = false
+
+    [transport.https.properties]
+    proxyPort = 443
 
     [transport.passthru_https.sender.parameters]
     HostnameVerifier = "AllowAll"
