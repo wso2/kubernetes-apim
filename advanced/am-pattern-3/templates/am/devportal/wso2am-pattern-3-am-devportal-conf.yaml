@@ -31,7 +31,6 @@ data:
     hostname = "{{ .Values.wso2.deployment.am.devportal.hostname }}"
     node_ip = "$env{NODE_IP}"
     server_role="api-devportal"
-    offset = "0"
 
     [user_store]
     type = "database_unique_id"
@@ -67,6 +66,12 @@ data:
     type = "JKS"
     password = "wso2carbon"
 
+    # key manager implementation
+    [apim.key_manager]
+    service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-km-service:${mgt.transport.https.port}/services/"
+    username= "$ref{super_admin.username}"
+    password= "$ref{super_admin.password}"
+
     [[apim.gateway.environment]]
     name= "Production and Sandbox"
     type= "hybrid"
@@ -75,16 +80,10 @@ data:
     service_url= "https://{{ template "am-pattern-3.resource.prefix" . }}-am-gateway-service:${mgt.transport.https.port}${carbon.context}services/"
     username= "${admin.username}"
     password= "${admin.password}"
-    ws_endpoint= "ws://{{ template "am-pattern-3.resource.prefix" . }}-am-gateway-service:9099"
-    wss_endpoint = "wss://{{ template "am-pattern-3.resource.prefix" . }}-am-gateway-service:8099"
+    ws_endpoint= "ws://api.gw.wso2.com:9099"
     http_endpoint = "http://{{ .Values.wso2.deployment.am.gateway.hostname }}"
     https_endpoint = "https://{{ .Values.wso2.deployment.am.gateway.hostname }}"
     show_as_token_endpoint_url = true
-
-    [apim.key_manager]
-    service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-km-service:${mgt.transport.https.port}/services/"
-    username= "$ref{super_admin.username}"
-    password= "$ref{super_admin.password}"
 
     [apim.analytics]
     enable = "true"
@@ -106,11 +105,6 @@ data:
     [apim.cache.tags]
     expiry_time = 120000
 
-    [apim.oauth_config]
-    revoke_endpoint = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-gateway-service:8243/revoke"
-    enable_token_encryption = false
-    enable_token_hashing = false
-
     [apim.devportal]
     enable_application_sharing = true
     application_sharing_type = "default" #changed to type, saml, default
@@ -127,6 +121,8 @@ data:
 
     # Traffic Manager configurations
     [apim.throttling]
+    username= "$ref{super_admin.username}"
+    password= "$ref{super_admin.password}"
     throttle_decision_endpoints = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672","tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672"]
 
     [[apim.throttling.url_group]]
