@@ -34,14 +34,26 @@ spec:
       initContainers:
         {{- if .Values.wso2.deployment.dependencies.mysql }}
         - name: init-apim-db
-          image: busybox:1.31
+          image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> DBMS service is available";']
+        - name: init-mysql-connector-download
+          image: busybox:1.32
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              set -e
+              connector_version=8.0.17
+              wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/${connector_version}/mysql-connector-java-${connector_version}.jar -P /mysql-connector-jar/
+          volumeMounts:
+            - name: mysql-connector-jar
+              mountPath: /mysql-connector-jar
         {{- end }}
         - name: init-km
-          image: busybox:1.31
+          image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of Key Manager deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-km-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Key Manager has started";']
         - name: init-apim-analytics
-          image: busybox:1.31
+          image: busybox:1.32
           command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       containers:
         - name: wso2am-publisher
@@ -108,6 +120,10 @@ spec:
             mountPath: /home/wso2carbon/docker-entrypoint.sh
             subPath: docker-entrypoint.sh
           {{ end }}
+          {{ if .Values.wso2.deployment.dependencies.mysql }}
+          - name: mysql-connector-jar
+            mountPath: /home/wso2carbon/wso2-artifact-volume/repository/components/dropins
+          {{ end }}
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
@@ -131,4 +147,8 @@ spec:
         - name: wso2am-publisher-indexed-data-volume
           persistentVolumeClaim:
             claimName: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-1-solr-indexed-data-volume-claim
+        {{ end }}
+        {{ if .Values.wso2.deployment.dependencies.mysql }}
+        - name: mysql-connector-jar
+          emptyDir: {}
         {{ end }}
