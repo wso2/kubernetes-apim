@@ -36,16 +36,16 @@ spec:
     spec:
       initContainers:
       - name: init-apim-analytics
-        image: busybox:1.31
+        image: busybox:1.32
         command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       - name: init-km
-        image: busybox:1.31
+        image: busybox:1.32
         command: ['sh', '-c', 'echo -e "Checking for the availability of Key Manager deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-km-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Key Manager has started";']
       - name: init-tm-1
-        image: busybox:1.31
+        image: busybox:1.32
         command: ['sh', '-c', 'echo -e "Checking for the availability of TM instance one deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service 9611; do sleep 1; printf "-"; done; echo -e "  >> TM instance one has started";']
       - name: init-tm-2
-        image: busybox:1.31
+        image: busybox:1.32
         command: ['sh', '-c', 'echo -e "Checking for the availability of TM instance two deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service 9611; do sleep 1; printf "-"; done; echo -e "  >> TM instance two has started";']
       containers:
       - name: wso2am-gateway
@@ -107,7 +107,7 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: wso2am-gateway-storage-volume
-          mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/synapse-configs
+          mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/synapse-configs
         - name: wso2am-gateway-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
