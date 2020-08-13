@@ -89,7 +89,7 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: wso2am-tm-shared-storage-volume
-              mountPath: /home/wso2carbon/wso2am-3.1.0/repository/deployment/server/executionplans
+              mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/executionplans
             - name: wso2am-tm-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
