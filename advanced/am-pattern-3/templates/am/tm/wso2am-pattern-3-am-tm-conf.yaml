@@ -29,10 +29,9 @@ data:
 data:
   deployment.toml: |-
     [server]
-    hostname = "{{ template "am-pattern-3.resource.prefix" . }}-tm"
+    #hostname = "{{ template "am-pattern-3.resource.prefix" . }}-tm"
     node_ip = "$env{NODE_IP}"
     server_role = "traffic-manager"
-    offset = "0"
 
     [user_store]
     type = "database_unique_id"
@@ -48,6 +47,12 @@ data:
     username = "wso2carbon"
     password = "wso2carbon"
 
+    [database.apim_db]
+    type = "h2"
+    url = "jdbc:h2:./repository/database/WSO2AM_DB;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE"
+    username = "wso2carbon"
+    password = "wso2carbon"
+
     [keystore.tls]
     file_name =  "wso2carbon.jks"
     type =  "JKS"
@@ -59,4 +64,13 @@ data:
     file_name = "client-truststore.jks"
     type = "JKS"
     password = "wso2carbon"
+
+    # key manager implementation
+    [apim.key_manager]
+    service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-km-service:9443/services/"
+
+    [apim.oauth_config]
+    revoke_endpoint = "https://{{ template "am-pattern-3.resource.prefix" . }}-km-service:9443/oauth2/revoke"
+    enable_token_encryption = false
+    enable_token_hashing = false
   {{- end }}
