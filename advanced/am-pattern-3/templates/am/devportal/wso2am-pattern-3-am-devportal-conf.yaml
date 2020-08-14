@@ -135,6 +135,18 @@ data:
     traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:9711"]
     type = "loadbalance"
 
+    [apim.event_hub]
+    service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-service:9443"
+    event_listening_endpoints = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672","tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672"]
+
+    [[apim.event_hub.publish.url_group]]
+    urls = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:9611"]
+    auth_urls = ["ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:9711"]
+
+    [[apim.event_hub.publish.url_group]]
+    urls = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:9611"]
+    auth_urls = ["ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:9711"]
+
     [transport.https.properties]
     proxyPort = 443
 
