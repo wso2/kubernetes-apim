@@ -79,13 +79,12 @@ data:
     [apim.throttling]
     username= "$ref{super_admin.username}"
     password= "$ref{super_admin.password}"
-
+    service_url = "https://{{ template "am-pattern-2.resource.prefix" . }}-am-service:${mgt.transport.https.port}/services/"
+    throttle_decision_endpoints = ["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-1-service:5672","tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-2-service:5672"]
     enable_unlimited_tier = true
     enable_header_based_throttling = false
     enable_jwt_claim_based_throttling = false
     enable_query_param_based_throttling = false
-
-    throttle_decision_endpoints = ["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-1-service:5672","tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-2-service:5672"]
 
     [[apim.throttling.url_group]]
     traffic_manager_urls = ["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-1-service:9611"]
@@ -130,6 +129,12 @@ data:
     allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction"]
     allow_credentials = false
 
+    [transport.https.properties]
+    proxyPort = 443
+
+    [transport.passthru_https.sender.parameters]
+    HostnameVerifier = "AllowAll"
+
     [apim.event_hub]
     service_url = "https://{{ template "am-pattern-2.resource.prefix" . }}-am-service:9443"
     event_listening_endpoints = ["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-1-service:5672","tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-2-service:5672"]
@@ -141,10 +146,4 @@ data:
     [[apim.event_hub.publish.url_group]]
     urls = ["tcp://{{ template "am-pattern-2.resource.prefix" . }}-am-2-service:9611"]
     auth_urls = ["ssl://{{ template "am-pattern-2.resource.prefix" . }}-am-2-service:9711"]
-
-    [transport.https.properties]
-    proxyPort = 443
-
-    [transport.passthru_https.sender.parameters]
-    HostnameVerifier = "AllowAll"
   {{- end }}
