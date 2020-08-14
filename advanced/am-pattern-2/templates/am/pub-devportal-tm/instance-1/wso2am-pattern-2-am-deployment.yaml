@@ -28,7 +28,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum.am.conf: {{ include (print $.Template.BasePath "/am/pub-devportal-tm/wso2am-pattern-2-am-conf.yaml") . | sha256sum }}
+        checksum.am.conf: {{ include (print $.Template.BasePath "/am/pub-devportal-tm/instance-1/wso2am-pattern-2-am-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-2.resource.prefix" . }}-am
         node: {{ template "am-pattern-2.resource.prefix" . }}-am-1
@@ -143,7 +143,7 @@ spec:
             claimName: {{ template "am-pattern-2.resource.prefix" . }}-am-shared-executionplans-volume-claim
         - name: wso2am-conf
           configMap:
-            name: {{ template "am-pattern-2.resource.prefix" . }}-am-conf
+            name: {{ template "am-pattern-2.resource.prefix" . }}-am-1-conf
         {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
         - name: wso2am-local-carbon-database-storage
           persistentVolumeClaim:
