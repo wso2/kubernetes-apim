@@ -59,6 +59,7 @@ spec:
           {{- else }}
           image: docker.wso2.com/{{ .Values.wso2.deployment.analytics.worker.imageName }}:{{ .Values.wso2.deployment.analytics.worker.imageTag }}
           {{- end }}
+          imagePullPolicy: {{ .Values.wso2.deployment.analytics.worker.imagePullPolicy }}
           env:
             - name: NODE_IP
               valueFrom:
@@ -95,7 +96,6 @@ spec:
             limits:
               memory: {{ .Values.wso2.deployment.analytics.worker.resources.limits.memory }}
               cpu: {{ .Values.wso2.deployment.analytics.worker.resources.limits.cpu }}
-          imagePullPolicy: {{ .Values.wso2.deployment.analytics.worker.imagePullPolicy }}
           securityContext:
             runAsUser: 802
           ports:
