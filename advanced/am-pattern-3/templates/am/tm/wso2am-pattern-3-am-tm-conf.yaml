@@ -41,17 +41,19 @@ data:
     password = "admin"
     create_admin_account = true
 
-    [database.shared_db]
-    type = "h2"
-    hostname = "jdbc:h2:./repository/database/WSO2SHARED_DB;DB_CLOSE_ON_EXIT=FALSE"
-    username = "wso2carbon"
-    password = "wso2carbon"
-
     [database.apim_db]
-    type = "h2"
-    url = "jdbc:h2:./repository/database/WSO2AM_DB;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE"
+    type = "mysql"
+    url = "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false"
     username = "wso2carbon"
     password = "wso2carbon"
+    driver = "com.mysql.cj.jdbc.Driver"
+
+    [database.shared_db]
+    type = "mysql"
+    url = "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_SHARED_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false"
+    username = "wso2carbon"
+    password = "wso2carbon"
+    driver = "com.mysql.cj.jdbc.Driver"
 
     [keystore.tls]
     file_name =  "wso2carbon.jks"
@@ -73,4 +75,7 @@ data:
     revoke_endpoint = "https://{{ template "am-pattern-3.resource.prefix" . }}-km-service:9443/oauth2/revoke"
     enable_token_encryption = false
     enable_token_hashing = false
+
+    [apim.throttling]
+    event_duplicate_url = "$env{EVENT_DUPLICATE_URL}"
   {{- end }}

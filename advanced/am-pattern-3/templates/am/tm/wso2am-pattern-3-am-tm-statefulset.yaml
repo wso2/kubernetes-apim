@@ -30,6 +30,24 @@ spec:
       labels:
         deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-tm
     spec:
+      initContainers:
+        {{- if .Values.wso2.deployment.dependencies.mysql }}
+        - name: init-apim-db
+          image: busybox:1.32
+          command: ['sh', '-c', 'echo -e "Checking for the availability of DBMS service"; while ! nc -z "wso2am-mysql-db-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> DBMS service is available";']
+        - name: init-mysql-connector-download
+          image: busybox:1.32
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              set -e
+              connector_version=8.0.17
+              wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/${connector_version}/mysql-connector-java-${connector_version}.jar -P /mysql-connector-jar/
+          volumeMounts:
+            - name: mysql-connector-jar
+              mountPath: /mysql-connector-jar
+        {{- end }}
       containers:
         - name: wso2am-tm
           {{- if .Values.wso2.deployment.am.dockerRegistry }}
@@ -49,6 +67,12 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: EVENT_DUPLICATE_URL
+              value: '["tcp://$(NODE_ID).{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672"]'
           livenessProbe:
             exec:
               command:
@@ -92,6 +116,10 @@ spec:
               mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/executionplans
             - name: wso2am-tm-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+            {{ if .Values.wso2.deployment.dependencies.mysql }}
+            - name: mysql-connector-jar
+              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/components/dropins
+            {{ end }}
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
       imagePullSecrets:
@@ -107,3 +135,7 @@ spec:
         - name: wso2am-tm-conf
           configMap:
             name: {{ template "am-pattern-3.resource.prefix" . }}-am-tm-conf
+        {{ if .Values.wso2.deployment.dependencies.mysql }}
+        - name: mysql-connector-jar
+          emptyDir: {}
+        {{ end }}
