@@ -77,5 +77,5 @@ data:
     enable_token_hashing = false
 
     [apim.throttling]
-    event_duplicate_url = "$env{EVENT_DUPLICATE_URL}"
+    event_duplicate_url = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-TM_INDEX.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service:5672"]
   {{- end }}
