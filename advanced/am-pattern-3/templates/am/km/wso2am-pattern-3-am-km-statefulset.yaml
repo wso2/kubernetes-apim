@@ -74,16 +74,16 @@ spec:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9443
-            initialDelaySeconds: {{ .Values.wso2.deployment.am.km.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.wso2.deployment.am.km.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.wso2.deployment.am.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.am.livenessProbe.periodSeconds }}
           readinessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9443
-            initialDelaySeconds: {{ .Values.wso2.deployment.am.km.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.wso2.deployment.am.km.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.wso2.deployment.am.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.am.readinessProbe.periodSeconds }}
           lifecycle:
             preStop:
               exec:
