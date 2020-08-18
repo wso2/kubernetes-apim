@@ -1,0 +1,287 @@
+# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+wso2:
+  # WSO2 Subscription parameters (https://wso2.com/subscription/)
+  # If provided, these parameters will be used to obtain official WSO2 product Docker images available at WSO2 Private Docker Registry (https://docker.wso2.com/)
+  # for this deployment
+  subscription:
+    username: ""
+    password: ""
+
+  deployment:
+    dependencies:
+      # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
+      mysql: true
+      # Enable NFS dynamic provisioner for Kubernetes
+      nfsServerProvisioner: true
+
+    # Persisted and shared runtime artifacts for API Manager
+    # See official documentation (from https://apim.docs.wso2.com/en/latest/install-and-setup/setup/reference/common-runtime-and-configuration-artifacts/#persistent-runtime-artifacts)
+    persistentRuntimeArtifacts:
+      # Kubernetes Storage Class to be used to dynamically provision the relevant Persistent Volumes
+      # Only persistent storage solutions supporting ReadWriteMany access mode are applicable (https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
+      # Defaults to Kubernetes Storage Class generated using the NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner)
+      storageClass: &storage_class "nfs"
+
+      # Define capacities for persistent runtime artifact directories which are shared between instances of the relevant API Manager profile
+      sharedArtifacts:
+        capacity:
+          # For execution plans shared between the Traffic Manager profile instances
+          executionPlans: 20M
+          # For synapse artifacts of APIs shared between the Gateway profile instances
+          synapseConfigs: 50M
+
+      # Persistent runtime artifacts for Apache Solr-based indexing
+      apacheSolrIndexing:
+        # Indicates if persistence of the runtime artifacts for Apache Solr-based indexing is enabled
+        # By default, this is disabled
+        enabled: false
+        # Define capacities for persistent runtime artifact directories
+        capacity:
+          # For persisting the H2 based local Carbon database file
+          carbonDatabase: 50M
+          # For persisting the indexed data
+          solrIndexedData: 50M
+
+    am:
+      # Container image configurations
+      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
+      # dockerRegistry: ""
+      imageName: "wso2am"
+      imageTag: "3.1.0"
+      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+      imagePullPolicy: Always
+
+      resources:
+        # These are the resource recommendations for running WSO2 API Management product profiles with profile optimization
+        # Resource configurations defined here are applicable for Gateway and Key Manager profile deployments, which use profile optimization
+        requests:
+          memory: "1Gi"
+          cpu: "1000m"
+        limits:
+          memory: "2Gi"
+          cpu: "2000m"
+
+      # API Manager's Gateway specific configurations
+      gatewayInternal:
+        # Hostname for Gateway profile
+        hostname: "internal.gateway.am.wso2.com"
+
+      # API Manager's Gateway specific configurations
+      gateway:
+        # Hostname for Gateway profile
+        hostname: "external.gateway.am.wso2.com"
+
+        # Indicates whether the container is running
+        livenessProbe:
+          # Number of seconds after the container has started before liveness probes are initiated
+          initialDelaySeconds: 60
+          # How often (in seconds) to perform the probe
+          periodSeconds: 10
+        # Indicates whether the container is ready to service requests
+        readinessProbe:
+          # Number of seconds after the container has started before readiness probes are initiated
+          initialDelaySeconds: 60
+          # How often (in seconds) to perform the probe
+          periodSeconds: 10
+
+        # Number of deployment replicas
+        replicas: 2
+
+        # Kubernetes RollingUpdate strategy configurations
+        strategy:
+          rollingUpdate:
+            # The maximum number of pods that can be scheduled above the desired number of pods
+            maxSurge: 2
+            # The maximum number of pods that can be unavailable during the update
+            maxUnavailable: 0
+
+        # If the deployment configurations for the Gateway profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
+        # add the customized configuration file under (wso2 -> deployment -> am -> gateway -> config -> deployment.toml)
+#        config:
+#          deployment.toml: |-
+#            # deployment configurations for the Gateway profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
+
+      # API Manager's Key Manager specific configurations
+      km:
+        livenessProbe:
+          # Number of seconds after the container has started before liveness probes are initiated
+          initialDelaySeconds: 60
+          # How often (in seconds) to perform the probe
+          periodSeconds: 10
+          # Indicates whether the container is ready to service requests
+        readinessProbe:
+          # Number of seconds after the container has started before readiness probes are initiated
+          initialDelaySeconds: 60
+          # How often (in seconds) to perform the probe
+          periodSeconds: 10
+
+        # Number of deployment replicas
+        replicas: 2
+
+        # Kubernetes RollingUpdate strategy configurations
+        strategy:
+          rollingUpdate:
+            # The maximum number of pods that can be scheduled above the desired number of pods
+            maxSurge: 2
+            # The maximum number of pods that can be unavailable during the update
+            maxUnavailable: 0
+
+        # If the deployment configurations for the Key Manager profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
+        # add the customized configuration file under (wso2 -> deployment -> am -> km -> config -> deployment.toml)
+#        config:
+#          deployment.toml: |-
+#            # deployment configurations for the Key Manager profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
+
+      pubDevPortalTM:
+        # Hostname for Publisher-DevPortal deployment
+        hostname: "am.wso2.com"
+
+        # Indicates whether the container is running
+        livenessProbe:
+          # Number of seconds after the container has started before liveness probes are initiated
+          initialDelaySeconds: 180
+          # How often (in seconds) to perform the probe
+          periodSeconds: 10
+          # Indicates whether the container is ready to service requests
+        readinessProbe:
+          # Number of seconds after the container has started before readiness probes are initiated
+          initialDelaySeconds: 180
+          # How often (in seconds) to perform the probe
+          periodSeconds: 10
+
+        # If the deployment configurations for the Publisher-Store-TM of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
+        # add the customized configuration file under (wso2 -> deployment -> am -> pubDevPortalTM -> instanceTwo -> config -> deployment.toml)
+#        config: ""
+#          deployment.toml: |-
+#            # deployment configurations for All-In-One WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml)
+
+        resources:
+          # These are the resource recommendations for running WSO2 API Management All-In-One deployment
+          # as per official documentation (https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/)
+          requests:
+            memory: "2Gi"
+            cpu: "2000m"
+          limits:
+            memory: "3Gi"
+            cpu: "3000m"
+
+    analytics:
+      dashboard:
+        # Hostname for API Manager Analytics Dashboard
+        hostname: "analytics.am.wso2.com"
+
+        # Container image configurations
+        # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
+        # dockerRegistry: ""
+        imageName: "wso2am-analytics-dashboard"
+        imageTag: "3.1.0"
+        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+        imagePullPolicy: Always
+
+        # Number of deployment replicas
+        replicas: 1
+
+        # Kubernetes RollingUpdate strategy configurations
+        strategy:
+          rollingUpdate:
+            # The maximum number of pods that can be scheduled above the desired number of pods
+            maxSurge: 1
+            # The maximum number of pods that can be unavailable during the update
+            maxUnavailable: 0
+
+        # Indicates whether the container is running
+        livenessProbe:
+          # Number of seconds after the container has started before liveness probes are initiated
+          initialDelaySeconds: 20
+          # How often (in seconds) to perform the probe
+          periodSeconds: 10
+        # Indicates whether the container is ready to service requests
+        readinessProbe:
+          # Number of seconds after the container has started before readiness probes are initiated
+          initialDelaySeconds: 20
+          # How often (in seconds) to perform the probe
+          periodSeconds: 10
+
+        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+        # If the deployment configurations for the Dashboard profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml),
+        # add the customized configuration file under (wso2 -> deployment -> analytics -> dashboard -> config -> deployment.yaml)
+#        config:
+#          deployment.yaml: |-
+#            # deployment configurations for the Dashboard profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml)
+
+        resources:
+          # These are the resource recommendations for running WSO2 Stream Processor based server profiles
+          # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
+          requests:
+            memory: "4Gi"
+            cpu: "2000m"
+          # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
+          # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
+          # where necessary.
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+
+      worker:
+        # Container image configurations
+        # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+        # dockerRegistry: ""
+        imageName: "wso2am-analytics-worker"
+        imageTag: "3.1.0"
+        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+        imagePullPolicy: Always
+
+        # Indicates whether the container is running.
+        livenessProbe:
+          # Number of seconds after the container has started before liveness probes are initiated.
+          initialDelaySeconds: 20
+          # How often (in seconds) to perform the probe.
+          periodSeconds: 10
+        # Indicates whether the container is ready to service requests.
+        readinessProbe:
+          # Number of seconds after the container has started before readiness probes are initiated.
+          initialDelaySeconds: 20
+          # How often (in seconds) to perform the probe.
+          periodSeconds: 10
+
+        # If the deployment configurations for the Worker profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/worker/deployment.yaml),
+        # add the customized configuration file under (wso2 -> deployment -> analytics -> worker -> config -> deployment.yaml)
+#        config:
+#          deployment.yaml: |-
+#            # deployment configurations for the Worker profile of WSO2 API Manager Analytics v3.1.0 (<WSO2AM_ANALYTICS>/conf/worker/deployment.yaml)
+
+        resources:
+          # These are the resource recommendations for running WSO2 Stream Processor based server profiles
+          # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
+          requests:
+            memory: "4Gi"
+            cpu: "2000m"
+          # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
+          # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
+          # where necessary.
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+
+kubernetes:
+  # Name of Kubernetes service account
+  serviceAccount: "wso2am-pattern-4-svc-account"
+
+# Override sub chart parameters
+mysql-am:
+  mysql:
+    persistence:
+      storageClass: *storage_class
