@@ -18,7 +18,7 @@ metadata:
   name: {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-internal-ingress
   namespace : {{ .Release.Namespace }}
   annotations:
-    kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/ingress.class: {{ .Values.wso2.deployment.am.gateway.internal.ingress.class }}
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   tls:

@@ -148,9 +148,9 @@ API Manager Publisher-DevPortal
 
 API Manager Gateway
 
-- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-4-am-gateway-external-ingress & wso2am-pattern-4-am-gateway-internal-ingress`)
-- HOSTS: Hostname of the WSO2 API Manager's Gateway service (`<wso2.deployment.am.gateway.external.hostname> & <wso2.deployment.am.gateway.internal.hostname>`)
-- ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Gateway service to outside of the Kubernetes environment
+- NAME: Metadata names of the Kubernetes Ingress resource (defaults to `wso2am-pattern-4-am-gateway-external-ingress & wso2am-pattern-4-am-gateway-internal-ingress`)
+- HOSTS: Hostnames of the WSO2 API Manager's External and Internal Gateway services (`<wso2.deployment.am.gateway.external.hostname> & <wso2.deployment.am.gateway.internal.hostname>`)
+- ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Gateway services to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager' Gateway service
 
 API Manager Analytics Dashboard
@@ -226,7 +226,9 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.am.resources.limits.memory`                                | The maximum amount of memory that should be allocated for running API Manager product profiles with profile optimization  | 2Gi                         |
 | `wso2.deployment.am.resources.limits.cpu`                                   | The maximum amount of CPU that should be allocated for running API Manager product profiles with profile optimization     | 2000m                       |
 | `wso2.deployment.am.gateway.external.hostname`                                       | Hostname for API Manager Gateway                                                          | `external.gateway.am.wso2.com`       |
+| `wso2.deployment.am.gateway.external.ingress.class`                                       | Ingress class for external Gateway                                                          | `nginx`       |
 | `wso2.deployment.am.gateway.internal.hostname`                                       | Hostname for API Manager Gateway                                                          | `internal.gateway.am.wso2.com`       |
+| `wso2.deployment.am.gateway.internal.ingress.class`                                       | Ingress class for internal Gateway                                                          | `nginx`       |
 | `wso2.deployment.am.gateway.livenessProbe.initialDelaySeconds`              | Initial delay for the live-ness probe for API Manager Gateway                             | 60                          |
 | `wso2.deployment.am.gateway.livenessProbe.periodSeconds`                    | Period of the live-ness probe for API Manager Gateway                                     | 10                          |
 | `wso2.deployment.am.gateway.readinessProbe.initialDelaySeconds`             | Initial delay for the readiness probe for API Manager Gateway                             | 60                          |

@@ -79,10 +79,16 @@ wso2:
         internal:
           # Hostname for Internal Gateway profile
           hostname: "internal.gateway.am.wso2.com"
+          # Ingress class for internal Gateway
+          ingress:
+            class: "nginx"
 
         external:
           # External Hostname for Gateway profile
           hostname: "external.gateway.am.wso2.com"
+          # Ingress class for external Gateway
+          ingress:
+            class: "nginx"
 
         # Indicates whether the container is running
         livenessProbe:
