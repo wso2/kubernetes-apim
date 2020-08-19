@@ -37,7 +37,7 @@ Please follow these steps to access API Manager Publisher, DevPortal consoles an
    If the defined hostnames are not backed by a DNS service, for the purpose of evaluation you may add an entry mapping the
    hostnames and the external IP in the `/etc/hosts` file at the client-side.
 
-   <EXTERNAL-IP> {{ .Values.wso2.deployment.am.pubDevPortalTM.hostname }} {{ .Values.wso2.deployment.am.gateway.hostname }} {{ .Values.wso2.deployment.analytics.dashboard.hostname }}
+   <EXTERNAL-IP> {{ .Values.wso2.deployment.am.pubDevPortalTM.hostname }} {{ .Values.wso2.deployment.am.gateway.external.hostname }} {{ .Values.wso2.deployment.am.gateway.internal.hostname }  {{ .Values.wso2.deployment.analytics.dashboard.hostname }}
 
 3. Navigate to the consoles in your browser of choice.
 

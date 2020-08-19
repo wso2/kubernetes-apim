@@ -169,8 +169,8 @@ If the defined hostnames are not backed by a DNS service, for the purpose of eva
 hostnames and the external IP in the `/etc/hosts` file at the client-side.
 
 ```
-<EXTERNAL-IP> <wso2.deployment.am.pubDevPortalTM.hostname> <wso2.deployment.am.gateway.hostname>
-<wso2.deployment.am.gatewayInternal.hostname> <wso2.deployment.analytics.dashboard.hostname>
+<EXTERNAL-IP> <wso2.deployment.am.pubDevPortalTM.hostname> <wso2.deployment.am.gateway.external.hostname>
+<wso2.deployment.am.gateway.internal.hostname> <wso2.deployment.analytics.dashboard.hostname>
 ```
 
 ### 4. Access Management Consoles
@@ -225,8 +225,8 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.am.resources.requests.cpu`                                 | The minimum amount of CPU that should be allocated for running API Manager product profiles with profile optimization     | 1000m                       |
 | `wso2.deployment.am.resources.limits.memory`                                | The maximum amount of memory that should be allocated for running API Manager product profiles with profile optimization  | 2Gi                         |
 | `wso2.deployment.am.resources.limits.cpu`                                   | The maximum amount of CPU that should be allocated for running API Manager product profiles with profile optimization     | 2000m                       |
-| `wso2.deployment.am.gateway.hostname`                                       | Hostname for API Manager Gateway                                                          | `external.gateway.am.wso2.com`       |
-| `wso2.deployment.am.gatewayInternal.hostname`                                       | Hostname for API Manager Gateway                                                          | `internal.gateway.am.wso2.com`       |
+| `wso2.deployment.am.gateway.external.hostname`                                       | Hostname for API Manager Gateway                                                          | `external.gateway.am.wso2.com`       |
+| `wso2.deployment.am.gateway.internal.hostname`                                       | Hostname for API Manager Gateway                                                          | `internal.gateway.am.wso2.com`       |
 | `wso2.deployment.am.gateway.livenessProbe.initialDelaySeconds`              | Initial delay for the live-ness probe for API Manager Gateway                             | 60                          |
 | `wso2.deployment.am.gateway.livenessProbe.periodSeconds`                    | Period of the live-ness probe for API Manager Gateway                                     | 10                          |
 | `wso2.deployment.am.gateway.readinessProbe.initialDelaySeconds`             | Initial delay for the readiness probe for API Manager Gateway                             | 60                          |
