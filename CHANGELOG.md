@@ -3,6 +3,12 @@ All notable changes to this project `3.1.0` per each release will be documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [v3.1.0.4]
+
+### Added
+
+- Introduce Helm chart for WSO2 APIM version 3.1.0 deployment pattern 4
+
 ## [v3.1.0.3] - 2020-07-20
 
 ### Added

@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-internal-ingress
+  name: {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-external-ingress
   namespace : {{ .Release.Namespace }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
@@ -23,12 +23,12 @@ metadata:
 spec:
   tls:
   - hosts:
-    - {{ .Values.wso2.deployment.am.gatewayInternal.hostname }}
+    - {{ .Values.wso2.deployment.am.gateway.external.hostname }}
   rules:
-  - host: {{ .Values.wso2.deployment.am.gatewayInternal.hostname }}
+  - host: {{ .Values.wso2.deployment.am.gateway.external.hostname }}
     http:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-internal-service
+          serviceName: {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-external-service
           servicePort: 8243

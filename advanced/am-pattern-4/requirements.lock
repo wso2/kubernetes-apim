@@ -1,9 +1,0 @@
-dependencies:
-- name: mysql-am
-  repository: https://helm.wso2.com
-  version: 3.1.0-3
-- name: nfs-server-provisioner
-  repository: https://kubernetes-charts.storage.googleapis.com
-  version: 1.0.0
-digest: sha256:654e9a495fa6b64dd2e0b390a9f0bb8e6d37969123095ed0bc7821542bfe655f
-generated: "2020-08-12T11:32:57.297135+05:30"

@@ -17,8 +17,8 @@ Please follow these steps to access API Manager Publisher, DevPortal consoles an
 
   API Manager Gateway
 
-  - NAME: Metadata name of the Kubernetes Ingress resource (defaults to {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-ingress)
-  - HOSTS: Hostname of the WSO2 API Manager's Gateway service ({{ .Values.wso2.deployment.am.gateway.hostname }})
+  - NAME: Metadata name of the Kubernetes Ingress resource (defaults to {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-external-ingress and {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-internal-ingress)
+  - HOSTS: Hostname of the WSO2 API Manager's Gateway service ({{ .Values.wso2.deployment.am.gateway.external.hostname }} and {{ .Values.wso2.deployment.am.gateway.internal.hostname }})
   - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Gateway service to outside of the Kubernetes environment
   - PORTS: Externally exposed service ports of the API Manager' Gateway service
 

@@ -75,14 +75,14 @@ wso2:
           cpu: "2000m"
 
       # API Manager's Gateway specific configurations
-      gatewayInternal:
-        # Hostname for Gateway profile
-        hostname: "internal.gateway.am.wso2.com"
-
-      # API Manager's Gateway specific configurations
       gateway:
-        # Hostname for Gateway profile
-        hostname: "external.gateway.am.wso2.com"
+        internal:
+          # Hostname for Internal Gateway profile
+          hostname: "internal.gateway.am.wso2.com"
+
+        external:
+          # External Hostname for Gateway profile
+          hostname: "external.gateway.am.wso2.com"
 
         # Indicates whether the container is running
         livenessProbe:

@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-external-conf
+  name: {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-internal-conf
   namespace : {{ .Release.Namespace }}
   {{ if .Values.wso2.deployment.am.gateway.config }}
 data:
@@ -28,7 +28,7 @@ data:
 data:
   deployment.toml: |-
     [server]
-    hostname = "{{ .Values.wso2.deployment.am.gateway.hostname }}"
+    hostname = "{{ .Values.wso2.deployment.am.gateway.internal.hostname }}"
     node_ip = "$env{NODE_IP}"
     server_role = "gateway-worker"
     offset = "0"
