@@ -17,9 +17,10 @@ kind: Ingress
 metadata:
   name: {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-external-ingress
   namespace : {{ .Release.Namespace }}
+{{- if .Values.wso2.deployment.am.gateway.external.ingress.annotations }}
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.wso2.deployment.am.gateway.external.ingress.class }}
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+{{ toYaml .Values.wso2.deployment.am.gateway.external.ingress.annotations | indent 4 }}
+{{- end }}
 spec:
   tls:
   - hosts:
