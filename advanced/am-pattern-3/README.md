@@ -236,6 +236,7 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.am.readinessProbe.initialDelaySeconds`                     | Initial delay for the readiness probe for API Manager optimized profile                   | 60                          |
 | `wso2.deployment.am.readinessProbe.periodSeconds`                           | Period of the readiness probe for API Manager optimized profile                           | 10                          |
 | `wso2.deployment.am.gateway.hostname`                                       | Hostname for API Manager Gateway                                                          | `gateway.am.wso2.com`       |
+| `wso2.deployment.am.gateway.ingress.annotations`                            | Annotations for the Gateway Services Ingress                                              | `Nginx ingress annotations`       |
 | `wso2.deployment.am.gateway.replicas`                                       | Number of replicas of API Manager Gateway to be started                                   | 2                           |
 | `wso2.deployment.am.gateway.strategy.rollingUpdate.maxSurge`                | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentstrategy-v1-apps)  | 2                         |
 | `wso2.deployment.am.gateway.strategy.rollingUpdate.maxUnavailable`          | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentstrategy-v1-apps)  | 0                         |

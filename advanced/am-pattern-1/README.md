@@ -218,6 +218,7 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.deployment.am.hostname`                                               | Hostname for API Manager Publisher, DevPortal and Carbon Management Console               | `am.wso2.com`               |
 | `wso2.deployment.am.gateway.hostname`                                       | Hostname for API Manager Gateway                                                          | `gateway.am.wso2.com`       |
+| `wso2.deployment.am.gateway.ingress.annotations`                            | Annotations for the Gateway Services Ingress                                              | `Nginx ingress annotations`       |
 | `wso2.deployment.am.dockerRegistry`                                         | Registry location of the Docker image to be used to create API Manager instances          | -                           |
 | `wso2.deployment.am.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | `wso2am`                    |
 | `wso2.deployment.am.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 3.1.0                       |

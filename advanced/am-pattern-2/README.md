@@ -225,6 +225,7 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.am.resources.limits.memory`                                | The maximum amount of memory that should be allocated for running API Manager product profiles with profile optimization  | 2Gi                         |
 | `wso2.deployment.am.resources.limits.cpu`                                   | The maximum amount of CPU that should be allocated for running API Manager product profiles with profile optimization     | 2000m                       |
 | `wso2.deployment.am.gateway.hostname`                                       | Hostname for API Manager Gateway                                                          | `gateway.am.wso2.com`       |
+| `wso2.deployment.am.gateway.ingress.annotations`                            | Annotations for the Gateway Services Ingress                                              | `Nginx ingress annotations`       |
 | `wso2.deployment.am.gateway.livenessProbe.initialDelaySeconds`              | Initial delay for the live-ness probe for API Manager Gateway                             | 60                          |
 | `wso2.deployment.am.gateway.livenessProbe.periodSeconds`                    | Period of the live-ness probe for API Manager Gateway                                     | 10                          |
 | `wso2.deployment.am.gateway.readinessProbe.initialDelaySeconds`             | Initial delay for the readiness probe for API Manager Gateway                             | 60                          |

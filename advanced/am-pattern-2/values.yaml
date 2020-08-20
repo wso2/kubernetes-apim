@@ -78,6 +78,12 @@ wso2:
       gateway:
         # Hostname for Gateway profile
         hostname: "gateway.am.wso2.com"
+        # Ingress class for Gateway
+        ingress:
+          # Annotations for the Gateway service ingress
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 
         # Indicates whether the container is running
         livenessProbe:
