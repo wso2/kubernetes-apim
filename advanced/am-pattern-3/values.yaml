@@ -64,6 +64,7 @@ wso2:
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
+
       resources:
         # These are the resource recommendations for running WSO2 API Management product profiles with profile optimization
         # Resource configurations defined here are applicable for all API Manager product profiles of this deployment
@@ -139,6 +140,16 @@ wso2:
         # Hostname for Publisher profile
         hostname: "publisher.am.wso2.com"
 
+        # Ingress class for internal Gateway
+        ingress:
+          # Annotations for the km service ingress
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+            nginx.ingress.kubernetes.io/affinity: "cookie"
+            nginx.ingress.kubernetes.io/session-cookie-name: "route"
+            nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+
         # If the deployment configurations for the Publisher profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
         # add the customized configuration file under (wso2 -> deployment -> am -> publisher -> config -> deployment.toml)
 #        config:
@@ -149,6 +160,16 @@ wso2:
       devportal:
         # Hostname for DevPortal profile
         hostname: "devportal.am.wso2.com"
+
+        # Ingress class for internal Gateway
+        ingress:
+          # Annotations for the km service ingress
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+            nginx.ingress.kubernetes.io/affinity: "cookie"
+            nginx.ingress.kubernetes.io/session-cookie-name: "route"
+            nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
 
         # If the deployment configurations for the DevPortal profile of WSO2 API Manager v3.1.0 (<WSO2AM>/repository/conf/deployment.toml),
         # add the customized configuration file under (wso2 -> deployment -> am -> devportal -> config -> deployment.toml)
@@ -169,6 +190,12 @@ wso2:
         # Hostname for API Manager Analytics Dashboard
         hostname: "analytics.am.wso2.com"
 
+        # Ingress class for internal Gateway
+        ingress:
+          # Annotations for the km service ingress
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
         # Container image configurations
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
         # dockerRegistry: ""

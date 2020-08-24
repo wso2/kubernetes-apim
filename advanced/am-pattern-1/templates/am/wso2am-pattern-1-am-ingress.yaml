@@ -17,12 +17,10 @@ kind: Ingress
 metadata:
   name: {{ template "am-pattern-1.resource.prefix" . }}-am-ingress
   namespace : {{ .Release.Namespace }}
+{{- if .Values.wso2.deployment.am.ingress.annotations }}
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    nginx.ingress.kubernetes.io/affinity: "cookie"
-    nginx.ingress.kubernetes.io/session-cookie-name: "route"
-    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+{{ toYaml .Values.wso2.deployment.am.ingress.annotations | indent 4 }}
+{{- end }}
 spec:
   tls:
     - hosts:

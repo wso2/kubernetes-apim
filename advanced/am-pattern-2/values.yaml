@@ -150,6 +150,15 @@ wso2:
         # Hostname for Publisher-DevPortal deployment
         hostname: "am.wso2.com"
 
+        # Ingress class for internal Gateway
+        ingress:
+          # Annotations for the km service ingress
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+            nginx.ingress.kubernetes.io/affinity: "cookie"
+            nginx.ingress.kubernetes.io/session-cookie-name: "route"
+            nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
         # Indicates whether the container is running
         livenessProbe:
           # Number of seconds after the container has started before liveness probes are initiated
@@ -183,6 +192,13 @@ wso2:
       dashboard:
         # Hostname for API Manager Analytics Dashboard
         hostname: "analytics.am.wso2.com"
+
+        # Ingress class for internal Gateway
+        ingress:
+          # Annotations for the km service ingress
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 
         # Container image configurations
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
