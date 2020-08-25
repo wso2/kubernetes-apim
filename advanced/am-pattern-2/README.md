@@ -13,6 +13,8 @@ For advanced details on the deployment pattern, please refer to the official
 * [Prerequisites](#prerequisites)
 * [Quick Start Guide](#quick-start-guide)
 * [Configuration](#configuration)
+* [Runtime Artifact Persistence and Sharing](#runtime-artifact-persistence-and-sharing)
+* [Managing Java Keystores and Truststores](#managing-java-keystores-and-truststores)
 
 ## Prerequisites
 
@@ -301,3 +303,22 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | Parameter                                                     | Description                                                                               | Default Value                   |
 |---------------------------------------------------------------|-------------------------------------------------------------------------------------------|---------------------------------|
 | `kubernetes.serviceAccount`                                   | Name of the Kubernetes Service Account to which the Pods are to be bound                  | `wso2am-pattern-2-svc-account`  |
+
+## Runtime Artifact Persistence and Sharing
+
+* It is **mandatory** to set an appropriate Kubernetes StorageClass in this deployment, for persistence and sharing.
+
+* By default, this deployment uses the `nfs` Kubernetes StorageClass created using the official, stable [NFS Server Provisioner](https://hub.helm.sh/charts/stable/nfs-server-provisioner).
+
+* Only persistent storage solutions supporting `ReadWriteMany` [access mode](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
+  are applicable for `wso2.deployment.persistentRuntimeArtifacts.storageClass`.
+  
+* Please refer to the [official WSO2 container guide](https://github.com/wso2/container-guide/blob/master/store/Persisting_And_Sharing.md#recommended-storage-options-for-wso2-products)
+  for advanced details with regards to WSO2 recommended, storage options.
+
+## Managing Java Keystores and Truststores
+
+* By default, this deployment uses the default keystores and truststores provided by the relevant WSO2 product.
+
+* For advanced details with regards to managing custom Java keystores and truststores in a container based WSO2 product deployment
+  please refer to the [official WSO2 container guide](https://github.com/wso2/container-guide/blob/master/deploy/Managing_Keystores_And_Truststores.md).
