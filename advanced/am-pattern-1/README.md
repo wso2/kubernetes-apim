@@ -156,7 +156,7 @@ API Manager Gateway
 API Manager Analytics Dashboard
 
 - NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-1-am-analytics-dashboard-ingress`)
-- HOSTS: Hostname of the WSO2 API Manager Analytics Dashboard service (`<.wso2.deployment.analytics.dashboard.ingress.hostname>`)
+- HOSTS: Hostname of the WSO2 API Manager Analytics Dashboard service (`<wso2.deployment.analytics.dashboard.ingress.hostname>`)
 - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager Analytics Dashboard service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager Analytics Dashboard service
 
