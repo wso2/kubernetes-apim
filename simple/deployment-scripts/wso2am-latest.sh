@@ -1994,7 +1994,7 @@ data:
 
     CREATE TABLE IF NOT EXISTS AM_GW_API_ARTIFACTS (
       API_ID varchar(255) NOT NULL,
-      ARTIFACT blob,
+      ARTIFACT LONGBLOB,
       GATEWAY_INSTRUCTION varchar(20),
       GATEWAY_LABEL varchar(255),
       TIME_STAMP TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -3933,7 +3933,6 @@ data:
     #username = "$ref{super_admin.username}"
     #password = "$ref{super_admin.password}"
     #event_publisher_type = "default"
-    #event_publisher_type = "custom"
     #event_publisher_impl = "org.wso2.carbon.apimgt.usage.publisher.APIMgtUsageDataBridgeDataPublisher"
     #publish_response_size = true
 
@@ -3997,7 +3996,7 @@ data:
     [apim.cors]
     allow_origins = "*"
     allow_methods = ["GET","PUT","POST","DELETE","PATCH","OPTIONS"]
-    allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction","apikey"]
+    allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction","apikey", "testKey"]
     allow_credentials = false
 
     #[apim.throttling]
