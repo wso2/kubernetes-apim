@@ -17,15 +17,16 @@ kind: Ingress
 metadata:
   name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard-ingress
   namespace : {{ .Release.Namespace }}
+{{- if .Values.wso2.deployment.analytics.dashboard.ingress.annotations }}
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+{{ toYaml .Values.wso2.deployment.analytics.dashboard.ingress.annotations | indent 4 }}
+{{- end }}
 spec:
   tls:
   - hosts:
-    - {{ .Values.wso2.deployment.analytics.dashboard.hostname }}
+    - {{ .Values.wso2.deployment.analytics.dashboard.ingress.hostname }}
   rules:
-  - host: {{ .Values.wso2.deployment.analytics.dashboard.hostname }}
+  - host: {{ .Values.wso2.deployment.analytics.dashboard.ingress.hostname }}
     http:
       paths:
       - path: /

@@ -142,21 +142,21 @@ The output under the relevant column stands for the following.
 API Manager Publisher-DevPortal
 
 - NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-2-am-ingress`)
-- HOSTS: Hostname of the WSO2 API Manager service (`<wso2.deployment.am.pubDevPortalTM.hostname>`)
+- HOSTS: Hostname of the WSO2 API Manager service (`<wso2.deployment.am.pubDevPortalTM.ingress.hostname>`)
 - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager service
 
 API Manager Gateway
 
 - NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-2-am-gateway-ingress`)
-- HOSTS: Hostname of the WSO2 API Manager's Gateway service (`<wso2.deployment.am.gateway.hostname>`)
+- HOSTS: Hostname of the WSO2 API Manager's Gateway service (`<wso2.deployment.am.gateway.ingress.hostname>`)
 - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Gateway service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager' Gateway service
 
 API Manager Analytics Dashboard
 
 - NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-2-am-analytics-dashboard-ingress`)
-- HOSTS: Hostname of the WSO2 API Manager Analytics Dashboard service (`<.wso2.deployment.analytics.dashboard.hostname>`)
+- HOSTS: Hostname of the WSO2 API Manager Analytics Dashboard service (`<wso2.deployment.analytics.dashboard.ingress.hostname>`)
 - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager Analytics Dashboard service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager Analytics Dashboard service
 
@@ -169,16 +169,16 @@ If the defined hostnames are not backed by a DNS service, for the purpose of eva
 hostnames and the external IP in the `/etc/hosts` file at the client-side.
 
 ```
-<EXTERNAL-IP> <wso2.deployment.am.pubDevPortalTM.hostname> <wso2.deployment.am.gateway.hostname> <wso2.deployment.analytics.dashboard.hostname>
+<EXTERNAL-IP> <wso2.deployment.am.pubDevPortalTM.ingress.hostname> <wso2.deployment.am.gateway.ingress.hostname> <wso2.deployment.analytics.dashboard.ingress.hostname>
 ```
 
 ### 4. Access Management Consoles
 
-- API Manager Publisher: `https://<wso2.deployment.am.pubDevPortalTM.hostname>/publisher`
+- API Manager Publisher: `https://<wso2.deployment.am.pubDevPortalTM.ingress.hostname>/publisher`
 
-- API Manager DevPortal: `https://<wso2.deployment.am.pubDevPortalTM.hostname>/devportal`
+- API Manager DevPortal: `https://<wso2.deployment.am.pubDevPortalTM.ingress.hostname>/devportal`
 
-- API Manager Analytics Dashboard: `https://<wso2.deployment.analytics.dashboard.hostname>/analytics-dashboard`
+- API Manager Analytics Dashboard: `https://<wso2.deployment.analytics.dashboard.ingress.hostname>/analytics-dashboard`
 
 
 ## Configuration
@@ -224,7 +224,8 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.am.resources.requests.cpu`                                 | The minimum amount of CPU that should be allocated for running API Manager product profiles with profile optimization     | 1000m                       |
 | `wso2.deployment.am.resources.limits.memory`                                | The maximum amount of memory that should be allocated for running API Manager product profiles with profile optimization  | 2Gi                         |
 | `wso2.deployment.am.resources.limits.cpu`                                   | The maximum amount of CPU that should be allocated for running API Manager product profiles with profile optimization     | 2000m                       |
-| `wso2.deployment.am.gateway.hostname`                                       | Hostname for API Manager Gateway                                                          | `gateway.am.wso2.com`       |
+| `wso2.deployment.am.gateway.ingress.hostname`                               | Hostname for API Manager Gateway                                                          | `gateway.am.wso2.com`       |
+| `wso2.deployment.am.gateway.ingress.annotations`                            | Ingress resource annotations for API Manager Gateway                                      | Community NGINX Ingress controller annotations       |
 | `wso2.deployment.am.gateway.livenessProbe.initialDelaySeconds`              | Initial delay for the live-ness probe for API Manager Gateway                             | 60                          |
 | `wso2.deployment.am.gateway.livenessProbe.periodSeconds`                    | Period of the live-ness probe for API Manager Gateway                                     | 10                          |
 | `wso2.deployment.am.gateway.readinessProbe.initialDelaySeconds`             | Initial delay for the readiness probe for API Manager Gateway                             | 60                          |
@@ -241,7 +242,8 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.am.km.strategy.rollingUpdate.maxSurge`                     | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentstrategy-v1-apps)  | 2                         |
 | `wso2.deployment.am.km.strategy.rollingUpdate.maxUnavailable`               | Refer to [doc](https://v1-14.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#deploymentstrategy-v1-apps)  | 0                         |
 | `wso2.deployment.am.km.config`                                              | Custom deployment configuration file for Key Manager profile (`<WSO2AM>/repository/conf/deployment.toml`)         | -                           |
-| `wso2.deployment.am.pubDevPortalTM.hostname`                                | Hostname for API Manager Publisher, DevPortal and Carbon Management Console               | `am.wso2.com`               |
+| `wso2.deployment.am.pubDevPortalTM.ingress.hostname`                        | Hostname for API Manager Publisher, DevPortal and Carbon Management Console               | `am.wso2.com`               |
+| `wso2.deployment.am.pubDevPortalTM.ingress.annotations`                     | Ingress resource annotations for API Manager management consoles                          | Community NGINX Ingress controller annotations               |
 | `wso2.deployment.am.pubDevPortalTM.livenessProbe.initialDelaySeconds`       | Initial delay for the live-ness probe for API Manager node                                | 180                         |
 | `wso2.deployment.am.pubDevPortalTM.livenessProbe.periodSeconds`             | Period of the live-ness probe for API Manager node                                        | 10                          |
 | `wso2.deployment.am.pubDevPortalTM.readinessProbe.initialDelaySeconds`      | Initial delay for the readiness probe for API Manager node                                | 180                         |
@@ -258,7 +260,6 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 
 | Parameter                                                                     | Description                                                                                                      | Default Value               |
 |-------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.analytics.dashboard.hostname`                                | Hostname for API Manager Analytics Dashboard                                                                     | `analytics.am.wso2.com`     |
 | `wso2.deployment.analytics.dashboard.dockerRegistry`                          | Registry location of the Docker image to be used to create an API Manager Analytics instance                     | -                           |
 | `wso2.deployment.analytics.dashboard.imageName`                               | Name of the Docker image to be used to create an API Manager Analytics instance                                  | `wso2am-analytics-dashboard`    |
 | `wso2.deployment.analytics.dashboard.imageTag`                                | Tag of the image used to create an API Manager Analytics instance                                                | 3.1.0                       |
@@ -275,6 +276,8 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.analytics.dashboard.resources.limits.memory`                 | The maximum amount of memory that should be allocated for a Pod                                                  | 4Gi                         |
 | `wso2.deployment.analytics.dashboard.resources.limits.cpu`                    | The maximum amount of CPU that should be allocated for a Pod                                                     | 2000m                       |
 | `wso2.deployment.analytics.dashboard.config`                                  | Custom deployment configuration file (`<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml`)                       | -                           |
+| `wso2.deployment.analytics.dashboard.ingress.hostname`                        | Hostname for API Manager Analytics Dashboard                                                                     | `analytics.am.wso2.com`     |
+| `wso2.deployment.analytics.dashboard.ingress.annotations`                     | Ingress resource annotations for API Manager Analytics Dashboard                                                 | Community NGINX Ingress controller annotations         |
 
 ###### Analytics Worker Runtime Configurations
 
