@@ -442,4 +442,4 @@ data:
         - DATETIME
         - TIMESTAMP
         - TIMESTAMP WITHOUT TIME ZONE
-  {{- end }}
+  {{ end }}
