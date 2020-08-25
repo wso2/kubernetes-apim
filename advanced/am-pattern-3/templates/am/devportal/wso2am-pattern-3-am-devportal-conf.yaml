@@ -28,7 +28,7 @@ data:
 data:
   deployment.toml: |-
     [server]
-    hostname = "{{ .Values.wso2.deployment.am.devportal.hostname }}"
+    hostname = "{{ .Values.wso2.deployment.am.devportal.ingress.hostname }}"
     node_ip = "$env{NODE_IP}"
     server_role="api-devportal"
 
@@ -81,8 +81,8 @@ data:
     username= "${admin.username}"
     password= "${admin.password}"
     ws_endpoint= "ws://api.gw.wso2.com:9099"
-    http_endpoint = "http://{{ .Values.wso2.deployment.am.gateway.hostname }}"
-    https_endpoint = "https://{{ .Values.wso2.deployment.am.gateway.hostname }}"
+    http_endpoint = "http://{{ .Values.wso2.deployment.am.gateway.ingress.hostname }}"
+    https_endpoint = "https://{{ .Values.wso2.deployment.am.gateway.ingress.hostname }}"
     show_as_token_endpoint_url = true
 
     [apim.analytics]
