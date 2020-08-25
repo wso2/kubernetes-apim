@@ -12,9 +12,10 @@
 * Install [Kubernetes  Client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) in order to run the steps provided in the following Quick Start Guide.
 
 * An already setup Kubernetes cluster. If you haven’t already setup a K8s cluster  Refer [the guide](https://kubernetes.io/docs/setup/learning-environment/minikube/).
- This artifact doesn't support [Docker Desktop](https://www.docker.com/products/docker-desktop). 
+  >This artifact doesn't support [Docker Desktop](https://www.docker.com/products/docker-desktop). 
 
-* WSO2 subscribed users can run [wso2am-latest.sh](https://github.com/wso2/kubernetes-apim/blob/3.2.x/simple/deployment-scripts/wso2am-latest.sh) with the latest updates by providing their subscription Username and Password. If you do not possess an active WSO2 subscription already, run [wso2am-ga.sh](https://github.com/wso2/kubernetes-apim/blob/3.2.x/simple/deployment-scripts/wso2am-ga.sh) which does not require subscription credentials. Further users can acquire a subsciption by refering this [link](https://wso2.com/subscription).
+* WSO2 subscribed users can run [wso2am-latest.sh](https://github.com/wso2/kubernetes-apim/blob/3.2.x/simple/deployment-scripts/wso2am-latest.sh) with the latest updates by providing their subscription Username and Password. If you do not possess an active WSO2 subscription already, run [wso2am-ga.sh](https://github.com/wso2/kubernetes-apim/blob/3.2.x/simple/deployment-scripts/wso2am-ga.sh) which does not require subscription credentials. 
+Further users can acquire a subscription by referring to this [link](https://wso2.com/subscription).
 
 *From this point forward the respective script (wso2am-ga.sh and wso2am-latest.sh) will be identified as SIMPLIFIED_SCRIPT*
 
