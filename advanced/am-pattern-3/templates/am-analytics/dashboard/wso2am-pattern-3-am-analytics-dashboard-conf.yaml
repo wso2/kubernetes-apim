@@ -414,18 +414,18 @@ data:
         adminUsername: admin
         adminPassword: admin
         kmDcrUrl: https://{{ template "am-pattern-3.resource.prefix" . }}-am-publisher-service:9443/client-registration/v0.17/register
-        kmTokenUrlForRedirection: https://{{ .Values.wso2.deployment.am.publisher.hostname }}/oauth2
+        kmTokenUrlForRedirection: https://{{ .Values.wso2.deployment.am.publisher.ingress.hostname }}/oauth2
         kmTokenUrl: https://{{ template "am-pattern-3.resource.prefix" . }}-am-publisher-service:9443/oauth2
         kmUsername: admin
         kmPassword: admin
         portalAppContext: analytics-dashboard
         businessRulesAppContext : business-rules
         cacheTimeout: 30
-        baseUrl: https://{{ .Values.wso2.deployment.analytics.dashboard.hostname }}
+        baseUrl: https://{{ .Values.wso2.deployment.analytics.dashboard.ingress.hostname }}
         grantType: authorization_code
         publisherUrl: https://{{ template "am-pattern-3.resource.prefix" . }}-am-publisher-service:9443
         devPortalUrl: https://{{ template "am-pattern-3.resource.prefix" . }}-am-devportal-service:9443
-        externalLogoutUrl: https://{{ .Values.wso2.deployment.am.publisher.hostname }}/oidc/logout
+        externalLogoutUrl: https://{{ .Values.wso2.deployment.am.publisher.ingress.hostname }}/oidc/logout
 
     wso2.dashboard:
       roles:

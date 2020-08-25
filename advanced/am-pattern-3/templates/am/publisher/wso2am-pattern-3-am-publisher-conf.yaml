@@ -28,7 +28,7 @@ data:
 data:
   deployment.toml: |-
     [server]
-    hostname = "{{ .Values.wso2.deployment.am.publisher.hostname }}"
+    hostname = "{{ .Values.wso2.deployment.am.publisher.ingress.hostname }}"
     node_ip = "$env{NODE_IP}"
     server_role = "api-publisher"
 
@@ -74,8 +74,8 @@ data:
     service_url= "https://{{ template "am-pattern-3.resource.prefix" . }}-am-gateway-service:${mgt.transport.https.port}${carbon.context}services/"
     username= "${admin.username}"
     password= "${admin.password}"
-    http_endpoint = "http://{{ .Values.wso2.deployment.am.gateway.hostname }}"
-    https_endpoint = "https://{{ .Values.wso2.deployment.am.gateway.hostname }}"
+    http_endpoint = "http://{{ .Values.wso2.deployment.am.gateway.ingress.hostname }}"
+    https_endpoint = "https://{{ .Values.wso2.deployment.am.gateway.ingress.hostname }}"
 
 
     # key manager implementation
@@ -119,7 +119,7 @@ data:
     enable = true
 
     [apim.devportal]
-    url = "https://{{ .Values.wso2.deployment.am.devportal.hostname }}/devportal"
+    url = "https://{{ .Values.wso2.deployment.am.devportal.ingress.hostname }}/devportal"
 
     [apim.workflow]
     enable = false
