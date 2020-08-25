@@ -238,7 +238,7 @@ wso2:
         ingress:
           # Hostname for API Manager Analytics Dashboard
           hostname: "analytics.am.wso2.com"
-          # Annotations for the API Manager Publisher-DevPortal services Ingress
+          # Annotations for the API Manager Analytics Dashboard service Ingress
           annotations:
             kubernetes.io/ingress.class: "nginx"
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
