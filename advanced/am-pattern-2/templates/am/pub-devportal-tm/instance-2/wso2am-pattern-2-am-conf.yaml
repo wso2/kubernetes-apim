@@ -28,7 +28,7 @@ data:
 data:
   deployment.toml: |-
     [server]
-    hostname = "{{ .Values.wso2.deployment.am.pubDevPortalTM.hostname }}"
+    hostname = "{{ .Values.wso2.deployment.am.pubDevPortalTM.ingress.hostname }}"
     node_ip = "$env{NODE_IP}"
     #offset=0
     mode = "single" #single or ha
@@ -90,8 +90,8 @@ data:
     password= "${admin.password}"
     ws_endpoint = "ws://localhost:9099"
     wss_endpoint = "wss://localhost:8099"
-    http_endpoint = "http://{{ .Values.wso2.deployment.am.gateway.hostname }}"
-    https_endpoint = "https://{{ .Values.wso2.deployment.am.gateway.hostname }}"
+    http_endpoint = "http://{{ .Values.wso2.deployment.am.gateway.ingress.hostname }}"
+    https_endpoint = "https://{{ .Values.wso2.deployment.am.gateway.ingress.hostname }}"
 
     #[apim.cache.gateway_token]
     #enable = true
@@ -175,7 +175,7 @@ data:
     #enable_token_hashing = false
 
     [apim.devportal]
-    url = "https://{{ .Values.wso2.deployment.am.pubDevPortalTM.hostname }}/devportal"
+    url = "https://{{ .Values.wso2.deployment.am.pubDevPortalTM.ingress.hostname }}/devportal"
     #enable_application_sharing = false
     #if application_sharing_type, application_sharing_impl both defined priority goes to application_sharing_impl
     #application_sharing_type = "default" #changed type, saml, default #todo: check the new config for rest api
