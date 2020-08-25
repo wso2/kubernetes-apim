@@ -56,13 +56,6 @@ wso2:
           solrIndexedData: 50M
 
     am:
-      # Hostname for API Manager All In One deployment
-      hostname: "am.wso2.com"
-      # API Manager Gateway profile specific configurations
-      gateway:
-        # Hostname for Gateway profile
-        hostname: "gateway.am.wso2.com"
-
       # Container image configurations
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
       # dockerRegistry: ""
@@ -100,11 +93,28 @@ wso2:
 #        deployment.toml: |-
 #          # deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
 
+      # Configure Ingresses
+      ingress:
+        management:
+          # Hostname for API Manager Carbon Management Console, Publisher, DevPortal and Admin Portal
+          hostname: "am.wso2.com"
+          # Annotations for the API Manager Publisher-DevPortal services Ingress
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+            nginx.ingress.kubernetes.io/affinity: "cookie"
+            nginx.ingress.kubernetes.io/session-cookie-name: "route"
+            nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+        gateway:
+          # Hostname for Gateway profile
+          hostname: "gateway.am.wso2.com"
+          # Annotations for the API Manager Gateway service Ingress
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+
     analytics:
       dashboard:
-        # Hostname for API Manager Analytics Dashboard
-        hostname: "analytics.am.wso2.com"
-
         # Container image configurations
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
         # dockerRegistry: ""
@@ -153,6 +163,15 @@ wso2:
 #        config:
 #          deployment.yaml: |-
 #            # deployment configurations for the Dashboard profile of WSO2 API Manager Analytics v3.2.0 (<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml)
+
+        # Configure Ingress
+        ingress:
+          # Hostname for API Manager Analytics Dashboard
+          hostname: "analytics.am.wso2.com"
+          # Annotations for the API Manager Publisher-DevPortal services Ingress
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 
       worker:
         # Container image configurations
