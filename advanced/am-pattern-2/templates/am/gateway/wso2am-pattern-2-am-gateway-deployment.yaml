@@ -67,6 +67,8 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: status.podIP
+        - name: JVM_MEM_OPTS
+          value: "-Xms{{ .Values.wso2.deployment.am.resources.jvm.heap.memory.xms }} -Xmx{{ .Values.wso2.deployment.am.resources.jvm.heap.memory.xmx }}"
         livenessProbe:
           exec:
             command:
