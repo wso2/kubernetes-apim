@@ -109,6 +109,9 @@ spec:
             - name: wso2am-analytics-worker-conf
               mountPath: /home/wso2carbon/wso2-config-volume/conf/worker/deployment.yaml
               subPath: deployment.yaml
+            - name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-bin
+              mountPath: /home/wso2carbon/wso2-config-volume/wso2/worker/bin/carbon.sh
+              subPath: carbon.sh
             {{ if .Values.wso2.deployment.dependencies.mysql }}
             - name: mysql-connector-jar
               mountPath: /home/wso2carbon/wso2-artifact-volume/lib
@@ -125,6 +128,9 @@ spec:
         - name: wso2am-analytics-worker-conf
           configMap:
             name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-conf
+        - name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-bin
+          configMap:
+            name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-bin
         {{ if .Values.wso2.deployment.dependencies.mysql }}
         - name: mysql-connector-jar
           emptyDir: {}
