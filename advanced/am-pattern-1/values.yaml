@@ -86,6 +86,17 @@ wso2:
         limits:
           memory: "3Gi"
           cpu: "3000m"
+        # JVM settings
+        # These are the resource allocation configurations associated with the JVM
+        # Refer to the official documentation for advanced details (https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/)
+        jvm:
+          # Resource allocation for the Java Heap
+          heap:
+            memory:
+              # Initial and minimum Heap size
+              xms: "1024m"
+              # Maximum Heap size
+              xmx: "1024m"
 
       # If the deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
       # add the customized configuration file under (wso2 -> deployment -> am -> config -> deployment.toml)
@@ -157,6 +168,17 @@ wso2:
           limits:
             memory: "4Gi"
             cpu: "2000m"
+          # JVM settings
+          # These are the resource allocation configurations associated with the JVM
+          # Refer to the official documentation for advanced details (https://docs.wso2.com/display/SP440/Installation+Prerequisites)
+          jvm:
+            # Resource allocation for the Java Heap
+            heap:
+              memory:
+                # Initial and minimum Heap size
+                xms: "2048m"
+                # Maximum Heap size
+                xmx: "2048m"
 
         # If the deployment configurations for the Dashboard profile of WSO2 API Manager Analytics v3.2.0 (<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml),
         # add the customized configuration file under (wso2 -> deployment -> analytics -> dashboard -> config -> deployment.yaml)
@@ -207,6 +229,17 @@ wso2:
           limits:
             memory: "4Gi"
             cpu: "2000m"
+          # JVM settings
+          # These are the resource allocation configurations associated with the JVM
+          # Refer to the official documentation for advanced details (https://docs.wso2.com/display/SP440/Installation+Prerequisites)
+          jvm:
+            # Resource allocation for the Java Heap
+            heap:
+              memory:
+                # Initial and minimum Heap size
+                xms: "2048m"
+                # Maximum Heap size
+                xmx: "2048m"
 
         # If the deployment configurations for the Worker profile of WSO2 API Manager Analytics v3.2.0 (<WSO2AM_ANALYTICS>/conf/worker/deployment.yaml),
         # add the customized configuration file under (wso2 -> deployment -> analytics -> worker -> config -> deployment.yaml)
