@@ -15,6 +15,7 @@ For advanced details on the deployment pattern, please refer to the official
 * [Configuration](#configuration)
 * [Runtime Artifact Persistence and Sharing](#runtime-artifact-persistence-and-sharing)
 * [Managing Java Keystores and Truststores](#managing-java-keystores-and-truststores)
+* [Configuring SSL in Service Exposure](#configuring-ssl-in-service-exposure)
 
 ## Prerequisites
 
@@ -307,3 +308,8 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 
 * For advanced details with regards to managing custom Java keystores and truststores in a container based WSO2 product deployment
   please refer to the [official WSO2 container guide](https://github.com/wso2/container-guide/blob/master/deploy/Managing_Keystores_And_Truststores.md).
+
+## Configuring SSL in Service Exposure
+
+* For WSO2 recommended best practices in configuring SSL when exposing the internal product services to outside of the Kubernetes cluster,
+  please refer to the [official WSO2 container guide](https://github.com/wso2/container-guide/blob/master/route/Routing.md#configuring-ssl).
