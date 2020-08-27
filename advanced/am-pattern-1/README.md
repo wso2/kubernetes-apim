@@ -62,16 +62,10 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
 
  Helm version 3
 
- - Create the Kubernetes Namespace.
- 
-    ```
-    kubectl create ns <NAMESPACE>
-    ```
-
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> wso2/am-pattern-1 --version 3.2.0-1 --namespace <NAMESPACE>
+    helm install <RELEASE_NAME> wso2/am-pattern-1 --version 3.2.0-1 --namespace <NAMESPACE> --create-namespace
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -108,16 +102,10 @@ git clone https://github.com/wso2/kubernetes-apim.git
 
  Helm version 3
 
- - Create the Kubernetes Namespace to which you desire to deploy the Kubernetes resources.
- 
-    ```
-    kubectl create ns <NAMESPACE>
-    ```
-
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --version 3.2.0-1 --namespace <NAMESPACE> --dependency-update
+    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --version 3.2.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
