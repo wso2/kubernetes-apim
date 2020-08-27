@@ -106,6 +106,9 @@ spec:
           - name: wso2am-analytics-dashboard-conf
             mountPath: /home/wso2carbon/wso2-config-volume/conf/dashboard/deployment.yaml
             subPath: deployment.yaml
+          - name: wso2am-analytics-dashboard-bin
+            mountPath: /home/wso2carbon/wso2-config-volume/wso2/dashboard/bin/carbon.sh
+            subPath: carbon.sh
           {{ if .Values.wso2.deployment.dependencies.mysql }}
           - name: mysql-connector-jar
             mountPath: /home/wso2carbon/wso2-artifact-volume/lib
@@ -122,6 +125,9 @@ spec:
         - name: wso2am-analytics-dashboard-conf
           configMap:
             name: {{ template "am-pattern-3.resource.prefix" . }}-am-analytics-dashboard-conf
+        - name: wso2am-analytics-dashboard-bin
+          configMap:
+            name: {{ template "am-pattern-3.resource.prefix" . }}-am-analytics-dashboard-bin
         {{ if .Values.wso2.deployment.dependencies.mysql }}
         - name: mysql-connector-jar
           emptyDir: {}

@@ -73,6 +73,17 @@ wso2:
         limits:
           memory: "2Gi"
           cpu: "2000m"
+        # JVM settings
+        # These are the resource allocation configurations associated with the JVM
+        # Refer to the official documentation for advanced details (https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/)
+        jvm:
+          # Resource allocation for the Java Heap
+          heap:
+            memory:
+              # Initial and minimum Heap size
+              xms: "512m"
+              # Maximum Heap size
+              xmx: "512m"
 
       # Indicates whether the container is running
       livenessProbe:
@@ -226,6 +237,17 @@ wso2:
           limits:
             memory: "4Gi"
             cpu: "2000m"
+          # JVM settings
+          # These are the resource allocation configurations associated with the JVM
+          # Refer to the official documentation for advanced details (https://docs.wso2.com/display/SP440/Installation+Prerequisites)
+          jvm:
+            # Resource allocation for the Java Heap
+            heap:
+              memory:
+                # Initial and minimum Heap size
+                xms: "2048m"
+                # Maximum Heap size
+                xmx: "2048m"
 
         # Configure Ingress
         ingress:
@@ -276,6 +298,17 @@ wso2:
           limits:
             memory: "4Gi"
             cpu: "2000m"
+          # JVM settings
+          # These are the resource allocation configurations associated with the JVM
+          # Refer to the official documentation for advanced details (https://docs.wso2.com/display/SP440/Installation+Prerequisites)
+          jvm:
+            # Resource allocation for the Java Heap
+            heap:
+              memory:
+                # Initial and minimum Heap size
+                xms: "2048m"
+                # Maximum Heap size
+                xmx: "2048m"
 
 kubernetes:
   # Name of Kubernetes service account
