@@ -1,48 +1,38 @@
 # Changelog
-All notable changes to this project `3.1.0` per each release will be documented in this file.
+
+All notable changes to Kubernetes and Helm resources for WSO2 API Management version `3.2.x` in each resource release,
+will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [v3.1.0.3] - 2020-07-20
+## [v3.2.0.1] - 2020-08-28
+
+### Environments
+
+- Successful evaluation of API Manager Helm charts in AWS Elastic Kubernetes Service (EKS) (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/432))
+- Successful evaluation of Ceph File System (CephFS) as a Persistent Storage Solution (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/410))
 
 ### Added
 
-- StatefulSet support for WSO2 API Manager Traffic Manager Profile deployment
-- StatefulSet support for WSO2 API Management Analytics Worker deployment
-- Integrate new Throttling configurations for Active-Active deployment of API Manager
-- Integrate support for automatic rolling update upon ConfigMap changes
-- Option to enable/disable data persistence support for Apache based Solr-Indexing
-- Option to specify host names as user input
-- Option to define persistent/shared volume capacities as user input
-- Add Helm NOTES.txt For API Management Helm charts
-- Set MySQL data source and product Helm Charts to use the same Storage Class
+- Introduce Kubernetes resources for a simplified setup of WSO2 API Management version `3.2.0` (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/428))
+- Introduce Helm charts for WSO2 API Management version `3.2.0` production grade deployment patterns (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/399))
+- Add options to define volume capacities for persistent storage (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/406))
+- Add JVM memory allocation user input option (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/375))
+- Add mechanism to introduce MySQL JDBC driver to the product containers since [it is not packaged in product container images](https://github.com/wso2/docker-apim/issues/321)
+  (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/427))
+- Add user input option to set Ingress class and annotations (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/446))
+- Test and document managing custom keystores and truststores (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/401))
 
 ### Changed
 
-- Include the WSO2 configuration file content within the Kubernetes ConfigMap
+- Upgrade the base MySQL Helm chart version (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/445))
+- Upgrade MySQL Docker image tag version (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/430))
 
 ### Fixed
 
-- Include missing configurations in WSO2 API Management Analytics Worker deployment
+- Use Kubernetes StatefulSet resources to define API Manager Key Manager deployments (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/436))
 
-For detailed information on the tasks carried out during this release, please see the GitHub milestone [v3.1.0.3](https://github.com/wso2/kubernetes-apim/milestone/14)
+For detailed information on the tasks carried out during this release, please see the GitHub milestone
+[v3.2.0.1](https://github.com/wso2/kubernetes-apim/milestone/15)
 
-## [v3.1.0.2] - 2020-04-24
-
-- Introduce Helm chart for WSO2 APIM version 3.1.0 deployment pattern 3
-- Add support for Custom Kubernetes Storage Class
-- Upgrade NFS Server Provisioner and MySQL Helm Chart Versions
-
-For detailed information on the tasks carried out during this release, please see the GitHub milestone [v3.1.0.2](https://github.com/wso2/kubernetes-apim/milestone/13)
-
-## [v3.1.0.1] - 2020-04-13
-
-- Introduce Helm chart for WSO2 APIM version 3.1.0 deployment pattern 1
-- Introduce Helm chart for WSO2 APIM version 3.1.0 deployment pattern 2
-- Introduce Simplified setup for WSO2 APIM version 3.1.0
-
-For detailed information on the tasks carried out during this release, please see the GitHub milestone [v3.1.0.1](https://github.com/wso2/kubernetes-apim/milestone/12)
-
-[v3.1.0.3]: https://github.com/wso2/kubernetes-apim/compare/v3.1.0.2...v3.1.0.3
-[v3.1.0.2]: https://github.com/wso2/kubernetes-apim/compare/v3.1.0.1...v3.1.0.2
-[v3.1.0.1]: https://github.com/wso2/kubernetes-apim/compare/v3.0.0.3...v3.1.0.1
+[v3.2.0.1]: https://github.com/wso2/kubernetes-apim/compare/v3.1.0.3...v3.2.0.1
