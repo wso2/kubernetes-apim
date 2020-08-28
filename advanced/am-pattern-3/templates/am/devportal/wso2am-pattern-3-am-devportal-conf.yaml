@@ -92,7 +92,7 @@ data:
     password= "$ref{super_admin.password}"
 
     [[apim.analytics.url_group]]
-    analytics_url =["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7612","{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7612"]
+    analytics_url =["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7612","tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7612"]
     analytics_auth_url =["ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7712","ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-headless-service:7712"]
     type = "failover"
 
@@ -150,9 +150,14 @@ data:
     [transport.https.properties]
     proxyPort = 443
 
+    {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
     [database.local]
     url = "jdbc:h2:/home/wso2carbon/solr/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
 
     [indexing]
     location = "/home/wso2carbon/solr/indexed-data"
+    {{ else }}
+    [database.local]
+    url = "jdbc:h2:./repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
+    {{ end }}
   {{- end }}
