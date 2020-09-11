@@ -3106,11 +3106,11 @@ spec:
                 command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/dashboard.sh stop']
           resources:
             requests:
-              memory: 4Gi
-              cpu: 2000m
+              memory: 1Gi
+              cpu: 1000m
             limits:
-              memory: 4Gi
-              cpu: 2000m
+              memory: 1Gi
+              cpu: 1000m
           imagePullPolicy: Always
           securityContext:
             runAsUser: 802
@@ -3778,11 +3778,11 @@ spec:
                 command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
           resources:
             requests:
-              memory: 4Gi
-              cpu: 2000m
+              memory: 1Gi
+              cpu: 1000m
             limits:
-              memory: 4Gi
-              cpu: 2000m
+              memory: 1Gi
+              cpu: 1000m
           imagePullPolicy: Always
           securityContext:
             runAsUser: 802
@@ -4212,8 +4212,8 @@ spec:
               memory: 2Gi
               cpu: 2000m
             limits:
-              memory: 3Gi
-              cpu: 3000m
+              memory: 2Gi
+              cpu: 2000m
           imagePullPolicy: Always
           ports:
             -
