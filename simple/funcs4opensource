@@ -84,6 +84,9 @@ function get_node_ip(){
       if [[ $(kubectl config current-context) = "minikube" ]]
       then
           NODE_IP=$(minikube ip)
+      elif [[ $(kubectl config current-context) = "docker-desktop" ]]
+      then
+          NODE_IP="127.0.0.1"
       else
         echo "We could not find your cluster node-ip."
         while [[ -z "$NODE_IP" ]]
@@ -107,6 +110,9 @@ function progress_bar(){
   pod_status=$(kubectl get pods -n wso2 -o jsonpath='{.items[?(@.metadata.labels.product=="api-manager")].status.conditions[*].status}')
 
   num_true_const=0; progress_unit="";num_true=0; time_proc=0;
+
+  # check for 250s until the pod is live.
+  time_limit=250 
 
   arr_dep=($dep_status); arr_pod=($pod_status)
 
@@ -236,10 +242,10 @@ function deploy(){
     echoBold "Successfully deployed WSO2 API Manager.\n\n"
 
     echoBold "1. Try navigating to\n\n"
-    echoBold "\thttps://$NODE_IP:32293/carbon/\n"
-    echoBold "\thttps://$NODE_IP:32293/publisher/\n"
-    echoBold "\thttps://$NODE_IP:32293/devportal/\n"
-    echoBold "\thttps://$NODE_IP:30643/analytics-dashboard/\n\n"
+    echoBold "\thttps://$NODE_IP:30443/carbon/\n"
+    echoBold "\thttps://$NODE_IP:30443/publisher/\n"
+    echoBold "\thttps://$NODE_IP:30443/devportal/\n"
+    echoBold "\thttps://$NODE_IP:30646/analytics-dashboard/\n\n"
     echoBold "from your favourite browser using credentials admin/admin\n\n"
 
     echoBold "2. Follow \"https://apim.docs.wso2.com/en/latest/GettingStarted/quick-start-guide/\" to start using WSO2 API Manager.\n\n"
