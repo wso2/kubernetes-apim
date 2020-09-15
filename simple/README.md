@@ -39,9 +39,9 @@ chmod +x SIMPLIFIED_SCRIPT
 ```
 
 5. Open a browser and go to 
-- https://<NODE_IP>:32293/carbon/
-- https://<NODE_IP>:32293/publisher/
-- https://<NODE_IP>:32293/devportal/
+- https://<NODE_IP>:30443/carbon/
+- https://<NODE_IP>:30443/publisher/
+- https://<NODE_IP>:30443/devportal/
 - https://<NODE_IP>:30646/analytics-dashboard/
 
 use username: admin and password: admin as default login credentials.
