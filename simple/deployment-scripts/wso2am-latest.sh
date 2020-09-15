@@ -2993,9 +2993,9 @@ data:
         allScopes: apim_analytics:admin openid apim:api_view apim:subscribe apim_analytics:monitoring_dashboard:own apim_analytics:monitoring_dashboard:edit apim_analytics:monitoring_dashboard:view apim_analytics:business_analytics:own apim_analytics:business_analytics:edit apim_analytics:business_analytics:view apim_analytics:api_analytics:own apim_analytics:api_analytics:edit apim_analytics:api_analytics:view apim_analytics:application_analytics:own apim_analytics:application_analytics:edit apim_analytics:application_analytics:view
         adminUsername: admin
         adminPassword: admin
-        kmDcrUrl: https://"ip.node.k8s.&.wso2.apim":32293/client-registration/v0.17/register
-        kmTokenUrlForRedirection: https://"ip.node.k8s.&.wso2.apim":32293/oauth2
-        kmTokenUrl: https://"ip.node.k8s.&.wso2.apim":32293/oauth2
+        kmDcrUrl: https://wso2am-pattern-1-am-1-service:9443/client-registration/v0.17/register
+        kmTokenUrlForRedirection: https://"ip.node.k8s.&.wso2.apim":30443/oauth2
+        kmTokenUrl: https://wso2am-pattern-1-am-1-service:9443/oauth2
         kmUsername: admin
         kmPassword: admin
         portalAppContext: analytics-dashboard
@@ -3003,9 +3003,9 @@ data:
         cacheTimeout: 900
         baseUrl: https://"ip.node.k8s.&.wso2.apim":30646
         grantType: authorization_code
-        publisherUrl: https://"ip.node.k8s.&.wso2.apim":32293
-        devPortalUrl: https://"ip.node.k8s.&.wso2.apim":32293
-        externalLogoutUrl: https://"ip.node.k8s.&.wso2.apim":32293/oidc/logout
+        publisherUrl: https://wso2am-pattern-1-am-1-service:9443
+        devPortalUrl: https://wso2am-pattern-1-am-1-service:9443
+        externalLogoutUrl: https://"ip.node.k8s.&.wso2.apim":30443/oidc/logout
 
     wso2.dashboard:
       roles:
@@ -3836,7 +3836,7 @@ data:
     [server]
     hostname = ""ip.node.k8s.&.wso2.apim""
     node_ip = "$env{NODE_IP}"
-    offset=22850
+    # offset=0
     mode = "single" #single or ha
     base_path = "${carbon.protocol}://${carbon.host}:${carbon.management.port}"
     #discard_empty_caches = false
@@ -3981,7 +3981,7 @@ data:
     #enable_token_hashing = false
 
     [apim.devportal]
-    url = "https://"ip.node.k8s.&.wso2.apim":32293/devportal"
+    url = "https://"ip.node.k8s.&.wso2.apim":30443/devportal"
     #enable_application_sharing = false
     #if application_sharing_type, application_sharing_impl both defined priority goes to application_sharing_impl
     #application_sharing_type = "default" #changed type, saml, default #todo: check the new config for rest api
@@ -4095,6 +4095,9 @@ data:
     username = "${admin.username}"
     password = "${admin.password}"
     'header.X-WSO2-KEY-MANAGER' = "default"
+
+    [transport.https.properties]
+    proxyPort = 30443
 ---
 
 apiVersion: v1
@@ -4113,31 +4116,27 @@ spec:
     -
       name: pass-through-http
       protocol: TCP
-      # for 8280 with a offset of 22850
-      port: 31130
-      targetPort: 31130
+      port: 8280
+      targetPort: 8280
       nodePort: 30280
     -
       name: pass-through-https
       protocol: TCP
-      # for 8243 with a offset of 22850
-      port: 31093
-      targetPort: 31093
+      port: 8243
+      targetPort: 8243
       nodePort: 30243
     -
       name: servlet-http
       protocol: TCP
-      # for 9763 with a offset of 22850
-      port: 32613
-      targetPort: 32613
+      port: 9763
+      targetPort: 9763
       nodePort: 30763
     -
       name: servlet-https
       protocol: TCP
-      # for 9443 with a offset of 22850
-      port: 32293
-      targetPort: 32293
-      nodePort: 32293
+      port: 9443
+      targetPort: 9443
+      nodePort: 30443
 ---
 
 apiVersion: apps/v1
@@ -4192,7 +4191,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 32293
+                - nc -z localhost 9443
             initialDelaySeconds: 250
             periodSeconds: 10
           readinessProbe:
@@ -4200,7 +4199,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 32293
+                - nc -z localhost 9443
             initialDelaySeconds: 250
             periodSeconds: 10
           lifecycle:
@@ -4209,24 +4208,24 @@ spec:
                 command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
           resources:
             requests:
-              memory: 2Gi
-              cpu: 2000m
+              memory: 1Gi
+              cpu: 1000m
             limits:
               memory: 2Gi
               cpu: 2000m
           imagePullPolicy: Always
           ports:
             -
-              containerPort: 31130
+              containerPort: 8280
               protocol: "TCP"
             -
-              containerPort: 31093
+              containerPort: 8243
               protocol: "TCP"
             -
-              containerPort: 32613
+              containerPort: 9763
               protocol: "TCP"
             -
-              containerPort: 32293
+              containerPort: 9443
               protocol: "TCP"
           env:
             - name: HOST_NAME
@@ -4360,6 +4359,10 @@ function get_node_ip(){
       if [[ $(kubectl config current-context) = "minikube" ]]
       then
           NODE_IP=$(minikube ip)
+      elif [[ $(kubectl config current-context) = "docker-desktop" ]]
+      then
+          NODE_IP="127.0.0.1"
+      else
       else
         echo "We could not find your cluster node-ip."
         while [[ -z "$NODE_IP" ]]
@@ -4383,6 +4386,9 @@ function progress_bar(){
   pod_status=$(kubectl get pods -n wso2 -o jsonpath='{.items[?(@.metadata.labels.product=="api-manager")].status.conditions[*].status}')
 
   num_true_const=0; progress_unit="";num_true=0; time_proc=0;
+
+  # check for 250s until the pod is live.
+  time_limit=250 
 
   arr_dep=($dep_status); arr_pod=($pod_status)
 
@@ -4457,7 +4463,7 @@ function progress_bar(){
 
       sleep 1
 
-      if [[ $time_proc -gt 250 ]]
+      if [[ $time_proc -gt $time_limit ]]
       then
           echoBold "\n\nSomething went wrong! Please Follow \"https://wso2.com/products/install/faq/#Kubernetes\" for more information\n"
           exit 2
@@ -4534,9 +4540,9 @@ function deploy(){
     echoBold "Successfully deployed WSO2 API Manager.\n\n"
 
     echoBold "1. Try navigating to\n\n"
-    echoBold "\thttps://$NODE_IP:32293/carbon/\n"
-    echoBold "\thttps://$NODE_IP:32293/publisher/\n"
-    echoBold "\thttps://$NODE_IP:32293/devportal/\n"
+    echoBold "\thttps://$NODE_IP:30443/carbon/\n"
+    echoBold "\thttps://$NODE_IP:30443/publisher/\n"
+    echoBold "\thttps://$NODE_IP:30443/devportal/\n"
     echoBold "\thttps://$NODE_IP:30646/analytics-dashboard/\n\n"
     echoBold "from your favourite browser using credentials admin/admin\n\n"
 
