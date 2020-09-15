@@ -376,9 +376,9 @@ data:
         allScopes: apim_analytics:admin openid apim:api_view apim:subscribe apim_analytics:monitoring_dashboard:own apim_analytics:monitoring_dashboard:edit apim_analytics:monitoring_dashboard:view apim_analytics:business_analytics:own apim_analytics:business_analytics:edit apim_analytics:business_analytics:view apim_analytics:api_analytics:own apim_analytics:api_analytics:edit apim_analytics:api_analytics:view apim_analytics:application_analytics:own apim_analytics:application_analytics:edit apim_analytics:application_analytics:view
         adminUsername: admin
         adminPassword: admin
-        kmDcrUrl: https://"ip.node.k8s.&.wso2.apim":32293/client-registration/v0.17/register
-        kmTokenUrlForRedirection: https://"ip.node.k8s.&.wso2.apim":32293/oauth2
-        kmTokenUrl: https://"ip.node.k8s.&.wso2.apim":32293/oauth2
+        kmDcrUrl: https://wso2am-pattern-1-am-1-service:9443/client-registration/v0.17/register
+        kmTokenUrlForRedirection: https://"ip.node.k8s.&.wso2.apim":30443/oauth2
+        kmTokenUrl: https://wso2am-pattern-1-am-1-service:9443/oauth2
         kmUsername: admin
         kmPassword: admin
         portalAppContext: analytics-dashboard
@@ -386,9 +386,9 @@ data:
         cacheTimeout: 900
         baseUrl: https://"ip.node.k8s.&.wso2.apim":30646
         grantType: authorization_code
-        publisherUrl: https://"ip.node.k8s.&.wso2.apim":32293
-        devPortalUrl: https://"ip.node.k8s.&.wso2.apim":32293
-        externalLogoutUrl: https://"ip.node.k8s.&.wso2.apim":32293/oidc/logout
+        publisherUrl: https://wso2am-pattern-1-am-1-service:9443
+        devPortalUrl: https://wso2am-pattern-1-am-1-service:9443
+        externalLogoutUrl: https://"ip.node.k8s.&.wso2.apim":30443/oidc/logout
 
     wso2.dashboard:
       roles:
