@@ -15,29 +15,25 @@ spec:
     -
       name: pass-through-http
       protocol: TCP
-      # for 8280 with a offset of 22850
-      port: 31130
-      targetPort: 31130
+      port: 8280
+      targetPort: 8280
       nodePort: 30280
     -
       name: pass-through-https
       protocol: TCP
-      # for 8243 with a offset of 22850
-      port: 31093
-      targetPort: 31093
+      port: 8243
+      targetPort: 8243
       nodePort: 30243
     -
       name: servlet-http
       protocol: TCP
-      # for 9763 with a offset of 22850
-      port: 32613
-      targetPort: 32613
+      port: 9763
+      targetPort: 9763
       nodePort: 30763
     -
       name: servlet-https
       protocol: TCP
-      # for 9443 with a offset of 22850
-      port: 32293
-      targetPort: 32293
-      nodePort: 32293
+      port: 9443
+      targetPort: 9443
+      nodePort: 30443
 ---

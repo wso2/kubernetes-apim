@@ -51,7 +51,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 32293
+                - nc -z localhost 9443
             initialDelaySeconds: 250
             periodSeconds: 10
           readinessProbe:
@@ -59,7 +59,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 32293
+                - nc -z localhost 9443
             initialDelaySeconds: 250
             periodSeconds: 10
           lifecycle:
@@ -68,24 +68,24 @@ spec:
                 command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
           resources:
             requests:
-              memory: 2Gi
-              cpu: 2000m
+              memory: 1Gi
+              cpu: 1000m
             limits:
               memory: 2Gi
               cpu: 2000m
           imagePullPolicy: Always
           ports:
             -
-              containerPort: 31130
+              containerPort: 8280
               protocol: "TCP"
             -
-              containerPort: 31093
+              containerPort: 8243
               protocol: "TCP"
             -
-              containerPort: 32613
+              containerPort: 9763
               protocol: "TCP"
             -
-              containerPort: 32293
+              containerPort: 9443
               protocol: "TCP"
           env:
             - name: HOST_NAME
