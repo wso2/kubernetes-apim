@@ -5,6 +5,19 @@ will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [v3.2.0.2] - 2020-09-15
+
+### Changed
+
+- [[Simplified Setup](https://github.com/wso2/kubernetes-apim/tree/master/simple)] Reduce resource requests of the simplified kubernetes resources.  (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/459))
+
+### Fixed
+
+- [[Simplified Setup](https://github.com/wso2/kubernetes-apim/tree/master/simple)] Update auth.config URLs in analytics dashboard to support access to analytics dashboard with Docker Desktop. (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/460))
+
+For detailed information on the tasks carried out during this release, please see the GitHub milestone
+[v3.2.0.2](https://github.com/wso2/kubernetes-apim/milestone/17)
+
 ## [v3.2.0.1] - 2020-08-28
 
 ### Environments
@@ -35,4 +48,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 For detailed information on the tasks carried out during this release, please see the GitHub milestone
 [v3.2.0.1](https://github.com/wso2/kubernetes-apim/milestone/15)
 
+[v3.2.0.2]: https://github.com/wso2/kubernetes-apim/compare/v3.2.0.1...v3.2.0.2
 [v3.2.0.1]: https://github.com/wso2/kubernetes-apim/compare/v3.1.0.3...v3.2.0.1
