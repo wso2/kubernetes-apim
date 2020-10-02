@@ -83,7 +83,7 @@ wso2:
           # Annotations for the Gateway service ingress
           annotations:
             kubernetes.io/ingress.class: "nginx"
-            nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 
         # Indicates whether the container is running
         livenessProbe:
