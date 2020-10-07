@@ -3,6 +3,13 @@ All notable changes to this project `3.1.0` per each release will be documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [v3.1.0.4] - 2020-10-07
+
+### Fixed
+
+- Configuring load balancing service name in deployment.toml of APIM for analytics will fail Alert Configurations in
+ Publisher (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/467))
+
 ## [v3.1.0.3] - 2020-07-20
 
 ### Added
@@ -43,6 +50,7 @@ For detailed information on the tasks carried out during this release, please se
 
 For detailed information on the tasks carried out during this release, please see the GitHub milestone [v3.1.0.1](https://github.com/wso2/kubernetes-apim/milestone/12)
 
+[v3.1.0.4]: https://github.com/wso2/kubernetes-apim/compare/v3.1.0.3...v3.1.0.4
 [v3.1.0.3]: https://github.com/wso2/kubernetes-apim/compare/v3.1.0.2...v3.1.0.3
 [v3.1.0.2]: https://github.com/wso2/kubernetes-apim/compare/v3.1.0.1...v3.1.0.2
 [v3.1.0.1]: https://github.com/wso2/kubernetes-apim/compare/v3.0.0.3...v3.1.0.1
