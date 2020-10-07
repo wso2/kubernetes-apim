@@ -55,7 +55,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  Helm version 2
 
  ```
- helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-3 --namespace <NAMESPACE>
+ helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-4 --namespace <NAMESPACE>
  ```
 
  Helm version 3
@@ -69,7 +69,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-3 --namespace <NAMESPACE>
+    helm install <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-4 --namespace <NAMESPACE>
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -80,7 +80,7 @@ please provide your WSO2 Subscription credentials via input values (using `--set
 Please see the following example.
 
 ```
- helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-3 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> wso2/am-pattern-1 --version 3.1.0-4 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 #### Install Chart From Source
@@ -101,7 +101,7 @@ git clone https://github.com/wso2/kubernetes-apim.git
  Helm version 2
 
  ```
- helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --version 3.1.0-3 --namespace <NAMESPACE>
+ helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --version 3.1.0-4 --namespace <NAMESPACE>
  ```
 
  Helm version 3
@@ -115,7 +115,7 @@ git clone https://github.com/wso2/kubernetes-apim.git
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --version 3.1.0-3 --namespace <NAMESPACE> --dependency-update
+    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --version 3.1.0-4 --namespace <NAMESPACE> --dependency-update
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -126,7 +126,7 @@ please provide your WSO2 Subscription credentials via input values (using `--set
 Please see the following example.
 
 ```
- helm install --name <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --version 3.1.0-3 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --version 3.1.0-4 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 ### 2. Obtain the external IP
