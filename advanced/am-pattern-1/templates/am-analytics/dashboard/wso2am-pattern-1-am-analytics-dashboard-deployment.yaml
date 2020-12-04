@@ -54,15 +54,7 @@ spec:
       {{ end }}
       containers:
         - name: wso2am-analytics-dashboard
-          {{- if .Values.wso2.deployment.analytics.dashboard.dockerRegistry }}
-          image: {{ .Values.wso2.deployment.analytics.dashboard.dockerRegistry }}/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}
-          {{- $tag := .Values.wso2.deployment.analytics.dashboard.imageTag }}
-          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
-          {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-          image: wso2/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}:{{ .Values.wso2.deployment.analytics.dashboard.imageTag }}
-          {{- else }}
-          image: docker.wso2.com/{{ .Values.wso2.deployment.analytics.dashboard.imageName }}:{{ .Values.wso2.deployment.analytics.dashboard.imageTag }}
-          {{- end }}
+{{- include "image" (dict "Values" .Values "deployment" .Values.wso2.deployment.analytics.dashboard) | indent 10 }}
           imagePullPolicy: {{ .Values.wso2.deployment.analytics.dashboard.imagePullPolicy }}
           livenessProbe:
             exec:
