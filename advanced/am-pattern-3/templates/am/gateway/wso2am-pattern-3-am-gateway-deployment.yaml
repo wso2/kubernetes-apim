@@ -49,15 +49,7 @@ spec:
         command: ['sh', '-c', 'echo -e "Checking for the availability of TM instance two deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-am-tm-statefulset-1.{{ template "am-pattern-3.resource.prefix" . }}-am-tm-headless-service 9611; do sleep 1; printf "-"; done; echo -e "  >> TM instance two has started";']
       containers:
       - name: wso2am-gateway
-        {{- if .Values.wso2.deployment.am.dockerRegistry }}
-        image: {{ .Values.wso2.deployment.am.dockerRegistry }}/{{ .Values.wso2.deployment.am.imageName }}
-        {{- $tag := .Values.wso2.deployment.am.imageTag }}
-        {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
-        {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-        image: wso2/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
-        {{- else }}
-        image: docker.wso2.com/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
-        {{- end }}
+{{- include "image" (dict "Values" .Values "deployment" .Values.wso2.deployment.am) | indent 8 }}
         imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
         env:
         - name: PROFILE_NAME
