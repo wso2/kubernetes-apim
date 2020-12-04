@@ -57,15 +57,7 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of Key Manager deployment"; while ! nc -z {{ template "am-pattern-3.resource.prefix" . }}-km-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Key Manager has started";']
       containers:
         - name: wso2am-devportal
-          {{- if .Values.wso2.deployment.am.dockerRegistry }}
-          image: {{ .Values.wso2.deployment.am.dockerRegistry }}/{{ .Values.wso2.deployment.am.imageName }}
-          {{- $tag := .Values.wso2.deployment.am.imageTag }}
-          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
-          {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-          image: wso2/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
-          {{- else }}
-          image: docker.wso2.com/{{ .Values.wso2.deployment.am.imageName }}:{{ .Values.wso2.deployment.am.imageTag }}
-          {{- end }}
+{{- include "image" (dict "Values" .Values "deployment" .Values.wso2.deployment.am) | indent 10 }}
           imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
           livenessProbe:
             exec:
