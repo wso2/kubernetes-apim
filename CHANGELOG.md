@@ -5,6 +5,14 @@ will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [v3.2.0.3] - 2020-12-17
+
+### Changed
+
+- Use Updates 2.0 images when subscription is enabled (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/478))
+- Change MySQL dependency to bitnami repo (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/479))
+- Use nfs-server-provisioner from kvaps (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/481))
+
 ## [v3.2.0.2] - 2020-09-16
 
 ### Changed
@@ -48,5 +56,6 @@ For detailed information on the tasks carried out during this release, please se
 For detailed information on the tasks carried out during this release, please see the GitHub milestone
 [v3.2.0.1](https://github.com/wso2/kubernetes-apim/milestone/15)
 
+[v3.2.0.3]: https://github.com/wso2/kubernetes-apim/compare/v3.2.0.3...v3.2.0.3
 [v3.2.0.2]: https://github.com/wso2/kubernetes-apim/compare/v3.2.0.1...v3.2.0.2
 [v3.2.0.1]: https://github.com/wso2/kubernetes-apim/compare/v3.1.0.3...v3.2.0.1
