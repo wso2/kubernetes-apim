@@ -27,3 +27,7 @@ target/
 wso2*/scripts
 
 notes.txt
+
+# Charts and requirement.lock
+*.tgz
+requirements.lock
