@@ -354,7 +354,7 @@ data:
       deployment_configs:
         -
           # <IP>:<HTTPS Port> of the Worker node
-          localhost:9444:
+          {{ template "am-pattern-3.resource.prefix" . }}-am-analytics-worker-service:9444:
             # UUIDs of rule templates that are needed to be deployed on the node
             - stock-data-analysis
             - stock-exchange-input
