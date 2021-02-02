@@ -18,6 +18,6 @@ dependencies:
     repository: "https://helm.wso2.com"
     condition: wso2.deployment.dependencies.mysql
   - name: nfs-server-provisioner
-    version: "1.2.0"
-    repository: "https://kvaps.github.io/charts"
+    version: "1.1.0"
+    repository: "https://helm.wso2.com"
     condition: wso2.deployment.dependencies.nfsServerProvisioner
