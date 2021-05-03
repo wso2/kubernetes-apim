@@ -5,6 +5,15 @@ will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [v3.2.0.4] - 2021-05-03
+
+### Changed
+
+- Use MySQL, nfs-server-provisioner from WSO2 repo (refer to [issue](https://github.com/wso2/kubernetes-apim/issues/488))
+
+For detailed information on the tasks carried out during this release, please see the GitHub milestone
+[v3.2.0.4](https://github.com/wso2/kubernetes-apim/milestone/20).
+
 ## [v3.2.0.3] - 2020-12-17
 
 ### Changed
