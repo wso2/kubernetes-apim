@@ -1,0 +1,39 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wso2am-pattern-1-am-1-service
+  namespace: wso2
+spec:
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    deployment: wso2am-pattern-1-am
+    product: api-manager
+  type: NodePort
+  ports:
+    # ports that this service should serve on
+    -
+      name: pass-through-http
+      protocol: TCP
+      port: 8280
+      targetPort: 8280
+      nodePort: 30280
+    -
+      name: pass-through-https
+      protocol: TCP
+      port: 8243
+      targetPort: 8243
+      nodePort: 30243
+    -
+      name: servlet-http
+      protocol: TCP
+      port: 9763
+      targetPort: 9763
+      nodePort: 30763
+    -
+      name: servlet-https
+      protocol: TCP
+      port: 9443
+      targetPort: 9443
+      nodePort: 30443
+---
