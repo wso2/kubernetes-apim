@@ -1,14 +1,34 @@
+# Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: wso2am-pattern-1-am-1-conf
-  namespace: wso2
+  name: {{ template "am-single-node.resource.prefix" . }}-am-conf
+  namespace : {{ .Release.Namespace }}
+  {{ if .Values.wso2.deployment.am.config }}
 data:
-  deployment.toml: |
+  {{- range $index, $content := .Values.wso2.deployment.am.config }}
+  {{ $index }}: |-
+  {{ tpl $content $ | indent 4 }}
+  {{- end }}
 
+  {{ else }}
+data:
+  deployment.toml: |-
     [server]
-    hostname = ""ip.node.k8s.&.wso2.apim""
+    hostname = "{{ .Values.wso2.deployment.am.ingress.management.hostname }}"
     #offset=0
     base_path = "${carbon.protocol}://${carbon.host}:${carbon.management.port}"
     #discard_empty_caches = false
@@ -24,14 +44,14 @@ data:
 
     [database.apim_db]
     type = "mysql"
-    url = "jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_DB?autoReconnect=true&amp;useSSL=false"
+    url = "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false"
     username = "wso2carbon"
     password = "wso2carbon"
     driver = "com.mysql.cj.jdbc.Driver"
 
     [database.shared_db]
     type = "mysql"
-    url = "jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_SHARED_DB?autoReconnect=true&amp;useSSL=false"
+    url = "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_SHARED_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false"
     username = "wso2carbon"
     password = "wso2carbon"
     driver = "com.mysql.cj.jdbc.Driver"
@@ -66,12 +86,12 @@ data:
     service_url = "https://localhost:${mgt.transport.https.port}/services/"
     username= "${admin.username}"
     password= "${admin.password}"
-    ws_endpoint = "ws://"ip.node.k8s.&.wso2.apim":9099"
-    wss_endpoint = "wss://"ip.node.k8s.&.wso2.apim":8099"
-    http_endpoint = "http://"ip.node.k8s.&.wso2.apim":30280"
-    https_endpoint = "https://"ip.node.k8s.&.wso2.apim":30243"
-    websub_event_receiver_http_endpoint = "http://"ip.node.k8s.&.wso2.apim":9021"
-    websub_event_receiver_https_endpoint = "https://"ip.node.k8s.&.wso2.apim":8021"
+    ws_endpoint = "ws://localhost:9099"
+    wss_endpoint = "wss://localhost:8099"
+    http_endpoint = "http://{{ .Values.wso2.deployment.am.ingress.gateway.hostname }}"
+    https_endpoint = "https://{{ .Values.wso2.deployment.am.ingress.gateway.hostname }}"
+    websub_event_receiver_http_endpoint = "http://{{ .Values.wso2.deployment.am.ingress.websub.hostname }}"
+    websub_event_receiver_https_endpoint = "https://{{ .Values.wso2.deployment.am.ingress.websub.hostname }}"
 
     [apim.sync_runtime_artifacts.gateway]
     gateway_labels =["Default"]
@@ -144,7 +164,7 @@ data:
     #enable_token_hashing = false
 
     [apim.devportal]
-    url = "https://"ip.node.k8s.&.wso2.apim":30443/devportal"
+    url = "https://{{ .Values.wso2.deployment.am.ingress.management.hostname }}/devportal"
     #enable_application_sharing = false
     #if application_sharing_type, application_sharing_impl both defined priority goes to application_sharing_impl
     #application_sharing_type = "default" #changed type, saml, default #todo: check the new config for rest api
@@ -247,9 +267,6 @@ data:
     [service_provider]
     sp_name_regex = "^[\\sa-zA-Z0-9._-]*$"
 
-    [database.local]
-    url = "jdbc:h2:./repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
-
     [[event_listener]]
     id = "token_revocation"
     type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
@@ -262,5 +279,17 @@ data:
     'header.X-WSO2-KEY-MANAGER' = "default"
 
     [transport.https.properties]
-    proxyPort = 30443
----
+    proxyPort = 443
+
+    {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
+    [database.local]
+    url = "jdbc:h2:/home/wso2carbon/solr/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
+
+    [indexing]
+    location = "/home/wso2carbon/solr/indexed-data"
+    {{ else }}
+    [database.local]
+    url = "jdbc:h2:./repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
+    {{ end }}
+
+  {{ end }}

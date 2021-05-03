@@ -245,7 +245,6 @@ function deploy(){
     echoBold "\thttps://$NODE_IP:30443/carbon/\n"
     echoBold "\thttps://$NODE_IP:30443/publisher/\n"
     echoBold "\thttps://$NODE_IP:30443/devportal/\n"
-    echoBold "\thttps://$NODE_IP:30646/analytics-dashboard/\n\n"
     echoBold "from your favourite browser using credentials admin/admin\n\n"
 
     echoBold "2. Follow \"https://apim.docs.wso2.com/en/latest/GettingStarted/quick-start-guide/\" to start using WSO2 API Manager.\n\n"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IS_OPEN_SOURCE=FALSE
+IS_OPEN_SOURCE=true
 
 if $IS_OPEN_SOURCE; then
   SCRIPT="deployment-scripts/wso2am-ga.sh"
@@ -67,12 +67,6 @@ fi
 cat kubernetes-apim-mysql/wso2apim-mysql-conf.yaml >> $SCRIPT
 cat kubernetes-apim-mysql/wso2apim-mysql-service.yaml >> $SCRIPT
 cat kubernetes-apim-mysql/wso2apim-mysql-deployment.yaml >> $SCRIPT
-cat kubernetes-apim-analytics/dashboard/wso2am-pattern-1-analytics-dashboard-conf.yaml>> $SCRIPT
-cat kubernetes-apim-analytics/dashboard/wso2am-pattern-1-analytics-dashboard-service.yaml >> $SCRIPT
-cat kubernetes-apim-analytics/dashboard/wso2am-pattern-1-analytics-dashboard-deployment.yaml >> $SCRIPT
-cat kubernetes-apim-analytics/worker/wso2apim-analytics-worker-conf.yaml >> $SCRIPT
-cat kubernetes-apim-analytics/worker/wso2apim-analytics-worker-service.yaml >> $SCRIPT
-cat kubernetes-apim-analytics/worker/wso2apim-analytics-worker-deployment.yaml >> $SCRIPT
 cat kubernetes-apim/wso2apim-conf.yaml >> $SCRIPT
 cat kubernetes-apim/wso2apim-service.yaml >> $SCRIPT
 cat kubernetes-apim/wso2apim-deployment.yaml >> $SCRIPT

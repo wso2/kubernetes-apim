@@ -18,7 +18,8 @@ spec:
     spec:
       containers:
         - name: wso2apim-mysql
-          image: mysql:5.7
+          # image: mysql:5.7
+          image: 192.168.1.5:5000/mysql:5.7
           livenessProbe:
             exec:
               command:
