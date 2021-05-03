@@ -29,9 +29,6 @@ spec:
         - name: init-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2apim-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
-        - name: init-am-analytics-worker
-          image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z wso2am-pattern-1-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
         - name: init-download-mysql-connector
           image: busybox:1.31
           command:
@@ -45,7 +42,8 @@ spec:
               mountPath: /mysql-connector-jar
       containers:
         - name: wso2am-pattern-1-am
-          image: "$image.pull.@.wso2"/wso2am:3.2.0
+          # image: "$image.pull.@.wso2"/wso2am:3.2.0
+          image: 192.168.1.5:5000/wso2am:4.0.0-rc
           livenessProbe:
             exec:
               command:
