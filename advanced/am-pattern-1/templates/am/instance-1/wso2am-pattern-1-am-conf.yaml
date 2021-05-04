@@ -20,18 +20,16 @@ metadata:
   {{ if .Values.wso2.deployment.am.config }}
 data:
   {{- range $index, $content := .Values.wso2.deployment.am.config }}
-  {{ $index }}: |-
-  {{ tpl $content $ | indent 4 }}
-  {{- end }}
+    {{ $index }}: |-
+    {{ tpl $content $ | indent 4 }}
+    {{- end }}
 
-  {{ else }}
+    {{ else }}
 data:
   deployment.toml: |-
     [server]
     hostname = "{{ .Values.wso2.deployment.am.ingress.management.hostname }}"
-    node_ip = "$env{NODE_IP}"
     #offset=0
-    mode = "single" #single or ha
     base_path = "${carbon.protocol}://${carbon.host}:${carbon.management.port}"
     #discard_empty_caches = false
     server_role = "default"
@@ -80,7 +78,7 @@ data:
     #key_password =  "wso2carbon"
 
     [[apim.gateway.environment]]
-    name = "Production and Sandbox"
+    name = "Default"
     type = "hybrid"
     display_in_api_console = true
     description = "This is a hybrid gateway that handles both production and sandbox token traffic."
@@ -92,6 +90,11 @@ data:
     wss_endpoint = "wss://localhost:8099"
     http_endpoint = "http://{{ .Values.wso2.deployment.am.ingress.gateway.hostname }}"
     https_endpoint = "https://{{ .Values.wso2.deployment.am.ingress.gateway.hostname }}"
+    websub_event_receiver_http_endpoint = "http://{{ .Values.wso2.deployment.am.ingress.websub.hostname }}"
+    websub_event_receiver_https_endpoint = "https://{{ .Values.wso2.deployment.am.ingress.websub.hostname }}"
+
+    [apim.sync_runtime_artifacts.gateway]
+    gateway_labels =["Default"]
 
     #[apim.cache.gateway_token]
     #enable = true
@@ -122,23 +125,9 @@ data:
     #expiry_time = "2m"
 
     [apim.analytics]
-    enable = true
-    store_api_url = "https://{{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-service:7444"
-    #username = "$ref{super_admin.username}"
-    #password = "$ref{super_admin.password}"
-    #event_publisher_type = "default"
-    #event_publisher_impl = "org.wso2.carbon.apimgt.usage.publisher.APIMgtUsageDataBridgeDataPublisher"
-    #publish_response_size = true
-
-    [[apim.analytics.url_group]]
-    analytics_url =["tcp://{{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-headless-service:7612","tcp://{{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-headless-service:7612"]
-    analytics_auth_url =["ssl://{{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-statefulset-0.{{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-headless-service:7712","ssl://{{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-statefulset-1.{{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-headless-service:7712"]
-    type = "failover"
-
-    #[[apim.analytics.url_group]]
-    #analytics_url =["tcp://analytics1:7612","tcp://analytics2:7612"]
-    #analytics_auth_url =["ssl://analytics1:7712","ssl://analytics2:7712"]
-    #type = "failover"
+    enable = false
+    config_endpoint = "https://localhost:8080/auth/v1"
+    auth_token = ""
 
     #[apim.key_manager]
     #service_url = "https://localhost:${mgt.transport.https.port}/services/"
@@ -186,11 +175,13 @@ data:
     #enable_ratings = true
     #enable_forum = true
     #enable_anonymous_mode=true
+    #enable_cross_tenant_subscriptions = true
+    #default_reserved_username = "apim_reserved_user"
 
     [apim.cors]
     allow_origins = "*"
     allow_methods = ["GET","PUT","POST","DELETE","PATCH","OPTIONS"]
-    allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction","apikey", "testKey"]
+    allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction","apikey","Internal-Key"]
     allow_credentials = false
 
     [apim.throttling]
@@ -224,7 +215,7 @@ data:
     [[apim.throttling.url_group]]
     traffic_manager_urls = ["tcp://{{ template "am-pattern-1.resource.prefix" . }}-am-2-service:9611"]
     traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-1.resource.prefix" . }}-am-2-service:9711"]
-    type = "loadbalance"
+    type = "failover"
 
     #[apim.workflow]
     #enable = false
@@ -291,14 +282,6 @@ data:
     [transport.https.properties]
     proxyPort = 443
 
-    [[apim.event_hub.publish.url_group]]
-    urls = ["tcp://localhost:9611"]
-    auth_urls = ["ssl://localhost:9711"]
-
-    [[apim.event_hub.publish.url_group]]
-    urls = ["tcp://{{ template "am-pattern-1.resource.prefix" . }}-am-2-service:9611"]
-    auth_urls = ["ssl://{{ template "am-pattern-1.resource.prefix" . }}-am-2-service:9711"]
-
     {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
     [database.local]
     url = "jdbc:h2:/home/wso2carbon/solr/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
@@ -309,4 +292,5 @@ data:
     [database.local]
     url = "jdbc:h2:./repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
     {{ end }}
+
   {{ end }}
