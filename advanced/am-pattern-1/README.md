@@ -143,12 +143,19 @@ API Manager Gateway
 - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Gateway service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager' Gateway service
 
-API Manager Analytics Dashboard
+API Manager Websub
 
-- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-1-am-analytics-dashboard-ingress`)
-- HOSTS: Hostname of the WSO2 API Manager Analytics Dashboard service (`<wso2.deployment.analytics.dashboard.ingress.hostname>`)
-- ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager Analytics Dashboard service to outside of the Kubernetes environment
-- PORTS: Externally exposed service ports of the API Manager Analytics Dashboard service
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-1-am-websub-ingress`)
+- HOSTS: Hostname of the WSO2 API Manager's Websub service (`<wso2.deployment.am.ingress.websub.hostname>`)
+- ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Websub service to outside of the Kubernetes environment
+- PORTS: Externally exposed service ports of the API Manager' Websub service
+
+Micro Integrator Management APIs
+
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-1-mi-1-management-ingress`)
+- HOSTS: Hostname of the WSO2 Micro Integrator service (`<wso2.deployment.mi.ingress.management.hostname>`)
+- ADDRESS: External IP (`EXTERNAL-IP`) exposing the Micro Integrator service to outside of the Kubernetes environment
+- PORTS: Externally exposed service ports of the Micro Integrator service
 
 ### 3. Add a DNS record mapping the hostnames and the external IP
 
@@ -159,7 +166,7 @@ If the defined hostnames are not backed by a DNS service, for the purpose of eva
 hostnames and the external IP in the `/etc/hosts` file at the client-side.
 
 ```
-<EXTERNAL-IP> <wso2.deployment.am.ingress.management.hostname> <wso2.deployment.am.ingress.gateway.hostname> <wso2.deployment.analytics.dashboard.ingress.hostname>
+<EXTERNAL-IP> <wso2.deployment.am.ingress.management.hostname> <wso2.deployment.am.ingress.gateway.hostname> <wso2.deployment.am.ingress.websub.hostname> <wso2.deployment.mi.ingress.management.hostname>
 ```
 
 ### 4. Access Management Consoles
@@ -168,8 +175,7 @@ hostnames and the external IP in the `/etc/hosts` file at the client-side.
 
 - API Manager DevPortal: `https://<wso2.deployment.am.ingress.management.hostname>/devportal`
 
-- API Manager Analytics Dashboard: `https://<wso2.deployment.analytics.dashboard.ingress.hostname>/analytics-dashboard`
-
+- API Manager Carbon Console: `https://<wso2.deployment.am.ingress.management.hostname>/carbon`
 
 ## Configuration
 
