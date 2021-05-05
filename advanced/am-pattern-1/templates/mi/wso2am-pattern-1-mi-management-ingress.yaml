@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-mi-management-ingress
+  name: {{ template "am-pattern-1.resource.prefix" . }}-mi-1-management-ingress
   namespace : {{ .Release.Namespace }}
 {{- if .Values.wso2.deployment.mi.ingress.management.annotations }}
   annotations:

@@ -17,8 +17,8 @@ wso2:
   # If provided, these parameters will be used to obtain official WSO2 product Docker images available at WSO2 Private Docker Registry (https://docker.wso2.com/)
   # for this deployment
   subscription:
-    username: "sajithal@wso2.com"
-    password: "Sajicapn@sv123@#"
+    username: ""
+    password: ""
 
   deployment:
     mi:
@@ -86,8 +86,8 @@ am-pattern-1:
     # If provided, these parameters will be used to obtain official WSO2 product Docker images available at WSO2 Private Docker Registry (https://docker.wso2.com/)
     # for this deployment
     subscription:
-      username: "sajithal@wso2.com"
-      password: "Sajicapn@sv123@#"
+      username: ""
+      password: ""
 
     deployment:
       dependencies:
