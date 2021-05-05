@@ -13,11 +13,6 @@
 # limitations under the License.
 
 dependencies:
-  - name: mysql-am
-    version: "3.2.0-4"
+  - name: am-pattern-1
+    version: "4.0.0-1"
     repository: "https://helm.wso2.com"
-    condition: wso2.deployment.dependencies.mysql
-  - name: nfs-server-provisioner
-    version: "1.1.0"
-    repository: "https://helm.wso2.com"
-    condition: wso2.deployment.dependencies.nfsServerProvisioner
