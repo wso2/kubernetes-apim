@@ -38,24 +38,6 @@ data:
     # check if the WSO2 product home exists
     test ! -d ${WSO2_SERVER_HOME} && echo "WSO2 Docker product home does not exist" && exit 1
 
-    # shared artifact directories
-    directories=("executionplans" "synapse-configs")
-    # if the original directory locations of artifacts to be synced between nodes are empty,
-    # copy the preserved, default content of these folders to these original locations
-    for shared_directory in ${directories[@]}; do
-      if test -d ${original_deployment_artifacts}/${shared_directory};
-      then
-        if [[ -z "$(ls -A ${deployment_volume}/${shared_directory})" ]]; then
-          if ! cp -R ${original_deployment_artifacts}/${shared_directory}/* ${deployment_volume}/${shared_directory};
-          then
-            echo "Failed to copy the preserved, default artifacts to original location (${deployment_volume}/${shared_directory})"
-            exit 1
-          fi
-          echo "Successfully copied the preserved, default artifacts to original location (${deployment_volume}/${shared_directory})"
-        fi
-      fi
-    done
-
     # Copying carbon_db
     if ! test -f /home/wso2carbon/solr/database/WSO2CARBON_DB.mv.db
     then
@@ -80,10 +62,10 @@ data:
     if [[ -z "${PROFILE_NAME}" ]]
     then
       # start the server with the provided startup arguments
-      sh ${WSO2_SERVER_HOME}/bin/wso2server.sh "$@"
+      sh ${WSO2_SERVER_HOME}/bin/api-manager.sh "$@"
     else
       # start the server with the specified profile and provided startup arguments
-      sh ${WSO2_SERVER_HOME}/bin/wso2server.sh -Dprofile=${PROFILE_NAME} "$@"
+      sh ${WSO2_SERVER_HOME}/bin/api-manager.sh -Dprofile=${PROFILE_NAME} "$@"
     fi
 
   {{ end }}
