@@ -14,10 +14,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "am-pattern-1.resource.prefix" . }}-mi-1-deployment
+  name: {{ template "am-pattern-2.resource.prefix" . }}-mi-2-deployment
   namespace: {{ .Release.Namespace }}
   labels:
-{{ include "am-pattern-1.labels" . | indent 4 }}
+{{ include "am-pattern-2.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.wso2.deployment.mi.replicas }}
   strategy:
@@ -27,13 +27,13 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: {{ template "am-pattern-1.resource.prefix" . }}-mi
-      node: {{ template "am-pattern-1.resource.prefix" . }}-mi-1
+      deployment: {{ template "am-pattern-2.resource.prefix" . }}-mi
+      node: {{ template "am-pattern-2.resource.prefix" . }}-mi-2
   template:
     metadata:
       labels:
-        deployment: {{ template "am-pattern-1.resource.prefix" . }}-mi
-        node: {{ template "am-pattern-1.resource.prefix" . }}-mi-1
+        deployment: {{ template "am-pattern-2.resource.prefix" . }}-mi
+        node: {{ template "am-pattern-2.resource.prefix" . }}-mi-2
     spec:
       containers:
         - name: wso2micro-integrator
@@ -84,11 +84,11 @@ spec:
               value: {{ $val | quote }}
           {{- end }}
           {{- end }}
-      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}  
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.mi.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.wso2.deployment.mi.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: {{ template "am-pattern-1.resource.prefix" . }}-mi-wso2-private-registry-creds
+        - name: {{ template "am-pattern-2.resource.prefix" . }}-mi-wso2-private-registry-creds
       {{ end }}

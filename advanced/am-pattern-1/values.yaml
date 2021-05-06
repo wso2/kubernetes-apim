@@ -39,7 +39,7 @@ wso2:
       apacheSolrIndexing:
         # Indicates if persistence of the runtime artifacts for Apache Solr-based indexing is enabled
         # By default, this is disabled
-        enabled: true
+        enabled: false
         # Define capacities for persistent runtime artifact directories
         capacity:
           # For persisting the H2 based local Carbon database file
