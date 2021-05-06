@@ -91,7 +91,8 @@ data:
     wss_endpoint = "wss://localhost:8099"
     http_endpoint = "http://{{ .Values.wso2.deployment.am.gateway.ingress.hostname }}"
     https_endpoint = "https://{{ .Values.wso2.deployment.am.gateway.ingress.hostname }}"
-
+    websub_event_receiver_http_endpoint = "http://{{ .Values.wso2.deployment.am.websub.ingress.hostname }}"
+    websub_event_receiver_https_endpoint = "https://{{ .Values.wso2.deployment.am.websub.ingress.hostname }}"
 
     #[apim.cache.gateway_token]
     #enable = true
