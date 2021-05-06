@@ -94,9 +94,9 @@ wso2:
       websub:
         # Configure Ingress
         ingress:
-          # Hostname for Gateway profile
+          # Hostname for Gateway (WebSub) service
           hostname: "websub.am.wso2.com"
-          # Annotations for the API Manager Gateway service Ingress
+          # Annotations for the API Manager Gateway (WebSub) service Ingress
           annotations:
             kubernetes.io/ingress.class: "nginx"
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
@@ -146,9 +146,9 @@ wso2:
 
         # Configure Ingress
         ingress:
-          # Hostname for Gateway profile
+          # Hostname for Control Plane profile
           hostname: "am.wso2.com"
-          # Annotations for the API Manager Gateway service Ingress
+          # Annotations for the API Manager Control Plane service Ingress
           annotations:
             kubernetes.io/ingress.class: "nginx"
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
