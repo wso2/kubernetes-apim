@@ -1,4 +1,4 @@
-# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,21 +15,21 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal-ingress
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-websub-ingress
   namespace : {{ .Release.Namespace }}
-{{- if .Values.wso2.deployment.am.devportal.ingress.annotations }}
+{{- if .Values.wso2.deployment.am.websub.ingress.annotations }}
   annotations:
-{{ toYaml .Values.wso2.deployment.am.devportal.ingress.annotations | indent 4 }}
+{{ toYaml .Values.wso2.deployment.am.websub.ingress.annotations | indent 4 }}
 {{- end }}
 spec:
   tls:
-    - hosts:
-        - {{ .Values.wso2.deployment.am.devportal.ingress.hostname }}
+  - hosts:
+    - {{ .Values.wso2.deployment.am.websub.ingress.hostname }}
   rules:
-    - host: {{ .Values.wso2.deployment.am.devportal.ingress.hostname }}
-      http:
-        paths:
-        - path: /
-          backend:
-            serviceName: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal-service
-            servicePort: 9443
+  - host: {{ .Values.wso2.deployment.am.websub.ingress.hostname }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "am-pattern-3.resource.prefix" . }}-am-gateway-service
+          servicePort: 8021

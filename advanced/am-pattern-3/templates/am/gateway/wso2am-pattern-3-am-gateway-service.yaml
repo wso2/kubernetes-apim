@@ -35,3 +35,9 @@ spec:
     - name: servlet-https
       protocol: TCP
       port: 9443
+    - name: websub-http
+      protocol: TCP
+      port: 9021
+    - name: websub-https
+      protocol: TCP
+      port: 8021

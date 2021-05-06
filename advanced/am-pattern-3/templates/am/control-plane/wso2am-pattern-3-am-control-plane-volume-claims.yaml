@@ -1,6 +1,4 @@
-  {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
-
-# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-1-local-carbon-database-volume-claim
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-1-local-carbon-database-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -28,12 +25,14 @@ spec:
       storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.carbonDatabase }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
+  {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
+
 ---
 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-1-solr-indexed-data-volume-claim
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-1-solr-indexed-data-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -48,7 +47,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-2-local-carbon-database-volume-claim
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-2-local-carbon-database-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -63,7 +62,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-2-solr-indexed-data-volume-claim
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-2-solr-indexed-data-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -72,5 +71,4 @@ spec:
     requests:
       storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.solrIndexedData }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
-
   {{ end }}
