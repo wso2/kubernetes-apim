@@ -122,8 +122,8 @@ data:
 
     [apim.key_manager]
     service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
-    #username = "$ref{super_admin.username}"
-    #password = "$ref{super_admin.password}"
+    username = "$ref{super_admin.username}"
+    password = "$ref{super_admin.password}"
     #pool.init_idle_capacity = 50
     #pool.max_idle = 100
     #key_validation_handler_type = "default"
@@ -265,3 +265,4 @@ data:
     [database.local]
     url = "jdbc:h2:./repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
     {{ end }}
+  {{- end }}

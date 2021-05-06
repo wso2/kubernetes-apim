@@ -25,6 +25,8 @@ spec:
       storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.carbonDatabase }}
   storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
+  {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
+
 ---
 
 apiVersion: v1
