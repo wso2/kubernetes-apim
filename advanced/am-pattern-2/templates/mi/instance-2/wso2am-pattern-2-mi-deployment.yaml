@@ -35,6 +35,10 @@ spec:
         deployment: {{ template "am-pattern-2.resource.prefix" . }}-mi
         node: {{ template "am-pattern-2.resource.prefix" . }}-mi-2
     spec:
+      initContainers:
+        - name: init-am
+          image: busybox:1.32
+          command: ['sh', '-c', 'echo -e "Checking for the availability of API Manager deployment"; while ! nc -z {{ template "am-pattern-1.resource.prefix" . }}-am-service 9443; do sleep 1; printf "-"; done; echo -e "  >> API Manager has started";']
       containers:
         - name: wso2micro-integrator
 {{- include "image" (dict "Values" .Values "deployment" .Values.wso2.deployment.mi) | indent 10 }}
