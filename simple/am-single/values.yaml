@@ -97,11 +97,11 @@ wso2:
               # Maximum Heap size
               xmx: "1024m"
 
-      # If the deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
+      # If the deployment configurations for the WSO2 API Manager v4.0.0 (<WSO2AM>/repository/conf/deployment.toml),
       # add the customized configuration file under (wso2 -> deployment -> am -> config -> deployment.toml)
 #      config: ""
 #        deployment.toml: |-
-#          # deployment configurations for the WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
+#          # deployment configurations for the WSO2 API Manager v4.0.0 (<WSO2AM>/repository/conf/deployment.toml)
 
       # Configure Ingresses
       ingress:
@@ -132,7 +132,7 @@ wso2:
   
 kubernetes:
   # Name of Kubernetes service account
-  serviceAccount: "wso2am-pattern-1-svc-account"
+  serviceAccount: "wso2am-single-node-svc-account"
 
 # Override sub chart parameters
 mysql-am:
