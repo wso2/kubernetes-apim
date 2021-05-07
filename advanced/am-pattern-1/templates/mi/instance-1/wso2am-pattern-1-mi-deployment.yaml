@@ -94,5 +94,5 @@ spec:
         - name: {{ .Values.wso2.deployment.mi.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: {{ template "am-pattern-1.resource.prefix" . }}-mi-wso2-private-registry-creds
+        - name: {{ template "am-pattern-1.resource.prefix" . }}-mi-1-wso2-private-registry-creds
       {{ end }}

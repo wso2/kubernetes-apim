@@ -49,20 +49,20 @@ For advanced details on the deployment pattern, please refer to the official
 You can install the relevant Helm chart either from [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2) or by source.
 
 **Note:**
-
+* This Helm chart has been implemented by extending the `advance/am-pattern-1` Helm resource.
 * `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed.
 
 #### Install Chart From [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2)
 
- Helm version 2
+Deploy the Kubernetes resources using the Helm Chart
 
- ```
- helm install --name <RELEASE_NAME> wso2/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE>
- ```
+- Helm version 2
 
- Helm version 3
+     ```
+     helm install --name <RELEASE_NAME> wso2/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE>
+     ```
 
- - Deploy the Kubernetes resources using the Helm Chart
+- Helm version 3
  
     ```
     helm install <RELEASE_NAME> wso2/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE> --create-namespace
@@ -74,6 +74,18 @@ If you are using WSO2 product Docker images available from WSO2 Private Docker R
 please provide your WSO2 Subscription credentials via input values (using `--set` argument). 
 
 Please see the following example.
+
+- To provide WSO2 Subscription credentials for WSO2 API Manager and WSO2 Micro Integrator as in pattern 1
+    ```
+    --set am-pattern-1.wso2.subscription.username=$SUBSCRIPTION_USERNAME --set am-pattern-1.wso2.subscription.password=$SUBSCRIPTION_PASSWORD
+    ```
+
+- To provide WSO2 Subscription credentials for additional WSO2 Micro Integrator deployment for the new tenant
+    ```
+    --set wso2.subscription.username=$SUBSCRIPTION_USERNAME --set wso2.subscription.password=$SUBSCRIPTION_PASSWORD 
+    ```
+    
+Below example is to provide WSO2 Subscription credentials for all WSO2 API Manager and WSO2 Micro Integrator tenant 1 and tenant 2 deployments
 
 ```
 export SUBSCRIPTION_USERNAME=<SUBSCRIPTION_USERNAME>
@@ -97,15 +109,15 @@ git clone https://github.com/wso2/kubernetes-apim.git
 
 ##### Deploy Helm chart for WSO2 API Manager Pattern 2 deployment.
 
- Helm version 2
+Deploy the Kubernetes resources using the Helm Chart
+ 
+- Helm version 2
 
- ```
- helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE>
- ```
+     ```
+     helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE>
+     ```
 
- Helm version 3
-
- - Deploy the Kubernetes resources using the Helm Chart
+- Helm version 3
  
     ```
     helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
