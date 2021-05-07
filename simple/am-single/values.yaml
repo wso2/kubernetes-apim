@@ -20,6 +20,13 @@ wso2:
     username: ""
     password: ""
 
+  # WSO2 Choreo Analytics Parameters
+  # If provided, these parameters will be used publish analytics data to Choreo Analytics environment (https://apim.docs.wso2.com/en/latest/observe/api-manager-analytics/configure-analytics/register-for-analytics/).
+  choreoAnalytics:
+    enabled: false
+    endpoint: ""
+    onpremKey: ""
+
   deployment:
     dependencies:
       # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
@@ -50,9 +57,9 @@ wso2:
     am:
       # Container image configurations
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
-      dockerRegistry: "192.168.1.5:5000"
+      # dockerRegistry: ""
       imageName: "wso2am"
-      imageTag: "4.0.0-rc"
+      imageTag: "4.0.0"
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
