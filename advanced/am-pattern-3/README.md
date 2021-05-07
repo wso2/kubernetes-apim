@@ -119,7 +119,7 @@ Please see the following example.
  helm install --name <RELEASE_NAME> <HELM_HOME>/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
-Or else, you can configure the default configurations inside the am-pattern-1 helm chart [values.yaml](https://github.com/wso2/kubernetes-apim/blob/master/advanced/am-pattern-1/values.yaml) file. Refer [this](https://helm.sh/docs/chart_template_guide/values_files/) for to learn more details about the `values.yaml` file.
+Or else, you can configure the default configurations inside the am-pattern-3 helm chart [values.yaml](https://github.com/wso2/kubernetes-apim/blob/master/advanced/am-pattern-3/values.yaml) file. Refer [this](https://helm.sh/docs/chart_template_guide/values_files/) for to learn more details about the `values.yaml` file.
 
 
 > **Note:** <br>
@@ -144,13 +144,13 @@ The following example shows how to enable Analytics with the helm charts.
 Helm v2
 
 ```
-helm install --name <RELEASE_NAME> wso2/am-single-node --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY>
+helm install --name <RELEASE_NAME> wso2/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY>
 ```
 
 Helm v3
 
 ```
-helm install <RELEASE_NAME> wso2/am-single-node --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY> --create-namespace
+helm install <RELEASE_NAME> wso2/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY> --create-namespace
 ```
 
 You will be able to see the Analytics data when you log into Choreo Analytics Portal.
@@ -181,14 +181,14 @@ API Manager Gateway
 
 API Manager Websub
 
-- NAME: Metadata name of the Kubernetes Ingress resource (defaults to wso2am-pattern-1-am-websub-ingress)
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to wso2am-pattern-3-am-websub-ingress)
 - HOSTS: Hostname of the WSO2 API Manager's Websub service (`<wso2.deployment.am.websub.ingress.hostname>`)
 - ADDRESS: External IP (EXTERNAL-IP) exposing the API Manager's Websub service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager's Websub service
 
 Micro Integrator Management APIs
 
-- NAME: Metadata name of the Kubernetes Ingress resource (defaults to wso2am-pattern-1-mi-1-management-ingress)
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to wso2am-pattern-3-mi-1-management-ingress)
 - HOSTS: Hostname of the WSO2 Micro Integrator service (`<wso2.deployment.mi.ingress.management.hostname>`)
 - ADDRESS: External IP (EXTERNAL-IP) exposing the Micro Integrator service to outside of the Kubernetes environment
 PORTS: Externally exposed service ports of the Micro Integrator service

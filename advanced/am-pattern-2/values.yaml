@@ -20,13 +20,6 @@ wso2:
     username: ""
     password: ""
 
-  # WSO2 Choreo Analytics Parameters
-  # If provided, these parameters will be used publish analytics data to Choreo Analytics environment (https://apim.docs.wso2.com/en/latest/observe/api-manager-analytics/configure-analytics/register-for-analytics/).
-  choreoAnalytics:
-    enabled: false
-    endpoint: ""
-    onpremKey: ""
-
   deployment:
     mi:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
@@ -95,6 +88,13 @@ am-pattern-1:
     subscription:
       username: ""
       password: ""
+
+    # WSO2 Choreo Analytics Parameters
+    # If provided, these parameters will be used publish analytics data to Choreo Analytics environment (https://apim.docs.wso2.com/en/latest/observe/api-manager-analytics/configure-analytics/register-for-analytics/).
+    choreoAnalytics:
+      enabled: false
+      endpoint: ""
+      onpremKey: ""
 
     deployment:
       dependencies:
