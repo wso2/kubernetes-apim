@@ -64,6 +64,13 @@ Common prefix prepended to Kubernetes resources of this chart
 {{- "wso2am-pattern-2" }}
 {{- end -}}
 
+{{/*
+Common prefix prepended to Kubernetes resources of this chart
+*/}}
+{{- define "am-pattern-1.resource.prefix" -}}
+{{- "wso2am-pattern-2" }}
+{{- end -}}
+
 {{- define "image" }}
 {{- $imageName := .deployment.imageName }}
 {{- $imageTag := .deployment.imageTag | default "" }}
