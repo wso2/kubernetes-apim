@@ -6,7 +6,7 @@
 
 ### Simple
 
-* [Simplified Setup](simple/README.md)
+* [Single Node](simple/am-single/README.md)
 
 ### Advanced
 
@@ -18,7 +18,7 @@
 
 ## Changelog
 
-**Change log** from previous `v3.2.0.1` release: [View Here](CHANGELOG.md)
+**Change log** from previous `v3.2.0.4` release: [View Here](https://github.com/wso2/kubernetes-apim/blob/3.2.x/CHANGELOG.md)
 
 ## Reporting issues
 

@@ -1,5 +1,5 @@
 {{/*
-Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -64,6 +64,13 @@ Common prefix prepended to Kubernetes resources of this chart
 {{- "wso2am-pattern-2" }}
 {{- end -}}
 
+{{/*
+Common prefix prepended to Kubernetes resources of this chart
+*/}}
+{{- define "am-pattern-1.resource.prefix" -}}
+{{- "wso2am-pattern-2" }}
+{{- end -}}
+
 {{- define "image" }}
 {{- $imageName := .deployment.imageName }}
 {{- $imageTag := .deployment.imageTag | default "" }}
@@ -73,7 +80,7 @@ image: {{ $dockerRegistry }}/{{ $imageName }}{{- if not (eq $imageTag "") }}{{- 
 {{- else }}
 {{- $dockerRegistry := .deployment.dockerRegistry | default "docker.wso2.com" }}
 {{- $parts := len (split "." $imageTag) }}
-{{- if eq $parts 3 }}
+{{- if and (eq $parts 3) (eq $dockerRegistry "docker.wso2.com") }}
 image: {{ $dockerRegistry }}/{{ $imageName }}{{- if not (eq $imageTag "") }}:{{ $imageTag }}.0{{- end }}
 {{- else }}
 image: {{ $dockerRegistry }}/{{ $imageName }}{{- if not (eq $imageTag "") }}:{{ $imageTag }}{{- end }}
