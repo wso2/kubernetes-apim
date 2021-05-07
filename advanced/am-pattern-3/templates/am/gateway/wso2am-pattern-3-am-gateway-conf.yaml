@@ -58,18 +58,6 @@ data:
     type = "JKS"
     password = "wso2carbon"
 
-    {{ if .Values.wso2.choreoAnalytics.enabled }}
-    [apim.analytics]
-    enable = true
-    config_endpoint = "{{ .Values.wso2.choreoAnalytics.endpoint }}"
-    auth_token = "{{ .Values.wso2.choreoAnalytics.onpremKey }}"
-    {{ else }}
-    [apim.analytics]
-    enable = false
-    config_endpoint = "https://analytics-event-auth.choreo.dev/auth/v1"
-    auth_token = ""
-    {{ end }}
-
     # key manager implementation
     [apim.key_manager]
     service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
@@ -111,6 +99,18 @@ data:
     traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-2-service:9711"]
     type = "loadbalance"
 
+    {{ if .Values.wso2.choreoAnalytics.enabled }}
+    [apim.analytics]
+    enable = true
+    config_endpoint = "{{ .Values.wso2.choreoAnalytics.endpoint }}"
+    auth_token = "{{ .Values.wso2.choreoAnalytics.onpremKey }}"
+    {{ else }}
+    [apim.analytics]
+    enable = false
+    config_endpoint = "https://analytics-event-auth.choreo.dev/auth/v1"
+    auth_token = ""
+    {{ end }}
+
     # Caches
     [apim.cache.gateway_token]
     enable = true
@@ -140,15 +140,4 @@ data:
     [transport.passthru_https.sender.parameters]
     HostnameVerifier = "AllowAll"
 
-    [apim.event_hub]
-    service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-service:9443"
-    event_listening_endpoints = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-1-service:5672","tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-2-service:5672"]
-
-    [[apim.event_hub.publish.url_group]]
-    urls = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-1-service:9611"]
-    auth_urls = ["ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-1-service:9711"]
-
-    [[apim.event_hub.publish.url_group]]
-    urls = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-2-service:9611"]
-    auth_urls = ["ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-2-service:9711"]
   {{- end }}
