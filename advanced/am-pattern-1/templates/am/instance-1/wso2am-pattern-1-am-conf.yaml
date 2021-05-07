@@ -124,10 +124,17 @@ data:
     #[apim.cache.tags]
     #expiry_time = "2m"
 
+    {{ if .Values.wso2.choreoAnalytics.enabled }}
+    [apim.analytics]
+    enable = true
+    config_endpoint = "{{ .Values.wso2.choreoAnalytics.endpoint }}"
+    auth_token = "{{ .Values.wso2.choreoAnalytics.onpremKey }}"
+    {{ else }}
     [apim.analytics]
     enable = false
-    config_endpoint = "https://localhost:8080/auth/v1"
+    config_endpoint = "https://analytics-event-auth.choreo.dev/auth/v1"
     auth_token = ""
+    {{ end }}
 
     #[apim.key_manager]
     #service_url = "https://localhost:${mgt.transport.https.port}/services/"
