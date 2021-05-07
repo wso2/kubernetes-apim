@@ -1,6 +1,6 @@
 Thank you for installing WSO2 API Manager.
 
-Please follow these steps to access API Manager Publisher, DevPortal consoles and Analytics Dashboard.
+Please follow these steps to access API Manager Publisher and DevPortal consoles.
 
 1. Obtain the external IP (`EXTERNAL-IP`) of the API Manager Ingress resources, by listing down the Kubernetes Ingresses.
 

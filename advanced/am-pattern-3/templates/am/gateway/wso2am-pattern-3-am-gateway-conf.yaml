@@ -111,11 +111,6 @@ data:
     traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-2-service:9711"]
     type = "loadbalance"
 
-    [apim.analytics]
-    enable = false
-    config_endpoint = "https://localhost:8080/auth/v1"
-    auth_token = ""
-
     # Caches
     [apim.cache.gateway_token]
     enable = true
