@@ -289,6 +289,9 @@ data:
     [transport.https.properties]
     proxyPort = 443
 
+    [transport.passthru_https.sender.parameters]
+    HostnameVerifier = "AllowAll"
+
     {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
     [database.local]
     url = "jdbc:h2:/home/wso2carbon/solr/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE"
