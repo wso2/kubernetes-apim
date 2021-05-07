@@ -1,11 +1,11 @@
 # Helm Chart for deployment of WSO2 API Manager
 
-Resources for building a Helm chart for deployment of [Single Node API Manager](https://apim.docs.wso2.com/en/latest/install-and-setup/setup/single-node/all-in-one-deployment-overview/#single-node-deployment).
+Resources for building a Helm chart for deployment of [Single Node API Manager](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/setup/single-node/all-in-one-deployment-overview/#single-node-deployment).
 
-![WSO2 API Manager pattern 1 deployment](https://apim.docs.wso2.com/en/latest/assets/img/setup-and-install/single-node-apim-deployment.png)
+![WSO2 API Manager Single Node deployment](https://apim.docs.wso2.com/en/4.0.0/assets/img/setup-and-install/single-node-apim-deployment.png)
 
 For advanced details on the deployment pattern, please refer to the official
-[documentation](https://apim.docs.wso2.com/en/latest/install-and-setup/setup/single-node/all-in-one-deployment-overview/#active-active-deployment).
+[documentation](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/setup/single-node/all-in-one-deployment-overview/#active-active-deployment).
 
 ## Contents
 
@@ -92,7 +92,7 @@ Git repository. <br>
 git clone https://github.com/wso2/kubernetes-apim.git
 ```
 
-##### Deploy Helm chart for WSO2 API Manager Pattern 1 deployment.
+##### Deploy Helm chart for WSO2 API Manager Single Node deployment.
 
  Helm version 2
 
@@ -120,7 +120,7 @@ Please see the following example.
 ```
 ### Choreo Analytics
 
-If you need to enable Choreo Analytics with WSO2 API Manager, please follow the documentation on [Register for Analytics](https://apim.docs.wso2.com/en/latest/observe/api-manager-analytics/configure-analytics/register-for-analytics/) to obtain the on-prem key for Analytics.
+If you need to enable Choreo Analytics with WSO2 API Manager, please follow the documentation on [Register for Analytics](https://apim.docs.wso2.com/en/4.0.0/observe/api-manager-analytics/configure-analytics/register-for-analytics/) to obtain the on-prem key for Analytics.
 
 The following example shows how to enable Analytics with the helm charts.
 
@@ -243,13 +243,13 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.am.ingress.websub.hostname`                               | Hostname for API Manager Gateway WebSub service                                                          | `gateway.am.wso2.com`       |
 | `wso2.deployment.am.ingress.websub.annotations`                            | Ingress resource annotations for API Manager Gateway WebSub                                     | Community NGINX Ingress controller annotations         |
 
-**Note**: The above mentioned default, minimum resource amounts for running WSO2 API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/).
+**Note**: The above mentioned default, minimum resource amounts for running WSO2 API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/install/installation-prerequisites/).
 
 ## Kubernetes Specific Configurations
 
 | Parameter                                                     | Description                                                                               | Default Value                   |
 |---------------------------------------------------------------|-------------------------------------------------------------------------------------------|---------------------------------|
-| `kubernetes.serviceAccount`                                   | Name of the Kubernetes Service Account to which the Pods are to be bound                  | `wso2am-pattern-1-svc-account`  |
+| `kubernetes.serviceAccount`                                   | Name of the Kubernetes Service Account to which the Pods are to be bound                  | `wso2am-single-node-svc-account`  |
 
 ## Runtime Artifact Persistence and Sharing
 
