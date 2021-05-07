@@ -139,7 +139,7 @@ Or else, you can configure the default configurations inside the am-pattern-1 he
 
 > **Note:** <br>
 From the above Helm commands, base image of a Micro Integrator is deployed (without any integration solution). To deploy your integration solution with the Helm charts follow the below steps. <br><br>
->1. [Create an integration service using WSO2 Integration Studio and expose it as a Managed API](https://apim.docs.wso2.com/en/latest/tutorials/integration-tutorials/service-catalog-tutorial/#exposing-an-integration-service-as-a-managed-api). Then [create a Docker image](https://apim.docs.wso2.com/en/latest/integrate/develop/create-docker-project/#creating-docker-exporter) and push it to your private or public Docker registry. <br><br>
+>1. [Create an integration service using WSO2 Integration Studio and expose it as a Managed API](https://apim.docs.wso2.com/en/4.0.0/tutorials/integration-tutorials/service-catalog-tutorial/#exposing-an-integration-service-as-a-managed-api). Then [create a Docker image](https://apim.docs.wso2.com/en/4.0.0/integrate/develop/create-docker-project/#creating-docker-exporter) and push it to your private or public Docker registry. <br><br>
     - `INTEGRATION_IMAGE_REGISTRY` will refer to the Docker registry that created Docker image has been pushed <br>
     - `INTEGRATION_IMAGE_NAME` will refer to the name of the created Docker image <br>
     - `INTEGRATION_IMAGE_TAG` will refer to the tag of the created Docker image <br><br>
@@ -152,7 +152,7 @@ From the above Helm commands, base image of a Micro Integrator is deployed (with
 
 ### Choreo Analytics
 
-If you need to enable Choreo Analytics with WSO2 API Manager, please follow the documentation on [Register for Analytics](https://apim.docs.wso2.com/en/latest/observe/api-manager-analytics/configure-analytics/register-for-analytics/) to obtain the on-prem key for Analytics.
+If you need to enable Choreo Analytics with WSO2 API Manager, please follow the documentation on [Register for Analytics](https://apim.docs.wso2.com/en/4.0.0/observe/api-manager-analytics/configure-analytics/register-for-analytics/) to obtain the on-prem key for Analytics.
 
 The following example shows how to enable Analytics with the helm charts.
 
@@ -240,59 +240,87 @@ hostnames and the external IP in the `/etc/hosts` file at the client-side.
 
 The following tables lists the configurable parameters of the chart and their default values.
 
-###### WSO2 Subscription Configurations
+### WSO2 Subscription Configurations for WSO2 API Manager and Micro Integrator Tenant 1 Deployment
+
+| Parameter                                                                   | Description                                                                               | Default Value               |
+|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
+| `am-pattern-1.wso2.subscription.username`                                                | Your WSO2 Subscription username                                                           | -                           |
+| `am-pattern-1.wso2.subscription.password`                                                | Your WSO2 Subscription password                                                           | -                           |
+| `am-pattern-1.wso2.choreoAnalytics.enabled`                                              | Chorero Analytics enabled or not                                                           | false                           |
+| `am-pattern-1.wso2.choreoAnalytics.endpoint`                                             | Choreo Analytics endpoint                                                           | https://analytics-event-auth.choreo.dev/auth/v1                           |
+| `am-pattern-1.wso2.choreoAnalytics.onpremKey`                                            | On-prem key for Choreo Analytics                                                          | -                           |
+
+
+### WSO2 Subscription Configurations for Micro Integrator Tenant 2 Deployment
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.subscription.username`                                                | Your WSO2 Subscription username                                                           | -                           |
 | `wso2.subscription.password`                                                | Your WSO2 Subscription password                                                           | -                           |
-| `wso2.choreoAnalytics.enabled`                                                | Chorero Analytics enabled or not                                                           | false                           |
-| `wso2.choreoAnalytics.endpoint`                                                | Choreo Analytics endpoint                                                           | https://analytics-event-auth.choreo.dev/auth/v1                           |
-| `wso2.choreoAnalytics.onpremKey`                                                | On-prem key for Choreo Analytics                                                          | -                           |
 
-If you do not have an active WSO2 subscription, **do not change** the parameters `wso2.subscription.username` and `wso2.subscription.password`. 
+If you do not have an active WSO2 subscription, **do not change** the parameters `am-pattern-1.wso2.subscription.username` and `am-pattern-1.wso2.subscription.password`. 
 
-###### Chart Dependencies
+#### Chart Dependencies
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.dependencies.mysql`                                        | Enable the deployment and usage of WSO2 API Management MySQL based Helm Chart             | true                        |
-| `wso2.deployment.dependencies.nfsProvisioner`                               | Enable the deployment and usage of NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner) | true |
+| `am-pattern-1.wso2.deployment.dependencies.mysql`                                        | Enable the deployment and usage of WSO2 API Management MySQL based Helm Chart             | true                        |
+| `am-pattern-1.wso2.deployment.dependencies.nfsProvisioner`                               | Enable the deployment and usage of NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner) | true |
 
-###### Persistent Runtime Artifact Configurations
+#### Persistent Runtime Artifact Configurations
 
 | Parameter                                                                                   | Description                                                                               | Default Value               |
 |---------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.persistentRuntimeArtifacts.storageClass`                                   | Appropriate Kubernetes Storage Class                                                      | `nfs`                       |
-| `wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled`                     | Indicates if persistence of the runtime artifacts for Apache Solr-based indexing is enabled  | false                    |
-| `wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.carbonDatabase`     | Capacity for persisting the H2 based local Carbon database file                           | 50M                         |
-| `wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.solrIndexedData`    | Capacity for persisting the Apache Solr indexed data                                      | 50M                         |
+| `am-pattern-1.wso2.deployment.persistentRuntimeArtifacts.storageClass`                                   | Appropriate Kubernetes Storage Class                                                      | `nfs`                       |
+| `am-pattern-1.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled`                     | Indicates if persistence of the runtime artifacts for Apache Solr-based indexing is enabled  | false                    |
+| `am-pattern-1.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.carbonDatabase`     | Capacity for persisting the H2 based local Carbon database file                           | 50M                         |
+| `am-pattern-1.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.capacity.solrIndexedData`    | Capacity for persisting the Apache Solr indexed data                                      | 50M                         |
 
-###### API Manager Server Configurations
+#### API Manager Server Configurations
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.am.dockerRegistry`                                         | Registry location of the Docker image to be used to create API Manager instances          | -                           |
-| `wso2.deployment.am.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | `wso2am`                    |
-| `wso2.deployment.am.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.0.0                       |
-| `wso2.deployment.am.imagePullPolicy`                                        | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
-| `wso2.deployment.am.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for API Manager node                                | 180                         |
-| `wso2.deployment.am.livenessProbe.periodSeconds`                            | Period of the live-ness probe for API Manager node                                        | 10                          |
-| `wso2.deployment.am.readinessProbe.initialDelaySeconds`                     | Initial delay for the readiness probe for API Manager node                                | 180                         |
-| `wso2.deployment.am.readinessProbe.periodSeconds`                           | Period of the readiness probe for API Manager node                                        | 10                          |
-| `wso2.deployment.am.resources.requests.memory`                              | The minimum amount of memory that should be allocated for a Pod                           | 2Gi                         |
-| `wso2.deployment.am.resources.requests.cpu`                                 | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                       |
-| `wso2.deployment.am.resources.limits.memory`                                | The maximum amount of memory that should be allocated for a Pod                           | 3Gi                         |
-| `wso2.deployment.am.resources.limits.cpu`                                   | The maximum amount of CPU that should be allocated for a Pod                              | 3000m                       |
-| `wso2.deployment.am.config`                                                 | Custom deployment configuration file (`<WSO2AM>/repository/conf/deployment.toml`)         | -                           |
-| `wso2.deployment.am.ingress.management.hostname`                            | Hostname for API Manager Admin Portal, Publisher, DevPortal and Carbon Management Console | `am.wso2.com`               |
-| `wso2.deployment.am.ingress.management.annotations`                         | Ingress resource annotations for API Manager management consoles                          | Community NGINX Ingress controller annotations         |
-| `wso2.deployment.am.ingress.gateway.hostname`                               | Hostname for API Manager Gateway                                                          | `gateway.am.wso2.com`       |
-| `wso2.deployment.am.ingress.gateway.annotations`                            | Ingress resource annotations for API Manager Gateway                                      | Community NGINX Ingress controller annotations         |
-| `wso2.deployment.am.ingress.websub.hostname`                                | Hostname for API Manager Websub services                                                  | `websub.am.wso2.com`        |
-| `wso2.deployment.am.ingress.websub.annotations`                             | Ingress resource annotations for API Manager Websub                                       | Community NGINX Ingress controller annotations         |
+| `am-pattern-1.wso2.deployment.am.dockerRegistry`                                         | Registry location of the Docker image to be used to create API Manager instances          | -                           |
+| `am-pattern-1.wso2.deployment.am.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | `wso2am`                    |
+| `am-pattern-1.wso2.deployment.am.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.0.0                       |
+| `am-pattern-1.wso2.deployment.am.imagePullPolicy`                                        | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
+| `am-pattern-1.wso2.deployment.am.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for API Manager node                                | 180                         |
+| `am-pattern-1.wso2.deployment.am.livenessProbe.periodSeconds`                            | Period of the live-ness probe for API Manager node                                        | 10                          |
+| `am-pattern-1.wso2.deployment.am.readinessProbe.initialDelaySeconds`                     | Initial delay for the readiness probe for API Manager node                                | 180                         |
+| `am-pattern-1.wso2.deployment.am.readinessProbe.periodSeconds`                           | Period of the readiness probe for API Manager node                                        | 10                          |
+| `am-pattern-1.wso2.deployment.am.resources.requests.memory`                              | The minimum amount of memory that should be allocated for a Pod                           | 2Gi                         |
+| `am-pattern-1.wso2.deployment.am.resources.requests.cpu`                                 | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                       |
+| `am-pattern-1.wso2.deployment.am.resources.limits.memory`                                | The maximum amount of memory that should be allocated for a Pod                           | 3Gi                         |
+| `am-pattern-1.wso2.deployment.am.resources.limits.cpu`                                   | The maximum amount of CPU that should be allocated for a Pod                              | 3000m                       |
+| `am-pattern-1.wso2.deployment.am.config`                                                 | Custom deployment configuration file (`<WSO2AM>/repository/conf/deployment.toml`)         | -                           |
+| `am-pattern-1.wso2.deployment.am.ingress.management.hostname`                            | Hostname for API Manager Admin Portal, Publisher, DevPortal and Carbon Management Console | `am.wso2.com`               |
+| `am-pattern-1.wso2.deployment.am.ingress.management.annotations`                         | Ingress resource annotations for API Manager management consoles                          | Community NGINX Ingress controller annotations         |
+| `am-pattern-1.wso2.deployment.am.ingress.gateway.hostname`                               | Hostname for API Manager Gateway                                                          | `gateway.am.wso2.com`       |
+| `am-pattern-1.wso2.deployment.am.ingress.gateway.annotations`                            | Ingress resource annotations for API Manager Gateway                                      | Community NGINX Ingress controller annotations         |
+| `am-pattern-1.wso2.deployment.am.ingress.websub.hostname`                                | Hostname for API Manager Websub services                                                  | `websub.am.wso2.com`        |
+| `am-pattern-1.wso2.deployment.am.ingress.websub.annotations`                             | Ingress resource annotations for API Manager Websub                                       | Community NGINX Ingress controller annotations         |
 
-###### Micro Integrator Server Configurations
+#### Micro Integrator Server Configurations for Tenant 1
+
+| Parameter                                                                   | Description                                                                               | Default Value               |
+|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
+| `am-pattern-1.wso2.deployment.mi.dockerRegistry`                                         | Registry location of the Docker image to be used to create Micro Integrator instances     | -                           |
+| `am-pattern-1.wso2.deployment.mi.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | `wso2mi`                    |
+| `am-pattern-1.wso2.deployment.mi.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.0.0                       |
+| `am-pattern-1.wso2.deployment.mi.imagePullPolicy`                                        | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
+| `am-pattern-1.wso2.deployment.mi.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for Micro Integrator node                           | 35                          |
+| `am-pattern-1.wso2.deployment.mi.livenessProbe.periodSeconds`                            | Period of the live-ness probe for Micro Integrator node                                   | 10                          |
+| `am-pattern-1.wso2.deployment.mi.readinessProbe.initialDelaySeconds`                     | Initial delay for the readiness probe for Micro Integrator node                           | 35                          |
+| `am-pattern-1.wso2.deployment.mi.readinessProbe.periodSeconds`                           | Period of the readiness probe for Micro Integrator node                                   | 10                          |
+| `am-pattern-1.wso2.deployment.mi.resources.requests.memory`                              | The minimum amount of memory that should be allocated for a Pod                           | 512Mi                       |
+| `am-pattern-1.wso2.deployment.mi.resources.requests.cpu`                                 | The minimum amount of CPU that should be allocated for a Pod                              | 500m                        |
+| `am-pattern-1.wso2.deployment.mi.resources.limits.memory`                                | The maximum amount of memory that should be allocated for a Pod                           | 1Gi                         |
+| `am-pattern-1.wso2.deployment.mi.resources.limits.cpu`                                   | The maximum amount of CPU that should be allocated for a Pod                              | 1000m                       |
+| `am-pattern-1.wso2.deployment.mi.config`                                                 | Custom deployment configuration file (`<WSO2AM>/repository/conf/deployment.toml`)         | -                           |
+| `am-pattern-1.wso2.deployment.mi.ingress.management.hostname`                            | Hostname for Micro Integrator management apis                                             | `management.mi.wso2.com`    |
+| `am-pattern-1.wso2.deployment.mi.ingress.management.annotations`                         | Ingress resource annotations for API Manager Gateway                                      | Community NGINX Ingress controller annotations         |
+
+#### Micro Integrator Server Configurations for Tenant 2
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
@@ -312,9 +340,10 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.mi.ingress.management.hostname`                            | Hostname for Micro Integrator management apis                                             | `management.mi.wso2.com`    |
 | `wso2.deployment.mi.ingress.management.annotations`                         | Ingress resource annotations for API Manager Gateway                                      | Community NGINX Ingress controller annotations         |
 
-**Note**: The above mentioned default, minimum resource amounts for running WSO2 API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/).
 
-###### Kubernetes Specific Configurations
+**Note**: The above mentioned default, minimum resource amounts for running WSO2 API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/install/installation-prerequisites/).
+
+#### Kubernetes Specific Configurations
 
 | Parameter                                                     | Description                                                                               | Default Value                   |
 |---------------------------------------------------------------|-------------------------------------------------------------------------------------------|---------------------------------|
@@ -327,7 +356,7 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 * By default, this deployment uses the `nfs` Kubernetes StorageClass created using the official, stable [NFS Server Provisioner](https://hub.helm.sh/charts/stable/nfs-server-provisioner).
 
 * Only persistent storage solutions supporting `ReadWriteMany` [access mode](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
-  are applicable for `wso2.deployment.persistentRuntimeArtifacts.storageClass`.
+  are applicable for `am-pattern-1.wso2.deployment.persistentRuntimeArtifacts.storageClass`.
   
 * Please refer to the [official WSO2 container guide](https://github.com/wso2/container-guide/blob/master/store/Persisting_And_Sharing.md#recommended-storage-options-for-wso2-products)
   for advanced details with regards to WSO2 recommended, storage options.
