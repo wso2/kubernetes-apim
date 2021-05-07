@@ -1,4 +1,4 @@
-# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,168 +21,132 @@ wso2:
     password: ""
 
   deployment:
-    dependencies:
-      # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
-      mysql: true
-      # Enable NFS dynamic provisioner for Kubernetes
-      nfsServerProvisioner: true
-
-    # Persisted and shared runtime artifacts for API Manager
-    # See official documentation (from https://apim.docs.wso2.com/en/latest/install-and-setup/setup/reference/common-runtime-and-configuration-artifacts/#persistent-runtime-artifacts)
-    persistentRuntimeArtifacts:
-      # Kubernetes Storage Class to be used to dynamically provision the relevant Persistent Volumes
-      # Only persistent storage solutions supporting ReadWriteMany access mode are applicable (https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
-      # Defaults to Kubernetes Storage Class generated using the NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner)
-      storageClass: &storage_class "nfs"
-
-      # Define capacities for persistent runtime artifact directories which are shared between instances of the relevant API Manager profile
-      sharedArtifacts:
-        capacity:
-          # For execution plans shared between the Traffic Manager profile instances
-          executionPlans: 20M
-          # For synapse artifacts of APIs shared between the Gateway profile instances
-          synapseConfigs: 50M
-
-      # Persistent runtime artifacts for Apache Solr-based indexing
-      apacheSolrIndexing:
-        # Indicates if persistence of the runtime artifacts for Apache Solr-based indexing is enabled
-        # By default, this is disabled
-        enabled: false
-        # Define capacities for persistent runtime artifact directories
-        capacity:
-          # For persisting the H2 based local Carbon database file
-          carbonDatabase: 50M
-          # For persisting the indexed data
-          solrIndexedData: 50M
-
-    am:
-      # Container image configurations
-      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
+    mi:
+      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
       # dockerRegistry: ""
-      imageName: "wso2am"
-      imageTag: "3.2.0"
-      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
-      imagePullPolicy: Always
-
+      imageName: "wso2mi"
+      imageTag: "4.0.0"
+      # Number of deployment replicas
+      replicas: 2
+      strategy:
+        rollingUpdate:
+          # The maximum number of pods that can be scheduled above the desired number of pods.
+          maxSurge: 1
+          # The maximum number of pods that can be unavailable during the update.
+          maxUnavailable: 0
+      # Indicates whether the container is running.
+      livenessProbe:
+        # Number of seconds after the container has started before liveness probes are initiated.
+        initialDelaySeconds: 35
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      # Indicates whether the container is ready to service requests.
+      readinessProbe:
+        # Number of seconds after the container has started before readiness probes are initiated.
+        initialDelaySeconds: 35
+        # How often (in seconds) to perform the probe.
+        periodSeconds: 10
+      # These are the minimum resource recommendations for running WSO2 Micro Integrator
       resources:
-        # These are the resource recommendations for running WSO2 API Management product profiles with profile optimization
-        # Resource configurations defined here are applicable for Gateway and Key Manager profile deployments, which use profile optimization
         requests:
-          memory: "1Gi"
-          cpu: "1000m"
+          # The minimum amount of memory that should be allocated for a Pod
+          memory: "512Mi"
+          # The minimum amount of CPU that should be allocated for a Pod
+          cpu: "500m"
         limits:
-          memory: "2Gi"
-          cpu: "2000m"
-        # JVM settings
-        # These are the resource allocation configurations associated with the JVM
-        # Refer to the official documentation for advanced details (https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/)
-        jvm:
-          # Resource allocation for the Java Heap
-          heap:
-            memory:
-              # Initial and minimum Heap size
-              xms: "512m"
-              # Maximum Heap size
-              xmx: "512m"
+          # The maximum amount of memory that should be allocated for a Pod
+          memory: "1Gi"
+          # The maximum amount of CPU that should be allocated for a Pod
+          cpu: "1000m"
+      # Environment variables for the Micro integrator deployment.
+      envs:
+      #  ENV_NAME: ENV_VALUE
+      # Configure synapse testing.
+      synapseTest:
+        enabled: false
 
-      # API Manager's Gateway specific configurations
-      gateway:
+      # Configure Ingresses
+      ingress:
+        # Configure management ingress
+        management:
+          # Hostname for the Micro Integrator management endpoint.
+          hostname: "tenant2.management.mi.wso2.com"
+          # Annotations for the Micro Integrator management Ingress.
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+
+kubernetes:
+  # Name of Kubernetes service account
+  serviceAccount: &service_account "wso2am-pattern-2-svc-account"
+
+am-pattern-1:
+  wso2:
+    # WSO2 Subscription parameters (https://wso2.com/subscription/)
+    # If provided, these parameters will be used to obtain official WSO2 product Docker images available at WSO2 Private Docker Registry (https://docker.wso2.com/)
+    # for this deployment
+    subscription:
+      username: ""
+      password: ""
+
+    # WSO2 Choreo Analytics Parameters
+    # If provided, these parameters will be used publish analytics data to Choreo Analytics environment (https://apim.docs.wso2.com/en/latest/observe/api-manager-analytics/configure-analytics/register-for-analytics/).
+    choreoAnalytics:
+      enabled: false
+      endpoint: ""
+      onpremKey: ""
+
+    deployment:
+      dependencies:
+        # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
+        mysql: true
+        # Enable NFS dynamic provisioner for Kubernetes
+        nfsServerProvisioner: true
+
+      # Persisted and shared runtime artifacts for API Manager
+      # See official documentation (from https://apim.docs.wso2.com/en/latest/install-and-setup/setup/reference/common-runtime-and-configuration-artifacts/#persistent-runtime-artifacts)
+      persistentRuntimeArtifacts:
+        # Kubernetes Storage Class to be used to dynamically provision the relevant Persistent Volumes
+        # Only persistent storage solutions supporting ReadWriteMany access mode are applicable (https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
+        # Defaults to Kubernetes Storage Class generated using the NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner)
+        storageClass: &storage_class "nfs"
+
+        # Persistent runtime artifacts for Apache Solr-based indexing
+        apacheSolrIndexing:
+          # Indicates if persistence of the runtime artifacts for Apache Solr-based indexing is enabled
+          # By default, this is disabled
+          enabled: false
+          # Define capacities for persistent runtime artifact directories
+          capacity:
+            # For persisting the H2 based local Carbon database file
+            carbonDatabase: 50M
+            # For persisting the indexed data
+            solrIndexedData: 50M
+
+      am:
+        # Container image configurations
+        # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
+        # dockerRegistry: ""
+        imageName: "wso2am"
+        imageTag: "4.0.0"
+        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+        imagePullPolicy: Always
+
         # Indicates whether the container is running
         livenessProbe:
           # Number of seconds after the container has started before liveness probes are initiated
-          initialDelaySeconds: 60
+          initialDelaySeconds: 180
           # How often (in seconds) to perform the probe
           periodSeconds: 10
         # Indicates whether the container is ready to service requests
         readinessProbe:
           # Number of seconds after the container has started before readiness probes are initiated
-          initialDelaySeconds: 60
-          # How often (in seconds) to perform the probe
-          periodSeconds: 10
-
-        # Number of deployment replicas
-        replicas: 2
-
-        # Kubernetes RollingUpdate strategy configurations
-        strategy:
-          rollingUpdate:
-            # The maximum number of pods that can be scheduled above the desired number of pods
-            maxSurge: 2
-            # The maximum number of pods that can be unavailable during the update
-            maxUnavailable: 0
-
-        # If the deployment configurations for the Gateway profile of WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
-        # add the customized configuration file under (wso2 -> deployment -> am -> gateway -> config -> deployment.toml)
-#        config:
-#          deployment.toml: |-
-#            # deployment configurations for the Gateway profile of WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
-
-        # Configure Ingress
-        ingress:
-          # Hostname for Gateway profile
-          hostname: "gateway.am.wso2.com"
-          # Annotations for the API Manager Gateway service Ingress
-          annotations:
-            kubernetes.io/ingress.class: "nginx"
-            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-
-      # API Manager's Key Manager specific configurations
-      km:
-        livenessProbe:
-          # Number of seconds after the container has started before liveness probes are initiated
-          initialDelaySeconds: 60
-          # How often (in seconds) to perform the probe
-          periodSeconds: 10
-          # Indicates whether the container is ready to service requests
-        readinessProbe:
-          # Number of seconds after the container has started before readiness probes are initiated
-          initialDelaySeconds: 60
-          # How often (in seconds) to perform the probe
-          periodSeconds: 10
-
-        # Number of deployment replicas
-        replicas: 2
-
-        # If the deployment configurations for the Key Manager profile of WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
-        # add the customized configuration file under (wso2 -> deployment -> am -> km -> config -> deployment.toml)
-#        config:
-#          deployment.toml: |-
-#            # deployment configurations for the Key Manager profile of WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
-
-      pubDevPortalTM:
-        # Indicates whether the container is running
-        livenessProbe:
-          # Number of seconds after the container has started before liveness probes are initiated
           initialDelaySeconds: 180
           # How often (in seconds) to perform the probe
           periodSeconds: 10
-          # Indicates whether the container is ready to service requests
-        readinessProbe:
-          # Number of seconds after the container has started before readiness probes are initiated
-          initialDelaySeconds: 180
-          # How often (in seconds) to perform the probe
-          periodSeconds: 10
-
-        # If the deployment configurations for the Publisher-Store-TM of WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
-        # add the customized configuration file under (wso2 -> deployment -> am -> pubDevPortalTM -> instanceTwo -> config -> deployment.toml)
-#        config: ""
-#          deployment.toml: |-
-#            # deployment configurations for All-In-One WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
-
-        # Configure Ingress
-        ingress:
-          # Hostname for API Manager Carbon Management Console, Publisher, DevPortal and Admin Portal
-          hostname: "am.wso2.com"
-          # Annotations for the API Manager Publisher-DevPortal services Ingress
-          annotations:
-            kubernetes.io/ingress.class: "nginx"
-            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-            nginx.ingress.kubernetes.io/affinity: "cookie"
-            nginx.ingress.kubernetes.io/session-cookie-name: "route"
-            nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
 
         resources:
-          # These are the resource recommendations for running WSO2 API Management All-In-One deployment
+          # These are the minimum resource recommendations for running WSO2 API Management product profiles
           # as per official documentation (https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/)
           requests:
             memory: "2Gi"
@@ -202,138 +166,99 @@ wso2:
                 # Maximum Heap size
                 xmx: "1024m"
 
-    analytics:
-      dashboard:
-        # Container image configurations
-        # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
-        # dockerRegistry: ""
-        imageName: "wso2am-analytics-dashboard"
-        imageTag: "3.2.0"
-        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
-        imagePullPolicy: Always
+        # If the deployment configurations for the WSO2 API Manager v4.0.0 (<WSO2AM>/repository/conf/deployment.toml),
+        # add the customized configuration file under (wso2 -> deployment -> am -> config -> deployment.toml)
+        #      config: ""
+        #        deployment.toml: |-
+        #          # deployment configurations for the WSO2 API Manager v4.0.0 (<WSO2AM>/repository/conf/deployment.toml)
 
-        # Number of deployment replicas
-        replicas: 1
-
-        # Kubernetes RollingUpdate strategy configurations
-        strategy:
-          rollingUpdate:
-            # The maximum number of pods that can be scheduled above the desired number of pods
-            maxSurge: 1
-            # The maximum number of pods that can be unavailable during the update
-            maxUnavailable: 0
-
-        # Indicates whether the container is running
-        livenessProbe:
-          # Number of seconds after the container has started before liveness probes are initiated
-          initialDelaySeconds: 20
-          # How often (in seconds) to perform the probe
-          periodSeconds: 10
-        # Indicates whether the container is ready to service requests
-        readinessProbe:
-          # Number of seconds after the container has started before readiness probes are initiated
-          initialDelaySeconds: 20
-          # How often (in seconds) to perform the probe
-          periodSeconds: 10
-
-        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
-        # If the deployment configurations for the Dashboard profile of WSO2 API Manager Analytics v3.2.0 (<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml),
-        # add the customized configuration file under (wso2 -> deployment -> analytics -> dashboard -> config -> deployment.yaml)
-#        config:
-#          deployment.yaml: |-
-#            # deployment configurations for the Dashboard profile of WSO2 API Manager Analytics v3.2.0 (<WSO2AM_ANALYTICS>/conf/dashboard/deployment.yaml)
-
-        resources:
-          # These are the resource recommendations for running WSO2 Stream Processor based server profiles
-          # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
-          requests:
-            memory: "4Gi"
-            cpu: "2000m"
-          # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
-          # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
-          # where necessary.
-          limits:
-            memory: "4Gi"
-            cpu: "2000m"
-          # JVM settings
-          # These are the resource allocation configurations associated with the JVM
-          # Refer to the official documentation for advanced details (https://docs.wso2.com/display/SP440/Installation+Prerequisites)
-          jvm:
-            # Resource allocation for the Java Heap
-            heap:
-              memory:
-                # Initial and minimum Heap size
-                xms: "2048m"
-                # Maximum Heap size
-                xmx: "2048m"
-
-        # Configure Ingress
+        # Configure Ingresses
         ingress:
-          # Hostname for API Manager Analytics Dashboard
-          hostname: "analytics.am.wso2.com"
-          # Annotations for the API Manager Analytics Dashboard service Ingress
-          annotations:
-            kubernetes.io/ingress.class: "nginx"
-            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          management:
+            # Hostname for API Manager Carbon Management Console, Publisher, DevPortal and Admin Portal
+            hostname: "am.wso2.com"
+            # Annotations for the API Manager Publisher-DevPortal services Ingress
+            annotations:
+              kubernetes.io/ingress.class: "nginx"
+              nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+              nginx.ingress.kubernetes.io/affinity: "cookie"
+              nginx.ingress.kubernetes.io/session-cookie-name: "route"
+              nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+          gateway:
+            # Hostname for Gateway profile
+            hostname: "gateway.am.wso2.com"
+            # Annotations for the API Manager Gateway service Ingress
+            annotations:
+              kubernetes.io/ingress.class: "nginx"
+              nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          websub:
+            hostname: "websub.am.wso2.com"
+            # Annotations for the API Manager WebSub service Ingress
+            annotations:
+              kubernetes.io/ingress.class: "nginx"
+              nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 
-      worker:
-        # Container image configurations
+      mi:
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
         # dockerRegistry: ""
-        imageName: "wso2am-analytics-worker"
-        imageTag: "3.2.0"
-        # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
-        imagePullPolicy: Always
-
+        imageName: "wso2mi"
+        imageTag: "4.0.0"
+        # Number of deployment replicas
+        replicas: 2
+        strategy:
+          rollingUpdate:
+            # The maximum number of pods that can be scheduled above the desired number of pods.
+            maxSurge: 1
+            # The maximum number of pods that can be unavailable during the update.
+            maxUnavailable: 0
         # Indicates whether the container is running.
         livenessProbe:
           # Number of seconds after the container has started before liveness probes are initiated.
-          initialDelaySeconds: 20
+          initialDelaySeconds: 35
           # How often (in seconds) to perform the probe.
           periodSeconds: 10
         # Indicates whether the container is ready to service requests.
         readinessProbe:
           # Number of seconds after the container has started before readiness probes are initiated.
-          initialDelaySeconds: 20
+          initialDelaySeconds: 35
           # How often (in seconds) to perform the probe.
           periodSeconds: 10
-
-        # If the deployment configurations for the Worker profile of WSO2 API Manager Analytics v3.2.0 (<WSO2AM_ANALYTICS>/conf/worker/deployment.yaml),
-        # add the customized configuration file under (wso2 -> deployment -> analytics -> worker -> config -> deployment.yaml)
-#        config:
-#          deployment.yaml: |-
-#            # deployment configurations for the Worker profile of WSO2 API Manager Analytics v3.2.0 (<WSO2AM_ANALYTICS>/conf/worker/deployment.yaml)
-
+        # These are the minimum resource recommendations for running WSO2 Micro Integrator
         resources:
-          # These are the resource recommendations for running WSO2 Stream Processor based server profiles
-          # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
           requests:
-            memory: "4Gi"
-            cpu: "2000m"
-          # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
-          # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
-          # where necessary.
+            # The minimum amount of memory that should be allocated for a Pod
+            memory: "512Mi"
+            # The minimum amount of CPU that should be allocated for a Pod
+            cpu: "500m"
           limits:
-            memory: "4Gi"
-            cpu: "2000m"
-          # JVM settings
-          # These are the resource allocation configurations associated with the JVM
-          # Refer to the official documentation for advanced details (https://docs.wso2.com/display/SP440/Installation+Prerequisites)
-          jvm:
-            # Resource allocation for the Java Heap
-            heap:
-              memory:
-                # Initial and minimum Heap size
-                xms: "2048m"
-                # Maximum Heap size
-                xmx: "2048m"
+            # The maximum amount of memory that should be allocated for a Pod
+            memory: "1Gi"
+            # The maximum amount of CPU that should be allocated for a Pod
+            cpu: "1000m"
+        # Environment variables for the Micro integrator deployment.
+        envs:
+        #  ENV_NAME: ENV_VALUE
+        # Configure synapse testing.
+        synapseTest:
+          enabled: false
 
-kubernetes:
-  # Name of Kubernetes service account
-  serviceAccount: "wso2am-pattern-2-svc-account"
+        # Configure Ingresses
+        ingress:
+          # Configure management ingress
+          management:
+            # Hostname for the Micro Integrator management endpoint.
+            hostname: "tenant1.management.mi.wso2.com"
+            # Annotations for the Micro Integrator management Ingress.
+            annotations:
+              kubernetes.io/ingress.class: "nginx"
+              nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 
-# Override sub chart parameters
-mysql-am:
-  mysql:
-    persistence:
-      storageClass: *storage_class
+  kubernetes:
+    # Name of Kubernetes service account
+    serviceAccount: *service_account
+
+  # Override sub chart parameters
+  mysql-am:
+    mysql:
+      persistence:
+        storageClass: *storage_class

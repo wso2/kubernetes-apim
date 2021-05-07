@@ -51,9 +51,6 @@ spec:
             - name: mysql-connector-jar
               mountPath: /mysql-connector-jar
         {{ end }}
-        - name: init-am-analytics-worker
-          image: busybox:1.32
-          command: ['sh', '-c', 'echo -e "Checking for the availability of WSO2 API Manager Analytics Worker deployment"; while ! nc -z {{ template "am-pattern-1.resource.prefix" . }}-am-analytics-worker-service 7712; do sleep 1; printf "-"; done; echo -e "  >> WSO2 API Manager Analytics Worker has started";']
       containers:
         - name: wso2am
 {{- include "image" (dict "Values" .Values "deployment" .Values.wso2.deployment.am) | indent 10 }}
@@ -77,7 +74,7 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/api-manager.sh stop']
           resources:
             requests:
               memory: {{ .Values.wso2.deployment.am.resources.requests.memory }}
@@ -110,10 +107,6 @@ spec:
             - name: JVM_MEM_OPTS
               value: "-Xms{{ .Values.wso2.deployment.am.resources.jvm.heap.memory.xms }} -Xmx{{ .Values.wso2.deployment.am.resources.jvm.heap.memory.xmx }}"
           volumeMounts:
-            - name: wso2am-executionplans-storage
-              mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/executionplans
-            - name: wso2am-synapse-configs-storage
-              mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/synapse-configs
             - name: wso2am-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
             {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
@@ -135,15 +128,9 @@ spec:
         - name: {{ .Values.wso2.deployment.am.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: {{ template "am-pattern-1.resource.prefix" . }}-wso2-private-registry-creds
+        - name: {{ template "am-pattern-1.resource.prefix" . }}-am-wso2-private-registry-creds
       {{ end }}
       volumes:
-        - name: wso2am-executionplans-storage
-          persistentVolumeClaim:
-            claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-shared-executionplans-volume-claim
-        - name: wso2am-synapse-configs-storage
-          persistentVolumeClaim:
-            claimName: {{ template "am-pattern-1.resource.prefix" . }}-am-shared-synapse-configs-volume-claim
         - name: wso2am-conf
           configMap:
             name: {{ template "am-pattern-1.resource.prefix" . }}-am-1-conf
