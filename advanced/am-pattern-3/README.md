@@ -135,6 +135,17 @@ From the above Helm commands, base image of a Micro Integrator is deployed (with
 >   helm install <RELEASE_NAME> wso2/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.deployment.mi.dockerRegistry=<INTEGRATION_IMAGE_REGISTRY> --set wso2.deployment.mi.imageName=<INTEGRATION_IMAGE_NAME> --set wso2.deployment.mi.imageTag=<INTEGRATION_IMAGE_TAG> --set wso2.deployment.mi.imagePullSecrets=<IMAGE_PULL_SECRET>
 >   ```     
 
+### Choreo Analytics
+
+If you need to enable Choreo Analytics with WSO2 API Manager, please follow the documentation on [Register for Analytics](https://apim.docs.wso2.com/en/latest/observe/api-manager-analytics/configure-analytics/register-for-analytics/) to obtain the on-prem key for Analytics.
+
+The following example shows how to enable Analytics with the helm charts.
+
+```
+helm install --name <RELEASE_NAME> wso2/am-single-node --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY>
+```
+
+You will be able to see the Analytics data when you log into Choreo Analytics Portal.
 
 ### 2. Obtain the external IP
 
@@ -198,6 +209,9 @@ The following tables lists the configurable parameters of the chart and their de
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.subscription.username`                                                | Your WSO2 Subscription username                                                           | -                           |
 | `wso2.subscription.password`                                                | Your WSO2 Subscription password                                                           | -                           |
+| `wso2.choreoAnalytics.enabled`                                                | Chorero Analytics enabled or not                                                           | false                           |
+| `wso2.choreoAnalytics.endpoint`                                                | Choreo Analytics endpoint                                                           | https://analytics-event-auth.choreo.dev/auth/v1                           |
+| `wso2.choreoAnalytics.onpremKey`                                                | On-prem key for Choreo Analytics                                                          | -                           |
 
 If you do not have an active WSO2 subscription, **do not change** the parameters `wso2.subscription.username` and `wso2.subscription.password`. 
 
