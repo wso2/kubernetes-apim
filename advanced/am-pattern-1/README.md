@@ -319,3 +319,21 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 
 * For WSO2 recommended best practices in configuring SSL when exposing the internal product services to outside of the Kubernetes cluster,
   please refer to the [official WSO2 container guide](https://github.com/wso2/container-guide/blob/master/route/Routing.md#configuring-ssl).
+
+## Setting up API Manaer without Micro Integrator
+
+If you want to setup API Manager only without Micro Integrator, you have to install the charts from source after removing MI templates.
+
+* Clone the repository
+
+    ```
+    git clone https://github.com/wso2/kubernetes-apim.git
+    ```
+
+* Remove the MI templates by removing the `mi` folder in `<KUBERNETES_HOME>/advanced/am-pattern-1/templates/mi`.
+
+* Deploy Helm charts
+
+    ```helm
+    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --version 4.0.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
+    ```
