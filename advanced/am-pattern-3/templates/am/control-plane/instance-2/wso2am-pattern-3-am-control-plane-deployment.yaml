@@ -55,13 +55,20 @@ spec:
         - name: wso2am
 {{- include "image" (dict "Values" .Values "deployment" .Values.wso2.deployment.am) | indent 10 }}
           imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
-          livenessProbe:
+          startupProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
                 - nc -z localhost 9443
-            initialDelaySeconds: {{ .Values.wso2.deployment.am.cp.livenessProbe.initialDelaySeconds }}
+            initialDelaySeconds: {{ .Values.wso2.deployment.am.cp.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.am.cp.startupProbe.periodSeconds }}
+            failureThreshold: {{ .Values.wso2.deployment.am.cp.startupProbe.failureThreshold }}
+          livenessProbe:
+            httpGet:
+              path: /carbon/admin/login.jsp
+              port: 9443
+              scheme: HTTPS
             periodSeconds: {{ .Values.wso2.deployment.am.cp.livenessProbe.periodSeconds }}
           readinessProbe:
             exec:

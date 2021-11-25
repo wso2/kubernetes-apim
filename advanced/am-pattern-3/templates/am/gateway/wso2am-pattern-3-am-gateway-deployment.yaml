@@ -52,13 +52,21 @@ spec:
               fieldPath: status.podIP
         - name: JVM_MEM_OPTS
           value: "-Xms{{ .Values.wso2.deployment.am.resources.jvm.heap.memory.xms }} -Xmx{{ .Values.wso2.deployment.am.resources.jvm.heap.memory.xmx }}"
+        startupProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - nc -z localhost 8243
+          initialDelaySeconds: {{ .Values.wso2.deployment.am.startupProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.wso2.deployment.am.startupProbe.periodSeconds }}
+          failureThreshold: {{ .Values.wso2.deployment.am.startupProbe.failureThreshold }}
         livenessProbe:
           exec:
             command:
               - /bin/sh
               - -c
               - nc -z localhost 8243
-          initialDelaySeconds: {{ .Values.wso2.deployment.am.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.wso2.deployment.am.livenessProbe.periodSeconds }}
         readinessProbe:
           exec:
