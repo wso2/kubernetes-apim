@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-ingress
@@ -22,6 +22,9 @@ metadata:
 {{ toYaml .Values.wso2.deployment.am.cp.ingress.annotations | indent 4 }}
 {{- end }}
 spec:
+  {{- if .Values.wso2.deployment.am.cp.ingress.className }}
+  ingressClassName: {{ .Values.wso2.deployment.am.cp.ingress.className }}
+  {{- end }}
   tls:
   - hosts:
     - {{ .Values.wso2.deployment.am.cp.ingress.hostname }}
@@ -30,6 +33,9 @@ spec:
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-service
-          servicePort: 9443
+          service:
+            name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-service
+            port:
+              number: 9443
