@@ -14,12 +14,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "am-pattern-4.
-resource.prefix" . }}-mi-1-deployment
+  name: {{ template "am-pattern-4.resource.prefix" . }}-mi-1-deployment
   namespace: {{ .Release.Namespace }}
   labels:
-{{ include "am-pattern-4.
-labels" . | indent 4 }}
+{{ include "am-pattern-4.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.wso2.deployment.mi.replicas }}
   strategy:
@@ -29,27 +27,21 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: {{ template "am-pattern-4.
-resource.prefix" . }}-mi
-      node: {{ template "am-pattern-4.
-resource.prefix" . }}-mi-1
+      deployment: {{ template "am-pattern-4.resource.prefix" . }}-mi
+      node: {{ template "am-pattern-4.resource.prefix" . }}-mi-1
   template:
     metadata:
       labels:
-        deployment: {{ template "am-pattern-4.
-resource.prefix" . }}-mi
-        node: {{ template "am-pattern-4.
-resource.prefix" . }}-mi-1
+        deployment: {{ template "am-pattern-4.resource.prefix" . }}-mi
+        node: {{ template "am-pattern-4.resource.prefix" . }}-mi-1
     spec:
       initContainers:
         - name: init-cp
           image: busybox:1.32
-          command: ['sh', '-c', 'echo -e "Checking for the availability of Control Plane deployment"; while ! nc -z {{ template "am-pattern-4.
-resource.prefix" . }}-am-cp-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Control Plane has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of Control Plane deployment"; while ! nc -z {{ template "am-pattern-4.resource.prefix" . }}-am-cp-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Control Plane has started";']
         - name: init-gw
           image: busybox:1.32
-          command: ['sh', '-c', 'echo -e "Checking for the availability of Gateway deployment"; while ! nc -z {{ template "am-pattern-4.
-resource.prefix" . }}-am-gateway-service 8243; do sleep 1; printf "-"; done; echo -e "  >> Gateway has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of Gateway deployment"; while ! nc -z {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-service 8243; do sleep 1; printf "-"; done; echo -e "  >> Gateway has started";']
       containers:
         - name: wso2micro-integrator
 {{- include "image" (dict "Values" .Values "deployment" .Values.wso2.deployment.mi) | indent 10 }}
@@ -113,6 +105,5 @@ resource.prefix" . }}-am-gateway-service 8243; do sleep 1; printf "-"; done; ech
         - name: {{ .Values.wso2.deployment.mi.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: {{ template "am-pattern-4.
-resource.prefix" . }}-mi-1-wso2-private-registry-creds
+        - name: {{ template "am-pattern-4.resource.prefix" . }}-mi-1-wso2-private-registry-creds
       {{ end }}
