@@ -1,4 +1,4 @@
-# Pattern 3: Helm Chart for deployment of a Simple Scalable Deployment of WSO2 API Manager
+# Pattern 4: Helm Chart for Distributed API-M Deployment with Traffic Manager Separated from the Control Plane
 
 Resources for building a Helm chart for deployment of a [simple scalable deployment of WSO2 API Manager](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/setup/deployment-overview/#simple-scalable-deployment).
 
