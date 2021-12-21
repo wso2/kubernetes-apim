@@ -2,7 +2,7 @@
 
 Resources for building a Helm chart for deployment of a [simple scalable deployment of WSO2 API Manager](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/setup/deployment-overview/#simple-scalable-deployment).
 
-![WSO2 API Manager pattern 3 deployment](https://apim.docs.wso2.com/en/4.0.0/assets/img/setup-and-install/basic-scalable-deployment.png)
+![WSO2 API Manager pattern 3 deployment](https://apim.docs.wso2.com/en/4.0.0/assets/img/setup-and-install/deployment-tm.png)
 
 For advanced details on the deployment pattern, please refer to the official
 [documentation](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/setup/distributed-deployment/deploying-wso2-api-m-in-a-distributed-setup/).
@@ -57,7 +57,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  Helm version 2
 
  ```
- helm install --name <RELEASE_NAME> wso2/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE>
+ helm install --name <RELEASE_NAME> wso2/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE>
  ```
 
  Helm version 3
@@ -65,7 +65,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> wso2/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE> --create-namespace
+    helm install <RELEASE_NAME> wso2/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE> --create-namespace
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -76,7 +76,7 @@ please provide your WSO2 Subscription credentials via input values (using `--set
 Please see the following example.
 
 ```
- helm install --name <RELEASE_NAME> wso2/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> wso2/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 #### Install Chart From Source
@@ -97,7 +97,7 @@ git clone https://github.com/wso2/kubernetes-apim.git
  Helm version 2
 
  ```
- helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE>
+ helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE>
  ```
 
  Helm version 3
@@ -105,7 +105,7 @@ git clone https://github.com/wso2/kubernetes-apim.git
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
+    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -116,10 +116,10 @@ please provide your WSO2 Subscription credentials via input values (using `--set
 Please see the following example.
 
 ```
- helm install --name <RELEASE_NAME> <HELM_HOME>/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> <HELM_HOME>/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
-Or else, you can configure the default configurations inside the am-pattern-3 helm chart [values.yaml](https://github.com/wso2/kubernetes-apim/blob/master/advanced/am-pattern-3/values.yaml) file. Refer [this](https://helm.sh/docs/chart_template_guide/values_files/) for to learn more details about the `values.yaml` file.
+Or else, you can configure the default configurations inside the am-pattern-4 helm chart [values.yaml](https://github.com/wso2/kubernetes-apim/blob/master/advanced/am-pattern-4/values.yaml) file. Refer [this](https://helm.sh/docs/chart_template_guide/values_files/) for to learn more details about the `values.yaml` file.
 
 
 > **Note:** <br>
@@ -132,7 +132,7 @@ From the above Helm commands, base image of a Micro Integrator is deployed (with
     - `IMAGE_PULL_SECRET` will refer to the created image pull secret <br><br>
 >3. Deploy the helm resource using following command.<br><br>
 >   ```
->   helm install <RELEASE_NAME> wso2/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.deployment.mi.dockerRegistry=<INTEGRATION_IMAGE_REGISTRY> --set wso2.deployment.mi.imageName=<INTEGRATION_IMAGE_NAME> --set wso2.deployment.mi.imageTag=<INTEGRATION_IMAGE_TAG> --set wso2.deployment.mi.imagePullSecrets=<IMAGE_PULL_SECRET>
+>   helm install <RELEASE_NAME> wso2/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.deployment.mi.dockerRegistry=<INTEGRATION_IMAGE_REGISTRY> --set wso2.deployment.mi.imageName=<INTEGRATION_IMAGE_NAME> --set wso2.deployment.mi.imageTag=<INTEGRATION_IMAGE_TAG> --set wso2.deployment.mi.imagePullSecrets=<IMAGE_PULL_SECRET>
 >   ```     
 
 ### Choreo Analytics
@@ -144,13 +144,13 @@ The following example shows how to enable Analytics with the helm charts.
 Helm v2
 
 ```
-helm install --name <RELEASE_NAME> wso2/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY>
+helm install --name <RELEASE_NAME> wso2/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY>
 ```
 
 Helm v3
 
 ```
-helm install <RELEASE_NAME> wso2/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY> --create-namespace
+helm install <RELEASE_NAME> wso2/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY> --create-namespace
 ```
 
 You will be able to see the Analytics data when you log into Choreo Analytics Portal.
@@ -167,32 +167,28 @@ The output under the relevant column stands for the following.
 
 API Manager Control Plane
 
-- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-4-
-am-cp-ingress`)
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-4-am-cp-ingress`)
 - HOSTS: Hostname of the WSO2 API Manager's Control Plane service (`<wso2.deployment.am.cp.ingress.hostname>`)
 - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Control Plane service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager's Control Plane service
 
 API Manager Gateway
 
-- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-4-
-am-gateway-ingress`)
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-4-am-gateway-ingress`)
 - HOSTS: Hostname of the WSO2 API Manager's Gateway service (`<wso2.deployment.am.gateway.ingress.hostname>`)
 - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Gateway service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager's Gateway service
 
 API Manager Websub
 
-- NAME: Metadata name of the Kubernetes Ingress resource (defaults to wso2am-pattern-4-
-am-websub-ingress)
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to wso2am-pattern-4-am-websub-ingress)
 - HOSTS: Hostname of the WSO2 API Manager's Websub service (`<wso2.deployment.am.websub.ingress.hostname>`)
 - ADDRESS: External IP (EXTERNAL-IP) exposing the API Manager's Websub service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager's Websub service
 
 Micro Integrator Management APIs
 
-- NAME: Metadata name of the Kubernetes Ingress resource (defaults to wso2am-pattern-4-
-mi-1-management-ingress)
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to wso2am-pattern-4-mi-1-management-ingress)
 - HOSTS: Hostname of the WSO2 Micro Integrator service (`<wso2.deployment.mi.ingress.management.hostname>`)
 - ADDRESS: External IP (EXTERNAL-IP) exposing the Micro Integrator service to outside of the Kubernetes environment
 PORTS: Externally exposed service ports of the Micro Integrator service
@@ -344,10 +340,10 @@ If you want to setup API Manager only without Micro Integrator, you have to inst
     git clone https://github.com/wso2/kubernetes-apim.git
     ```
 
-* Remove the MI templates by removing the `mi` folder in `<KUBERNETES_HOME>/advanced/am-pattern-3/templates/`.
+* Remove the MI templates by removing the `mi` folder in `<KUBERNETES_HOME>/advanced/am-pattern-4/templates/`.
 
 * Deploy Helm charts
 
     ```helm
-    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-3 --version 4.0.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
+    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
     ```
