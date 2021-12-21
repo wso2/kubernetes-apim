@@ -92,7 +92,7 @@ Git repository. <br>
 git clone https://github.com/wso2/kubernetes-apim.git
 ```
 
-##### Deploy Helm chart for WSO2 API Manager Pattern 3 deployment.
+##### Deploy Helm chart for WSO2 API Manager Pattern 4 deployment.
 
  Helm version 2
 

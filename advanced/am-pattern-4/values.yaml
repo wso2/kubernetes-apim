@@ -17,8 +17,8 @@ wso2:
   # If provided, these parameters will be used to obtain official WSO2 product Docker images available at WSO2 Private Docker Registry (https://docker.wso2.com/)
   # for this deployment
   subscription:
-    username: "hasunie@wso2.com"
-    password: "Chandy90#"
+    username: ""
+    password: ""
   
   # WSO2 Choreo Analytics Parameters
   # If provided, these parameters will be used publish analytics data to Choreo Analytics environment (https://apim.docs.wso2.com/en/latest/observe/api-manager-analytics/configure-analytics/register-for-analytics/).
