@@ -28,7 +28,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum.am.conf: {{ include (print $.Template.BasePath "/am/control-plane/instance-1/wso2am-pattern-4-am-control-plane-conf.yaml") . | sha256sum }}
+        checksum.am.conf: {{ include (print $.Template.BasePath "/am/control-plane/instance-2/wso2am-pattern-4-am-control-plane-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-4.resource.prefix" . }}-am-cp
         node: {{ template "am-pattern-4.resource.prefix" . }}-am-cp-2

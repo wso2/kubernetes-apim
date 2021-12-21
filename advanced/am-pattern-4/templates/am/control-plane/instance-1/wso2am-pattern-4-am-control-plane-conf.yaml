@@ -122,7 +122,7 @@ data:
     #expiry_time = "2m"
 
     [apim.key_manager]
-    service_url = "https://localhost:9443/services/"
+    service_url = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
     username = "$ref{super_admin.username}"
     password = "$ref{super_admin.password}"
     #pool.init_idle_capacity = 50
@@ -175,6 +175,13 @@ data:
     traffic_manager_urls = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-2-service:9611"]
     traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-2-service:9711"]
     type = "loadbalance"
+
+    [apim.event_hub]
+    enable = true
+    username= "$ref{super_admin.username}"
+    password= "$ref{super_admin.password}"
+    service_url = "https://localhost:${mgt.transport.https.port}/services/"
+    event_listening_endpoints = ["tcp://localhost:5672"]
 
     #[[apim.throttling.url_group]]
     #traffic_manager_urls = ["tcp://localhost:9611","tcp://localhost:9611"]
@@ -239,7 +246,7 @@ data:
     order = 1
 
     [event_listener.properties]
-    notification_endpoint = "https://localhost:${mgt.transport.https.port}/internal/data/v1/notify"
+    notification_endpoint = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/internal/data/v1/notify"
     username = "${admin.username}"
     password = "${admin.password}"
     'header.X-WSO2-KEY-MANAGER' = "default"

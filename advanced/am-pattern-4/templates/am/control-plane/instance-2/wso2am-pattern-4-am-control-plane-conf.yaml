@@ -123,7 +123,7 @@ data:
     #expiry_time = "2m"
 
     [apim.key_manager]
-    service_url = "https://localhost:9443/services/"
+    service_url = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
     username = "$ref{super_admin.username}"
     password = "$ref{super_admin.password}"
     #pool.init_idle_capacity = 50
@@ -240,7 +240,7 @@ data:
     order = 1
 
     [event_listener.properties]
-    notification_endpoint = "https://localhost:${mgt.transport.https.port}/internal/data/v1/notify"
+    notification_endpoint = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/internal/data/v1/notify"
     username = "${admin.username}"
     password = "${admin.password}"
     'header.X-WSO2-KEY-MANAGER' = "default"
