@@ -21,6 +21,12 @@
 
 **Change log** from previous `v3.2.0.4` release: [View Here](https://github.com/wso2/kubernetes-apim/blob/3.2.x/CHANGELOG.md)
 
+## Known Issues of WSO2 Kubernetes APIM
+
+All known issues are filed at:
+
+https://github.com/wso2/kubernetes-apim/issues
+
 ## Reporting issues
 
 We encourage you to report any issues and documentation faults regarding Kubernetes and Helm resources
