@@ -1,0 +1,57 @@
+Thank you for installing WSO2 API Manager.
+
+Please follow these steps to access API Manager Publisher, DevPortal consoles.
+
+1. Obtain the external IP (`EXTERNAL-IP`) of the API Manager Ingress resources, by listing down the Kubernetes Ingresses.
+
+  kubectl get ing -n {{ .Release.Namespace }}
+
+  The output under the relevant column stands for the following.
+
+  API Manager Control Plane
+
+  - NAME: Metadata name of the Kubernetes Ingress resource (defaults to {{ template "am-pattern-3.resource.prefix" . }}-am-cp-ingress)
+  - HOSTS: Hostname of the WSO2 API Manager's Control Plane service ({{ .Values.wso2.deployment.am.cp.ingress.hostname }})
+  - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Control PLane service to outside of the Kubernetes environment
+  - PORTS: Externally exposed service ports of the API Manager's Control Plane service
+
+  API Manager Gateway
+
+  - NAME: Metadata name of the Kubernetes Ingress resource (defaults to {{ template "am-pattern-3.resource.prefix" . }}-am-gateway-ingress)
+  - HOSTS: Hostname of the WSO2 API Manager's Gateway service ({{ .Values.wso2.deployment.am.gateway.ingress.hostname }})
+  - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Gateway service to outside of the Kubernetes environment
+  - PORTS: Externally exposed service ports of the API Manager's DevPortal service
+
+2. Add a DNS record mapping the hostnames (in step 1) and the external IP.
+
+   If the defined hostnames (in step 1) are backed by a DNS service, add a DNS record mapping the hostnames and
+   the external IP (`EXTERNAL-IP`) in the relevant DNS service.
+
+   If the defined hostnames are not backed by a DNS service, for the purpose of evaluation you may add an entry mapping the
+   hostnames and the external IP in the `/etc/hosts` file at the client-side.
+
+   <EXTERNAL-IP> {{ .Values.wso2.deployment.am.cp.ingress.hostname }} {{ .Values.wso2.deployment.am.gateway.ingress.hostname }}
+
+3. Navigate to the consoles in your browser of choice.
+
+   API Manager Publisher: https://{{ .Values.wso2.deployment.am.cp.ingress.hostname }}/publisher
+   API Manager DevPortal: https://{{ .Values.wso2.deployment.am.cp.ingress.hostname }}/devportal
+
+Please follow these steps to assess Micro Integrator.
+
+1. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
+
+  kubectl get ing -n {{ .Release.Namespace }}
+
+  Micro Integrator Management APIs
+
+  - NAME: Metadata name of the Kubernetes Ingress resource (defaults to {{ template "am-pattern-3.resource.prefix" . }}-mi-1-management-ingress)
+  - HOSTS: Hostname of the WSO2 Micro Integrator service ({{ .Values.wso2.deployment.mi.ingress.management.hostname }})
+  - ADDRESS: External IP (`EXTERNAL-IP`) exposing the Micro Integrator service to outside of the Kubernetes environment
+  - PORTS: Externally exposed service ports of the Micro Integrator service
+
+2. Add the above host as an entry in /etc/hosts file as follows:
+
+    <EXTERNAL-IP>	{{ .Values.wso2.deployment.mi.ingress.management.hostname }}
+
+Please refer the official documentation at https://apim.docs.wso2.com/en/latest/ for additional information on WSO2 API Manager.
