@@ -2,7 +2,7 @@
 
 Resources for building a Helm chart for deployment of a [simple scalable deployment of WSO2 API Manager](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/setup/deployment-overview/#simple-scalable-deployment).
 
-![WSO2 API Manager pattern 3 deployment](https://apim.docs.wso2.com/en/4.0.0/assets/img/setup-and-install/deployment-tm.png)
+![WSO2 API Manager pattern 4 deployment](https://apim.docs.wso2.com/en/4.0.0/assets/img/setup-and-install/deployment-tm.png)
 
 For advanced details on the deployment pattern, please refer to the official
 [documentation](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/setup/distributed-deployment/deploying-wso2-api-m-in-a-distributed-setup/).
