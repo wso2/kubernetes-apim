@@ -144,7 +144,7 @@ The following example shows how to enable Analytics with the helm charts.
 Helm v2
 
 ```
-helm install --name <RELEASE_NAME> wso2/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY>
+helm install --name <RELEASE_NAME> wso2/am-pattern-4 --version 4.0.0-2 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY>
 ```
 
 Helm v3
