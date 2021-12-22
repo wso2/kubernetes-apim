@@ -47,4 +47,4 @@ spec:
     {{- end}}
   selector:
     deployment: {{ template "am-pattern-4.resource.prefix" . }}-mi
-    node: {{ template "am-pattern-4.resource.prefix" . }}-mi-1
+    node: {{ template "am-pattern-4.resource.prefix" . }}-mi
