@@ -19,7 +19,6 @@
 
 ## Changelog
 
-**Change log** from previous `v3.2.0.4` release: [View Here](https://github.com/wso2/kubernetes-apim/blob/3.2.x/CHANGELOG.md)git
 
 ## Reporting issues
 
