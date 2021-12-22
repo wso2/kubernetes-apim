@@ -116,7 +116,7 @@ please provide your WSO2 Subscription credentials via input values (using `--set
 Please see the following example.
 
 ```
- helm install --name <RELEASE_NAME> <HELM_HOME>/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> <HELM_HOME>/am-pattern-4 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 Or else, you can configure the default configurations inside the am-pattern-4 helm chart [values.yaml](https://github.com/wso2/kubernetes-apim/blob/newpattern/advanced/am-pattern-4/values.yaml) file. Refer [this](https://helm.sh/docs/chart_template_guide/values_files/) for to learn more details about the `values.yaml` file.
