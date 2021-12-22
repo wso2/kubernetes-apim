@@ -17,9 +17,7 @@
 * [Deployment Pattern 3](advanced/am-pattern-3/README.md)
 * [Deployment Pattern 4](advanced/am-pattern-4/README.md)
 
-## Changelog
 
-**Change log** from previous `v3.2.0.4` release: [View Here](https://github.com/wso2/kubernetes-apim/blob/3.2.x/CHANGELOG.md)git
 
 ## Reporting issues
 

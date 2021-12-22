@@ -1,4 +1,4 @@
-# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -141,7 +141,7 @@ wso2:
             # The maximum number of pods that can be unavailable during the update
             maxUnavailable: 0
 
-      # API Manager's Control Plane specific configurations
+      # API Manager's Traffic Manager specific configurations
       trafficmanager:
         # Indicates whether the container is running
         livenessProbe:
@@ -178,11 +178,11 @@ wso2:
                   # Maximum Heap size
                   xmx: "1024m"
 
-        # If the deployment configurations for the Gateway profile of WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
+        # If the deployment configurations for the Gateway profile of WSO2 API Manager v4.0.0 (<WSO2AM>/repository/conf/deployment.toml),
         # add the customized configuration file under (wso2 -> deployment -> am -> gateway -> config -> deployment.toml)
 #        config:
 #          deployment.toml: |-
-#            # deployment configurations for the Gateway profile of WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
+#            # deployment configurations for the Gateway profile of WSO2 API Manager v4.0.0 (<WSO2AM>/repository/conf/deployment.toml)
 
       # API Manager's Control Plane specific configurations
       cp:
