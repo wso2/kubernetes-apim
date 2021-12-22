@@ -132,7 +132,7 @@ From the above Helm commands, base image of a Micro Integrator is deployed (with
     - `IMAGE_PULL_SECRET` will refer to the created image pull secret <br><br>
 >3. Deploy the helm resource using following command.<br><br>
 >   ```
->   helm install <RELEASE_NAME> wso2/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.deployment.mi.dockerRegistry=<INTEGRATION_IMAGE_REGISTRY> --set wso2.deployment.mi.imageName=<INTEGRATION_IMAGE_NAME> --set wso2.deployment.mi.imageTag=<INTEGRATION_IMAGE_TAG> --set wso2.deployment.mi.imagePullSecrets=<IMAGE_PULL_SECRET>
+>   helm install <RELEASE_NAME> wso2/am-pattern-4 --version 4.0.0-2 --namespace <NAMESPACE> --set wso2.deployment.mi.dockerRegistry=<INTEGRATION_IMAGE_REGISTRY> --set wso2.deployment.mi.imageName=<INTEGRATION_IMAGE_NAME> --set wso2.deployment.mi.imageTag=<INTEGRATION_IMAGE_TAG> --set wso2.deployment.mi.imagePullSecrets=<IMAGE_PULL_SECRET>
 >   ```     
 
 ### Choreo Analytics
