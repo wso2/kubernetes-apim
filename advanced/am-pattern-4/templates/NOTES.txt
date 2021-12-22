@@ -10,14 +10,14 @@ Please follow these steps to access API Manager Publisher, DevPortal consoles.
 
   API Manager Control Plane
 
-  - NAME: Metadata name of the Kubernetes Ingress resource (defaults to {{ template "am-pattern-3.resource.prefix" . }}-am-cp-ingress)
+  - NAME: Metadata name of the Kubernetes Ingress resource (defaults to {{ template "am-pattern-4.resource.prefix" . }}-am-cp-ingress)
   - HOSTS: Hostname of the WSO2 API Manager's Control Plane service ({{ .Values.wso2.deployment.am.cp.ingress.hostname }})
   - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Control PLane service to outside of the Kubernetes environment
   - PORTS: Externally exposed service ports of the API Manager's Control Plane service
 
   API Manager Gateway
 
-  - NAME: Metadata name of the Kubernetes Ingress resource (defaults to {{ template "am-pattern-3.resource.prefix" . }}-am-gateway-ingress)
+  - NAME: Metadata name of the Kubernetes Ingress resource (defaults to {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-ingress)
   - HOSTS: Hostname of the WSO2 API Manager's Gateway service ({{ .Values.wso2.deployment.am.gateway.ingress.hostname }})
   - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Gateway service to outside of the Kubernetes environment
   - PORTS: Externally exposed service ports of the API Manager's DevPortal service
@@ -45,7 +45,7 @@ Please follow these steps to assess Micro Integrator.
 
   Micro Integrator Management APIs
 
-  - NAME: Metadata name of the Kubernetes Ingress resource (defaults to {{ template "am-pattern-3.resource.prefix" . }}-mi-1-management-ingress)
+  - NAME: Metadata name of the Kubernetes Ingress resource (defaults to {{ template "am-pattern-4.resource.prefix" . }}-mi-management-ingress)
   - HOSTS: Hostname of the WSO2 Micro Integrator service ({{ .Values.wso2.deployment.mi.ingress.management.hostname }})
   - ADDRESS: External IP (`EXTERNAL-IP`) exposing the Micro Integrator service to outside of the Kubernetes environment
   - PORTS: Externally exposed service ports of the Micro Integrator service
