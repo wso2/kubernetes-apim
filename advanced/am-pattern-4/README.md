@@ -345,5 +345,5 @@ If you want to setup API Manager only without Micro Integrator, you have to inst
 * Deploy Helm charts
 
     ```helm
-    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
+    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-4 --version 4.0.0-2 --namespace <NAMESPACE> --dependency-update --create-namespace
     ```
