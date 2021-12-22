@@ -1,4 +1,4 @@
-# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,9 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-appVersion: "4.0.0"
-description: A Helm chart for the deployment of WSO2 API Management deployment pattern 3
-name: am-pattern-3
-version: 4.0.0-2
-icon: https://wso2.cachefly.net/wso2/sites/all/images/wso2logo.svg
+dependencies:
+  - name: mysql-am
+    version: "4.0.0-2"
+    repository: "https://helm.wso2.com"
+    condition: wso2.deployment.dependencies.mysql
+  - name: nfs-server-provisioner
+    version: "1.1.0"
+    repository: "https://helm.wso2.com"
+    condition: wso2.deployment.dependencies.nfsServerProvisioner
