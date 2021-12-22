@@ -97,7 +97,7 @@ git clone https://github.com/wso2/kubernetes-apim.git
  Helm version 2
 
  ```
- helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE>
+ helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-4 --namespace <NAMESPACE>
  ```
 
  Helm version 3
