@@ -57,7 +57,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  Helm version 2
 
  ```
- helm install --name <RELEASE_NAME> wso2/am-pattern-4 --version 4.0.0-1 --namespace <NAMESPACE>
+ helm install --name <RELEASE_NAME> wso2/am-pattern-4 --version 4.0.0-2 --namespace <NAMESPACE>
  ```
 
  Helm version 3
