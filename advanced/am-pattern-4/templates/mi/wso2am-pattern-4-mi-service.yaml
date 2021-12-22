@@ -18,7 +18,7 @@ metadata:
   namespace : {{ .Release.Namespace }}
   labels:
     deployment: {{ template "am-pattern-4.resource.prefix" . }}-mi
-    node: {{ template "am-pattern-4.resource.prefix" . }}-mi-1
+    node: {{ template "am-pattern-4.resource.prefix" . }}-mi
 {{ include "am-pattern-4.labels" . | indent 4 }}
 spec:
   type: ClusterIP
