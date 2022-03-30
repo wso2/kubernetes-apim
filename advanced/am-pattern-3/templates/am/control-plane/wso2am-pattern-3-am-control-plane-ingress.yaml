@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+{{- if .Values.wso2.deployment.am.cp.ingress.enabled }}
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -39,3 +41,4 @@ spec:
             name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-service
             port:
               number: 9443
+{{- end -}}

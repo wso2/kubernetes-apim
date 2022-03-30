@@ -175,6 +175,7 @@ am-pattern-1:
         # Configure Ingresses
         ingress:
           management:
+            enabled: true
             # Hostname for API Manager Carbon Management Console, Publisher, DevPortal and Admin Portal
             hostname: "am.wso2.com"
             # Annotations for the API Manager Publisher-DevPortal services Ingress
@@ -185,6 +186,7 @@ am-pattern-1:
               nginx.ingress.kubernetes.io/session-cookie-name: "route"
               nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
           gateway:
+            enabled: true
             # Hostname for Gateway profile
             hostname: "gateway.am.wso2.com"
             # Annotations for the API Manager Gateway service Ingress
@@ -192,6 +194,7 @@ am-pattern-1:
               kubernetes.io/ingress.class: "nginx"
               nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
           websub:
+            enabled: true
             hostname: "websub.am.wso2.com"
             # Annotations for the API Manager WebSub service Ingress
             annotations:
