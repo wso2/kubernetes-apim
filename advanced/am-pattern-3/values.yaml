@@ -145,9 +145,9 @@ wso2:
 
         # If the deployment configurations for the Gateway profile of WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml),
         # add the customized configuration file under (wso2 -> deployment -> am -> gateway -> config -> deployment.toml)
-#        config:
-#          deployment.toml: |-
-#            # deployment configurations for the Gateway profile of WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
+        # config:
+        #   deployment.toml: |-
+        #     # deployment configurations for the Gateway profile of WSO2 API Manager v3.2.0 (<WSO2AM>/repository/conf/deployment.toml)
 
       # API Manager's Control Plane specific configurations
       cp:
@@ -209,9 +209,9 @@ wso2:
                 # Maximum Heap size
                 xmx: "1024m"
 
-#        config:
-#          deployment.toml: |-
-#            # deployment configurations for the Control Plane profile of WSO2 API Manager v4.0.0 (<WSO2AM>/repository/conf/deployment.toml)
+        # config:
+        #   deployment.toml: |-
+        #     # deployment configurations for the Control Plane profile of WSO2 API Manager v4.0.0 (<WSO2AM>/repository/conf/deployment.toml)
 
     mi:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.

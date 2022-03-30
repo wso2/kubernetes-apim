@@ -21,7 +21,7 @@ metadata:
 data:
   {{- range $index, $content := .Values.wso2.deployment.am.config }}
   {{ $index }}: |-
-  {{ tpl $content $ | indent 4 }}
+{{ tpl $content $ | indent 4 }}
   {{- end }}
 
   {{ else }}
