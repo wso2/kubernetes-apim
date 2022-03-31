@@ -25,8 +25,6 @@ data:
   {{- end }}
 
   {{ else }}
-
-  {{ else }}
 data:
   deployment.toml: |-
     [server]
@@ -82,6 +80,7 @@ data:
     [[apim.gateway.environment]]
     name = "Default"
     type = "hybrid"
+    provider = "wso2"
     display_in_api_console = true
     description = "This is a hybrid gateway that handles both production and sandbox token traffic."
     show_as_token_endpoint_url = true
@@ -164,9 +163,9 @@ data:
     [apim.throttling]
     event_duplicate_url = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-2-service:5672"]
     service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
-    #enable_data_publishing = true
-    #enable_policy_deploy = true
-    #enable_blacklist_condition = true
+    enable_data_publishing = true
+    enable_policy_deploy = true
+    enable_blacklist_condition = true
     #enable_persistence = true
     throttle_decision_endpoints = ["tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-1-service:5672","tcp://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-2-service:5672"]
 
