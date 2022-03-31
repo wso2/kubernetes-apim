@@ -2,10 +2,10 @@
 
 This deployment consists of two API-M nodes and two nodes each of the integration runtimes (Micro Integrator/Streaming Integrator) per tenant. You can use this pattern when traffic from different tenants in the API-M cluster needs to be handled in isolation. This deployment also allows you to direct the traffic of each tenant to a separate integration cluster.
 
-![WSO2 API Manager pattern 2 deployment](https://apim.docs.wso2.com/en/4.0.0/assets/img/setup-and-install/basic-ha-with-multitenancy.png)
+![WSO2 API Manager pattern 2 deployment](https://apim.docs.wso2.com/en/4.1.0/assets/img/setup-and-install/basic-ha-with-multitenancy.png)
 
 For advanced details on the deployment pattern, please refer to the official
-[documentation](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/setup/deployment-overview/#standard-ha-deployment-with-multitenancy).
+[documentation](https://apim.docs.wso2.com/en/4.1.0/install-and-setup/setup/deployment-overview/#standard-ha-deployment-with-multitenancy).
 
 ## Contents
 
@@ -59,13 +59,13 @@ Deploy the Kubernetes resources using the Helm Chart
 - Helm version 2
 
      ```
-     helm install --name <RELEASE_NAME> wso2/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE>
+     helm install --name <RELEASE_NAME> wso2/am-pattern-2 --version 4.1.0-1 --namespace <NAMESPACE>
      ```
 
 - Helm version 3
  
     ```
-    helm install <RELEASE_NAME> wso2/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE> --create-namespace
+    helm install <RELEASE_NAME> wso2/am-pattern-2 --version 4.1.0-1 --namespace <NAMESPACE> --create-namespace
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -91,7 +91,7 @@ Below example is to provide WSO2 Subscription credentials for all WSO2 API Manag
 export SUBSCRIPTION_USERNAME=<SUBSCRIPTION_USERNAME>
 export SUBSCRIPTION_PASSWORD=<SUBSCRIPTION_PASSWORD>
 
-helm install --name <RELEASE_NAME> wso2/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=$SUBSCRIPTION_USERNAME --set wso2.subscription.password=$SUBSCRIPTION_PASSWORD --set am-pattern-1.wso2.subscription.username=$SUBSCRIPTION_USERNAME --set am-pattern-1.wso2.subscription.password=$SUBSCRIPTION_PASSWORD
+helm install --name <RELEASE_NAME> wso2/am-pattern-2 --version 4.1.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=$SUBSCRIPTION_USERNAME --set wso2.subscription.password=$SUBSCRIPTION_PASSWORD --set am-pattern-1.wso2.subscription.username=$SUBSCRIPTION_USERNAME --set am-pattern-1.wso2.subscription.password=$SUBSCRIPTION_PASSWORD
 ```
 
 #### Install Chart From Source
@@ -114,13 +114,13 @@ Deploy the Kubernetes resources using the Helm Chart
 - Helm version 2
 
      ```
-     helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE>
+     helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-pattern-2 --version 4.1.0-1 --namespace <NAMESPACE>
      ```
 
 - Helm version 3
  
     ```
-    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
+    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-2 --version 4.1.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -131,7 +131,7 @@ please provide your WSO2 Subscription credentials via input values (using `--set
 Please see the following example.
 
 ```
- helm install --name <RELEASE_NAME> <HELM_HOME>/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> <HELM_HOME>/am-pattern-2 --version 4.1.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 Or else, you can configure the default configurations inside the am-pattern-1 helm chart [values.yaml](https://github.com/wso2/kubernetes-apim/blob/master/advanced/am-pattern-1/values.yaml) file. Refer [this](https://helm.sh/docs/chart_template_guide/values_files/) for to learn more details about the `values.yaml` file.
@@ -139,7 +139,7 @@ Or else, you can configure the default configurations inside the am-pattern-1 he
 
 > **Note:** <br>
 From the above Helm commands, base image of a Micro Integrator is deployed (without any integration solution). To deploy your integration solution with the Helm charts follow the below steps. <br><br>
->1. [Create an integration service using WSO2 Integration Studio and expose it as a Managed API](https://apim.docs.wso2.com/en/4.0.0/tutorials/integration-tutorials/service-catalog-tutorial/#exposing-an-integration-service-as-a-managed-api). Then [create a Docker image](https://apim.docs.wso2.com/en/4.0.0/integrate/develop/create-docker-project/#creating-docker-exporter) and push it to your private or public Docker registry. <br><br>
+>1. [Create an integration service using WSO2 Integration Studio and expose it as a Managed API](https://apim.docs.wso2.com/en/4.1.0/tutorials/integration-tutorials/service-catalog-tutorial/#exposing-an-integration-service-as-a-managed-api). Then [create a Docker image](https://apim.docs.wso2.com/en/4.1.0/integrate/develop/create-docker-project/#creating-docker-exporter) and push it to your private or public Docker registry. <br><br>
     - `INTEGRATION_IMAGE_REGISTRY` will refer to the Docker registry that created Docker image has been pushed <br>
     - `INTEGRATION_IMAGE_NAME` will refer to the name of the created Docker image <br>
     - `INTEGRATION_IMAGE_TAG` will refer to the tag of the created Docker image <br><br>
@@ -147,25 +147,25 @@ From the above Helm commands, base image of a Micro Integrator is deployed (with
     - `IMAGE_PULL_SECRET` will refer to the created image pull secret <br><br>
 >3. Deploy the helm resource using following command.<br><br>
 >   ```
->   helm install <RELEASE_NAME> wso2/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.deployment.mi.dockerRegistry=<INTEGRATION_IMAGE_REGISTRY> --set wso2.deployment.mi.imageName=<INTEGRATION_IMAGE_NAME> --set wso2.deployment.mi.imageTag=<INTEGRATION_IMAGE_TAG> --set wso2.deployment.mi.imagePullSecrets=<IMAGE_PULL_SECRET>
+>   helm install <RELEASE_NAME> wso2/am-pattern-2 --version 4.1.0-1 --namespace <NAMESPACE> --set wso2.deployment.mi.dockerRegistry=<INTEGRATION_IMAGE_REGISTRY> --set wso2.deployment.mi.imageName=<INTEGRATION_IMAGE_NAME> --set wso2.deployment.mi.imageTag=<INTEGRATION_IMAGE_TAG> --set wso2.deployment.mi.imagePullSecrets=<IMAGE_PULL_SECRET>
 >   ```     
 
 ### Choreo Analytics
 
-If you need to enable Choreo Analytics with WSO2 API Manager, please follow the documentation on [Register for Analytics](https://apim.docs.wso2.com/en/4.0.0/observe/api-manager-analytics/configure-analytics/register-for-analytics/) to obtain the on-prem key for Analytics.
+If you need to enable Choreo Analytics with WSO2 API Manager, please follow the documentation on [Register for Analytics](https://apim.docs.wso2.com/en/4.1.0/observe/api-manager-analytics/configure-analytics/register-for-analytics/) to obtain the on-prem key for Analytics.
 
 The following example shows how to enable Analytics with the helm charts.
 
 Helm v2
 
 ```
-helm install --name <RELEASE_NAME> wso2/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY>
+helm install --name <RELEASE_NAME> wso2/am-pattern-2 --version 4.1.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY>
 ```
 
 Helm v3
 
 ```
-helm install <RELEASE_NAME> wso2/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY> --create-namespace
+helm install <RELEASE_NAME> wso2/am-pattern-2 --version 4.1.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY> --create-namespace
 ```
 
 You will be able to see the Analytics data when you log into Choreo Analytics Portal.
@@ -282,7 +282,7 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `am-pattern-1.wso2.deployment.am.dockerRegistry`                                         | Registry location of the Docker image to be used to create API Manager instances          | -                           |
 | `am-pattern-1.wso2.deployment.am.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | `wso2am`                    |
-| `am-pattern-1.wso2.deployment.am.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.0.0                       |
+| `am-pattern-1.wso2.deployment.am.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.1.0                       |
 | `am-pattern-1.wso2.deployment.am.imagePullPolicy`                                        | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
 | `am-pattern-1.wso2.deployment.am.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for API Manager node                                | 180                         |
 | `am-pattern-1.wso2.deployment.am.livenessProbe.periodSeconds`                            | Period of the live-ness probe for API Manager node                                        | 10                          |
@@ -309,7 +309,7 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `am-pattern-1.wso2.deployment.mi.dockerRegistry`                                         | Registry location of the Docker image to be used to create Micro Integrator instances     | -                           |
 | `am-pattern-1.wso2.deployment.mi.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | `wso2mi`                    |
-| `am-pattern-1.wso2.deployment.mi.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.0.0                       |
+| `am-pattern-1.wso2.deployment.mi.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.1.0                       |
 | `am-pattern-1.wso2.deployment.mi.imagePullPolicy`                                        | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
 | `am-pattern-1.wso2.deployment.mi.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for Micro Integrator node                           | 35                          |
 | `am-pattern-1.wso2.deployment.mi.livenessProbe.periodSeconds`                            | Period of the live-ness probe for Micro Integrator node                                   | 10                          |
@@ -329,7 +329,7 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.deployment.mi.dockerRegistry`                                         | Registry location of the Docker image to be used to create Micro Integrator instances     | -                           |
 | `wso2.deployment.mi.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | `wso2mi`                    |
-| `wso2.deployment.mi.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.0.0                       |
+| `wso2.deployment.mi.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.1.0                       |
 | `wso2.deployment.mi.imagePullPolicy`                                        | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
 | `wso2.deployment.mi.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for Micro Integrator node                           | 35                          |
 | `wso2.deployment.mi.livenessProbe.periodSeconds`                            | Period of the live-ness probe for Micro Integrator node                                   | 10                          |
@@ -344,7 +344,7 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.mi.ingress.management.annotations`                         | Ingress resource annotations for API Manager Gateway                                      | Community NGINX Ingress controller annotations         |
 
 
-**Note**: The above mentioned default, minimum resource amounts for running WSO2 API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/install/installation-prerequisites/).
+**Note**: The above mentioned default, minimum resource amounts for running WSO2 API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/4.1.0/install-and-setup/install/installation-prerequisites/).
 
 #### Kubernetes Specific Configurations
 
@@ -391,5 +391,5 @@ If you want to setup API Manager only without Micro Integrator, you have to inst
 * Deploy Helm charts
 
     ```helm
-    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-2 --version 4.0.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
+    helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-2 --version 4.1.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
     ```

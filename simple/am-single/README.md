@@ -1,11 +1,11 @@
 # Helm Chart for deployment of WSO2 API Manager
 
-Resources for building a Helm chart for deployment of [Single Node API Manager](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/setup/single-node/all-in-one-deployment-overview/#single-node-deployment).
+Resources for building a Helm chart for deployment of [Single Node API Manager](https://apim.docs.wso2.com/en/4.1.0/install-and-setup/setup/single-node/all-in-one-deployment-overview/#single-node-deployment).
 
-![WSO2 API Manager Single Node deployment](https://apim.docs.wso2.com/en/4.0.0/assets/img/setup-and-install/single-node-apim-deployment.png)
+![WSO2 API Manager Single Node deployment](https://apim.docs.wso2.com/en/4.1.0/assets/img/setup-and-install/single-node-apim-deployment.png)
 
 For advanced details on the deployment pattern, please refer to the official
-[documentation](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/setup/single-node/all-in-one-deployment-overview/#active-active-deployment).
+[documentation](https://apim.docs.wso2.com/en/4.1.0/install-and-setup/setup/single-node/all-in-one-deployment-overview/#active-active-deployment).
 
 ## Contents
 
@@ -57,7 +57,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  Helm version 2
 
  ```
- helm install --name <RELEASE_NAME> wso2/am-single-node --version 4.0.0-1 --namespace <NAMESPACE>
+ helm install --name <RELEASE_NAME> wso2/am-single-node --version 4.1.0-1 --namespace <NAMESPACE>
  ```
 
  Helm version 3
@@ -65,7 +65,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> wso2/am-single-node --version 4.0.0-1 --namespace <NAMESPACE> --create-namespace
+    helm install <RELEASE_NAME> wso2/am-single-node --version 4.1.0-1 --namespace <NAMESPACE> --create-namespace
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -76,7 +76,7 @@ please provide your WSO2 Subscription credentials via input values (using `--set
 Please see the following example.
 
 ```
- helm install --name <RELEASE_NAME> wso2/am-single-node --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> wso2/am-single-node --version 4.1.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 #### Install Chart From Source
@@ -97,7 +97,7 @@ git clone https://github.com/wso2/kubernetes-apim.git
  Helm version 2
 
  ```
- helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-single --version 4.0.0-1 --namespace <NAMESPACE>
+ helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/am-single --version 4.1.0-1 --namespace <NAMESPACE>
  ```
 
  Helm version 3
@@ -105,7 +105,7 @@ git clone https://github.com/wso2/kubernetes-apim.git
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> <HELM_HOME>/am-single --version 4.0.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
+    helm install <RELEASE_NAME> <HELM_HOME>/am-single --version 4.1.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -116,24 +116,24 @@ please provide your WSO2 Subscription credentials via input values (using `--set
 Please see the following example.
 
 ```
- helm install --name <RELEASE_NAME> <HELM_HOME>/am-single --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> <HELM_HOME>/am-single --version 4.1.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 ### Choreo Analytics
 
-If you need to enable Choreo Analytics with WSO2 API Manager, please follow the documentation on [Register for Analytics](https://apim.docs.wso2.com/en/4.0.0/observe/api-manager-analytics/configure-analytics/register-for-analytics/) to obtain the on-prem key for Analytics.
+If you need to enable Choreo Analytics with WSO2 API Manager, please follow the documentation on [Register for Analytics](https://apim.docs.wso2.com/en/4.1.0/observe/api-manager-analytics/configure-analytics/register-for-analytics/) to obtain the on-prem key for Analytics.
 
 The following example shows how to enable Analytics with the helm charts.
 
 Helm v2
 
 ```
-helm install --name <RELEASE_NAME> wso2/am-single-node --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY>
+helm install --name <RELEASE_NAME> wso2/am-single-node --version 4.1.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY>
 ```
 
 Helm v3
 
 ```
-helm install <RELEASE_NAME> wso2/am-single-node --version 4.0.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY> --create-namespace
+helm install <RELEASE_NAME> wso2/am-single-node --version 4.1.0-1 --namespace <NAMESPACE> --set wso2.choreoAnalytics.enabled=true --set wso2.choreoAnalytics.endpoint=<CHOREO_ANALYTICS_ENDPOINT> --set wso2.choreoAnalytics.onpremKey=<ONPREM_KEY> --create-namespace
 ```
 
 You will be able to see the Analytics data when you log into Choreo Analytics Portal.
@@ -225,7 +225,7 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.deployment.am.dockerRegistry`                                         | Registry location of the Docker image to be used to create API Manager instances          | -                           |
 | `wso2.deployment.am.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | `wso2am`                    |
-| `wso2.deployment.am.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.0.0                       |
+| `wso2.deployment.am.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.1.0                       |
 | `wso2.deployment.am.imagePullPolicy`                                        | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
 | `wso2.deployment.am.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for API Manager node                                | 180                         |
 | `wso2.deployment.am.livenessProbe.periodSeconds`                            | Period of the live-ness probe for API Manager node                                        | 10                          |
@@ -246,7 +246,7 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.am.ingress.websub.hostname`                               | Hostname for API Manager Gateway WebSub service                                                          | `gateway.am.wso2.com`       |
 | `wso2.deployment.am.ingress.websub.annotations`                            | Ingress resource annotations for API Manager Gateway WebSub                                     | Community NGINX Ingress controller annotations         |
 
-**Note**: The above mentioned default, minimum resource amounts for running WSO2 API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/4.0.0/install-and-setup/install/installation-prerequisites/).
+**Note**: The above mentioned default, minimum resource amounts for running WSO2 API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/4.1.0/install-and-setup/install/installation-prerequisites/).
 
 ## Kubernetes Specific Configurations
 
