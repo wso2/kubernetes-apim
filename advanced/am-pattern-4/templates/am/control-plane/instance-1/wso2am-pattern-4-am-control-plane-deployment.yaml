@@ -66,16 +66,13 @@ spec:
             failureThreshold: {{ .Values.wso2.deployment.am.cp.startupProbe.failureThreshold }}
           livenessProbe:
             httpGet:
-              path: /carbon/admin/login.jsp
-              port: 9443
-              scheme: HTTPS
+              path: /services/Version
+              port: 9763
             periodSeconds: {{ .Values.wso2.deployment.am.cp.livenessProbe.periodSeconds }}
           readinessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - nc -z localhost 9443
+            httpGet:
+              path: /services/Version
+              port: 9763
             initialDelaySeconds: {{ .Values.wso2.deployment.am.cp.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.am.cp.readinessProbe.periodSeconds }}
           lifecycle:
