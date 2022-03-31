@@ -46,7 +46,7 @@ wso2:
       apacheSolrIndexing:
         # Indicates if persistence of the runtime artifacts for Apache Solr-based indexing is enabled
         # By default, this is disabled
-        enabled: false
+        enabled: true
         # Define capacities for persistent runtime artifact directories
         capacity:
           # For persisting the H2 based local Carbon database file
@@ -59,7 +59,7 @@ wso2:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
       # dockerRegistry: ""
       imageName: "wso2am"
-      imageTag: "4.0.0"
+      imageTag: "4.1.0"
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
