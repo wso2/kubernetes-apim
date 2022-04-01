@@ -97,7 +97,8 @@ data:
     [[apim.throttling.url_group]]
     traffic_manager_urls = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-1-service:9611"]
     traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-1-service:9711"]
-
+    type = "loadbalance"
+    
     [[apim.throttling.url_group]]
     traffic_manager_urls = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-2-service:9611"]
     traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-2-service:9711"]

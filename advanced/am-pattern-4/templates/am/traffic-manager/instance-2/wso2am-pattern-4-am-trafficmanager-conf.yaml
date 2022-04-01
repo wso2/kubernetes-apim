@@ -92,7 +92,7 @@ data:
     #enable_policy_deploy = true
     #enable_blacklist_condition = true
     #enable_persistence = true
-    #throttle_decision_endpoints = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-1-service:5672","tcp://localhost:5672"]
+    #throttle_decision_endpoints = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-1-service:5672","tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-2-service:5672"]
     throttle_decision_endpoints = ["tcp://localhost:5672"]
 
     [[apim.throttling.url_group]]
