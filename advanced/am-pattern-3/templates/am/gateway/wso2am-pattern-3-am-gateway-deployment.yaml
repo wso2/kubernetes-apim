@@ -62,18 +62,14 @@ spec:
           periodSeconds: {{ .Values.wso2.deployment.am.startupProbe.periodSeconds }}
           failureThreshold: {{ .Values.wso2.deployment.am.startupProbe.failureThreshold }}
         livenessProbe:
-          exec:
-            command:
-              - /bin/sh
-              - -c
-              - nc -z localhost 8243
+          httpGet:
+              path: /services/Version
+              port: 9763
           periodSeconds: {{ .Values.wso2.deployment.am.livenessProbe.periodSeconds }}
         readinessProbe:
-          exec:
-            command:
-              - /bin/sh
-              - -c
-              - nc -z localhost 8243
+          httpGet:
+              path: /services/Version
+              port: 9763
           initialDelaySeconds: {{ .Values.wso2.deployment.am.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.wso2.deployment.am.readinessProbe.periodSeconds }}
         lifecycle:
