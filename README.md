@@ -17,6 +17,19 @@
 * [Deployment Pattern 3](advanced/am-pattern-3/README.md)
 * [Deployment Pattern 4](advanced/am-pattern-4/README.md)
 
+### Update the JWKS Endpoint
+
+The JWKS endpoint of the API Manager has the external facing hostname by default. This is not routable. To resolve this, you can alter the JWKS endpoint in the API Manager to use the API Manager's internal service name in Kubernetes.
+
+1. Log into Admin portal - https://am.wso2.com/admin/
+2. Navigate to Key Managers section and select the Resident Key Manager.
+3. Change the JWKS URL in the Certificates section to https://<cp-lb-service-name>:9443/oauth2/jwks.
+
+
+### Update certificate domain names
+
+To verify connecting peers API Manager use wso2carbon certificate. By default this only allows peers from localhost domain to connect. To allow connections from different domains you need to create a certificate with the allowed domain name list and add it to API Manager keystores. This can be done by mounting a volume with the modified keystores. You can find the APIM Manager keystores inside the *~/wso2am-4.1.0/repository/resources/security/* directory.
+
 ## Reporting issues
 
 We encourage you to report any issues and documentation faults regarding Kubernetes and Helm resources
