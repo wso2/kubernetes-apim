@@ -20,11 +20,11 @@ metadata:
   {{ if .Values.wso2.deployment.am.config }}
 data:
   {{- range $index, $content := .Values.wso2.deployment.am.config }}
-    {{ $index }}: |-
-    {{ tpl $content $ | indent 4 }}
-    {{- end }}
+  {{ $index }}: |-
+{{ tpl $content $ | indent 4 }}
+  {{- end }}
 
-    {{ else }}
+  {{ else }}
 data:
   deployment.toml: |-
     [server]
@@ -63,6 +63,9 @@ data:
     alias =  "wso2carbon"
     key_password =  "wso2carbon"
 
+    #[keystore.listener_profile]		
+    #bind_address = "0.0.0.0"
+
     #[keystore.primary]
     #file_name =  "wso2carbon.jks"
     #type =  "JKS"
@@ -80,6 +83,7 @@ data:
     [[apim.gateway.environment]]
     name = "Default"
     type = "hybrid"
+    provider = "wso2"
     display_in_api_console = true
     description = "This is a hybrid gateway that handles both production and sandbox token traffic."
     show_as_token_endpoint_url = true
@@ -215,14 +219,14 @@ data:
     #port = 10005
 
     [[apim.throttling.url_group]]
-    traffic_manager_urls = ["tcp://localhost:9611"]
-    traffic_manager_auth_urls = ["ssl://localhost:9711"]
+    traffic_manager_urls = ["tcp://{{ template "am-pattern-1.resource.prefix" . }}-am-2-service:9611"]
+    traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-1.resource.prefix" . }}-am-2-service:9711"]
     type = "loadbalance"
 
     [[apim.throttling.url_group]]
     traffic_manager_urls = ["tcp://{{ template "am-pattern-1.resource.prefix" . }}-am-1-service:9611"]
     traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-1.resource.prefix" . }}-am-1-service:9711"]
-    type = "failover"
+    type = "loadbalance"
 
     #[apim.workflow]
     #enable = false
@@ -288,6 +292,11 @@ data:
 
     [transport.https.properties]
     proxyPort = 443
+
+    [oauth.grant_type.token_exchange]		
+    enable = true		
+    allow_refresh_tokens = true		
+    iat_validity_period = "1h"	
 
     [transport.passthru_https.sender.parameters]
     HostnameVerifier = "AllowAll"

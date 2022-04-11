@@ -21,7 +21,7 @@ metadata:
 data:
   {{- range $index, $content := .Values.wso2.deployment.am.trafficmanager.config }}
   {{ $index }}: |-
-  {{ tpl $content $ | indent 4 }}
+{{ tpl $content $ | indent 4 }}
   {{- end }}
 
   {{ else }}
@@ -79,11 +79,6 @@ data:
     service_url = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
     username = "$ref{super_admin.username}"
     password = "$ref{super_admin.password}"
-    #pool.init_idle_capacity = 50
-    #pool.max_idle = 100
-    #key_validation_handler_type = "default"
-    #key_validation_handler_type = "custom"
-    #key_validation_handler_impl = "org.wso2.carbon.apimgt.keymgt.handlers.DefaultKeyValidationHandler"
 
     [apim.oauth_config]
     revoke_endpoint = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/revoke"

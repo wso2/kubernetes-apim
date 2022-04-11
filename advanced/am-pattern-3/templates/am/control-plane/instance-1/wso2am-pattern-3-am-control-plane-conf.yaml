@@ -21,7 +21,7 @@ metadata:
 data:
   {{- range $index, $content := .Values.wso2.deployment.am.cp.config }}
   {{ $index }}: |-
-  {{ tpl $content $ | indent 4 }}
+{{ tpl $content $ | indent 4 }}
   {{- end }}
 
   {{ else }}
@@ -80,6 +80,7 @@ data:
     [[apim.gateway.environment]]
     name = "Default"
     type = "hybrid"
+    provider = "wso2"
     display_in_api_console = true
     description = "This is a hybrid gateway that handles both production and sandbox token traffic."
     show_as_token_endpoint_url = true

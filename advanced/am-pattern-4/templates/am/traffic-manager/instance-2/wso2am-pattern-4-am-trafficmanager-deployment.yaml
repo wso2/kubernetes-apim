@@ -42,19 +42,15 @@ spec:
 {{- include "image" (dict "Values" .Values "deployment" .Values.wso2.deployment.am) | indent 10 }}
           imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
           livenessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - nc -z localhost 9443
+            httpGet:
+              path: /services/Version
+              port: 9763
             initialDelaySeconds: {{ .Values.wso2.deployment.am.trafficmanager.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.am.trafficmanager.livenessProbe.periodSeconds }}
           readinessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - nc -z localhost 9443
+            httpGet:
+              path: /services/Version
+              port: 9763
             initialDelaySeconds: {{ .Values.wso2.deployment.am.trafficmanager.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.am.trafficmanager.readinessProbe.periodSeconds }}
           lifecycle:
