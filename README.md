@@ -18,7 +18,7 @@
 
 ## Changelog
 
-**Change log** from previous `v3.2.0.1` release: [View Here](CHANGELOG.md)
+**Change log** from previous `v3.2.0.4` release: [View Here](CHANGELOG.md)
 
 ## Reporting issues
 
