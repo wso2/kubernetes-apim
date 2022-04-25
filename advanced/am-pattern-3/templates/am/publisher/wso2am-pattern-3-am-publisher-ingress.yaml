@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-ingress
@@ -23,13 +23,16 @@ metadata:
 {{- end }}
 spec:
   tls:
-    - hosts:
-        - {{ .Values.wso2.deployment.am.publisher.ingress.hostname }}
+  - hosts:
+      - {{ .Values.wso2.deployment.am.publisher.ingress.hostname }}
   rules:
-    - host: {{ .Values.wso2.deployment.am.publisher.ingress.hostname }}
-      http:
-        paths:
-        - path: /
-          backend:
-            serviceName: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-service
-            servicePort: 9443
+  - host: {{ .Values.wso2.deployment.am.publisher.ingress.hostname }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "am-pattern-3.resource.prefix" . }}-am-publisher-service
+            port:
+              number: 9443
