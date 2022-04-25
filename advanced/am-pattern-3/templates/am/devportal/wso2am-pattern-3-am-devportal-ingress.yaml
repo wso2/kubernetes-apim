@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal-ingress
@@ -26,10 +26,13 @@ spec:
     - hosts:
         - {{ .Values.wso2.deployment.am.devportal.ingress.hostname }}
   rules:
-    - host: {{ .Values.wso2.deployment.am.devportal.ingress.hostname }}
-      http:
-        paths:
-        - path: /
-          backend:
-            serviceName: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal-service
-            servicePort: 9443
+  - host: {{ .Values.wso2.deployment.am.devportal.ingress.hostname }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "am-pattern-3.resource.prefix" . }}-am-devportal-service
+            port:
+              number: 9443
