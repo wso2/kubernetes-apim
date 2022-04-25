@@ -33,7 +33,7 @@ For advanced details on the deployment pattern, please refer to the official
   and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) in order to run the steps provided in the
   following quick start guide.<br><br>
 
-* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup) ( v1.22+ ).<br><br>
+* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup) ( v1.19+ ).<br><br>
 
 * Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/).<br><br>
 
