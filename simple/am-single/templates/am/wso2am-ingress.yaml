@@ -36,3 +36,4 @@ spec:
             name: {{ template "am-single-node.resource.prefix" . }}-am-service
             port: 
               number: 9443
+              
