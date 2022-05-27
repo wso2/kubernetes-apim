@@ -63,6 +63,9 @@ wso2:
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
+      busyboxImageName: "busybox"
+      busyboxImageTag: "1.32"
+
       resources:
         # These are the resource recommendations for running WSO2 API Management product profiles with profile optimization
         # Resource configurations defined here are applicable for all API Manager product profiles of this deployment
@@ -218,6 +221,10 @@ wso2:
       # dockerRegistry: ""
       imageName: "wso2mi"
       imageTag: "4.1.0"
+
+      busyboxImageName: "busybox"
+      busyboxImageTag: "1.32"
+
       # Number of deployment replicas
       replicas: 2
       strategy:

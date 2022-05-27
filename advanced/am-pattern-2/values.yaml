@@ -26,6 +26,10 @@ wso2:
       # dockerRegistry: ""
       imageName: "wso2mi"
       imageTag: "4.1.0"
+
+      busyboxImageName: "busybox"
+      busyboxImageTag: "1.32"
+
       # Number of deployment replicas
       replicas: 2
       strategy:
@@ -132,6 +136,9 @@ am-pattern-1:
         # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
         imagePullPolicy: Always
 
+        busyboxImageName: "busybox"
+        busyboxImageTag: "1.32"
+
         # Indicates whether the container is running
         livenessProbe:
           # Number of seconds after the container has started before liveness probes are initiated
@@ -206,6 +213,10 @@ am-pattern-1:
         # dockerRegistry: ""
         imageName: "wso2mi"
         imageTag: "4.1.0"
+
+        busyboxImageName: "busybox"
+        busyboxImageTag: "1.32"
+
         # Number of deployment replicas
         replicas: 2
         strategy:

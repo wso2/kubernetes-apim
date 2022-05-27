@@ -36,10 +36,10 @@ spec:
     spec:
       initContainers:
         - name: init-tm1
-          image: busybox:1.32
+          image: {{ .Values.wso2.deployment.am.busyboxImageName }}:{{ .Values.wso2.deployment.am.busyboxImageTag }}
           command: ['sh', '-c', 'echo -e "Checking for the availability of Traffic Manager Instance One deployment"; while ! nc -z {{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-1-service 9611; do sleep 1; printf "-"; done; echo -e "  >>  Traffic Manager Instance One has started";']
         - name: init-tm2
-          image: busybox:1.32
+          image: {{ .Values.wso2.deployment.am.busyboxImageName }}:{{ .Values.wso2.deployment.am.busyboxImageTag }}
           command: [ 'sh', '-c', 'echo -e "Checking for the availability of Traffic Manager Instance Two deployment"; while ! nc -z {{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-2-service 9611; do sleep 1; printf "-"; done; echo -e "  >> Traffic Manager Instance Two has started";' ]
       containers:
       - name: wso2am-gateway
