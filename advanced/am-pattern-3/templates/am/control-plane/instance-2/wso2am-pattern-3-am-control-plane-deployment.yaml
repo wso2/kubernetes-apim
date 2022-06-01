@@ -122,7 +122,7 @@ spec:
             {{ end }}
             {{ if .Values.wso2.deployment.dependencies.mysql }}
             - name: mysql-connector-jar
-              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/components/dropins
+              mountPath: /home/wso2carbon/wso2-artifact-volume/lib
             {{ end }}
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.am.imagePullSecrets }}
