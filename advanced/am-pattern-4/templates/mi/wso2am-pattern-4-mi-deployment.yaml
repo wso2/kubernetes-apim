@@ -37,10 +37,10 @@ spec:
     spec:
       initContainers:
         - name: init-cp
-          image: busybox:1.32
+          image: {{ .Values.wso2.deployment.mi.busyboxImageName }}:{{ .Values.wso2.deployment.mi.busyboxImageTag }}
           command: ['sh', '-c', 'echo -e "Checking for the availability of Control Plane deployment"; while ! nc -z {{ template "am-pattern-4.resource.prefix" . }}-am-cp-service 9443; do sleep 1; printf "-"; done; echo -e "  >> Control Plane has started";']
         - name: init-gw
-          image: busybox:1.32
+          image: {{ .Values.wso2.deployment.mi.busyboxImageName }}:{{ .Values.wso2.deployment.mi.busyboxImageTag }}
           command: ['sh', '-c', 'echo -e "Checking for the availability of Gateway deployment"; while ! nc -z {{ template "am-pattern-4.resource.prefix" . }}-am-gateway-service 8243; do sleep 1; printf "-"; done; echo -e "  >> Gateway has started";']
       containers:
         - name: wso2micro-integrator

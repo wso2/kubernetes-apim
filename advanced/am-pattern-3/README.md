@@ -249,6 +249,8 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.am.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | `wso2am`                    |
 | `wso2.deployment.am.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.1.0                       |
 | `wso2.deployment.am.imagePullPolicy`                                        | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
+| `wso2.deployment.am.busyboxImageName`                                       | Name of the Docker image to be used to run the init containers                            | `busybox`                   |
+| `wso2.deployment.am.busyboxImageTag`                                        | Tag of the init container image used                                                      | 1.32                        |
 | `wso2.deployment.am.resources.requests.memory`                              | The minimum amount of memory that should be allocated for running API Manager product profiles with profile optimization  | 1Gi                         |
 | `wso2.deployment.am.resources.requests.cpu`                                 | The minimum amount of CPU that should be allocated for running API Manager product profiles with profile optimization     | 1000m                       |
 | `wso2.deployment.am.resources.limits.memory`                                | The maximum amount of memory that should be allocated for running API Manager product profiles with profile optimization  | 2Gi                         |
@@ -288,6 +290,8 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.mi.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | `wso2mi`                    |
 | `wso2.deployment.mi.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.1.0                       |
 | `wso2.deployment.mi.imagePullPolicy`                                        | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
+| `wso2.deployment.mi.busyboxImageName`                                       | Name of the Docker image to be used to run the init containers                            | `busybox`                   |
+| `wso2.deployment.mi.busyboxImageTag`                                        | Tag of the init container image used                                                      | 1.32                        |
 | `wso2.deployment.mi.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for Micro Integrator node                           | 35                          |
 | `wso2.deployment.mi.livenessProbe.periodSeconds`                            | Period of the live-ness probe for Micro Integrator node                                   | 10                          |
 | `wso2.deployment.mi.readinessProbe.initialDelaySeconds`                     | Initial delay for the readiness probe for Micro Integrator node                           | 35                          |
