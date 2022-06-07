@@ -79,6 +79,9 @@ wso2:
 kubernetes:
   # Name of Kubernetes service account
   serviceAccount: &service_account "wso2am-pattern-2-svc-account"
+  security:
+    runtimeUser: 802
+    runtimeGroup: 802
 
 am-pattern-1:
   wso2:
