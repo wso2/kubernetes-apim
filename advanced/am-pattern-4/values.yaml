@@ -194,6 +194,20 @@ wso2:
 
       # API Manager's Control Plane specific configurations
       cp:
+        db: 
+          hostname: wso2am-mysql-db-service
+          port: 3306
+          type: mysql
+          driver: com.mysql.cj.jdbc.Driver
+          driver_url: https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.29/mysql-connector-java-8.0.29.jar
+          apim:
+            username: wso2carbon
+            password: wso2carbon
+            url: jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false
+          apim_shared: 
+            username: wso2carbon
+            password: wso2carbon
+            url: jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_SHARED_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false
         # Kubernetes Probes
         # Startup probe executed prior to Liveness Probe taking over
         startupProbe:
