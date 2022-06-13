@@ -36,7 +36,7 @@ spec:
       initContainers:
         - name: init-db
           image: busybox:1.32
-          command: ['sh', '-c', 'echo -e "Checking for the availability of DB Server deployment"; while ! nc -z "{{ .Values.wso2.deployment.am.db.hostname }}" {{ .Values.wso2.deployment.am.db.port }}; do sleep 1; printf "-"; done; echo -e "  >> DB Server has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of DB Server deployment"; while ! nc -z "{{ .Values.wso2.deployment.am.cp.db.hostname }}" {{ .Values.wso2.deployment.am.cp.db.port }}; do sleep 1; printf "-"; done; echo -e "  >> DB Server has started";']
         - name: init-db-connector-download
           image: busybox:1.32
           command:
@@ -45,7 +45,7 @@ spec:
             - |
               set -e
               connector_version=8.0.17
-              wget "{{ .Values.wso2.deployment.am.db.driver_url }}" -P /db-connector-jar/ 
+              wget "{{ .Values.wso2.deployment.am.cp.db.driver_url }}" -P /db-connector-jar/ 
           volumeMounts:
             - name: db-connector-jar
               mountPath: /db-connector-jar
