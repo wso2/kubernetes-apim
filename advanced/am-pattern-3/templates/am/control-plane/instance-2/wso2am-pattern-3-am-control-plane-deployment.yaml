@@ -32,6 +32,7 @@ spec:
       labels:
         deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-cp
         node: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-2
+        product: apim
     spec:
       initContainers:
         - name: init-db
