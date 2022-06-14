@@ -32,6 +32,7 @@ spec:
       labels:
         deployment: {{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager
         node: {{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-2
+        product: apim
     spec:
       initContainers:
         - name: init-cp
