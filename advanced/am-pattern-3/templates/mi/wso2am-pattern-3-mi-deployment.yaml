@@ -14,7 +14,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "am-pattern-3.resource.prefix" . }}-mi-1-deployment
+  name: {{ template "am-pattern-3.resource.prefix" . }}-mi-deployment
   namespace: {{ .Release.Namespace }}
   labels:
 {{ include "am-pattern-3.labels" . | indent 4 }}
@@ -28,12 +28,12 @@ spec:
   selector:
     matchLabels:
       deployment: {{ template "am-pattern-3.resource.prefix" . }}-mi
-      node: {{ template "am-pattern-3.resource.prefix" . }}-mi-1
+      node: {{ template "am-pattern-3.resource.prefix" . }}-mi
   template:
     metadata:
       labels:
         deployment: {{ template "am-pattern-3.resource.prefix" . }}-mi
-        node: {{ template "am-pattern-3.resource.prefix" . }}-mi-1
+        node: {{ template "am-pattern-3.resource.prefix" . }}-mi
     spec:
       initContainers:
         - name: init-cp
@@ -105,5 +105,5 @@ spec:
         - name: {{ .Values.wso2.deployment.mi.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: {{ template "am-pattern-3.resource.prefix" . }}-mi-1-wso2-private-registry-creds
+        - name: {{ template "am-pattern-3.resource.prefix" . }}-mi-wso2-private-registry-creds
       {{ end }}

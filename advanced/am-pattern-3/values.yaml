@@ -117,6 +117,9 @@ wso2:
           annotations:
             kubernetes.io/ingress.class: "nginx"
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+            traefik.ingress.kubernetes.io/router.tls: "true"
+            # traefik controller 
+            # traefik.ingress.kubernetes.io/router.tls: "true"
 
       # API Manager's Gateway specific configurations
       gateway:
@@ -131,7 +134,9 @@ wso2:
           annotations:
             kubernetes.io/ingress.class: "nginx"
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-
+            traefik.ingress.kubernetes.io/router.tls: "true"
+            # traefik controller 
+            # traefik.ingress.kubernetes.io/router.tls: "true"
         # Number of deployment replicas
         replicas: 2
 
@@ -185,6 +190,9 @@ wso2:
             nginx.ingress.kubernetes.io/affinity: "cookie"
             nginx.ingress.kubernetes.io/session-cookie-name: "route"
             nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+            traefik.ingress.kubernetes.io/router.tls: "true"
+            # traefik controller 
+            # traefik.ingress.kubernetes.io/router.tls: "true"
         # Number of deployment replicas
         replicas: 2
 
@@ -276,6 +284,9 @@ wso2:
           annotations:
             kubernetes.io/ingress.class: "nginx"
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+            traefik.ingress.kubernetes.io/router.tls: "true"
+            # traefik controller 
+            # traefik.ingress.kubernetes.io/router.tls: "true"
 
 kubernetes:
   # Name of Kubernetes service account

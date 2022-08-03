@@ -15,8 +15,11 @@
 apiVersion: v1
 kind: Service
 metadata:
+    annotations:
+      traefik.ingress.kubernetes.io/service.serversscheme: https
   name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-service
   namespace : {{ .Release.Namespace }}
+  traefik.ingress.kubernetes.io/service.serversscheme: https
 spec:
   # label keys and values that must match in order to receive traffic for this service
   selector:

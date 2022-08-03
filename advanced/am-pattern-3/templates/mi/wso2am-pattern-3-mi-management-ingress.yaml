@@ -15,7 +15,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ template "am-pattern-3.resource.prefix" . }}-mi-1-management-ingress
+  name: {{ template "am-pattern-3.resource.prefix" . }}-mi-management-ingress
   namespace : {{ .Release.Namespace }}
 {{- if .Values.wso2.deployment.mi.ingress.management.annotations }}
   annotations:
@@ -36,6 +36,6 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: {{ template "am-pattern-3.resource.prefix" . }}-mi-1-service
+              name: {{ template "am-pattern-3.resource.prefix" . }}-mi-service
               port:
                 number: 9164

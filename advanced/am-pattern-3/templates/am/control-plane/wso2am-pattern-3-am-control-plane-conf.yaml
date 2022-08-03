@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-1-conf
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-conf
   namespace : {{ .Release.Namespace }}
   {{ if .Values.wso2.deployment.am.cp.config }}
 data:

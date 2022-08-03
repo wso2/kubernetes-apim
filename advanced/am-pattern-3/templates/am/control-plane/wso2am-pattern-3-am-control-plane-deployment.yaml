@@ -15,23 +15,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-2-deployment
+  name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-deployment
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.wso2.deployment.am.cp.replicas }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
       deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-cp
-      node: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-2
+      node: {{ template "am-pattern-3.resource.prefix" . }}-am-cp
   template:
     metadata:
       annotations:
-        checksum.am.conf: {{ include (print $.Template.BasePath "/am/control-plane/instance-1/wso2am-pattern-3-am-control-plane-conf.yaml") . | sha256sum }}
+        checksum.am.conf: {{ include (print $.Template.BasePath "/am/control-plane/wso2am-pattern-3-am-control-plane-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-cp
-        node: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-2
+        node: {{ template "am-pattern-3.resource.prefix" . }}-am-cp
     spec:
       initContainers:
         {{ if .Values.wso2.deployment.dependencies.mysql }}
@@ -135,14 +135,14 @@ spec:
       volumes:
         - name: wso2am-conf
           configMap:
-            name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-2-conf
+            name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-conf
         {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
         - name: wso2am-local-carbon-database-storage
           persistentVolumeClaim:
-            claimName: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-2-local-carbon-database-volume-claim
+            claimName: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-local-carbon-database-volume-claim
         - name: wso2am-solr-indexed-data-storage
           persistentVolumeClaim:
-            claimName: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-2-solr-indexed-data-volume-claim
+            claimName: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-solr-indexed-data-volume-claim
         - name: wso2am-conf-entrypoint
           configMap:
             name: {{ template "am-pattern-3.resource.prefix" . }}-am-cp-conf-entrypoint
