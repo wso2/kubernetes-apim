@@ -46,7 +46,7 @@ spec:
             - |
               set -e
               connector_version=8.0.17
-             wget "{{ .Values.wso2.deployment.am.cp.db.driver_url }}" -P /db-connector-jar/ 
+              wget "{{ .Values.wso2.deployment.am.cp.db.driver_url }}" -P /db-connector-jar/ 
           volumeMounts:
             - name: db-connector-jar
               mountPath: /db-connector-jar
