@@ -33,6 +33,7 @@ spec:
         checksum.am.gw.conf: {{ include (print $.Template.BasePath "/am/gateway/wso2am-pattern-3-am-gateway-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-gateway
+        product: apim
     spec:
       initContainers:
         - name: init-cp
