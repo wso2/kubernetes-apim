@@ -34,6 +34,7 @@ spec:
       labels:
         deployment: {{ template "am-pattern-1.resource.prefix" . }}-mi
         node: {{ template "am-pattern-1.resource.prefix" . }}-mi-1
+        product: apim
     spec:
       initContainers:
         - name: init-am
