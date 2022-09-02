@@ -30,7 +30,7 @@ wso2:
   deployment:
     dependencies:
       # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
-      mysql: true
+      cluster_mysql: true
       # Enable NFS dynamic provisioner for Kubernetes
       nfsServerProvisioner: true
 
@@ -130,7 +130,21 @@ wso2:
           # Annotations for the API Manager Gateway service Ingress
           annotations:
             kubernetes.io/ingress.class: "nginx"
-            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"          
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      db:
+        hostname: wso2am-mysql-db-service
+        port: 3306
+        type: mysql
+        driver: com.mysql.cj.jdbc.Driver
+        driver_url: https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.29/mysql-connector-java-8.0.29.jar
+        apim:
+          username: wso2carbon
+          password: wso2carbon
+          url: jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false
+        apim_shared:
+          username: wso2carbon
+          password: wso2carbon
+          url: jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_SHARED_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false
 
   
 kubernetes:
