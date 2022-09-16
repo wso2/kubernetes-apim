@@ -299,6 +299,29 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 |---------------------------------------------------------------|-------------------------------------------------------------------------------------------|---------------------------------|
 | `kubernetes.serviceAccount`                                   | Name of the Kubernetes Service Account to which the Pods are to be bound                  | `wso2am-pattern-1-svc-account`  |
 
+  
+###### Using RDBMS instead of the default MySQL pod
+  
+Follow the below instructions to use a custom RDBMS instead of the default am-mysql deployment. 
+
+1. First deploy the DB with the correct set of users and tables as required for an APIM deployment. You can find the relevant SQL scripts with the APIM product distribution. Please follow https://apim.docs.wso2.com/en/latest/install-and-setup/setup/setting-up-databases/overview for more information on how to set-up the databases.
+
+2. Modify the values.yaml file with the DB configuration parameters used above. Refer the following table
+
+| Parameter                                                     | Description                                                                               | Default Value                   |
+|---------------------------------------------------------------|-------------------------------------------------------------------------------------------|---------------------------------|
+| `wso2.deployment.am.db.hostname`                                   | Database hostname                  | `wso2am-mysql-db-service`  |
+| `wso2.deployment.am.db.port`                                   | Database port                  | `3306`  |
+| `wso2.deployment.am.db.type`                                   | Database vendor                  | `mysql`  |
+| `wso2.deployment.am.db.driver`                                   | Database driver                  | `com.mysql.cj.jdbc.Driver`  |
+| `wso2.deployment.am.db.driver_url`                                   | URL path to the jar file of the database driver                  | `https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.29/mysql-connector-java-8.0.29.jar`  |
+| `wso2.deployment.am.db.apim.username`                                   | Username to connect to the AM database                  | `wso2carbon`  |
+| `wso2.deployment.am.db.apim.password`                                   | Password to connect to the AM database.                  | `wso2carbon`  |
+| `wso2.deployment.am.db.apim.url`                                   | JDBC connection URL for the AM database                  | `jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DB?          useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false`  |
+| `wso2.deployment.am.db.apim_shared.username`                                   | Username to connect to the AM Shared database                  | `wso2carbon`  |
+| `wso2.deployment.am.db.apim_shared.password`                                   | Password to connect to the AM Shared database                  | `wso2carbon`  |
+| `wso2.deployment.am.db.apim_shared.url`                                   | JDBC connection URL for the AM Shared database                  | `jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_SHARED_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false`  |
+  
 ## Runtime Artifact Persistence and Sharing
 
 * It is **mandatory** to set an appropriate Kubernetes StorageClass in this deployment, for persistence and sharing.
@@ -340,3 +363,5 @@ If you want to setup API Manager only without Micro Integrator, you have to inst
     ```helm
     helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-1 --version 4.1.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
     ```
+
+  
