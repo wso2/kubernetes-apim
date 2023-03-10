@@ -13,8 +13,8 @@
 # limitations under the License.
 
 apiVersion: v1
-appVersion: "4.1.0"
+appVersion: "4.2.0"
 description: A Helm chart for the deployment of WSO2 API Manager Pattern 1 (HA All-In-One Deployment)
 name: am-pattern-1
-version: 4.1.0-1
+version: 4.2.0-1
 icon: https://wso2.cachefly.net/wso2/sites/all/images/wso2logo.svg
