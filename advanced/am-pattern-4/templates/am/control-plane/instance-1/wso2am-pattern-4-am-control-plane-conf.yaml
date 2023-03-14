@@ -34,13 +34,13 @@ data:
     #discard_empty_caches = false
     server_role = "control-plane"
 
+    [user_store]
+    type = "database_unique_id"
+
     [super_admin]
     username = "admin"
     password = "admin"
     create_admin_account = true
-
-    [user_store]
-    type = "database_unique_id"
 
     [database.apim_db]
     type = "{{ .Values.wso2.deployment.am.cp.db.type }}"
@@ -63,6 +63,11 @@ data:
     alias =  "wso2carbon"
     key_password =  "wso2carbon"
 
+    [truststore]
+    file_name = "client-truststore.jks"
+    type = "JKS"
+    password = "wso2carbon"
+
     #[keystore.primary]
     #file_name =  "wso2carbon.jks"
     #type =  "JKS"
@@ -84,11 +89,11 @@ data:
     display_in_api_console = true
     description = "This is a hybrid gateway that handles both production and sandbox token traffic."
     show_as_token_endpoint_url = true
-    service_url = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-gateway-service:${mgt.transport.https.port}${carbon.context}services/"
+    service_url = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-gateway-service:${mgt.transport.https.port}/services/"
     username= "${admin.username}"
     password= "${admin.password}"
-    ws_endpoint = "ws://localhost:9099"
-    wss_endpoint = "wss://localhost:8099"
+    ws_endpoint = "ws://{{ .Values.wso2.deployment.am.websocket.ingress.hostname }}"
+    wss_endpoint = "wss://{{ .Values.wso2.deployment.am.websocket.ingress.hostname }}"
     http_endpoint = "http://{{ .Values.wso2.deployment.am.gateway.ingress.hostname }}"
     https_endpoint = "https://{{ .Values.wso2.deployment.am.gateway.ingress.hostname }}"
     websub_event_receiver_http_endpoint = "http://{{ .Values.wso2.deployment.am.websub.ingress.hostname }}"
@@ -122,23 +127,6 @@ data:
     #[apim.cache.tags]
     #expiry_time = "2m"
 
-    [apim.key_manager]
-    service_url = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
-    username = "$ref{super_admin.username}"
-    password = "$ref{super_admin.password}"
-    #pool.init_idle_capacity = 50
-    #pool.max_idle = 100
-    #key_validation_handler_type = "default"
-    #key_validation_handler_type = "custom"
-    #key_validation_handler_impl = "org.wso2.carbon.apimgt.keymgt.handlers.DefaultKeyValidationHandler"
-
-    #[apim.oauth_config]
-    #enable_outbound_auth_header = false
-    #auth_header = "Authorization"
-    #revoke_endpoint = "https://localhost:${https.nio.port}/revoke"
-    #enable_token_encryption = false
-    #enable_token_hashing = false
-
     [apim.devportal]
     url = "https://{{ .Values.wso2.deployment.am.cp.ingress.hostname }}/devportal"
     #enable_application_sharing = false
@@ -154,40 +142,48 @@ data:
     #enable_cross_tenant_subscriptions = true
     #default_reserved_username = "apim_reserved_user"
 
-    [apim.cors]
-    allow_origins = "*"
-    allow_methods = ["GET","PUT","POST","DELETE","PATCH","OPTIONS"]
-    allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction","apikey","Internal-Key"]
-    allow_credentials = false
-
-    [apim.throttling]
-    username= "$ref{super_admin.username}"
-    password= "$ref{super_admin.password}"
-    enable_data_publishing = true
-    service_url = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-service:${mgt.transport.https.port}/services/"
-    event_duplicate_url = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-2-service:5672"]
-
-    [[apim.throttling.url_group]]
-    traffic_manager_urls = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-1-service:9611"]
-    traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-1-service:9711"]
-    type = "loadbalance"
-
-    [[apim.throttling.url_group]]
-    traffic_manager_urls = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-2-service:9611"]
-    traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-2-service:9711"]
-    type = "loadbalance"
+    [transport.https.properties]
+    proxyPort = 443
 
     [apim.event_hub]
     enable = true
     username= "$ref{super_admin.username}"
     password= "$ref{super_admin.password}"
-    service_url = "https://localhost:${mgt.transport.https.port}/services/"
+    service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
     event_listening_endpoints = ["tcp://localhost:5672"]
+    event_duplicate_url = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-2-service:5672"]
 
-    #[[apim.throttling.url_group]]
-    #traffic_manager_urls = ["tcp://localhost:9611","tcp://localhost:9611"]
-    #traffic_manager_auth_urls = ["ssl://localhost:9711","ssl://localhost:9711"]
-    #type = "failover"
+    [[apim.event_hub.publish.url_group]]
+    urls = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-1-service:9611"]
+    auth_urls = ["ssl://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-1-service:9711"]
+
+    [[apim.event_hub.publish.url_group]]
+    urls = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-2-service:9611"]
+    auth_urls = ["ssl://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-2-service:9711"]
+
+    [apim.key_manager]
+    service_url = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
+    username = "$ref{super_admin.username}"
+    password = "$ref{super_admin.password}"
+    type = "default"
+    #pool.init_idle_capacity = 50
+    #pool.max_idle = 100
+    #key_validation_handler_type = "default"
+    #key_validation_handler_type = "custom"
+    #key_validation_handler_impl = "org.wso2.carbon.apimgt.keymgt.handlers.DefaultKeyValidationHandler"
+
+    #[apim.oauth_config]
+    #enable_outbound_auth_header = false
+    #auth_header = "Authorization"
+    #revoke_endpoint = "https://localhost:${https.nio.port}/revoke"
+    #enable_token_encryption = false
+    #enable_token_hashing = false
+
+    [apim.cors]
+    allow_origins = "*"
+    allow_methods = ["GET","PUT","POST","DELETE","PATCH","OPTIONS"]
+    allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction","apikey","Internal-Key"]
+    allow_credentials = false
 
     #[apim.workflow]
     #enable = false
@@ -247,21 +243,10 @@ data:
     order = 1
 
     [event_listener.properties]
-    notification_endpoint = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/internal/data/v1/notify"
+    notification_endpoint = "https://localhost:${mgt.transport.https.port}/internal/data/v1/notify"
     username = "${admin.username}"
     password = "${admin.password}"
     'header.X-WSO2-KEY-MANAGER' = "default"
-
-    [transport.https.properties]
-    proxyPort = 443
-
-    [[apim.event_hub.publish.url_group]]
-    urls = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-1-service:9611"]
-    auth_urls = ["ssl://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-1-service:9711"]
-
-    [[apim.event_hub.publish.url_group]]
-    urls = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-2-service:9611"]
-    auth_urls = ["ssl://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-2-service:9711"]
 
     {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
     [database.local]
