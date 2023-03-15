@@ -75,19 +75,6 @@ data:
     [apim.sync_runtime_artifacts.gateway]
     gateway_labels =["Default"]
 
-    # Event Listener configurations
-    [[event_listener]]
-    id = "token_revocation"
-    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
-    name = "org.wso2.is.notification.ApimOauthEventInterceptor"
-    order = 1
-
-    [event_listener.properties]
-    notification_endpoint = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/internal/data/v1/notify"
-    username = "${admin.username}"
-    password = "${admin.password}"
-    'header.X-WSO2-KEY-MANAGER' = "default"
-
     [apim.event_hub]
     enable = true
     username = "$ref{super_admin.username}"
