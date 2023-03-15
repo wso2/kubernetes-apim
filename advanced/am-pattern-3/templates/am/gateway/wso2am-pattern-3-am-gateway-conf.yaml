@@ -58,12 +58,12 @@ data:
     type = "JKS"
     password = "wso2carbon"
 
-    [transport.http]	
-    properties.port = 9763	
-    properties.proxyPort = 80	
+    [transport.http]
+    properties.port = 9763
+    properties.proxyPort = 80
 
-    [transport.https]	
-    properties.port = 9443	
+    [transport.https]
+    properties.port = 9443
     properties.proxyPort = 443
 
     # key manager implementation
