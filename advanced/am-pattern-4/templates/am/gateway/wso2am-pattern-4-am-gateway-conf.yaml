@@ -58,24 +58,22 @@ data:
     type = "JKS"
     password = "wso2carbon"
 
+    [transport.http]
+    properties.port = 9763
+    properties.proxyPort = 80
+
+    [transport.https.properties]
+    port = 9443
+    proxyPort = 443
+
     # key manager implementation
     [apim.key_manager]
     service_url = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
     username= "$ref{super_admin.username}"
     password= "$ref{super_admin.password}"
 
-    # Event Listener configurations
-    [[event_listener]]
-    id = "token_revocation"
-    type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
-    name = "org.wso2.is.notification.ApimOauthEventInterceptor"
-    order = 1
-
-    [event_listener.properties]
-    notification_endpoint = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/internal/data/v1/notify"
-    username = "${admin.username}"
-    password = "${admin.password}"
-    'header.X-WSO2-KEY-MANAGER' = "default"
+    [apim.sync_runtime_artifacts.gateway]
+    gateway_labels =["Default"]
 
     [apim.event_hub]
     enable = true
@@ -83,28 +81,6 @@ data:
     password = "$ref{super_admin.password}"
     service_url = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
     event_listening_endpoints = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-1-service:5672","tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-2-service:5672"]
-
-    [[apim.event_hub.publish.url_group]]
-    urls = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-1-service:9611"]
-    auth_urls = ["ssl://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-1-service:9711"]
-
-    [[apim.event_hub.publish.url_group]]
-    urls = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-2-service:9611"]
-    auth_urls = ["ssl://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-2-service:9711"]
-
-    # JWT Generation
-    [apim.jwt]
-    enable = true
-    encoding = "base64" # base64,base64url
-    #generator_impl = "org.wso2.carbon.apimgt.keymgt.token.JWTGenerator"
-    claim_dialect = "http://wso2.org/claims"
-    header = "X-JWT-Assertion"
-    signing_algorithm = "SHA256withRSA"
-    #enable_user_claims = true
-    #claims_extractor_impl = "org.wso2.carbon.apimgt.impl.token.DefaultClaimsRetriever"
-
-    [apim.sync_runtime_artifacts.gateway]
-    gateway_labels =["Default"]
 
     # Traffic Manager configurations
     [apim.throttling]
@@ -126,6 +102,17 @@ data:
     traffic_manager_urls = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-2-service:9611"]
     traffic_manager_auth_urls = ["ssl://{{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-2-service:9711"]
     type = "loadbalance"
+
+    # JWT Generation
+    [apim.jwt]
+    enable = true
+    encoding = "base64" # base64,base64url
+    #generator_impl = "org.wso2.carbon.apimgt.keymgt.token.JWTGenerator"
+    claim_dialect = "http://wso2.org/claims"
+    header = "X-JWT-Assertion"
+    signing_algorithm = "SHA256withRSA"
+    #enable_user_claims = true
+    #claims_extractor_impl = "org.wso2.carbon.apimgt.impl.token.DefaultClaimsRetriever"
 
     {{ if .Values.wso2.choreoAnalytics.enabled }}
     [apim.analytics]
@@ -160,10 +147,6 @@ data:
     allow_methods = ["GET","PUT","POST","DELETE","PATCH","OPTIONS"]
     allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction","apikey","Internal-Key"]
     allow_credentials = false
-
-    [transport.https.properties]
-    port = 9443
-    proxyPort = 443
 
     [transport.passthru_https.sender.parameters]
     HostnameVerifier = "AllowAll"
