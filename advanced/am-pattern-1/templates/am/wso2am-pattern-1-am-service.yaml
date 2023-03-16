@@ -41,3 +41,9 @@ spec:
     - name: websub-https
       protocol: TCP
       port: 8021
+    - name: websocket-http
+      protocol: TCP
+      port: 9099
+    - name: websub-https
+      protocol: TCP
+      port: 8099
