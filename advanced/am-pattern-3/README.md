@@ -68,16 +68,16 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
     helm install <RELEASE_NAME> wso2/am-pattern-3 --version 4.2.0-1 --namespace <NAMESPACE> --create-namespace
     ```
 
-The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
-
-If you are using WSO2 product Docker images available from WSO2 Private Docker Registry,
-please provide your WSO2 Subscription credentials via input values (using `--set` argument). 
+The above steps will deploy the deployment pattern using WSO2 product Docker images available in WSO2 Private Docker Registry. Please provide your WSO2 Subscription credentials via input values (using `--set` argument).
 
 Please see the following example.
 
 ```
  helm install --name <RELEASE_NAME> wso2/am-pattern-3 --version 4.2.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
+
+If you are using a custom WSO2 Docker images you will need to provide those information via the input values. Please refer [API Manager Server Configurations](#api-manager-server-configurations) and [Micro Integrator Server Configurations](#micro-integrator-server-configurations)
+
 
 #### Install Chart From Source
 
@@ -108,16 +108,16 @@ git clone https://github.com/wso2/kubernetes-apim.git
     helm install <RELEASE_NAME> <HELM_HOME>/am-pattern-3 --version 4.2.0-1 --namespace <NAMESPACE> --dependency-update --create-namespace
     ```
 
-The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
-
-If you are using WSO2 product Docker images available from WSO2 Private Docker Registry,
-please provide your WSO2 Subscription credentials via input values (using `--set` argument). 
+The above steps will deploy the deployment pattern using WSO2 product Docker images available in WSO2 Private Docker Registry. Please provide your WSO2 Subscription credentials via input values (using `--set` argument).
 
 Please see the following example.
 
 ```
  helm install --name <RELEASE_NAME> <HELM_HOME>/am-pattern-3 --version 4.2.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
+
+If you are using a custom WSO2 Docker images you will need to provide those information via the input values. Please refer [API Manager Server Configurations](#api-manager-server-configurations) and [Micro Integrator Server Configurations](#micro-integrator-server-configurations)
+
 
 Or else, you can configure the default configurations inside the am-pattern-3 helm chart [values.yaml](https://github.com/wso2/kubernetes-apim/blob/master/advanced/am-pattern-3/values.yaml) file. Refer [this](https://helm.sh/docs/chart_template_guide/values_files/) for to learn more details about the `values.yaml` file.
 
