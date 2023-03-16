@@ -44,6 +44,6 @@ spec:
     - name: websocket-http
       protocol: TCP
       port: 9099
-    - name: websub-https
+    - name: websocket-https
       protocol: TCP
       port: 8099
