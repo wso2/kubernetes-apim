@@ -1,20 +1,20 @@
 # Changelog
 
-All notable changes to Kubernetes and Helm resources for WSO2 API Management version `4.1.x` in each resource release,
+All notable changes to Kubernetes and Helm resources for WSO2 API Management version `4.2.x` in each resource release,
 will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [v4.1.0.1] - 2022-03-31
+## [v4.2.0.1] - 2023-03-16
 
 ### Added
 
 - Helm resources for API Manager Single Node Deployment.
-- Helm resources for API Manager Advanced deployment patterns.
+- Helm resources for API Manager Advanced Deployment patterns.
 - Helm resources for MySQL.
-- Parameter configurations for ingress resources.
+- Ingress resources to handle WebSocket traffic
 
 ### Modified
 
-- Ingress API version to networking.k8s.io/v1.
-- Readiness and liveness probe endpoints.
+- Modified images to WSO2 private Docker images
+- Modified APIM configurations.
