@@ -14,5 +14,5 @@
 
 dependencies:
   - name: am-pattern-1
-    version: "4.1.0-1"
+    version: "4.1.0-2"
     repository: "https://helm.wso2.com"
