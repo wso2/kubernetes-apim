@@ -67,7 +67,7 @@ data:
     [truststore]
     file_name = "client-truststore.jks"
     type = "JKS"
-    password = "wso2carbon
+    password = "wso2carbon"
 
     #[keystore.primary]
     #file_name =  "wso2carbon.jks"
@@ -150,7 +150,7 @@ data:
     enable = true
     username= "$ref{super_admin.username}"
     password= "$ref{super_admin.password}"
-    service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
+    service_url = "https://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
     event_listening_endpoints = ["tcp://localhost:5672"]
     event_duplicate_url = ["tcp://{{ template "am-pattern-4.resource.prefix" . }}-am-cp-1-service:5672"]
 
