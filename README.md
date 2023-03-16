@@ -23,7 +23,7 @@ The JWKS endpoint of the API Manager has an external facing hostname by default.
 
 1. Log into Admin portal - https://am.wso2.com/admin/
 2. Navigate to Key Managers section and select the Resident Key Manager.
-3. Change the JWKS URL in the Certificates section to https://<cp-lb-service-name>:9443/oauth2/jwks.
+3. Change the JWKS URL in the Certificates section to `https://<cp-lb-service-name>:9443/oauth2/jwks`.
 
 
 ### Update certificate domain names
