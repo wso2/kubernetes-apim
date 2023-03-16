@@ -23,9 +23,9 @@ wso2:
   deployment:
     mi:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
-      # dockerRegistry: ""
+      dockerRegistry: "docker.wso2.com"
       imageName: "wso2mi"
-      imageTag: "4.2.0"
+      imageTag: "4.2.0.0"
       # Number of deployment replicas
       replicas: 2
       strategy:
@@ -126,9 +126,9 @@ am-pattern-1:
       am:
         # Container image configurations
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
-        # dockerRegistry: ""
+        dockerRegistry: "docker.wso2.com"
         imageName: "wso2am"
-        imageTag: "4.2.0"
+        imageTag: "4.2.0.0"
         # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
         imagePullPolicy: Always
 
@@ -224,9 +224,9 @@ am-pattern-1:
 
       mi:
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
-        # dockerRegistry: ""
+        dockerRegistry: "docker.wso2.com"
         imageName: "wso2mi"
-        imageTag: "4.2.0"
+        imageTag: "4.2.0.0"
         # Number of deployment replicas
         replicas: 2
         strategy:
