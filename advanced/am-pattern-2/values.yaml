@@ -200,6 +200,13 @@ am-pattern-1:
             annotations:
               kubernetes.io/ingress.class: "nginx"
               nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          websocket:
+            enabled: true
+            hostname: "websocket.am.wso2.com"
+            # Annotations for the API Manager WebSocket service Ingress
+            annotations:
+              kubernetes.io/ingress.class: "nginx"
+              nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
         db:
           hostname: wso2am-mysql-db-service
           port: 3306
