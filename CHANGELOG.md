@@ -18,3 +18,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 - Ingress API version to networking.k8s.io/v1.
 - Readiness and liveness probe endpoints.
+
+## [v4.1.0.2] - 2023-03-16
+
+### Added
+
+- Add ingress to handle WebSocket traffic
+
+### Modified
+
+- Update latest APIM configurations
