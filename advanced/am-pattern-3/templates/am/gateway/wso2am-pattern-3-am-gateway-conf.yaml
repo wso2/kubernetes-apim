@@ -58,6 +58,14 @@ data:
     type = "JKS"
     password = "wso2carbon"
 
+    [transport.http]
+    properties.port = 9763
+    properties.proxyPort = 80
+
+    [transport.https]
+    properties.port = 9443
+    properties.proxyPort = 443
+
     # key manager implementation
     [apim.key_manager]
     service_url = "https://{{ template "am-pattern-3.resource.prefix" . }}-am-cp-service:${mgt.transport.https.port}/services/"
@@ -132,10 +140,6 @@ data:
     allow_methods = ["GET","PUT","POST","DELETE","PATCH","OPTIONS"]
     allow_headers = ["authorization","Access-Control-Allow-Origin","Content-Type","SOAPAction"]
     allow_credentials = false
-
-    [transport.https.properties]
-    port = 9443
-    proxyPort = 443
 
     [transport.passthru_https.sender.parameters]
     HostnameVerifier = "AllowAll"
