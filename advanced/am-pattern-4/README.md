@@ -186,6 +186,13 @@ API Manager Websub
 - ADDRESS: External IP (EXTERNAL-IP) exposing the API Manager's Websub service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager's Websub service
 
+API Manager WebSocket
+
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to wso2am-pattern-4-am-websocket-ingress)
+- HOSTS: Hostname of the WSO2 API Manager's WebSocket service (`<wso2.deployment.am.websocket.ingress.hostname>`)
+- ADDRESS: External IP (EXTERNAL-IP) exposing the API Manager's WebSocket service to outside of the Kubernetes environment
+- PORTS: Externally exposed service ports of the API Manager's WebSocket service
+
 Micro Integrator Management APIs
 
 - NAME: Metadata name of the Kubernetes Ingress resource (defaults to wso2am-pattern-4-mi-1-management-ingress)
@@ -260,6 +267,9 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.am.websub.ingress.enabled`                            | If enabled, create ingress resource for WebSub service  | true          |
 | `wso2.deployment.am.websub.ingress.hostname`                           | Hostname for API Manager WebSub service                                                                                    | `websub.am.wso2.com`                           |
 | `wso2.deployment.am.websub.ingress.annotations`                        | Ingress resource annotations for API Manager WebSub                                                                        | Community NGINX Ingress controller annotations |
+| `wso2.deployment.am.websocket.ingress.enabled`                            | If enabled, create ingress resource for WebSocket service  | true          |
+| `wso2.deployment.am.websocket.ingress.hostname`                           | Hostname for API Manager WebSocket service                                                                                    | `websocket.am.wso2.com`                           |
+| `wso2.deployment.am.websocket.ingress.annotations`                        | Ingress resource annotations for API Manager WebSocket                                                                        | Community NGINX Ingress controller annotations |
 | `wso2.deployment.am.gateway.ingress.enabled`                            | If enabled, create ingress resource for API Manager Gateway  | true          |
 | `wso2.deployment.am.gateway.ingress.hostname`                          | Hostname for API Manager Gateway                                                                                           | `gateway.am.wso2.com`                          |
 | `wso2.deployment.am.gateway.ingress.annotations`                       | Ingress resource annotations for API Manager Gateway                                                                       | Community NGINX Ingress controller annotations |

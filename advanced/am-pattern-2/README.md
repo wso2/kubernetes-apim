@@ -201,6 +201,13 @@ API Manager Websub
 - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Websub service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager' Websub service
 
+API Manager WebSocket
+
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-1-am-websocket-ingress`)
+- HOSTS: Hostname of the WSO2 API Manager's WebSocket service (`<wso2.deployment.am.ingress.websocket.hostname>`)
+- ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's WebSocket service to outside of the Kubernetes environment
+- PORTS: Externally exposed service ports of the API Manager' WebSocket service
+
 Micro Integrator Management APIs of Tenant 1
 
 - NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-pattern-1-mi-1-management-ingress`)
@@ -224,7 +231,7 @@ If the defined hostnames are not backed by a DNS service, for the purpose of eva
 hostnames and the external IP in the `/etc/hosts` file at the client-side.
 
 ```
-<EXTERNAL-IP> <wso2.deployment.am.ingress.management.hostname> <wso2.deployment.am.ingress.gateway.hostname> <wso2.deployment.am.ingress.websub.hostname> <wso2.deployment.mi.ingress.management.hostname> <wso2.deployment.mi.ingress.management.hostname>
+<EXTERNAL-IP> <wso2.deployment.am.ingress.management.hostname> <wso2.deployment.am.ingress.gateway.hostname> <wso2.deployment.am.ingress.websub.hostname> <wso2.deployment.am.ingress.websocket.hostname> <wso2.deployment.mi.ingress.management.hostname> <wso2.deployment.mi.ingress.management.hostname>
 ```
 
 ### 4. Access Management Consoles
@@ -302,6 +309,9 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `am-pattern-1.wso2.deployment.am.ingress.websub.enabled`                            | If enabled, create ingress resource for WebSub service  | true          |
 | `am-pattern-1.wso2.deployment.am.ingress.websub.hostname`                                | Hostname for API Manager Websub services                                                  | `websub.am.wso2.com`        |
 | `am-pattern-1.wso2.deployment.am.ingress.websub.annotations`                             | Ingress resource annotations for API Manager Websub                                       | Community NGINX Ingress controller annotations         |
+| `am-pattern-1.wso2.deployment.am.ingress.websocket.enabled`                            | If enabled, create ingress resource for WebSocket service  | true          |
+| `am-pattern-1.wso2.deployment.am.ingress.websocket.hostname`                                | Hostname for API Manager WebSocket services                                                  | `websocket.am.wso2.com`        |
+| `am-pattern-1.wso2.deployment.am.ingress.websocket.annotations`                             | Ingress resource annotations for API Manager WebSocket                                       | Community NGINX Ingress controller annotations         |
 
 #### Micro Integrator Server Configurations for Tenant 1
 

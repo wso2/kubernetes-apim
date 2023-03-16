@@ -167,6 +167,12 @@ API Manager WebSub
 - HOSTS: Hostname of the WSO2 API Manager's Gateway (WebSub) service (`<wso2.deployment.am.ingress.websub.hostname>`)
 - ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Gateway service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager' Gateway (WebSub) service
+
+API Manager WebSocket
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2am-single-node-am-websocket-ingress`)
+- HOSTS: Hostname of the WSO2 API Manager's Gateway (WebSocket) service (`<wso2.deployment.am.ingress.websocket.hostname>`)
+- ADDRESS: External IP (`EXTERNAL-IP`) exposing the API Manager's Gateway service to outside of the Kubernetes environment
+- PORTS: Externally exposed service ports of the API Manager' Gateway (WebSocket) service
 ### 3. Add a DNS record mapping the hostnames and the external IP
 
 If the defined hostnames (in the previous step) are backed by a DNS service, add a DNS record mapping the hostnames and
@@ -243,8 +249,11 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.am.ingress.gateway.hostname`                               | Hostname for API Manager Gateway                                                          | `gateway.am.wso2.com`       |
 | `wso2.deployment.am.ingress.gateway.annotations`                            | Ingress resource annotations for API Manager Gateway                                      | Community NGINX Ingress controller annotations         |
 | `wso2.deployment.am.ingress.websub.enabled`                            | If enabled, create ingress resource for WebSub service  | true          |
-| `wso2.deployment.am.ingress.websub.hostname`                               | Hostname for API Manager Gateway WebSub service                                                          | `gateway.am.wso2.com`       |
+| `wso2.deployment.am.ingress.websub.hostname`                               | Hostname for API Manager Gateway WebSub service                                                          | `websub.am.wso2.com`       |
 | `wso2.deployment.am.ingress.websub.annotations`                            | Ingress resource annotations for API Manager Gateway WebSub                                     | Community NGINX Ingress controller annotations         |
+| `wso2.deployment.am.ingress.websocket.enabled`                            | If enabled, create ingress resource for WebSocket service  | true          |
+| `wso2.deployment.am.ingress.websocket.hostname`                               | Hostname for API Manager Gateway WebSocket service                                                          | `websocket.am.wso2.com`       |
+| `wso2.deployment.am.ingress.websocket.annotations`                            | Ingress resource annotations for API Manager Gateway WebSocket                                     | Community NGINX Ingress controller annotations         |
 
 **Note**: The above mentioned default, minimum resource amounts for running WSO2 API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/4.1.0/install-and-setup/install/installation-prerequisites/).
 
