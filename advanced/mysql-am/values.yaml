@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 mysql:
+  image: "bitnami/mysql"
   imageTag: "5.7.41"
   mysqlRootPassword: root
   mysqlUser: wso2carbon
@@ -28,7 +29,7 @@ mysql:
   initializationFiles:
     mysql_apim.sql: |-
       DROP DATABASE IF EXISTS WSO2AM_DB;
-      CREATE DATABASE WSO2AM_DB;
+      CREATE DATABASE WSO2AM_DB DEFAULT CHARACTER SET latin1;
       GRANT ALL ON WSO2AM_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
 
       USE WSO2AM_DB;
@@ -2436,7 +2437,7 @@ mysql:
       CREATE DATABASE WSO2AM_SHARED_DB;
       GRANT ALL ON WSO2AM_SHARED_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
 
-      USE WSO2AM_SHARED_DB;
+      USE WSO2AM_SHARED_DB DEFAULT CHARACTER SET latin1;
 
       CREATE TABLE IF NOT EXISTS REG_CLUSTER_LOCK (
              REG_LOCK_NAME VARCHAR (20),

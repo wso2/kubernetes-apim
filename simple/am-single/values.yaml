@@ -57,9 +57,9 @@ wso2:
     am:
       # Container image configurations
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
-      # dockerRegistry: ""
+      dockerRegistry: "docker.wso2.com"
       imageName: "wso2am"
-      imageTag: "4.2.0"
+      imageTag: "4.2.0.0"
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
@@ -127,7 +127,14 @@ wso2:
         websub:
           enabled: true
           hostname: "websub.am.wso2.com"
-          # Annotations for the API Manager Gateway service Ingress
+          # Annotations for the API Manager WebSub service Ingress
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+        websocket:
+          enabled: true
+          hostname: "websocket.am.wso2.com"
+          # Annotations for the API Manager WebSocket service Ingress
           annotations:
             kubernetes.io/ingress.class: "nginx"
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
