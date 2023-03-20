@@ -138,7 +138,7 @@ From the above Helm commands, base image of a Micro Integrator is deployed (with
 > **Note:**
 > If you are using Rancher Desktop for the Kubernetes cluster, add the following changes. 
 > 1. Change `storageClass` to `local-path` in [`values.yaml`](https://github.com/wso2/kubernetes-apim/blob/master/advanced/am-pattern-1/values.yaml#L43).
-> 2. Change `accessModes` in [`Persistent volume claims`](https://github.com/wso2/kubernetes-apim/blob/master/advanced/am-pattern-1/templates/am/wso2am-pattern-1-am-volume-claims.yaml) to `ReadWriteOnce`.
+> 2. Change `accessModes` in [`Persistent Volume Claims`](https://github.com/wso2/kubernetes-apim/blob/master/advanced/am-pattern-1/templates/am/wso2am-pattern-1-am-volume-claims.yaml) to `ReadWriteOnce`.
 
 ### Choreo Analytics
 

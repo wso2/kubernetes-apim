@@ -121,7 +121,7 @@ If you are using a custom WSO2 Docker images you will need to provide those info
 > **Note:**
 > If you are using Rancher Desktop for the Kubernetes cluster, add the following changes. 
 > 1. Change `storageClass` to `local-path` in [`values.yaml`](https://github.com/wso2/kubernetes-apim/blob/master/simple/am-single/values.yaml#L43).
-> 2. Change `accessModes` in [`Persistent volume claims`](https://github.com/wso2/kubernetes-apim/blob/master/simple/am-single/templates/am/wso2am-volume-claims.yaml) to `ReadWriteOnce`.
+> 2. Change `accessModes` in [`Persistent Volume Claims`](https://github.com/wso2/kubernetes-apim/blob/master/simple/am-single/templates/am/wso2am-volume-claims.yaml) to `ReadWriteOnce`.
 
 ### Choreo Analytics
 
