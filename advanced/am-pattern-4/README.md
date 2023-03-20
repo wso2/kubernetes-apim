@@ -135,6 +135,11 @@ From the above Helm commands, base image of a Micro Integrator is deployed (with
 >   helm install <RELEASE_NAME> wso2/am-pattern-4 --version 4.2.0-1 --namespace <NAMESPACE> --set wso2.deployment.mi.dockerRegistry=<INTEGRATION_IMAGE_REGISTRY> --set wso2.deployment.mi.imageName=<INTEGRATION_IMAGE_NAME> --set wso2.deployment.mi.imageTag=<INTEGRATION_IMAGE_TAG> --set wso2.deployment.mi.imagePullSecrets=<IMAGE_PULL_SECRET>
 >   ```     
 
+> **Note:**
+> If you are using Rancher Desktop for the Kubernetes cluster, add the following changes. 
+> 1. Change `storageClass` to `local-path` in [`values.yaml`](https://github.com/wso2/kubernetes-apim/blob/master/advanced/am-pattern-4/values.yaml#L43).
+> 2. Change `accessModes` in [`Persistent Volume Claims`](https://github.com/wso2/kubernetes-apim/blob/master/advanced/am-pattern-4/templates/am/control-plane/wso2am-pattern-4-am-control-plane-volume-claims.yaml) to `ReadWriteOnce`.
+
 ### Choreo Analytics
 
 If you need to enable Choreo Analytics with WSO2 API Manager, please follow the documentation on [Register for Analytics](https://apim.docs.wso2.com/en/4.2.0/observe/api-manager-analytics/configure-analytics/register-for-analytics/) to obtain the on-prem key for Analytics.

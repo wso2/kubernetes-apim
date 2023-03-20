@@ -118,6 +118,11 @@ Please see the following example.
 
 If you are using a custom WSO2 Docker images you will need to provide those information via the input values. Please refer [API Manager Server Configurations](#api-manager-server-configurations)
 
+> **Note:**
+> If you are using Rancher Desktop for the Kubernetes cluster, add the following changes. 
+> 1. Change `storageClass` to `local-path` in [`values.yaml`](https://github.com/wso2/kubernetes-apim/blob/master/simple/am-single/values.yaml#L43).
+> 2. Change `accessModes` in [`Persistent Volume Claims`](https://github.com/wso2/kubernetes-apim/blob/master/simple/am-single/templates/am/wso2am-volume-claims.yaml) to `ReadWriteOnce`.
+
 ### Choreo Analytics
 
 If you need to enable Choreo Analytics with WSO2 API Manager, please follow the documentation on [Register for Analytics](https://apim.docs.wso2.com/en/4.2.0/observe/api-manager-analytics/configure-analytics/register-for-analytics/) to obtain the on-prem key for Analytics.
