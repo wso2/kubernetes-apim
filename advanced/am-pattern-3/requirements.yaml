@@ -14,7 +14,7 @@
 
 dependencies:
   - name: mysql-am
-    version: "4.1.0-1"
+    version: "4.2.0-1"
     repository: "https://helm.wso2.com"
     condition: wso2.deployment.dependencies.cluster_mysql
   - name: nfs-server-provisioner
