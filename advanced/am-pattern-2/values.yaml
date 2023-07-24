@@ -218,6 +218,37 @@ wso2:
                 xmx: "1024m"
 
     analytics:
+      db:
+        hostname: wso2am-mysql-db-service
+        port: 3306
+        driver: com.mysql.cj.jdbc.Driver
+        driver_url: https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.29/mysql-connector-java-8.0.29.jar
+        connection_test_query: SELECT 1
+        permission_db:
+          username: wso2carbon
+          password: wso2carbon
+          url: jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_PERMISSIONS_DB?useSSL=false
+        analytics_db:
+          username: wso2carbon
+          password: wso2carbon
+          url: jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_STATS_DB?useSSL=false
+        cluster_db:
+          username: wso2carbon
+          password: wso2carbon
+          url: jdbc:mysql://wso2am-mysql-db-service:3306/WSO2_CLUSTER_DB?useSSL=false
+        persistence_db:
+          username: wso2carbon
+          password: wso2carbon
+          url: jdbc:mysql://wso2am-mysql-db-service:3306/WSO2_PERSISTENCE_DB?useSSL=false
+        dashboard_db:
+          username: wso2carbon
+          password: wso2carbon
+          url: jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DASHBOARD_DB?useSSL=false
+        business_rules_db:
+          username: wso2carbon
+          password: wso2carbon
+          url: jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_BUSINESS_RULES_DB?useSSL=false
+
       dashboard:
         # Container image configurations
         # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
