@@ -285,6 +285,9 @@ wso2:
         # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
         imagePullPolicy: Always
 
+        # Number of deployment replicas
+        replicas: 2
+
         # Indicates whether the container is running.
         livenessProbe:
           # Number of seconds after the container has started before liveness probes are initiated.

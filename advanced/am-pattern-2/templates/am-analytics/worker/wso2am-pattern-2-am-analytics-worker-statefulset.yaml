@@ -18,7 +18,7 @@ metadata:
   name: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-worker-statefulset
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.wso2.deployment.analytics.worker.replicas }}
   selector:
     matchLabels:
       deployment: {{ template "am-pattern-2.resource.prefix" . }}-analytics-worker
