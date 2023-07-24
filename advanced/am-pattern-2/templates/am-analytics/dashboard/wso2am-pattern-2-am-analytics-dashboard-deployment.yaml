@@ -33,6 +33,7 @@ spec:
         checksum.am.analytics.dashboard.conf: {{ include (print $.Template.BasePath "/am-analytics/dashboard/wso2am-pattern-2-am-analytics-dashboard-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-2.resource.prefix" . }}-am-analytics-dashboard
+        product: apim
     spec:
       initContainers:
         - name: init-db

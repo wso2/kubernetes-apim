@@ -33,6 +33,7 @@ spec:
         checksum.am.km.conf: {{ include (print $.Template.BasePath "/am/gateway/wso2am-pattern-2-am-gateway-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway
+        product: apim
     spec:
       initContainers:
       - name: init-apim-analytics

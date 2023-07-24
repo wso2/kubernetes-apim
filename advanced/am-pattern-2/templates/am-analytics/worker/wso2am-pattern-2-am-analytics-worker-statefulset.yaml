@@ -29,6 +29,7 @@ spec:
         checksum.am.analytics.worker.conf: {{ include (print $.Template.BasePath "/am-analytics/worker/wso2am-pattern-2-am-analytics-worker-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-2.resource.prefix" . }}-analytics-worker
+        product: apim
     spec:
       initContainers:
         - name: init-db
