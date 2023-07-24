@@ -378,13 +378,13 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_PERMISSIONS_DB?useSSL=false'
-              username: wso2carbon
-              password: wso2carbon
-              driverClassName: com.mysql.cj.jdbc.Driver
+              jdbcUrl: "{{ .Values.wso2.deployment.analytics.db.permission_db.url }}"
+              username: "{{ .Values.wso2.deployment.analytics.db.permission_db.username }}"
+              password: "{{ .Values.wso2.deployment.analytics.db.permission_db.password }}"
+              driverClassName: "{{ .Values.wso2.deployment.analytics.db.driver }}"
               maxPoolSize: 10
               idleTimeout: 60000
-              connectionTestQuery: SELECT 1
+              connectionTestQuery: "{{ .Values.wso2.deployment.analytics.db.connection_test_query }}"
               validationTimeout: 30000
               isAutoCommit: false
 
@@ -411,13 +411,13 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_STATS_DB?useSSL=false'
-              username: wso2carbon
-              password: wso2carbon
-              driverClassName: com.mysql.cj.jdbc.Driver
+              jdbcUrl: "{{ .Values.wso2.deployment.analytics.db.analytics_db.url }}"
+              username: "{{ .Values.wso2.deployment.analytics.db.analytics_db.username }}"
+              password: "{{ .Values.wso2.deployment.analytics.db.analytics_db.password }}"
+              driverClassName: "{{ .Values.wso2.deployment.analytics.db.driver }}"
               maxPoolSize: 50
               idleTimeout: 60000
-              connectionTestQuery: SELECT 1
+              connectionTestQuery: "{{ .Values.wso2.deployment.analytics.db.connection_test_query }}"
               validationTimeout: 30000
               isAutoCommit: false
 
@@ -429,14 +429,14 @@ data:
           definition:
             type: RDBMS
             configuration:
-              connectionTestQuery: "SELECT 1"
-              driverClassName: com.mysql.cj.jdbc.Driver
+              connectionTestQuery: "{{ .Values.wso2.deployment.analytics.db.connection_test_query }}"
+              driverClassName: "{{ .Values.wso2.deployment.analytics.db.driver }}"
               idleTimeout: 60000
               isAutoCommit: false
-              jdbcUrl: "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2_CLUSTER_DB?useSSL=false"
+              jdbcUrl: "{{ .Values.wso2.deployment.analytics.db.cluster_db.url }}"
               maxPoolSize: 50
-              password: wso2carbon
-              username: wso2carbon
+              username: "{{ .Values.wso2.deployment.analytics.db.cluster_db.username }}"
+              password: "{{ .Values.wso2.deployment.analytics.db.cluster_db.password }}"
               validationTimeout: 30000
 
         -
@@ -447,14 +447,14 @@ data:
           definition:
             type: RDBMS
             configuration:
-              connectionTestQuery: "SELECT 1"
-              driverClassName: com.mysql.cj.jdbc.Driver
+              connectionTestQuery: "{{ .Values.wso2.deployment.analytics.db.connection_test_query }}"
+              driverClassName: "{{ .Values.wso2.deployment.analytics.db.driver }}"
               idleTimeout: 60000
               isAutoCommit: false
-              jdbcUrl: "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2_PERSISTENCE_DB?useSSL=false"
+              jdbcUrl: "{{ .Values.wso2.deployment.analytics.db.persistence_db.url }}"
               maxPoolSize: 50
-              password: wso2carbon
-              username: wso2carbon
+              username: "{{ .Values.wso2.deployment.analytics.db.persistence_db.username }}"
+              password: "{{ .Values.wso2.deployment.analytics.db.persistence_db.password }}"
               validationTimeout: 30000
 
     siddhi:
