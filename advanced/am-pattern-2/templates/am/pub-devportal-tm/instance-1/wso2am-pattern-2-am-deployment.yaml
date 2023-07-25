@@ -105,8 +105,10 @@ spec:
             - name: JVM_MEM_OPTS
               value: "-Xms{{ .Values.wso2.deployment.am.pubDevPortalTM.resources.jvm.heap.memory.xms }} -Xmx{{ .Values.wso2.deployment.am.pubDevPortalTM.resources.jvm.heap.memory.xmx }}"
           volumeMounts:
+            {{ if .Values.wso2.deployment.dependencies.nfsServerProvisioner }}
             - name: wso2am-executionplans-storage
               mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/executionplans
+            {{ end }}
             - name: wso2am-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
             {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.apacheSolrIndexing.enabled }}
