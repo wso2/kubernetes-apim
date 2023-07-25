@@ -129,9 +129,11 @@ spec:
         - name: {{ template "am-pattern-2.resource.prefix" . }}-wso2-private-registry-creds
       {{ end }}
       volumes:
+        {{ if .Values.wso2.deployment.dependencies.nfsServerProvisioner }}
         - name: wso2am-executionplans-storage
           persistentVolumeClaim:
             claimName: {{ template "am-pattern-2.resource.prefix" . }}-am-shared-executionplans-volume-claim
+        {{ end }}
         - name: wso2am-conf
           configMap:
             name: {{ template "am-pattern-2.resource.prefix" . }}-am-2-conf
