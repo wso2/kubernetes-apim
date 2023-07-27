@@ -36,3 +36,10 @@ spec:
             name: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway-service
             port: 
               number: 8243
+      - path: /api/am/gateway/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway-service
+            port: 
+              number: 9443
