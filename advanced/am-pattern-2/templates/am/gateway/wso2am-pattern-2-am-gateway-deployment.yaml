@@ -115,9 +115,11 @@ spec:
         - name: {{ template "am-pattern-2.resource.prefix" . }}-wso2-private-registry-creds
       {{ end }}
       volumes:
+      {{ if .Values.wso2.deployment.dependencies.nfsServerProvisioner }}
       - name: wso2am-gateway-storage-volume
         persistentVolumeClaim:
           claimName: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway-shared-synapse-configs-volume-claim
+      {{ end }}
       - name: wso2am-gateway-conf
         configMap:
           name: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway-conf
