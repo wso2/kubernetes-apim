@@ -43,18 +43,18 @@ data:
     type = "database_unique_id"
 
     [database.apim_db]
-    type = "mysql"
-    url = "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false"
-    username = "wso2carbon"
-    password = "wso2carbon"
-    driver = "com.mysql.cj.jdbc.Driver"
+    type = "{{ .Values.wso2.deployment.am.cp.db.type }}"
+    url = "{{ .Values.wso2.deployment.am.cp.db.apim.url }}"
+    username = "{{ .Values.wso2.deployment.am.cp.db.apim.username }}"
+    password = "{{ .Values.wso2.deployment.am.cp.db.apim.password }}"
+    driver = "{{ .Values.wso2.deployment.am.cp.db.driver }}"
 
     [database.shared_db]
-    type = "mysql"
-    url = "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_SHARED_DB?useSSL=false&amp;autoReconnect=true&amp;requireSSL=false&amp;verifyServerCertificate=false"
-    username = "wso2carbon"
-    password = "wso2carbon"
-    driver = "com.mysql.cj.jdbc.Driver"
+    type = "{{ .Values.wso2.deployment.am.cp.db.type }}"
+    url = "{{ .Values.wso2.deployment.am.cp.db.apim_shared.url }}"
+    username = "{{ .Values.wso2.deployment.am.cp.db.apim_shared.username }}"
+    password = "{{ .Values.wso2.deployment.am.cp.db.apim_shared.password }}"
+    driver = "{{ .Values.wso2.deployment.am.cp.db.driver }}"
 
     [keystore.tls]
     file_name =  "wso2carbon.jks"
