@@ -33,6 +33,7 @@ spec:
         checksum.am.km.conf: {{ include (print $.Template.BasePath "/am/gateway/wso2am-pattern-2-am-gateway-conf.yaml") . | sha256sum }}
       labels:
         deployment: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway
+        product: apim
     spec:
       initContainers:
       - name: init-apim-analytics
@@ -100,8 +101,10 @@ spec:
         - containerPort: 9443
           protocol: TCP
         volumeMounts:
+        {{ if .Values.wso2.deployment.dependencies.nfsServerProvisioner }}
         - name: wso2am-gateway-storage-volume
           mountPath: /home/wso2carbon/wso2am-3.2.0/repository/deployment/server/synapse-configs
+        {{ end }}
         - name: wso2am-gateway-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
           subPath: deployment.toml
@@ -114,9 +117,11 @@ spec:
         - name: {{ template "am-pattern-2.resource.prefix" . }}-wso2-private-registry-creds
       {{ end }}
       volumes:
+      {{ if .Values.wso2.deployment.dependencies.nfsServerProvisioner }}
       - name: wso2am-gateway-storage-volume
         persistentVolumeClaim:
           claimName: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway-shared-synapse-configs-volume-claim
+      {{ end }}
       - name: wso2am-gateway-conf
         configMap:
           name: {{ template "am-pattern-2.resource.prefix" . }}-am-gateway-conf
