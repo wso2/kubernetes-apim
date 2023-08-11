@@ -1,6 +1,6 @@
 ## ⚠️ DISCLAIMER
 
-Use these artefacts as a reference to build your deployment artefacts. Existing artefacts are only developed to demonstrate a reference deployment and **should not be used as is in production**.
+Use these artifacts as a reference to build your deployment artifacts. Existing artifacts are only developed to demonstrate a reference deployment and **should not be used as is in production**.
 
 ---
 
