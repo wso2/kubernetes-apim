@@ -1,3 +1,9 @@
+## ⚠️ DISCLAIMER
+
+Use these artifacts as a reference to build your deployment artifacts. Existing artifacts are only developed to demonstrate a reference deployment and **should not be used as is in production**.
+
+---
+
 # Kubernetes and Helm Resources for WSO2 API Management
 
 *This repository contains Kubernetes and Helm Resources for container-based deployments of WSO2 API Management.*
