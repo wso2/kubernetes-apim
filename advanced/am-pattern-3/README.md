@@ -301,7 +301,6 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.mi.resources.requests.cpu`                                 | The minimum amount of CPU that should be allocated for a Pod                              | 500m                        |
 | `wso2.deployment.mi.resources.limits.memory`                                | The maximum amount of memory that should be allocated for a Pod                           | 1Gi                         |
 | `wso2.deployment.mi.resources.limits.cpu`                                   | The maximum amount of CPU that should be allocated for a Pod                              | 1000m                       |
-| `wso2.deployment.mi.config`                                                 | Custom deployment configuration file (`<WSO2AM>/repository/conf/deployment.toml`)         | -                           |
 | `wso2.deployment.mi.ingress.management.hostname`                            | Hostname for Micro Integrator management apis                                             | `management.mi.wso2.com`    |
 | `wso2.deployment.mi.ingress.management.annotations`                         | Ingress resource annotations for API Manager Gateway                                      | Community NGINX Ingress controller annotations         |
 
