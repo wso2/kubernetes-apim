@@ -1,16 +1,53 @@
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: wso2am-pattern-1-am-analytics-worker-conf
-  namespace: wso2
+  name: {{ template "am-single-node.resource.prefix" . }}-am-analytics-worker-conf
+  namespace : {{ .Release.Namespace }}
+  {{ if .Values.wso2.deployment.analytics.worker.config }}
+data:
+  {{- range $index, $content := .Values.wso2.deployment.analytics.worker.config }}
+  {{ $index }}: |-
+  {{ tpl $content $ | indent 4 }}
+  {{- end }}
+
+  {{ else }}
 data:
   deployment.yaml: |-
-    # Carbon Configuration Parameters
+    ################################################################################
+    #   Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved
+    #
+    #   Licensed under the Apache License, Version 2.0 (the \"License\");
+    #   you may not use this file except in compliance with the License.
+    #   You may obtain a copy of the License at
+    #
+    #   http://www.apache.org/licenses/LICENSE-2.0
+    #
+    #   Unless required by applicable law or agreed to in writing, software
+    #   distributed under the License is distributed on an \"AS IS\" BASIS,
+    #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    #   See the License for the specific language governing permissions and
+    #   limitations under the License.
+    ################################################################################
+
+      # Carbon Configuration Parameters
     wso2.carbon:
       type: wso2-apim-analytics
         # value to uniquely identify a server
-      id: wso2-am-analytics
+      id: ${NODE_ID}
         # server name
       name: WSO2 API Manager Analytics Server
         # ports used by this server
@@ -312,7 +349,7 @@ data:
         parameters:
           masterKeyReaderFile: ${sys:carbon.home}/conf/${sys:wso2.runtime}/master-keys.yaml
 
-       # Datasource Configurations
+      # Datasource Configurations
     wso2.datasources:
       dataSources:
         # carbon metrics data source
@@ -341,7 +378,7 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_PERMISSIONS_DB?useSSL=false&allowPublicKeyRetrieval=true'
+              jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_PERMISSIONS_DB?useSSL=false'
               username: wso2carbon
               password: wso2carbon
               driverClassName: com.mysql.cj.jdbc.Driver
@@ -374,7 +411,7 @@ data:
           definition:
             type: RDBMS
             configuration:
-              jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_STATS_DB?useSSL=false&allowPublicKeyRetrieval=true'
+              jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_STATS_DB?useSSL=false'
               username: wso2carbon
               password: wso2carbon
               driverClassName: com.mysql.cj.jdbc.Driver
@@ -393,32 +430,32 @@ data:
             type: RDBMS
             configuration:
               connectionTestQuery: "SELECT 1"
-              driverClassName: org.h2.Driver
+              driverClassName: com.mysql.cj.jdbc.Driver
               idleTimeout: 60000
               isAutoCommit: false
-              jdbcUrl: "jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/WSO2_CLUSTER_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;AUTO_SERVER=TRUE"
-              maxPoolSize: 10
+              jdbcUrl: "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2_CLUSTER_DB?useSSL=false"
+              maxPoolSize: 50
               password: wso2carbon
               username: wso2carbon
               validationTimeout: 30000
 
-    #    -
-    #      name: PERSISTENCE_DB
-    #      description: "Datasource used for persistence"
-    #      jndiConfig:
-    #        name: jdbc/PERSISTENCE_DB
-    #      definition:
-    #        type: RDBMS
-    #        configuration:
-    #          connectionTestQuery: "SELECT 1"
-    #          driverClassName: com.mysql.jdbc.Driver
-    #          idleTimeout: 60000
-    #          isAutoCommit: false
-    #          jdbcUrl: "jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/PERSISTENCE_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;AUTO_SERVER=TRUE"
-    #          maxPoolSize: 10
-    #          password: pass
-    #          username: root
-    #          validationTimeout: 30000
+          # -
+          # name: PERSISTENCE_DB
+          # description: "Datasource used for persistence"
+          # jndiConfig:
+          #   name: jdbc/PERSISTENCE_DB
+          # definition:
+          #   type: RDBMS
+          #   configuration:
+          #     connectionTestQuery: "SELECT 1"
+          #     driverClassName: com.mysql.cj.jdbc.Driver
+          #     idleTimeout: 60000
+          #     isAutoCommit: false
+          #     jdbcUrl: "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2_PERSISTENCE_DB?useSSL=false"
+          #     maxPoolSize: 50
+          #     password: wso2carbon
+          #     username: wso2carbon
+          #     validationTimeout: 30000
 
     siddhi:
       # properties:
@@ -479,8 +516,8 @@ data:
       strategyConfig:
         datasource: WSO2_CLUSTER_DB
         heartbeatInterval: 5000
-        heartbeatMaxRetry: 3
-        eventPollingInterval: 1000
+        heartbeatMaxRetry: 5
+        eventPollingInterval: 5000
 
     # Authentication configuration
     auth.configs:
@@ -504,23 +541,26 @@ data:
     #analytics.solutions:
     #  APIM-alerts.enabled: true
 
-
-      # Sample of deployment.config for Two node HA
-    #deployment.config:
-    #  type: ha
-    #  eventSyncServer:
-    #    host: localhost
-    #    port: 9893
-    #    advertisedHost: localhost
-    #    advertisedPort: 9893
-    #    bossThreads: 10
-    #    workerThreads: 10
-    #  eventSyncClientPool:
-    #    maxActive: 10
-    #    maxTotal: 10
-    #    maxIdle: 10
-    #    maxWait: 60000
-    #    minEvictableIdleTimeMillis: 120000
+    # Sample of deployment.config for Two node HA
+    # deployment.config:
+    #   type: ha
+    #   passiveNodeDetailsWaitTimeOutMillis: 300000
+    #   passiveNodeDetailsRetrySleepTimeMillis: 500
+    #   eventByteBufferQueueCapacity: 20000
+    #   byteBufferExtractorThreadPoolSize: 5
+    #   eventSyncServer:
+    #     host: ${NODE_IP}
+    #     port: 9893
+    #     advertisedHost: ${NODE_IP}
+    #     advertisedPort: 9893
+    #     bossThreads: 10
+    #     workerThreads: 10
+    #   eventSyncClientPool:
+    #     maxActive: 10
+    #     maxTotal: 10
+    #     maxIdle: 10
+    #     maxWait: 60000
+    #     minEvictableIdleTimeMillis: 120000
 
       # Sample of deployment.config for Distributed deployment
     #deployment.config:
@@ -540,4 +580,4 @@ data:
     #      port: 9543
     #      username: admin
     #      password: admin
----
+  {{ end }}

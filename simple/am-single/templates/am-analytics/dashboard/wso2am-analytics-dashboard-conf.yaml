@@ -1,12 +1,50 @@
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: wso2am-pattern-1-am-analytics-dashboard-conf
-  namespace: wso2
+  name: {{ template "am-single-node.resource.prefix" . }}-am-analytics-dashboard-conf
+  namespace : {{ .Release.Namespace }}
+  {{ if .Values.wso2.deployment.analytics.dashboard.config }}
+
+data:
+  {{- range $index, $content := .Values.wso2.deployment.analytics.dashboard.config }}
+  {{ $index }}: |-
+  {{ tpl $content $ | indent 4 }}
+  {{- end }}
+
+  {{ else }}
 data:
   deployment.yaml: |-
-    # Carbon Configuration Parameters
+    ################################################################################
+    #   Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved
+    #
+    #   Licensed under the Apache License, Version 2.0 (the \"License\");
+    #   you may not use this file except in compliance with the License.
+    #   You may obtain a copy of the License at
+    #
+    #   http://www.apache.org/licenses/LICENSE-2.0
+    #
+    #   Unless required by applicable law or agreed to in writing, software
+    #   distributed under the License is distributed on an \"AS IS\" BASIS,
+    #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    #   See the License for the specific language governing permissions and
+    #   limitations under the License.
+    ################################################################################
+
+      # Carbon Configuration Parameters
     wso2.carbon:
       type: wso2-apim-analytics
         # value to uniquely identify a server
@@ -212,10 +250,10 @@ data:
         definition:
           type: RDBMS
           configuration:
-            jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/DASHBOARD_DB;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE'
+            jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DASHBOARD_DB?useSSL=false'
             username: wso2carbon
             password: wso2carbon
-            driverClassName: org.h2.Driver
+            driverClassName: com.mysql.cj.jdbc.Driver
             maxPoolSize: 20
             idleTimeout: 60000
             connectionTestQuery: SELECT 1
@@ -229,7 +267,7 @@ data:
         definition:
           type: RDBMS
           configuration:
-            jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_BUSINESS_RULES_DB?useSSL=false'
+            jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_BUSINESS_RULES_DB?useSSL=false'
             username: wso2carbon
             password: wso2carbon
             driverClassName: com.mysql.cj.jdbc.Driver
@@ -265,10 +303,10 @@ data:
         definition:
           type: RDBMS
           configuration:
-            jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/PERMISSION_DB;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE'
+            jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_PERMISSIONS_DB?useSSL=false'
             username: wso2carbon
             password: wso2carbon
-            driverClassName: org.h2.Driver
+            driverClassName: com.mysql.cj.jdbc.Driver
             maxPoolSize: 10
             idleTimeout: 60000
             connectionTestQuery: SELECT 1
@@ -283,7 +321,7 @@ data:
         definition:
           type: RDBMS
           configuration:
-            jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_STATS_DB?useSSL=false'
+            jdbcUrl: 'jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_STATS_DB?useSSL=false'
             username: wso2carbon
             password: wso2carbon
             driverClassName: com.mysql.cj.jdbc.Driver
@@ -301,7 +339,7 @@ data:
         definition:
           type: RDBMS
           configuration:
-            jdbcUrl: 'jdbc:mysql://wso2apim-rdbms-service-mysql:3306/WSO2AM_DB?useSSL=false'
+            jdbcUrl: "jdbc:mysql://wso2am-mysql-db-service:3306/WSO2AM_DB?useSSL=false"
             username: wso2carbon
             password: wso2carbon
             driverClassName: com.mysql.cj.jdbc.Driver
@@ -347,7 +385,7 @@ data:
 
         - id: "default-https"
           host: "0.0.0.0"
-          port: 30643
+          port: 9640
           scheme: https
           keyStoreFile: "${carbon.home}/resources/security/wso2carbon.jks"
           keyStorePassword: wso2carbon
@@ -376,19 +414,19 @@ data:
         allScopes: apim_analytics:admin openid apim:api_view apim:subscribe apim_analytics:monitoring_dashboard:own apim_analytics:monitoring_dashboard:edit apim_analytics:monitoring_dashboard:view apim_analytics:business_analytics:own apim_analytics:business_analytics:edit apim_analytics:business_analytics:view apim_analytics:api_analytics:own apim_analytics:api_analytics:edit apim_analytics:api_analytics:view apim_analytics:application_analytics:own apim_analytics:application_analytics:edit apim_analytics:application_analytics:view
         adminUsername: admin
         adminPassword: admin
-        kmDcrUrl: https://wso2am-pattern-1-am-1-service:9443/client-registration/v0.17/register
-        kmTokenUrlForRedirection: https://"ip.node.k8s.&.wso2.apim":30443/oauth2
-        kmTokenUrl: https://wso2am-pattern-1-am-1-service:9443/oauth2
+        kmDcrUrl: https://{{ template "am-single-node.resource.prefix" . }}-am-service:9443/client-registration/v0.17/register
+        kmTokenUrlForRedirection: https://{{ .Values.wso2.deployment.am.ingress.management.hostname }}/oauth2
+        kmTokenUrl: https://{{ template "am-single-node.resource.prefix" . }}-am-service:9443/oauth2
         kmUsername: admin
         kmPassword: admin
         portalAppContext: analytics-dashboard
         businessRulesAppContext : business-rules
-        cacheTimeout: 900
-        baseUrl: https://"ip.node.k8s.&.wso2.apim":30646
+        cacheTimeout: 30
+        baseUrl: https://{{ .Values.wso2.deployment.analytics.dashboard.ingress.hostname }}
         grantType: authorization_code
-        publisherUrl: https://wso2am-pattern-1-am-1-service:9443
-        devPortalUrl: https://wso2am-pattern-1-am-1-service:9443
-        externalLogoutUrl: https://"ip.node.k8s.&.wso2.apim":30443/oidc/logout
+        publisherUrl: https://{{ template "am-single-node.resource.prefix" . }}-am-service:9443
+        devPortalUrl: https://{{ template "am-single-node.resource.prefix" . }}-am-service:9443
+        externalLogoutUrl: https://{{ .Values.wso2.deployment.am.ingress.management.hostname }}/oidc/logout
 
     wso2.dashboard:
       roles:
@@ -404,4 +442,4 @@ data:
         - DATETIME
         - TIMESTAMP
         - TIMESTAMP WITHOUT TIME ZONE
----
+  {{ end }}
