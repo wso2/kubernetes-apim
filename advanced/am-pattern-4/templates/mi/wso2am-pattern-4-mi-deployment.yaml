@@ -31,6 +31,10 @@ spec:
       node: {{ template "am-pattern-4.resource.prefix" . }}-mi
   template:
     metadata:
+      {{- if .Values.wso2.deployment.mi.config }}
+      annotations:
+        checksum.mi.conf: {{ include (print $.Template.BasePath "/mi/wso2am-pattern-4-mi-conf.yaml") . | sha256sum }}
+      {{- end }}
       labels:
         deployment: {{ template "am-pattern-4.resource.prefix" . }}-mi
         node: {{ template "am-pattern-4.resource.prefix" . }}-mi
@@ -100,6 +104,12 @@ spec:
               value: {{ $val | quote }}
           {{- end }}
           {{- end }}
+          {{- if .Values.wso2.deployment.mi.config }}
+          volumeMounts:
+            - name: wso2mi-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/conf/deployment.toml
+              subPath: deployment.toml
+          {{- end }}
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.mi.imagePullSecrets }}
       imagePullSecrets:
@@ -107,4 +117,10 @@ spec:
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
         - name: {{ template "am-pattern-4.resource.prefix" . }}-mi-wso2-private-registry-creds
+      {{ end }}
+      {{- if .Values.wso2.deployment.mi.config }}
+      volumes:
+        - name: wso2mi-conf
+          configMap:
+            name: {{ template "am-pattern-4.resource.prefix" . }}-mi-conf
       {{ end }}

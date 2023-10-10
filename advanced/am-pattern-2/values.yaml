@@ -61,6 +61,12 @@ wso2:
       # Environment variables for the Micro integrator deployment.
       envs:
       #  ENV_NAME: ENV_VALUE
+
+      # Add the customized deployment configurations for the WSO2 MI v4.2.0 (<WSO2MI>/conf/deployment.toml)
+      # config:
+      #   deployment.toml: |-
+      #     # toml configurations for the WSO2 MI v4.2.0
+
       # Configure synapse testing.
       synapseTest:
         enabled: false
