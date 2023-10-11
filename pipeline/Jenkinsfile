@@ -1,0 +1,64 @@
+def cloneGitRepo(String version) {
+    sh """
+        #!/bin/bash
+        rm -rf kubernetes-apim
+        git clone https://github.com/wso2/kubernetes-apim
+        cd kubernetes-apim
+        git checkout tags/${version}
+    """
+}
+
+def pushChart(String chartPath, String helmParams) {
+    withCredentials([usernamePassword(credentialsId: 'HELM_ADMIN_CREDS', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+        sh """
+            helm cm-push ${helmParams} ${chartPath} https://helm.wso2.com -u \${USERNAME} -p \${PASSWORD}
+        """
+    }
+}
+
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'GITHUB_RELEASE_VERSION', description: 'Enter the GitHub release tag', defaultValue: 'v4.2.0.1')
+        separator(name: 'charts', description: 'Select charts to be pushed')
+        booleanParam(name: 'AM_PATTERN_1', description: 'Select if am-pattern-1 chart needs to be pushed', defaultValue: false)
+        booleanParam(name: 'AM_PATTERN_2', description: 'Select if am-pattern-2 chart needs to be pushed', defaultValue: false)
+        booleanParam(name: 'AM_PATTERN_3', description: 'Select if am-pattern-3 chart needs to be pushed', defaultValue: false)
+        booleanParam(name: 'AM_PATTERN_4', description: 'Select if am-pattern-4 chart needs to be pushed', defaultValue: false)
+        booleanParam(name: 'SINGLE_NODE', description: 'Select if am-single-node chart needs to be pushed', defaultValue: false)
+        booleanParam(name: 'MYSQL_AM', description: 'Select if mysql-am chart needs to be pushed', defaultValue: false)
+        separator(name: 'parameters', description: 'Select Helm parameters')
+        booleanParam(name: 'FORCE_PUSH', description: 'Select if charts need to be replaced', defaultValue: false)
+    }
+
+    stages {
+        stage('Run Script') {
+            steps {
+                script {
+                    cloneGitRepo(params.GITHUB_RELEASE_VERSION)
+
+                    def helmParams = ''
+                    if (params.FORCE_PUSH) {
+                        helmParams = '--force'
+                    }
+
+                    def patterns = [                    
+                        'AM_PATTERN_1': 'advanced/am-pattern-1',                    
+                        'AM_PATTERN_2': 'advanced/am-pattern-2',                    
+                        'AM_PATTERN_3': 'advanced/am-pattern-3',                    
+                        'AM_PATTERN_4': 'advanced/am-pattern-4',                    
+                        'SINGLE_NODE': 'simple/am-single',                    
+                        'MYSQL_AM': 'advanced/mysql-am'                
+                    ]
+
+                    patterns.each { chart, path ->
+                        if (params[chart]) {
+                            pushChart(path, helmParams)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
