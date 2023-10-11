@@ -85,7 +85,8 @@ spec:
               cpu: {{ .Values.wso2.deployment.mi.resources.limits.cpu }}
           imagePullPolicy: Always
           securityContext:
-            runAsUser: 802
+            runAsUser: {{ .Values.kubernetes.security.runtimeUser }}
+            runAsGroup: {{ .Values.kubernetes.security.runtimeGroup }}
           ports:
             - containerPort: 8290
               protocol: TCP

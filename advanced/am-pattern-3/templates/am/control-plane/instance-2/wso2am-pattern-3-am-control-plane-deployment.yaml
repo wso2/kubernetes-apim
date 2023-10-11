@@ -86,7 +86,8 @@ spec:
               memory: {{ .Values.wso2.deployment.am.cp.resources.limits.memory }}
               cpu: {{ .Values.wso2.deployment.am.cp.resources.limits.cpu }}
           securityContext:
-            runAsUser: 802
+            runAsUser: {{ .Values.kubernetes.security.runtimeUser }}
+            runAsGroup: {{ .Values.kubernetes.security.runtimeGroup }}
           ports:
             - containerPort: 9763
               protocol: "TCP"

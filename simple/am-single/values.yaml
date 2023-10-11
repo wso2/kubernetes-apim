@@ -157,6 +157,9 @@ wso2:
 kubernetes:
   # Name of Kubernetes service account
   serviceAccount: "wso2am-single-node-svc-account"
+  security:
+    runtimeUser: 802
+    runtimeGroup: 802
 
 # Override sub chart parameters
 mysql-am:
