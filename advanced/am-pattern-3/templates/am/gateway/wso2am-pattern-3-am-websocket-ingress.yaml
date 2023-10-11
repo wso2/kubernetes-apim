@@ -29,7 +29,8 @@ spec:
   {{- end }}
   tls:
   - hosts:
-    - {{ .Values.wso2.deployment.am.websocket.ingress.hostname }}
+      - {{ .Values.wso2.deployment.am.websocket.ingress.hostname }}
+    secretName: tls-{{ .Values.wso2.deployment.am.websocket.ingress.hostname }}
   rules:
   - host: {{ .Values.wso2.deployment.am.websocket.ingress.hostname }}
     http:
