@@ -5,6 +5,14 @@ This guide outlines the steps to deploy WSO2 API Manager on an OpenShift cluster
 ## Prerequisites
 
 - OpenShift cluster with sufficient resources to host WSO2 API Manager and its components.
+  per AM node:
+  requests:
+  memory: "4Gi"
+  cpu: "2000m"
+  limits:
+  memory: "4Gi"
+  cpu: "2000m"
+
 - Helm 3.x installed and configured.
 - OpenShift CLI (oc) installed and configured.
 - Proper permissions to deploy resources to the target namespace.
@@ -79,3 +87,27 @@ Before deploying WSO2 API Manager on OpenShift, ensure the following:
 - [Helm Documentation](https://helm.sh/docs/)
 
 For further assistance, contact the WSO2 support team or refer to the community forums.
+
+## Logging
+
+If you want to use a persistent volume for logs, you can mount a persistent volume claim to the logs directory of the API Manager container. To do this, create a persistent volume claim and mount it to the logs directory of the API Manager container.
+
+```yaml
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: wso2am
+spec:
+  template:
+    spec:
+      containers:
+      - name: wso2am-container
+        ...
+        volumeMounts:
+        - name: wso2am-logs
+          mountPath: /path/to/logs
+      volumes:
+      - name: wso2am-logs
+        persistentVolumeClaim:
+          claimName: wso2am-logs-pvc
+```
