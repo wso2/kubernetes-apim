@@ -18,9 +18,10 @@ For advanced details on the deployment pattern, please refer to the official
   - [Configuration](#configuration)
     - [1. Configuring helm charts](#1-configuring-helm-charts)
       - [1.1 Mounting Keystore and Truststore using a Kubernetes Secret](#11-mounting-keystore-and-truststore-using-a-kubernetes-secret)
-      - [1.2 Updating the Helm Chart](#12-updating-the-helm-chart)
-      - [1.3  Managing Java Keystores and Truststores](#13--managing-java-keystores-and-truststores)
-      - [1.4 Configuring SSL in Service Exposure](#14-configuring-ssl-in-service-exposure)
+      - [1.2 Adding ingress controller](#12-adding-ingress-controller)
+      - [1.3 Updating the Helm Chart](#13-updating-the-helm-chart)
+      - [1.4  Managing Java Keystores and Truststores](#14--managing-java-keystores-and-truststores)
+      - [1.5 Configuring SSL in Service Exposure](#15-configuring-ssl-in-service-exposure)
     - [2. Install the Helm Chart](#2-install-the-helm-chart)
     - [3. Add a DNS record mapping the hostnames and the external IP](#3-add-a-dns-record-mapping-the-hostnames-and-the-external-ip)
     - [4. Access Management Consoles](#4-access-management-consoles)
@@ -63,7 +64,7 @@ For advanced details on the deployment pattern, please refer to the official
     ```
  - You need [Docker](https://www.docker.com/get-docker) v20.10.x or above to build the custom docker images.
  - Base Dockerfiles can be obtained for APIM using https://github.com/wso2/docker-apim
->   You need a valid WSO2 subscription to obtain the **U2 updated** docker images from the WSO2 private registry.
+    >   You need a valid WSO2 subscription to obtain the **U2 updated** docker images from the WSO2 private registry. 
 
 
 #### 1.1. Additional Configurations
@@ -151,7 +152,29 @@ In addition to the primary, internal keystores and truststore files, you can als
   kubectl create secret generic jks-secret --from-file=wso2carbon.jks --from-file=client-truststore.jks --from-file=wso2internal.jks -n <namespace>
   ```
 
-#### 1.2 Updating the Helm Chart
+#### 1.2 Adding ingress controller
+
+- If you need to use cipher tool to encrypt the passwords in the secret, first you need to encrypt the passwords using the cipher tool. The cipher tool can be found in the bin directory of the product pack. The following command can be used to encrypt the password.
+  
+  ```
+  sh cipher-tool.sh -Dconfigure
+  ```
+- Also the apictl can be used to encrpypt password as well. Reference can be found in [following](https://apim.docs.wso2.com/en/latest/install-and-setup/setup/api-controller/encrypting-secrets-with-ctl/).
+- Then the encrypted values should be filled in the the relevant fields of values.yaml.
+- Since the internal keystore password should be encrypted as well, you can use the cloud provider's secret store to store the password of the internal keystore. The following section can be used to add the cloud provider's credentials to fetch the internal keystore password. Configuration for aws can be at as below.
+  
+  ```
+  internalKeystorePassword:
+    # -- AWS Secrets Manager secret name
+    secretName: ""
+    # -- AWS Secrets Manager secret key
+    secretKey: ""
+  ```
+  > Please note that currently  AWS, Azure and GCP Secrets Managers are only supported for this.
+
+
+
+#### 1.3 Updating the Helm Chart
 
  - Once charts are cloned from [WSO2 Helm Chart Repository](https://github.com/wso2/helm-apim), navigate to the `all-in-one ` directory to access the all-in-one deployment pattern.
  - Replace the values.yaml file in this directory with the values.yaml file in the cloned repository.
@@ -192,14 +215,14 @@ In addition to the primary, internal keystores and truststore files, you can als
       runAsUser: 10001
     ```
 
-  #### 1.3  Managing Java Keystores and Truststores
+#### 1.4  Managing Java Keystores and Truststores
 
 * By default, this deployment uses the default keystores and truststores provided by the relevant WSO2 product.
 
 * For advanced details with regards to managing custom Java keystores and truststores in a container based WSO2 product deployment
   please refer to the [official WSO2 container guide](https://github.com/wso2/container-guide/blob/master/deploy/Managing_Keystores_And_Truststores.md).
   
-#### 1.4 Configuring SSL in Service Exposure
+#### 1.5 Configuring SSL in Service Exposure
 
 * For WSO2 recommended best practices in configuring SSL when exposing the internal product services to outside of the Kubernetes cluster,
   please refer to the [official WSO2 container guide](https://github.com/wso2/container-guide/blob/master/route/Routing.md#configuring-ssl).
