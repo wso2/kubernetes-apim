@@ -18,7 +18,7 @@ For advanced details on the deployment pattern, please refer to the official
   - [Configuration](#configuration)
     - [1. Configuring helm charts](#1-configuring-helm-charts)
       - [1.1 Mounting Keystore and Truststore using a Kubernetes Secret](#11-mounting-keystore-and-truststore-using-a-kubernetes-secret)
-      - [1.2 Adding ingress controller](#12-adding-ingress-controller)
+      - [1.2 Encrypting secrets](#12-encrypting-secrets)
       - [1.3 Updating the Helm Chart](#13-updating-the-helm-chart)
       - [1.4  Managing Java Keystores and Truststores](#14--managing-java-keystores-and-truststores)
       - [1.5 Configuring SSL in Service Exposure](#15-configuring-ssl-in-service-exposure)
@@ -152,17 +152,15 @@ In addition to the primary, internal keystores and truststore files, you can als
   kubectl create secret generic jks-secret --from-file=wso2carbon.jks --from-file=client-truststore.jks --from-file=wso2internal.jks -n <namespace>
   ```
 
-#### 1.2 Adding ingress controller
+#### 1.2 Encrypting secrets
 
 - If you need to use cipher tool to encrypt the passwords in the secret, first you need to encrypt the passwords using the cipher tool. The cipher tool can be found in the bin directory of the product pack. The following command can be used to encrypt the password.
-  
   ```
   sh cipher-tool.sh -Dconfigure
   ```
 - Also the apictl can be used to encrpypt password as well. Reference can be found in [following](https://apim.docs.wso2.com/en/latest/install-and-setup/setup/api-controller/encrypting-secrets-with-ctl/).
 - Then the encrypted values should be filled in the the relevant fields of values.yaml.
-- Since the internal keystore password should be encrypted as well, you can use the cloud provider's secret store to store the password of the internal keystore. The following section can be used to add the cloud provider's credentials to fetch the internal keystore password. Configuration for aws can be at as below.
-  
+- Since internal keystore password is required to resolve the encrypted value in runtime, we need to store the value in the cloud provider's secret manager. You can use the cloud provider's secret store to store the password of the internal keystore. The following section can be used to add the cloud provider's credentials to fetch the internal keystore password. Configuration for aws can be at as below. 
   ```
   internalKeystorePassword:
     # -- AWS Secrets Manager secret name
