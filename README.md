@@ -10,18 +10,16 @@ Use these artifacts as a reference to build your deployment artifacts. Existing 
 
 ## Kubernetes resources for API Management deployment patterns
 
-### Simple
+### All In One
 
-* [Single Node](simple/am-single/README.md)
+* [All-In-One](all-in-one/README.md)
+* [All-In-One HA](all-in-one-ha/README.md)
 
-### Advanced
+### Distributed
 
-#### Helm resources for API Management deployment patterns
+* [Distributed](distributed/README.md)
+* [Distributed TM Separated](distributed-tm-separated/README.md)
 
-* [Deployment Pattern 1](advanced/am-pattern-1/README.md)
-* [Deployment Pattern 2](advanced/am-pattern-2/README.md)
-* [Deployment Pattern 3](advanced/am-pattern-3/README.md)
-* [Deployment Pattern 4](advanced/am-pattern-4/README.md)
 
 ### Update the JWKS Endpoint
 
@@ -34,7 +32,7 @@ The JWKS endpoint of the API Manager has the external facing hostname by default
 
 ### Update certificate domain names
 
-To verify connecting peers API Manager use wso2carbon certificate. By default this only allows peers from localhost domain to connect. To allow connections from different domains you need to create a certificate with the allowed domain name list and add it to API Manager keystores. This can be done by mounting a volume with the modified keystores. You can find the APIM Manager keystores inside the *~/wso2am-4.2.0/repository/resources/security/* directory.
+To verify connecting peers API Manager use wso2carbon certificate. By default this only allows peers from localhost domain to connect. To allow connections from different domains you need to create a certificate with the allowed domain name list and add it to API Manager keystores. This can be done by mounting a volume with the modified keystores. You can find the APIM Manager keystores inside the *~/wso2am-4.3.0/repository/resources/security/* directory.
 
 ## Reporting issues
 
