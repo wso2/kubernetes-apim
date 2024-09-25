@@ -8,6 +8,10 @@ Use these artifacts as a reference to build your deployment artifacts. Existing 
 
 *This repository contains Kubernetes and Helm Resources for container-based deployments of WSO2 API Management.*
 
+### ⚠️ Note
+
+This repository has been discontinued. https://github.com/wso2/helm-apim/ will be used from WSO2 API Manager 4.3.0 onwards
+
 ## Kubernetes resources for API Management deployment patterns
 
 ### Simple
