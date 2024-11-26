@@ -145,7 +145,7 @@ wso2:
             kubernetes.io/ingress.class: "nginx"
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 
-        # Number of deployment replicas
+        # Number of Gateway replicas
         replicas: 2
 
         # Kubernetes RollingUpdate strategy configurations
@@ -212,8 +212,6 @@ wso2:
             nginx.ingress.kubernetes.io/affinity: "cookie"
             nginx.ingress.kubernetes.io/session-cookie-name: "route"
             nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
-        # Number of deployment replicas
-        replicas: 2
 
         resources:
           # These are the minimum resource recommendations for running WSO2 API Management Control Plane deployment
