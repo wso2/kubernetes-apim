@@ -158,7 +158,7 @@ wso2:
       dockerRegistry: "docker.wso2.com"
       imageName: "wso2mi"
       imageTag: "4.2.0.0"
-      # Number of deployment replicas
+      # Number of MI replicas
       replicas: 2
       strategy:
         rollingUpdate:
