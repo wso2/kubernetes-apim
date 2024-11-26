@@ -26,7 +26,7 @@ wso2:
       # dockerRegistry: ""
       imageName: "wso2mi"
       imageTag: "4.1.0"
-      # Number of deployment replicas
+      # Number of MI replicas
       replicas: 2
       strategy:
         rollingUpdate:
@@ -227,7 +227,7 @@ am-pattern-1:
         # dockerRegistry: ""
         imageName: "wso2mi"
         imageTag: "4.1.0"
-        # Number of deployment replicas
+        # Number of MI replicas
         replicas: 2
         strategy:
           rollingUpdate:

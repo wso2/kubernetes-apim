@@ -146,7 +146,7 @@ wso2:
             kubernetes.io/ingress.class: "nginx"
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 
-        # Number of deployment replicas
+        # Number of Gateway replicas
         replicas: 2
 
         # Kubernetes RollingUpdate strategy configurations
@@ -177,8 +177,6 @@ wso2:
           initialDelaySeconds: 180
           # How often (in seconds) to perform the probe
           periodSeconds: 10
-              # Number of deployment replicas
-        replicas: 2
         resources:
            # These are the minimum resource recommendations for running WSO2 API Management Control Plane deployment
            # as per official documentation (https://apim.docs.wso2.com/en/latest/install-and-setup/install/installation-prerequisites/)
@@ -256,8 +254,6 @@ wso2:
             nginx.ingress.kubernetes.io/affinity: "cookie"
             nginx.ingress.kubernetes.io/session-cookie-name: "route"
             nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
-        # Number of deployment replicas
-        replicas: 2
 
         resources:
           # These are the minimum resource recommendations for running WSO2 API Management Control Plane deployment
@@ -289,7 +285,7 @@ wso2:
       # dockerRegistry: ""
       imageName: "wso2mi"
       imageTag: "4.1.0"
-      # Number of deployment replicas
+      # Number of MI replicas
       replicas: 2
       strategy:
         rollingUpdate:
