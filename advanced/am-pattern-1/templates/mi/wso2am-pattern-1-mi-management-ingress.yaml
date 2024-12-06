@@ -23,8 +23,9 @@ metadata:
 {{- end }}
 spec:
   tls:
-    - hosts:
-        - {{ .Values.wso2.deployment.mi.ingress.management.hostname  | quote }}
+  - hosts:
+      - {{ .Values.wso2.deployment.mi.ingress.management.hostname  | quote }}
+    secretName: tls-{{ .Values.wso2.deployment.mi.ingress.management.hostname }}
   rules:
     - host: {{ .Values.wso2.deployment.mi.ingress.management.hostname | quote }}
       http:
