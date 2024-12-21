@@ -61,7 +61,7 @@ spec:
             command:
               - /bin/sh
               - -c
-              - nc -z localhost 8243
+              - timeout 1 bash -c "</dev/tcp/localhost/8243"
           initialDelaySeconds: {{ .Values.wso2.deployment.am.startupProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.wso2.deployment.am.startupProbe.periodSeconds }}
           failureThreshold: {{ .Values.wso2.deployment.am.startupProbe.failureThreshold }}
