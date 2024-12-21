@@ -121,20 +121,6 @@ If you are using a custom WSO2 Docker images you will need to provide those info
 
 Or else, you can configure the default configurations inside the am-pattern-4 helm chart [values.yaml](https://github.com/wso2/kubernetes-apim/blob/newpattern/advanced/am-pattern-4/values.yaml) file. Refer [this](https://helm.sh/docs/chart_template_guide/values_files/) for to learn more details about the `values.yaml` file.
 
-
-> **Note:** <br>
-From the above Helm commands, base image of a Micro Integrator is deployed (without any integration solution). To deploy your integration solution with the Helm charts follow the below steps. <br><br>
->1. [Create an integration service using WSO2 Integration Studio and expose it as a Managed API](https://apim.docs.wso2.com/en/4.2.0/tutorials/integration-tutorials/service-catalog-tutorial/#exposing-an-integration-service-as-a-managed-api). Then [create a Docker image](https://apim.docs.wso2.com/en/4.2.0/integrate/develop/create-docker-project/#creating-docker-exporter) and push it to your private or public Docker registry. <br><br>
-    - `INTEGRATION_IMAGE_REGISTRY` will refer to the Docker registry that created Docker image has been pushed <br>
-    - `INTEGRATION_IMAGE_NAME` will refer to the name of the created Docker image <br>
-    - `INTEGRATION_IMAGE_TAG` will refer to the tag of the created Docker image <br><br>
->2. If your Docker registry is a private registry, [create an imagePullSecret](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/).<br><br>
-    - `IMAGE_PULL_SECRET` will refer to the created image pull secret <br><br>
->3. Deploy the helm resource using following command.<br><br>
->   ```
->   helm install <RELEASE_NAME> wso2/am-pattern-4 --version 4.2.0-1 --namespace <NAMESPACE> --set wso2.deployment.mi.dockerRegistry=<INTEGRATION_IMAGE_REGISTRY> --set wso2.deployment.mi.imageName=<INTEGRATION_IMAGE_NAME> --set wso2.deployment.mi.imageTag=<INTEGRATION_IMAGE_TAG> --set wso2.deployment.mi.imagePullSecrets=<IMAGE_PULL_SECRET>
->   ```     
-
 > **Note:**
 > If you are using Rancher Desktop for the Kubernetes cluster, add the following changes. 
 > 1. Change `storageClass` to `local-path` in [`values.yaml`](https://github.com/wso2/kubernetes-apim/blob/master/advanced/am-pattern-4/values.yaml#L43).
@@ -190,13 +176,6 @@ API Manager Websub
 - HOSTS: Hostname of the WSO2 API Manager's Websub service (`<wso2.deployment.am.websub.ingress.hostname>`)
 - ADDRESS: External IP (EXTERNAL-IP) exposing the API Manager's Websub service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the API Manager's Websub service
-
-Micro Integrator Management APIs
-
-- NAME: Metadata name of the Kubernetes Ingress resource (defaults to wso2am-pattern-4-mi-1-management-ingress)
-- HOSTS: Hostname of the WSO2 Micro Integrator service (`<wso2.deployment.mi.ingress.management.hostname>`)
-- ADDRESS: External IP (EXTERNAL-IP) exposing the Micro Integrator service to outside of the Kubernetes environment
-PORTS: Externally exposed service ports of the Micro Integrator service
 
 ### 3. Add a DNS record mapping the hostnames and the external IP
 
@@ -292,26 +271,6 @@ If you do not have an active WSO2 subscription, **do not change** the parameters
 | `wso2.deployment.am.trafficmanager.resources.limits.cpu`               | The maximum amount of CPU that should be allocated for running API Manager Traffic Manager                                 | 3000m                                          |
 | `wso2.deployment.am.trafficmanager.resources.jvm.heap.memory.xms`      | The minimum Resource allocation for the Java Heap size for running API Manager Traffic Manager                             | 1024m                                          |
 | `wso2.deployment.am.trafficmanager.resources.jvm.heap.memory.xmx`      | The maximum Resource allocation for the Java Heap size for running API Manager Traffic Manager                             | 1024m                                          |
-
-###### Micro Integrator Server Configurations
-
-| Parameter                                                                   | Description                                                                               | Default Value               |
-|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.mi.dockerRegistry`                                         | Registry location of the Docker image to be used to create Micro Integrator instances     | -                           |
-| `wso2.deployment.mi.imageName`                                              | Name of the Docker image to be used to create API Manager instances                       | `wso2mi`                    |
-| `wso2.deployment.mi.imageTag`                                               | Tag of the image used to create API Manager instances                                     | 4.2.0                       |
-| `wso2.deployment.mi.imagePullPolicy`                                        | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
-| `wso2.deployment.mi.livenessProbe.initialDelaySeconds`                      | Initial delay for the live-ness probe for Micro Integrator node                           | 35                          |
-| `wso2.deployment.mi.livenessProbe.periodSeconds`                            | Period of the live-ness probe for Micro Integrator node                                   | 10                          |
-| `wso2.deployment.mi.readinessProbe.initialDelaySeconds`                     | Initial delay for the readiness probe for Micro Integrator node                           | 35                          |
-| `wso2.deployment.mi.readinessProbe.periodSeconds`                           | Period of the readiness probe for Micro Integrator node                                   | 10                          |
-| `wso2.deployment.mi.resources.requests.memory`                              | The minimum amount of memory that should be allocated for a Pod                           | 512Mi                       |
-| `wso2.deployment.mi.resources.requests.cpu`                                 | The minimum amount of CPU that should be allocated for a Pod                              | 500m                        |
-| `wso2.deployment.mi.resources.limits.memory`                                | The maximum amount of memory that should be allocated for a Pod                           | 1Gi                         |
-| `wso2.deployment.mi.resources.limits.cpu`                                   | The maximum amount of CPU that should be allocated for a Pod                              | 1000m                       |
-| `wso2.deployment.mi.config`                                                 | Custom deployment configuration file (`<WSO2MI>/conf/deployment.toml`)         | -                           |
-| `wso2.deployment.mi.ingress.management.hostname`                            | Hostname for Micro Integrator management apis                                             | `management.mi.wso2.com`    |
-| `wso2.deployment.mi.ingress.management.annotations`                         | Ingress resource annotations for API Manager Gateway                                      | Community NGINX Ingress controller annotations         |
 
 **Note**: The above mentioned default, minimum resource amounts for running WSO2 API Manager server profiles are based on its [official documentation](https://apim.docs.wso2.com/en/4.2.0/install-and-setup/install/installation-prerequisites/).
 
