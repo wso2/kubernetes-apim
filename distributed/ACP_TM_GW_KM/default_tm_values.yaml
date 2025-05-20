@@ -1,0 +1,339 @@
+# -------------------------------------------------------------------------------------
+#
+# Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com). All Rights Reserved.
+#
+# This software is the property of WSO2 LLC. and its suppliers, if any.
+# Dissemination of any information or reproduction of any material contained 
+# herein is strictly forbidden, unless permitted by WSO2 in accordance with the 
+# WSO2 Commercial License available at https://wso2.com/licenses/eula/3.2
+#
+# --------------------------------------------------------------------------------------
+
+aws:
+  # -- If AWS is used as the cloud provider
+  enabled: false
+  ecr:
+    # -- AWS Elastic Container Registry name
+    registry: ""
+  # -- AWS region
+  region: ""
+  secretsManager:
+    # -- AWS Secrets Manager secret provider class name
+    secretProviderClass: "wso2am-tm-secret-provider-class"
+    secretIdentifiers:
+      # -- Internal keystore password identifier in secrets manager
+      internalKeystorePassword:
+        # -- AWS Secrets Manager secret name
+        secretName: ""
+        # -- AWS Secrets Manager secret key
+        secretKey: ""
+  serviceAccountName: ""
+azure:
+  # -- If Azure is used as the cloud provider
+  enabled: true
+  acr:
+    # -- Azure container registry name
+    registry: ""
+  keyVault:
+    # -- Azure Key vault used for credential management
+    name: ""
+    # -- Azure Key vault secret provider class name
+    secretProviderClass: "wso2am-tm-secret-provider-class"
+    secretIdentifiers:
+      # -- Internal keystore password identifier in keyvault
+      internalKeystorePassword: ""
+      # -- Internal keystore key password identifier in keyvault
+      internalKeystoreKeyPassword: ""
+    activeDirectory:
+      # -- Service Principal created for transacting with the target Azure Key Vault
+      # For advanced details refer to official documentation (https://github.com/Azure/secrets-store-csi-driver-provider-azure/blob/master/docs/service-principal-mode.md)
+      servicePrincipal:
+        # -- Application ID of the service principal used in secret-store-csi
+        appId: ""
+        # -- Client secret name of the service principal used in secret-store-csi
+        clientSecretName: ""
+        # -- Credentials secret name of the service principal used as nodePublisherRef
+        credentialsSecretName: ""
+      # -- Azure Active Directory tenant ID of the target Key Vault
+      tenantId: ""
+    resourceManager:
+      # -- Subscription ID of the target Azure Key Vault
+      subscriptionId: "APIM-rnd-001"
+      # -- Name of the Azure Resource Group to which the target Azure Key Vault belongs
+      resourceGroup: "rg-private-apim-kavindar"
+
+# Google Cloud Platform (GCP) integration status
+gcp:
+  # -- If GCP is used as the cloud provider
+  enabled: false
+  # -- Secrets Manager configuration parameters
+  secretsManager:
+    # -- Project ID
+    projectId: ""
+    # -- Secret provider class
+    secretProviderClass: ""
+    secret:
+      # -- Name of the secret
+      secretName: ""
+      # -- Version of the secret 
+      secretVersion: ""
+  # -- Service Account with access to read secrets
+  serviceAccountName: ""
+
+kubernetes:
+  securityContext:
+    # -- User ID of the container
+    runAsUser: 10001
+  # -- Enable AppArmor profiles for the deployment
+  enableAppArmor: false
+
+wso2:  
+  apim:
+    # -- APIM version
+    version: "4.5.0"
+    # -- Secure vauld enabled
+    secureVaultEnabled: false
+    # Logging related configurations
+    log4j2:
+        # -- Console loggers that can be enabled. Allowed values are AUDIT_LOG_CONSOLE, HTTP_ACCESS_CONSOLE, TRANSACTION_CONSOLE, CORRELATION_CONSOLE
+        loggers: ""
+        # -- Appenders
+        appenders: ""
+    # -- Startup arguments for APIM
+    startupArgs: ""
+    # -- Startup script mount status
+    mountStartupScript: false
+    # TOML configurations
+    configurations:
+      userStore:
+        # -- User store type. 
+        # https://apim.docs.wso2.com/en/latest/administer/managing-users-and-roles/managing-user-stores/configure-primary-user-store/configuring-the-primary-user-store/
+        type: "database_unique_id"
+        # -- User store properties
+        properties:
+          key: value
+      # -- Super admin username
+      adminUsername: "admin"
+      # -- Super admin password
+      adminPassword: "admin"
+      databases:
+        # -- Database type. eg: mysql, oracle, mssql, postgres
+        type: "mysql"
+        jdbc:
+          # -- JDBC driver class name
+          driver: "com.mysql.cj.jdbc.Driver"
+        # -- APIM AM_DB configurations.
+        apim_db:
+          # -- APIM AM_DB URL
+          url: "jdbc:mysql://<DB_URL>:3306/apim_db?useSSL=false"
+          # -- APIM AM_DB username
+          username: "apimadmin"
+          # -- APIM AM_DB password
+          password: "apimadmin"
+          # -- APIM database JDBC pool parameters
+          poolParameters:
+            defaultAutoCommit: true
+            testOnBorrow: true
+            testWhileIdle: true
+            validationInterval: 30000
+            maxActive: 100
+            maxWait: 60000
+            minIdle: 5
+        # -- APIM SharedDB configurations.
+        shared_db:
+          # -- APIM SharedDB URL
+          url: "jdbc:mysql://<DB_URL>:3306/shared_db?useSSL=false"
+          # -- APIM SharedDB username
+          username: "sharedadmin"
+          # -- APIM SharedDB password
+          password: "sharedadmin"
+          # -- APIM shared database JDBC pool parameters
+          poolParameters:
+            defaultAutoCommit: true
+            testOnBorrow: true
+            testWhileIdle: true
+            validationInterval: 30000
+            maxActive: 100
+            maxWait: 60000
+            minIdle: 5
+
+      security:
+        # -- Kubernetes secret containing the keystores and truststore
+        jksSecretName: "jks-secret"
+        keystores:
+          primary:
+            # -- Primary keystore enabled
+            enabled: false
+            # -- Primary keystore name
+            name: "wso2carbon.jks"
+            # -- Primary keystore alias
+            alias: "wso2carbon"
+            # -- Primary keystore password
+            password: "wso2carbon"
+            # -- Primary keystore key password
+            keyPassword: "wso2carbon"
+          tls:
+            # -- TLS keystore enabled
+            enabled: true
+            # -- TLS keystore name
+            name: "wso2carbon.jks"
+            # -- TLS keystore alias
+            alias: "wso2carbon"
+            # -- TLS keystore password
+            password: "wso2carbon"
+            # -- TLS keystore key password
+            keyPassword: "wso2carbon"
+          internal:
+            # -- Internal keystore enabled
+            enabled: false
+            # -- Internal keystore name
+            name: "wso2carbon.jks"
+            # -- Internal keystore alias
+            alias: "wso2carbon"
+            # -- Internal keystore password
+            password: "wso2carbon"
+            # -- Internal keystore key password
+            keyPassword: "wso2carbon"
+        truststore:
+          # -- Truststore name
+          name: "client-truststore.jks"
+          # -- Truststore password
+          password: "wso2carbon"
+
+      km:
+        # -- Key manager service name if default Resident KM is used
+        serviceUrl: "apim-km-wso2am-km-service"
+
+      iskm:
+        # If Identity Server is used as the Resident KM
+        enabled: false
+        # Kubernetes service name exposing Identity Server
+        serviceName: ""
+
+      eventhub:
+        # -- Event hub (control plane) loadbalancer service url
+        serviceUrl: "apim-acp-wso2am-acp-service"
+        # -- Event hub service urls
+        urls:
+          - "apim-acp-wso2am-acp-1-service"
+          - "apim-acp-wso2am-acp-2-service"
+
+      # APIM OAuth configurations
+      oauth_config:
+        # -- Enable token encryption
+        enableTokenEncryption: false
+        # -- Enable token hashing
+        enableTokenHashing: false
+      
+      # APIM Open Tracing configurations
+      # https://apim.docs.wso2.com/en/latest/observe/api-manager/traces/monitoring-with-opentracing/
+      openTracer:
+        # -- Open Tracing enabled
+        enabled: false
+        # -- Remote tracer name. e.g. jaeger, zipkin
+        name: ""
+        properties:
+          # -- Remote tracer hostname
+          hostname: ""
+          # -- Remote tracer port
+          port: ""
+      # APIM Open Telemetry configurations
+      openTelemetry:
+        # -- Open Telemetry enabled
+        enabled: false
+        # -- Remote tracer name. e.g. jaeger, zipkin, OTLP
+        name: ""
+        # -- Remote tracer hostname
+        hostname: ""
+        # -- Remote tracer port
+        port: ""
+
+  deployment:
+    # Container image configurations
+    image:
+      # -- Container registry credentials.
+      # Specify image pull secrets for private registries
+      imagePullSecrets:
+        enabled: false
+        username: ""
+        password: ""
+      # -- Container registry hostname
+      registry: "<DOCKER_REGISTRY>"
+      # -- Azure ACR repository name consisting the image
+      repository: "<TM_DOCKER_IMAGE>"
+      # -- Docker image digest
+      digest: "<TM_IMAGE_DIGEST>"
+      # -- Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
+      imagePullPolicy: Always
+
+    resources:
+      # These are the resource recommendations for running WSO2 API Management product profiles with profile optimization
+      # Resource configurations defined here are applicable for all API Manager product profiles of this deployment
+      requests:
+        # -- Memory request for API Manager
+        memory: "2Gi"
+        # -- CPU request for API Manager
+        cpu: "2000m"
+      limits:
+        # -- Memory limit for API Manager
+        memory: "3Gi"
+        # -- CPU limit for API Manager
+        cpu: "3000m"
+      jvm:
+        memory:
+          # -- JVM heap memory Xms
+          xms: "2048m"
+          # -- JVM heap memory Xmx
+          xmx: "2048m"
+
+    # Kubernetes Probes
+    # Indicates whether the container starting
+    startupProbe:
+      # -- Number of seconds after the container has started before startup probes are initiated
+      initialDelaySeconds: 60
+      # -- How often (in seconds) to perform the probe
+      periodSeconds: 10
+      # -- Minimum consecutive successes for the probe to be considered successful after having failed
+      failureThreshold: 3      
+    # Indicates whether the container is running
+    livenessProbe:
+      # -- Number of seconds after the container has started before liveness probes are initiated
+      initialDelaySeconds: 60
+      # -- How often (in seconds) to perform the probe
+      periodSeconds: 10
+      # -- Minimum consecutive successes for the probe to be considered successful after having failed
+      failureThreshold: 3
+    # Indicates whether the container is ready to service requests
+    readinessProbe:
+      # -- Number of seconds after the container has started before readiness probes are initiated
+      initialDelaySeconds: 60
+      # -- How often (in seconds) to perform the probe
+      periodSeconds: 10
+      # -- Minimum consecutive successes for the probe to be considered successful after having failed
+      failureThreshold: 3
+    
+    lifecycle:
+      preStopHook:
+        # -- Number of seconds to sleep before sending SIGTERM to the pod
+        sleepSeconds: 10
+    # -- Target CPU utilization percentage for HPA
+    cpuUtilizationPercentage: 75
+    # -- Target memory utilization percentage for HPA
+    memoryUtilizationPercentage: 75
+    # -- Minimum available pod counts for PDB
+    minAvailable: "50%"
+
+    # -- Node selector to deploy pod in selected node. Add label to the node and specify the label here.
+    nodeSelector:
+
+    # Kubernetes RollingUpdate strategy configurations
+    strategy:
+      rollingUpdate:
+        # The maximum number of pods that can be scheduled above the desired number of pods
+        maxSurge: 2
+        # The maximum number of pods that can be unavailable during the update
+        maxUnavailable: 0
+
+    # -- Enable high availability for traffic manager. If this is enabled, two traffic manager instances will be deployed.
+    # This is not relavant to HA in Kubernetes. Multiple replicas of the same instance will not count as HA for TM.
+    highAvailability: true
