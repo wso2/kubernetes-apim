@@ -34,6 +34,18 @@ spec:
         node: {{ template "am-pattern-4.resource.prefix" . }}-am-trafficmanager-1
         product: apim
     spec:
+      {{- with .Values.wso2.deployment.am.trafficmanager.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.wso2.deployment.am.trafficmanager.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.wso2.deployment.am.trafficmanager.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       initContainers:
         - name: init-cp
           image: busybox:1.32

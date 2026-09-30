@@ -35,6 +35,18 @@ spec:
         deployment: {{ template "am-pattern-3.resource.prefix" . }}-am-gateway
         product: apim
     spec:
+      {{- with .Values.wso2.deployment.am.gateway.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.wso2.deployment.am.gateway.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.wso2.deployment.am.gateway.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       initContainers:
         - name: init-cp
           image: busybox:1.32

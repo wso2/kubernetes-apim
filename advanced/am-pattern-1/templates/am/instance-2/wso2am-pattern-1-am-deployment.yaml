@@ -34,6 +34,18 @@ spec:
         node: {{ template "am-pattern-1.resource.prefix" . }}-am-2
         product: apim
     spec:
+      {{- with .Values.wso2.deployment.am.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.wso2.deployment.am.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.wso2.deployment.am.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       initContainers:
         - name: init-db
           image: busybox:1.32
