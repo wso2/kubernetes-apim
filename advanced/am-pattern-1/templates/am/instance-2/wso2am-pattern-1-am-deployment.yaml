@@ -54,6 +54,17 @@ spec:
         - name: wso2am
 {{- include "image" (dict "Values" .Values "deployment" .Values.wso2.deployment.am) | indent 10 }}
           imagePullPolicy: {{ .Values.wso2.deployment.am.imagePullPolicy }}
+          startupProbe:
+            httpGet:
+              path: /services/Version
+              port: 9763
+
+            initialDelaySeconds: {{ .Values.wso2.deployment.am.startupProbe.initialDelaySeconds }}
+
+            periodSeconds: {{ .Values.wso2.deployment.am.startupProbe.periodSeconds }}
+
+            failureThreshold: {{ .Values.wso2.deployment.am.startupProbe.failureThreshold }}
+
           livenessProbe:
             httpGet:
               path: /services/Version

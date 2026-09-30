@@ -64,15 +64,23 @@ wso2:
       imagePullPolicy: Always
 
       # Indicates whether the container is running
+      startupProbe:
+
+        initialDelaySeconds: 20
+
+        periodSeconds: 10
+
+        failureThreshold: 30
+
       livenessProbe:
         # Number of seconds after the container has started before liveness probes are initiated
-        initialDelaySeconds: 180
+        initialDelaySeconds: 20
         # How often (in seconds) to perform the probe
         periodSeconds: 10
       # Indicates whether the container is ready to service requests
       readinessProbe:
         # Number of seconds after the container has started before readiness probes are initiated
-        initialDelaySeconds: 180
+        initialDelaySeconds: 20
         # How often (in seconds) to perform the probe
         periodSeconds: 10
 

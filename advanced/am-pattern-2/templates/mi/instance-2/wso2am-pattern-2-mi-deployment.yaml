@@ -51,6 +51,19 @@ spec:
           args:
             - "-DsynapseTest=true"
           {{- end }}
+          startupProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 8290
+
+            initialDelaySeconds: {{ .Values.wso2.deployment.mi.startupProbe.initialDelaySeconds }}
+
+            periodSeconds: {{ .Values.wso2.deployment.mi.startupProbe.periodSeconds }}
+
+            failureThreshold: {{ .Values.wso2.deployment.mi.startupProbe.failureThreshold }}
+
           livenessProbe:
             exec:
               command:

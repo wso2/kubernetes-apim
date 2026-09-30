@@ -165,16 +165,25 @@ wso2:
 
       # API Manager's Traffic Manager specific configurations
       trafficmanager:
+        # Kubernetes Probes
+        # Startup probe executed prior to Liveness Probe taking over
+        startupProbe:
+          # Number of seconds after the container has started before startup probes are initiated
+          initialDelaySeconds: 20
+          # How often (in seconds) to perform the probe
+          periodSeconds: 10
+          # Number of attempts
+          failureThreshold: 30
         # Indicates whether the container is running
         livenessProbe:
           # Number of seconds after the container has started before liveness probes are initiated
-          initialDelaySeconds: 180
+          initialDelaySeconds: 20
           # How often (in seconds) to perform the probe
           periodSeconds: 10
         # Indicates whether the container is ready to service requests
         readinessProbe:
           # Number of seconds after the container has started before readiness probes are initiated
-          initialDelaySeconds: 180
+          initialDelaySeconds: 20
           # How often (in seconds) to perform the probe
           periodSeconds: 10
         resources:
