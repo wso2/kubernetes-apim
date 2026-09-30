@@ -70,8 +70,9 @@ spec:
             periodSeconds: {{ .Values.wso2.deployment.am.cp.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: /services/Version
-              port: 9763
+              path: /api/am/gateway/v2/server-startup-healthcheck
+              port: 9443
+              scheme: HTTPS
             initialDelaySeconds: {{ .Values.wso2.deployment.am.cp.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.wso2.deployment.am.cp.readinessProbe.periodSeconds }}
           lifecycle:
